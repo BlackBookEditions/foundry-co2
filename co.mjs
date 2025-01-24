@@ -2,9 +2,6 @@
 import { SYSTEM } from "./module/config/system.mjs"
 globalThis.SYSTEM = SYSTEM
 
-import COCharacterSheet from "./module/applications/sheets/character-sheet.mjs"
-import COEncounterSheet from "./module/applications/sheets/encounter-sheet.mjs"
-
 // Import modules
 import * as models from "./module/models/_module.mjs"
 import * as documents from "./module/documents/_module.mjs"
@@ -15,7 +12,7 @@ import preloadHandlebarsTemplates from "./module/templates.mjs"
 import registerHandlebarsHelpers from "./module/helpers.mjs"
 import registerSystemSettings from "./module/settings.mjs"
 import registerHooks from "./module/hooks.mjs"
-import { Macros } from "./module/system/macros.mjs"
+import Macros from "./module/system/macros.mjs"
 import Utils from "./module/utils.mjs"
 
 Hooks.once("init", async function () {
@@ -56,15 +53,15 @@ Hooks.once("init", async function () {
   Items.unregisterSheet("core", ItemSheet)
 
   // Register application sheets
-  Actors.registerSheet(SYSTEM.ID, COCharacterSheet, { types: ["character"], makeDefault: true, label: "CO.sheet.character" })
-  Actors.registerSheet(SYSTEM.ID, COEncounterSheet, { types: ["encounter"], makeDefault: true, label: "CO.sheet.encounter" })
+  Actors.registerSheet(SYSTEM.ID, applications.CharacterSheet, { types: ["character"], makeDefault: true, label: "CO.sheet.character" })
+  Actors.registerSheet(SYSTEM.ID, applications.EncounterSheet, { types: ["encounter"], makeDefault: true, label: "CO.sheet.encounter" })
 
-  Items.registerSheet(SYSTEM.ID, applications.AttackSheet, { types: ["attack"], makeDefault: true })
-  Items.registerSheet(SYSTEM.ID, applications.CapacitySheet, { types: ["capacity"], makeDefault: true })
-  Items.registerSheet(SYSTEM.ID, applications.EquipmentSheet, { types: ["equipment"], makeDefault: true })
-  Items.registerSheet(SYSTEM.ID, applications.FeatureSheet, { types: ["feature"], makeDefault: true })
-  Items.registerSheet(SYSTEM.ID, applications.PathSheet, { types: ["path"], makeDefault: true })
-  Items.registerSheet(SYSTEM.ID, applications.ProfileSheet, { types: ["profile"], makeDefault: true })
+  Items.registerSheet(SYSTEM.ID, applications.AttackSheet, { types: ["attack"], makeDefault: true, label: "CO.sheet.attack" })
+  Items.registerSheet(SYSTEM.ID, applications.CapacitySheet, { types: ["capacity"], makeDefault: true, label: "CO.sheet.capacity" })
+  Items.registerSheet(SYSTEM.ID, applications.EquipmentSheet, { types: ["equipment"], makeDefault: true, label: "CO.sheet.equipment" })
+  Items.registerSheet(SYSTEM.ID, applications.FeatureSheet, { types: ["feature"], makeDefault: true, label: "CO.sheet.feature" })
+  Items.registerSheet(SYSTEM.ID, applications.PathSheet, { types: ["path"], makeDefault: true, label: "CO.sheet.path" })
+  Items.registerSheet(SYSTEM.ID, applications.ProfileSheet, { types: ["profile"], makeDefault: true, label: "CO.sheet.profile" })
 
   // Preload Handlebars Templates
   preloadHandlebarsTemplates()
@@ -90,7 +87,7 @@ Hooks.once("init", async function () {
   }
 
   // Initiative
-  if (game.settings.get("co", "useVarInit")) {
+  if (game.settings.get("co", "usevarInit")) {
     CONFIG.Combat.initiative = {
       formula: "1d6x + @combat.init.value + @abilities.wis.value/100",
       decimals: 2,

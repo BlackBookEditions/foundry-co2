@@ -29,11 +29,6 @@ export default function preloadHandlebarsTemplates() {
     `systems/${SYSTEM.ID}/templates/encounter/parts/encounter-notes.hbs`,
     `systems/${SYSTEM.ID}/templates/encounter/parts/encounter-sidebar.hbs`,
 
-    // EFFECTS
-    `systems/${SYSTEM.ID}/templates/effects/activeeffect-config.hbs`,
-    `systems/${SYSTEM.ID}/templates/effects/effects-item.hbs`,
-    `systems/${SYSTEM.ID}/templates/effects/effects.hbs`,
-
     // ITEM
     `systems/${SYSTEM.ID}/templates/items/item-sheet.hbs`,
     `systems/${SYSTEM.ID}/templates/items/parts/attack-partial.hbs`,

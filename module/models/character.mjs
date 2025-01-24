@@ -162,6 +162,8 @@ export default class CharacterData extends ActorData {
   }
 
   prepareDerivedData() {
+    super.prepareDerivedData()
+
     this._prepareAbilities()
 
     this._prepareHPMax()
@@ -235,8 +237,8 @@ export default class CharacterData extends ActorData {
     const hpMaxModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "hp")
 
     this.attributes.hp.max = this.attributes.hp.base + constitutionBonus + hpMaxBonuses + hpMaxModifiers.total
-    this.attributes.hp.tooltip = Utils.getTooltip("Base", this.attributes.hp.base).concat(
-      "Constitution : ",
+    this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat(
+      ` ${Utils.getAbilityName("con")} : `,
       constitutionBonus,
       hpMaxModifiers.tooltip,
       Utils.getTooltip("Bonus", hpMaxBonuses),

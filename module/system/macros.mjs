@@ -7,12 +7,12 @@ import { SYSTEM } from "../config/system.mjs"
  * @param {object} dropData     The dropped data
  * @param {number} slot         The hotbar slot to use
  */
-export async function createCoMacro(dropData, slot) {
+export async function createCOMacro(dropData, slot) {
   const macroData = { type: "script", scope: "actor" }
   switch (dropData.type) {
     case "Item":
       const itemData = await Item.implementation.fromDropData(dropData)
-      if (!itemData) return ui.notifications.warn(game.i18n.localize("MACRO.CoUnownedWarn"))
+      if (!itemData) return ui.notifications.warn(game.i18n.localize("CO.macro.unownedWarn"))
       foundry.utils.mergeObject(macroData, {
         name: itemData.name,
         img: itemData.img,
@@ -40,7 +40,7 @@ export async function createCoMacro(dropData, slot) {
   }
 }
 
-export class Macros {
+export default class Macros {
   /**
    * Send to Chat an Item or an action
    * @param {string} itemId          Id of the item on the selected actor to trigger.
@@ -53,8 +53,8 @@ export class Macros {
     if (item instanceof COItem) {
       if (indice === null) {
         let itemChatData = item.getChatData(null)
-        if (item.type === SYSTEM.ITEM_TYPE.CAPACITY && !item.system.learned) return ui.notifications.warn(game.i18n.format("MACRO.CoCapacityNotLearned", { name: itemName }))
-        if (item.type === SYSTEM.ITEM_TYPE.EQUIPMENT && !item.system.equipped) return ui.notifications.warn(game.i18n.format("MACRO.COItemNotEquipped", { name: itemName }))
+        if (item.type === SYSTEM.ITEM_TYPE.CAPACITY && !item.system.learned) return ui.notifications.warn(game.i18n.format("CO.macro.capacityNotLearned", { name: itemName }))
+        if (item.type === SYSTEM.ITEM_TYPE.EQUIPMENT && !item.system.equipped) return ui.notifications.warn(game.i18n.format("CO.macro.itemNotEquipped", { name: itemName }))
         new CoChat(actor)
           .withTemplate("systems/co/templates/chat/item-card.hbs")
           .withData({
@@ -69,8 +69,8 @@ export class Macros {
           .create()
       } else {
         let itemChatData = item.getChatData(indice)
-        if (item.type === SYSTEM.ITEM_TYPE.CAPACITY && !item.system.learned) return ui.notifications.warn(game.i18n.format("MACRO.CoCapacityNotLearned", { name: itemName }))
-        if (item.type === SYSTEM.ITEM_TYPE.EQUIPMENT && !item.system.equipped) return ui.notifications.warn(game.i18n.format("MACRO.COItemNotEquipped", { name: itemName }))
+        if (item.type === SYSTEM.ITEM_TYPE.CAPACITY && !item.system.learned) return ui.notifications.warn(game.i18n.format("CO.macro.capacityNotLearned", { name: itemName }))
+        if (item.type === SYSTEM.ITEM_TYPE.EQUIPMENT && !item.system.equipped) return ui.notifications.warn(game.i18n.format("CO.macro.itemNotEquipped", { name: itemName }))
         new CoChat(actor)
           .withTemplate("systems/co/templates/chat/item-card.hbs")
           .withData({
@@ -99,7 +99,7 @@ export class Macros {
     const speaker = ChatMessage.getSpeaker()
     if (speaker.token) actor = game.actors.tokens[speaker.token]
     actor ??= game.actors.get(speaker.actor)
-    if (!actor) return ui.notifications.warn(game.i18n.localize("MACRO.CoNoActorSelected"))
+    if (!actor) return ui.notifications.warn(game.i18n.localize("CO.macro.noActorSelected"))
 
     const item = actor.items.get(id)
     if (item) return { item, actor }
@@ -111,10 +111,10 @@ export class Macros {
     const documents = collection.filter((i) => foundry.utils.getProperty(i, nameKeyPath) === name)
     const type = game.i18n.localize(`DOCUMENT.${documentType}`)
     if (documents.length === 0) {
-      return ui.notifications.warn(game.i18n.format("MACRO.CoMissingTargetWarn", { actor: actor.name, type, name }))
+      return ui.notifications.warn(game.i18n.format("CO.macro.missingTargetWarn", { actor: actor.name, type, name }))
     }
     if (documents.length > 1) {
-      ui.notifications.warn(game.i18n.format("MACRO.CoMultipleTargetsWarn", { actor: actor.name, type, name }))
+      ui.notifications.warn(game.i18n.format("CO.macro.multipleTargetsWarn", { actor: actor.name, type, name }))
     }
     return { item: documents[0], actor }
   }

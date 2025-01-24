@@ -20,7 +20,12 @@
     "sheet": {
       "character": "Fiche de personnage",
       "encounter": "Fiche de rencontre",
-      "item": "Fiche d'objet personnage"
+      "attack": "Fiche d'attaque de rencontre",
+      "capacity": "Fiche de capacité",
+      "profile": "Fiche de profil",
+      "feature": "Fiche de feature",
+      "path": "Fiche de voie",
+      "equipement": "Fiche d'équipement"
     },
     "notif": {
       "ready": "Système prêt.",
@@ -86,7 +91,7 @@
         "hp": "Points de vigueur",
         "fp": "Points de chance",
         "rp": "Dés de récupération",
-        "mp":"Points de mana",
+        "mp": "Points de mana",
         "type": "Type",
         "subtype": "Sous-type",
         "actionType": "Type d'action",
@@ -545,46 +550,46 @@
       "medium": "Moyenne",
       "large": "Grande",
       "huge": "Gigantesque"
+    },
+    "macro": {
+      "missingTargetWarn": "Votre acteur contrôlé '{actor}' n'a pas de {type} avec le nom '{name}'.",
+      "multipleTargetsWarn": "Votre acteur contrôlé '{actor}' a plus d'un {type} avec le nom '{name}'. Le premier sera choisi.",
+      "noActorSelected": "Aucun acteur sélectionné ou assigné ne peut être trouvé comme cible de la macro.",
+      "unownedWarn": "Vous ne pouvez créer une macro que pour un objet possédé.",
+      "capacityNotLearned": "La capacité {name} ciblée par la macro n'est pas apprise.",
+      "itemNotEquipped": "L'équipement {name} ciblé par la macro n'est pas équipé."
+    },
+    "settings": {
+      "debugMode": {
+        "name": "Mode Debug",
+        "hint": "Affiche certaines valeurs techniques. Utile pour les développeurs exclusivement."
+      },
+      "varInit": {
+        "name": "Utiliser la règle de l'initiative variable",
+        "hint": "Le résultat d’un d6 explosif est ajouté à l'initiative : ajout et relance sur 6."
+      },
+      "displayDifficulty": {
+        "name": "Afficher la difficulté",
+        "hint": "Active l'affichage de la difficulté sur les jets de compétences/attributs et d'armes.",
+        "none": "Ne pas utiliser ni afficher la difficulté",
+        "all": "Utiliser la difficulté et l'afficher pour tout le monde",
+        "gm": "Utiliser la difficulté et l'afficher uniquement au MJ"
+      },
+      "useComboRolls": {
+        "name": "Activer les jets combinés attaque et dommages",
+        "hint": "Permet de lancer les jets d'attaque et de dommages simultanément."
+      },
+      "displayChatDamageButtonsToAll": {
+        "name": "Afficher les boutons de dommages",
+        "hint": "Affiche les boutons d'application des dommages dans les messages de chat à tout le monde."
+      },
+      "checkFreeHandsBeforeEquip": {
+        "name": "Vérification des mains libres",
+        "hint": "Vérifier que le personnage a assez de mains libres pour équiper un objet (Maintenir MAJ pour ignorer le contrôle)",
+        "none": "Ne pas vérifier",
+        "all": "Vérification (ignorable par tous)",
+        "gm": "Vérification (ignorable uniquement par le MJ)"
+      }
     }
-  },
-  "SETTINGS": {
-    "BaseDef": "Valeur de défense de base",
-    "BaseDefHint": "Valeur de la base de la défense",
-    "DebugMode": "Mode Debug",
-    "DebugModeHint": "Affiche certaines valeurs techniques. Utile pour les développeurs exclusivement.",
-    "VarInit": {
-      "name": "Utiliser la règle de l'initiative variable",
-      "hint": "Le résultat d’un d6 explosif est ajouté à l'initiative : ajout et relance sur 6."
-    },
-    "DisplayDifficulty": {
-      "name": "Afficher la difficulté",
-      "hint": "Active l'affichage de la difficulté sur les jets de compétences/attributs et d'armes.",
-      "none": "Ne pas utiliser ni afficher la difficulté",
-      "all": "Utiliser la difficulté et l'afficher pour tout le monde",
-      "gm": "Utiliser la difficulté et l'afficher uniquement au MJ"
-    },
-    "UseComboRolls": {
-      "name": "Activer les jets combinés attaque et dommages",
-      "hint": "Permet de lancer les jets d'attaque et de dommages simultanément."
-    },
-    "DisplayChatDamageButtonsToAll": {
-      "name": "Afficher les boutons de dommages",
-      "hint": "Affiche les boutons d'application des dommages dans les messages de chat à tout le monde."
-    },
-    "CheckFreeHandsBeforeEquip": {
-      "name": "Vérification des mains libres",
-      "hint": "Vérifier que le personnage a assez de mains libres pour équiper un objet (Maintenir MAJ pour ignorer le contrôle)",
-      "none": "Ne pas vérifier",
-      "all": "Vérification (ignorable par tous)",
-      "gm": "Vérification (ignorable uniquement par le MJ)"
-    }
-  },
-  "MACRO": {
-    "CoMissingTargetWarn": "Votre acteur contrôlé '{actor}' n'a pas de {type} avec le nom '{name}'.",
-    "CoMultipleTargetsWarn": "Votre acteur contrôlé '{actor}' a plus d'un {type} avec le nom '{name}'. Le premier sera choisi.",
-    "CoNoActorSelected": "Aucun acteur sélectionné ou assigné ne peut être trouvé comme cible de la macro.",
-    "CoUnownedWarn": "Vous ne pouvez créer une macro que pour un objet possédé.",
-    "CoCapacityNotLearned": "La capacité {name} ciblée par la macro n'est pas apprise.",
-    "COItemNotEquipped": "L'équipement {name} ciblé par la macro n'est pas équipé."
   }
 }

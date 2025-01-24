@@ -3,24 +3,11 @@
  */
 export default function registerSystemSettings() {
   /**
-   * Valeur de Base pour le Calcul de la DEF
-   */
-  game.settings.register("co", "baseDef", {
-    name: "SETTINGS.BaseDef",
-    hint: "SETTINGS.BaseDefHint",
-    scope: "world",
-    config: true,
-    type: Number,
-    default: 10,
-    requiresReload: true,
-  })
-
-  /**
    * Mode DEBUG
    */
   game.settings.register("co", "debugMode", {
-    name: "SETTINGS.DebugMode",
-    hint: "SETTINGS.DebugModeHint",
+    name: "CO.settings.debugMode.name",
+    hint: "CO.settings.debugMode.hint",
     scope: "world",
     config: true,
     type: Boolean,
@@ -28,9 +15,9 @@ export default function registerSystemSettings() {
     requiresReload: true,
   })
 
-  game.settings.register("co", "useVarInit", {
-    name: "SETTINGS.VarInit.name",
-    hint: "SETTINGS.VarInit.hint",
+  game.settings.register("co", "usevarInit", {
+    name: "CO.settings.varInit.name",
+    hint: "CO.settings.varInit.hint",
     scope: "world",
     config: true,
     type: Boolean,
@@ -39,22 +26,22 @@ export default function registerSystemSettings() {
   })
 
   game.settings.register("co", "displayDifficulty", {
-    name: "SETTINGS.DisplayDifficulty.name",
-    hint: "SETTINGS.DisplayDifficulty.hint",
+    name: "CO.settings.displayDifficulty.name",
+    hint: "CO.settings.displayDifficulty.hint",
     scope: "world",
     config: true,
     default: "none",
     type: String,
     choices: {
-      none: "SETTINGS.DisplayDifficulty.none",
-      all: "SETTINGS.DisplayDifficulty.all",
-      gm: "SETTINGS.DisplayDifficulty.gm",
+      none: "CO.settings.displayDifficulty.none",
+      all: "CO.settings.displayDifficulty.all",
+      gm: "CO.settings.displayDifficulty.gm",
     },
   })
 
   game.settings.register("co", "useComboRolls", {
-    name: "SETTINGS.UseComboRolls.name",
-    hint: "SETTINGS.UseComboRolls.hint",
+    name: "CO.settings.useComboRolls.name",
+    hint: "CO.settings.useComboRolls.hint",
     scope: "world",
     config: true,
     default: true,
@@ -62,8 +49,8 @@ export default function registerSystemSettings() {
   })
 
   game.settings.register("co", "displayChatDamageButtonsToAll", {
-    name: "SETTINGS.DisplayChatDamageButtonsToAll.name",
-    hint: "SETTINGS.DisplayChatDamageButtonsToAll.hint",
+    name: "CO.settings.displayChatDamageButtonsToAll.name",
+    hint: "CO.settings.displayChatDamageButtonsToAll.hint",
     scope: "world",
     config: true,
     default: false,
@@ -71,16 +58,16 @@ export default function registerSystemSettings() {
   })
 
   game.settings.register("co", "checkFreeHandsBeforeEquip", {
-    name: "SETTINGS.CheckFreeHandsBeforeEquip.name",
-    hint: "SETTINGS.CheckFreeHandsBeforeEquip.hint",
+    name: "CO.settings.checkFreeHandsBeforeEquip.name",
+    hint: "CO.settings.checkFreeHandsBeforeEquip.hint",
     scope: "world",
     config: true,
     default: "none",
     type: String,
     choices: {
-      none: "SETTINGS.CheckFreeHandsBeforeEquip.none",
-      all: "SETTINGS.CheckFreeHandsBeforeEquip.all",
-      gm: "SETTINGS.CheckFreeHandsBeforeEquip.gm",
+      none: "CO.settings.checkFreeHandsBeforeEquip.none",
+      all: "CO.settings.checkFreeHandsBeforeEquip.all",
+      gm: "CO.settings.checkFreeHandsBeforeEquip.gm",
     },
   })
 }
