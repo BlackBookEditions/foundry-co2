@@ -1,6 +1,16 @@
 import { SYSTEM } from "../../config/system.mjs"
 import Utils from "../../utils.mjs"
 
+/**
+ * Définie les élément sur lesquels une action a une influence
+ * La liste des influence étant définie sous ./module/config/modifier.mjs
+ * @param {*} source L'action à l'origine du modifier
+ * @param {string} type Le type de modificateur qui indique l'origine : Equipement, Trait, Profil, Capacité, Attaque
+ * @param {string} subtype Indique sur quel type de cible on va appliquer le modificateur : ability (agi, for, con etc), combat (melee, ranged, magic, init, def),
+ *  ressource (fortune, mana, recorvery), attribute (hp, recovery dice), skill (bonus sur le sjet d'attribut à selectionner selon le jet)
+ * @param {string} target : Sous element de subtype ciblé par le modificateur : agi, for, con, melee etc.
+ * @param {string} value : Valeur à appliquer, peux être une formule (ex +1, -5, 1 * @[variable])
+ */
 export class Modifier extends foundry.abstract.DataModel {
   static defineSchema() {
     const fields = foundry.data.fields
@@ -14,7 +24,7 @@ export class Modifier extends foundry.abstract.DataModel {
   }
 
   /**
-   * Update the source of the modifier
+   * Met à jour la source du modificateur
    * @param {*} source
    */
   updateModifierSource(source) {
@@ -22,7 +32,7 @@ export class Modifier extends foundry.abstract.DataModel {
   }
 
   /**
-   * Evaluates the given actor using the specified value and source.
+   * Evalue (prend en compte donc les formules) l'acteur en utilisant la source et la valeur specifiée.
    *
    * @param {Object} actor The actor to be evaluated.
    * @returns {int} The result of the evaluation.
