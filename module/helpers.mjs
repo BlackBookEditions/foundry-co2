@@ -38,4 +38,16 @@ export default function registerHandlebarsHelpers() {
     if (value === false || value === "none") return false
     return true
   })
+  Handlebars.registerHelper("isTrainedWithWeapon", function (actor, itemId) {
+    if (actor.isTrainedWithWeapon(itemId)) return "MAITRISE"
+    return "NON MAITRISE"
+  })
+  Handlebars.registerHelper("isTrainedWithArmor", function (actor, itemId) {
+    if (actor.isTrainedWithArmor(itemId)) return "MAITRISE"
+    return "NON MAITRISE"
+  })
+  Handlebars.registerHelper("isTrainedWithShield", function (actor, itemId) {
+    if (actor.isTrainedWithShield(itemId)) return "MAITRISE"
+    return "NON MAITRISE"
+  })
 }

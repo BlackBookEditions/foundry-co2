@@ -324,7 +324,8 @@ export default class COActor extends Actor {
     const profile = this.system.profile
     if (!profile) return null
     const training = item.system.martialCategory
-    return profile.system.martialTrainingsWeapons[training]
+    if (profile.system.martialTrainingsWeapons[training]) return true
+    return false
   }
 
   /**
@@ -338,7 +339,8 @@ export default class COActor extends Actor {
     const profile = this.system.profile
     if (!profile) return null
     const training = item.system.martialCategory
-    return profile.system.martialTrainingsArmors[training]
+    if (profile.system.martialTrainingsArmors[training]) return true
+    return false
   }
 
   /**
@@ -352,7 +354,8 @@ export default class COActor extends Actor {
     const profile = this.system.profile
     if (!profile) return null
     const training = item.system.martialCategory
-    return profile.system.martialTrainingsShields[training]
+    if (profile.system.martialTrainingsShields[training]) return true
+    return false
   }
 
   /**

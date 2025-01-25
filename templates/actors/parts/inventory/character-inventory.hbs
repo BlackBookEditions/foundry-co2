@@ -1,5 +1,6 @@
 {{!log "Chroniques Oubliées | inventory " this}}
 {{#each inventory as |items category|}}
+  {{log "Chroniques Oubliées | inventory group" this}}
   {{!#if (gt items.length 0)}}
   <ol class="items-container foldable" data-tab="inventory" data-category="{{category}}">
     <li class="items-container-header flexrow">
@@ -15,10 +16,14 @@
     </li>
     <ol class="item-list">
       {{#each items as |item id|}}
+        {{log 'inventory item' item}}
         <li class="item flexrow" data-item-uuid="{{item.uuid}}" data-item-id="{{item._id}}" data-item-type="{{item.type}}" draggable="true">
           <div class="item-name flexrow">
             <div class="item-image" style="background-image: url('{{item.img}}')"></div>
-            <h4><a class="item-control item-edit">{{item.name}}</a></h4>
+            <h4><a class="item-control item-edit">{{item.name}} {{#if item.system.isWeapon}}{{isTrainedWithWeapon @root.actor item._id}}{{/if}}
+              {{#if item.system.isArmor}}{{isTrainedWithArmor @root.actor item._id}}{{/if}}
+              {{#if item.system.isShield}}{{isTrainedWithShield @root.actor item._id}}{{/if}}
+            </a></h4>
           </div>
           <div class="item-detail">
             <a class="item-control inventory-usage">
