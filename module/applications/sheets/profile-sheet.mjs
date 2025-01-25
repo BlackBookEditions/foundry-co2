@@ -10,6 +10,10 @@ export default class CoProfileSheet extends CoBaseItemSheet {
     context.martialTrainingsArmorsList = game.system.CONST.martialTrainingsArmors
     context.martialTrainingsShieldsList = game.system.CONST.martialTrainingsShields
 
+    context.martialTrainingsWeapons = context.martialTrainingsWeaponsList.filter((i) => this.item.system.martialTrainingsWeapons[i.key] === true)
+    context.martialTrainingsArmors = context.martialTrainingsArmorsList.filter((i) => this.item.system.martialTrainingsArmors[i.key] === true)
+    context.martialTrainingsShields = context.martialTrainingsShieldsList.filter((i) => this.item.system.martialTrainingsShields[i.key] === true)
+
     let infosPaths = []
     for (const path of this.item.system.paths) {
       let item = await fromUuid(path)
@@ -20,9 +24,6 @@ export default class CoProfileSheet extends CoBaseItemSheet {
     }
     context.paths = infosPaths
 
-    context.choiceAtmAbiity = SYSTEM.ATM_ABILITY
-    context.choicePv = SYSTEM.PV
-    context.choiceRecoveryDices = SYSTEM.RECOVERY_DICES
     context.choiceProfileFamily = SYSTEM.PROFILE_FAMILY
 
     return context

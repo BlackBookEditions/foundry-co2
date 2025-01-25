@@ -135,6 +135,11 @@ export default class COItem extends Item {
     }
   }
 
+  get isUnlocked() {
+    if (this.getFlag(game.system.id, "SheetUnlocked")) return true
+    return false
+  }
+
   // #endregion
 
   // #region méthodes publiques

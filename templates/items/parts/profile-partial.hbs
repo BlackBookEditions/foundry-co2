@@ -1,5 +1,5 @@
 {{!log "Chroniques Oubliées | profile" this}}
-<!--<h3 class="form-header"><a class="section-toggle">{{localize "CO.ui.details"}}</a></h3>-->
+<h3 class="form-header"><a class="section-toggle">{{localize "CO.ui.details"}}</a></h3>
 <div class="details-form foldable">
     {{#if debugMode}}
         <div class="form-group">
@@ -39,6 +39,7 @@
 
 <h3 class="form-header"><a class="section-toggle">{{localize "CO.label.long.martialTrainings"}}</a></h3>
 <div class="proficiencies-form foldable">
+    {{#if unlocked}}        
     <div class="form-group">
         <label>{{localize "CO.ui.weapons"}}</label>
         <div class="grid grid-4col">
@@ -63,6 +64,32 @@
             {{/each}}
         </div>
     </div>
+    {{else}}
+    <div class="form-group">
+        <label>{{localize "CO.ui.weapons"}}</label>
+        <div class="grid grid-4col">
+            {{#each martialTrainingsWeapons as |training key|}}
+                <label><input type="checkbox" readonly {{checked (lookup ../system.martialTrainingsWeapons training.key)}} />{{getMartialTrainingLabel training}}</label>
+            {{/each}}
+        </div>
+    </div>
+    <div class="form-group">
+        <label>{{localize "CO.ui.armors"}}</label>
+        <div class="grid grid-4col">
+            {{#each martialTrainingsArmors as |training key|}}
+                <label><input type="checkbox" name="system.martialTrainingsArmors.{{getKeyFromMartialTraining training}}" data-dtype="Boolean" {{checked (lookup ../system.martialTrainingsArmors training.key)}} />{{getMartialTrainingLabel training}}</label>
+            {{/each}}
+        </div>
+    </div>
+    <div class="form-group">
+        <label>{{localize "CO.ui.shields"}}</label>
+        <div class="grid grid-4col">
+            {{#each martialTrainingsShields as |training key|}}
+                <label><input type="checkbox" name="system.martialTrainingsShields.{{getKeyFromMartialTraining training}}" data-dtype="Boolean" {{checked (lookup ../system.martialTrainingsShields training.key)}} />{{getMartialTrainingLabel training}}</label>
+            {{/each}}
+        </div>
+    </div>    
+    {{/if}}
 </div>
 
 <!-- PATHS -->

@@ -125,6 +125,8 @@ export default class CoBaseItemSheet extends ItemSheet {
     context.modifiers = this.item.system.modifiers
     context.enrichedDescription = await TextEditor.enrichHTML(this.item.system.description, { async: true })
     context.tags = this.item.tags
+    context.unlocked = this.item.isUnlocked
+    context.locked = !this.item.isUnlocked
 
     context.choiceActionTypes = SYSTEM.ACTION_TYPES
     context.choiceConditionObjects = SYSTEM.CONDITION_OBJECTS
@@ -153,6 +155,8 @@ export default class CoBaseItemSheet extends ItemSheet {
     html.find(".condition-delete").click(this._onDeleteCondition.bind(this))
     html.find(".action-add").click(this._onAddAction.bind(this))
     html.find(".action-delete").click(this._onDeleteAction.bind(this))
+
+    html.find(".sheet-change-lock").click(this._onSheetChangelock.bind(this))
   }
 
   /**
@@ -424,5 +428,17 @@ export default class CoBaseItemSheet extends ItemSheet {
       }
     }
     super._updateObject(event, formData)
+  }
+
+  /**
+   * Manage the lock/unlock button on the sheet
+   * @param {Event} event
+   */
+  async _onSheetChangelock(event) {
+    event.preventDefault()
+    let flagData = await this.item.getFlag(game.system.id, "SheetUnlocked")
+    if (flagData) await this.item.unsetFlag(game.system.id, "SheetUnlocked")
+    else await this.item.setFlag(game.system.id, "SheetUnlocked", "SheetUnlocked")
+    this.item.sheet.render(true)
   }
 }

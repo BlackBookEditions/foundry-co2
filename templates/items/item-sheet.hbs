@@ -19,6 +19,11 @@
         {{#if (isActionable item.type)}}
             <a class="item" data-tab="actions" data-tooltip="{{ localize 'CO.tabs.actions' }}">{{ localize "CO.tabs.actions" }} / {{ localize "CO.tabs.effects" }}</a>
         {{/if}}
+         {{#if unlocked}}
+                <a class="item sheet-change-lock" data-tooltip="{{ localize 'CO.tabs.lock' }}"><i class="fas fa-lock-open"></i></a>
+        {{else}}
+                <a class="item sheet-change-lock" data-tooltip="{{ localize 'CO.tabs.unlock' }}"><i class="fas fa-lock"></i></a>
+        {{/if}}
     </nav>
     {{! log "Chroniques Oubliées | detail" this}}
     <section class="sheet-body">
