@@ -88,7 +88,7 @@ export default class CharacterData extends ActorData {
    * @returns {Object|undefined} The profile item if found, otherwise undefined.
    */
   get profile() {
-    return this.parent.items.find((item) => item.type === SYSTEM.ITEM_TYPE.PROFILE)
+    return this.parent.items.find((item) => item.type === SYSTEM.ITEM_TYPE.profile.id)
   }
 
   /**
@@ -439,7 +439,7 @@ export default class CharacterData extends ActorData {
    * @returns {Array} An array of items that are of type 'CAPACITY' and are spells.
    */
   get spells() {
-    return this.parent.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.CAPACITY && item.system.isSpell)
+    return this.parent.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.isSpell)
   }
 
   /**
@@ -475,7 +475,7 @@ export default class CharacterData extends ActorData {
   async getVisibleActions() {
     let allActions = []
     for (const item of this.parent.items) {
-      if ([SYSTEM.ITEM_TYPE.EQUIPMENT, SYSTEM.ITEM_TYPE.CAPACITY].includes(item.type) && item.actions.length > 0) {
+      if ([SYSTEM.ITEM_TYPE.equipment.id, SYSTEM.ITEM_TYPE.capacity.id].includes(item.type) && item.actions.length > 0) {
         const itemActions = await item.getVisibleActions()
         allActions.push(...itemActions)
       }

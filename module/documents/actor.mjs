@@ -106,15 +106,15 @@ export default class COActor extends Actor {
   }
 
   get learnedCapacities() {
-    return this.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.CAPACITY && item.system.learned)
+    return this.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.learned)
   }
 
   get capacitiesOffPaths() {
-    return this.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.CAPACITY && item.system.path === null)
+    return this.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.path === null)
   }
 
   get equippedEquipments() {
-    return this.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.EQUIPMENT && item.system.equipped)
+    return this.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.equipped)
   }
 
   /**
@@ -173,7 +173,7 @@ export default class COActor extends Actor {
   async getVisibleActions() {
     let allActions = []
     for (const item of this.items) {
-      if ([SYSTEM.ITEM_TYPE.EQUIPMENT, SYSTEM.ITEM_TYPE.CAPACITY].includes(item.type)) {
+      if ([SYSTEM.ITEM_TYPE.equipment.id, SYSTEM.ITEM_TYPE.capacity.id].includes(item.type)) {
         const itemActions = await item.getVisibleActions()
         allActions.push(...itemActions)
       }
@@ -305,8 +305,8 @@ export default class COActor extends Actor {
   deleteItem(itemId) {
     const item = this.items.find((item) => item.id === itemId)
     switch (item.type) {
-      case SYSTEM.ITEM_TYPE.CAPACITY:
-      case SYSTEM.ITEM_TYPE.FEATURE:
+      case SYSTEM.ITEM_TYPE.capacity.id:
+      case SYSTEM.ITEM_TYPE.feature.id:
         return this.deleteEmbeddedDocuments("Item", [itemId])
       default:
         break
@@ -316,7 +316,7 @@ export default class COActor extends Actor {
   /**
    * Vérifie si le personnage est entraîné avec une arme
    * @param {*} itemId
-   * @returns
+   * @returns {boolean}
    */
   isTrainedWithWeapon(itemId) {
     const item = this.weapons.find((item) => item.id === itemId)
@@ -331,7 +331,7 @@ export default class COActor extends Actor {
   /**
    * Vérifie si le personnage est entraîné avec une armure
    * @param {*} itemId
-   * @returns
+   * @returns {boolean}
    */
   isTrainedWithArmor(itemId) {
     const item = this.armors.find((item) => item.id === itemId)
@@ -346,7 +346,7 @@ export default class COActor extends Actor {
   /**
    * Vérifie si le personnage est entraîné avec un bouclier
    * @param {*} itemId
-   * @returns
+   * @returns {boolean}
    */
   isTrainedWithShield(itemId) {
     const item = this.shields.find((item) => item.id === itemId)
@@ -437,7 +437,7 @@ export default class COActor extends Actor {
    */
   async addFeature(feature) {
     let itemData = feature.toObject()
-    if (itemData.system.subtype == SYSTEM.FEATURE_SUBTYPE.people.id) {
+    if (itemData.system.subtype === SYSTEM.FEATURE_SUBTYPE.people.id) {
       if (!foundry.utils.isEmpty(this.people)) {
         return
       }
@@ -721,9 +721,12 @@ export default class COActor extends Actor {
   }
 
   /**
+   * Determines if the actor can equip the given item.
    * Check if an item can be equiped, if one Hand or two Hands property is true
-   * @param item
-   * @param bypassChecks
+   *
+   * @param {Object} item The item to be equipped.
+   * @param {boolean} bypassChecks Whether to bypass the usual checks.
+   * @returns {boolean} Returns true if the item can be equipped, otherwise false.
    */
   canEquipItem(item, bypassChecks) {
     if (!this._hasEnoughFreeHands(item, bypassChecks)) {
@@ -734,9 +737,11 @@ export default class COActor extends Actor {
   }
 
   /**
-   * Check if actor has enough free hands to equip this item
-   * @param item
-   * @param bypassChecks
+   * Checks if the actor has enough free hands to equip an item.
+   *
+   * @param {Object} item The item to be equipped.
+   * @param {boolean} bypassChecks Whether to bypass the free hands check.
+   * @returns {boolean} Returns true if the actor has enough free hands to equip the item, otherwise false.
    */
   _hasEnoughFreeHands(item, bypassChecks) {
     // Si le contrôle de mains libres n'est pas demandé, on renvoi Vrai

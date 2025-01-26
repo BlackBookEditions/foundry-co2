@@ -110,7 +110,8 @@ export class Action extends foundry.abstract.DataModel {
 
   /**
    * Creates an action from a data object.
-   * @param data
+   *
+   * @param {Object} data The data to be applied to the instance.
    */
   static apply(data) {
     Object.assign(this, data)

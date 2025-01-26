@@ -74,14 +74,14 @@ export default class EncounterData extends ActorData {
 
   /**
    * Toutes les actions visibles des capacités
-   * Retrieves all visible actions from items of type SYSTEM.ITEM_TYPE.CAPACITY.
+   * Retrieves all visible actions from items of type SYSTEM.ITEM_TYPE.capacity.id.
    *
    * @returns {Array} An array of visible actions from the items.
    */
   get visibleActions() {
     let allActions = []
     this.parent.items.forEach((item) => {
-      if ([SYSTEM.ITEM_TYPE.CAPACITY].includes(item.type) && item.actions.length > 0) {
+      if ([SYSTEM.ITEM_TYPE.capacity.id].includes(item.type) && item.actions.length > 0) {
         allActions.push(...item.visibleActions)
       }
     })
@@ -89,7 +89,7 @@ export default class EncounterData extends ActorData {
   }
 
   get attacks() {
-    return this.parent.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.ATTACK)
+    return this.parent.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.attack.id)
   }
 
   /**
@@ -98,7 +98,7 @@ export default class EncounterData extends ActorData {
   get attacksActions() {
     let allActions = []
     this.parent.items.forEach((item) => {
-      if ([SYSTEM.ITEM_TYPE.ATTACK].includes(item.type) && item.actions.length > 0) {
+      if ([SYSTEM.ITEM_TYPE.attack.id].includes(item.type) && item.actions.length > 0) {
         allActions.push(...item.visibleActions)
       }
     })

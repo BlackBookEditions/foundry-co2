@@ -77,7 +77,7 @@ export default class CoBaseActorSheet extends ActorSheet {
    */
   async _onSendToChat(event) {
     event.preventDefault()
-    // dataset has tooltip, chatType and if it's an action there are also indice and source
+    // Dataset has tooltip, chatType and if it's an action there are also indice and source
     const dataset = event.currentTarget.dataset
     const chatType = dataset.chatType
 

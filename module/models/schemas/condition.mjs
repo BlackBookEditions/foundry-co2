@@ -36,7 +36,7 @@ export class Condition extends foundry.abstract.DataModel {
    * @returns {boolean} True if the item is equipped, false otherwise.
    */
   isEquipped(condition, object, item) {
-    return item.type === SYSTEM.ITEM_TYPE.EQUIPMENT ? item.system.equipped : false
+    return item.type === SYSTEM.ITEM_TYPE.equipment.id ? item.system.equipped : false
   }
 
   /**
@@ -59,7 +59,7 @@ export class Condition extends foundry.abstract.DataModel {
    * @returns {boolean} True if the capacity is learned, false otherwise.
    */
   isLearned(condition, object, item) {
-    return item.type === SYSTEM.ITEM_TYPE.CAPACITY ? item.system.learned : false
+    return item.type === SYSTEM.ITEM_TYPE.capacity.id ? item.system.learned : false
   }
 
   /**

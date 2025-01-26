@@ -76,7 +76,7 @@ export default class COEncounterSheet extends CoBaseActorSheet {
   /**
    * Open the item sheet
    * For capacity, open the embededd item
-   * @param event
+   * @param {*} event
    * @private
    */
   _onEditItem(event) {
@@ -175,10 +175,11 @@ export default class COEncounterSheet extends CoBaseActorSheet {
   }
 
   /**
-   * @param {DragEvent} event            The concluding DragEvent which contains drop data
-   * @param {object} data                The data transfer extracted from the event
-   * @returns {Promise<Item[]|boolean>}  The created or updated Item instances, or false if the drop was not permitted.
-   * @protected
+   * Handle the drop event for an item.
+   *
+   * @param {Event} event The drop event.
+   * @param {Object} data The data associated with the dropped item.
+   * @returns {Promise<boolean>} Returns false if the actor is not the owner, otherwise returns the result of the corresponding item addition method.
    */
   async _onDropItem(event, data) {
     event.preventDefault()
@@ -186,21 +187,17 @@ export default class COEncounterSheet extends CoBaseActorSheet {
     const item = await Item.implementation.fromDropData(data)
 
     switch (item.type) {
-      case SYSTEM.ITEM_TYPE.EQUIPMENT:
+      case SYSTEM.ITEM_TYPE.equipment.id:
         return this.actor.addEquipment(item)
-      case SYSTEM.ITEM_TYPE.FEATURE:
-      // Return this.actor.addFeature(item);
-      case SYSTEM.ITEM_TYPE.PROFILE:
-      // If (this.actor.profiles.length > 0) {
-      //   ui.notifications.warn(game.i18n.localize("CO.notif.profilAlreadyExist"));
-      //   break;
-      // }
-      // return this.actor.addProfile(item);
-      case SYSTEM.ITEM_TYPE.ATTACK:
+      case SYSTEM.ITEM_TYPE.feature.id:
+        return false
+      case SYSTEM.ITEM_TYPE.profile.id:
+        return false
+      case SYSTEM.ITEM_TYPE.attack.id:
         return this.actor.system.addAttack(item)
-      case SYSTEM.ITEM_TYPE.PATH:
+      case SYSTEM.ITEM_TYPE.path.id:
         return this.actor.addPath(item)
-      case SYSTEM.ITEM_TYPE.CAPACITY:
+      case SYSTEM.ITEM_TYPE.capacity.id:
         return this.actor.addCapacity(item, null)
       default:
         return false
