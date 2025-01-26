@@ -69,13 +69,14 @@ export default class Utils {
   static _evaluateCustom(actor, formula, source, toEvaluate, withDice) {
     let replacedFormula = formula
     const DSL = {
-      "@for": "system.abilities.str.value",
-      "@str": "system.abilities.str.value",
-      "@dex": "system.abilities.dex.value",
+      "@for": "system.abilities.for.value",
+      "@str": "system.abilities.for.value",
+      "@agi": "system.abilities.agi.value",
       "@con": "system.abilities.con.value",
       "@int": "system.abilities.int.value",
-      "@sag": "system.abilities.wis.value",
-      "@wis": "system.abilities.wis.value",
+      "@per": "system.abilities.per.value",
+      "@wil": "system.abilities.vol.value",
+      "@vol": "system.abilities.vol.value",
       "@cha": "system.abilities.cha.value",
       "@atc": "system.combat.melee.value",
       "@mel": "system.combat.melee.value",
@@ -84,6 +85,7 @@ export default class Utils {
       "@atm": "system.combat.magic.value",
       "@mag": "system.combat.magic.value",
       "@def": "system.combat.def.value",
+      "@ini": "system.combat.init.value",
       "@niv": "system.attributes.level.base",
       "@lvl": "system.attributes.level.base",
     }
@@ -94,6 +96,42 @@ export default class Utils {
         replacedFormula = replacedFormula.replace(shortcut, foundry.utils.getProperty(actor, DSL[shortcut]))
       }
     })
+
+    /* Remplacer aussi des valeurs d'un toekn ciblé si c'est le cas */
+
+    const CBL = {
+      "@target.for": "system.abilities.for.base",
+      "@target.str": "system.abilities.for.base",
+      "@target.agi": "system.abilities.agi.base",
+      "@target.con": "system.abilities.con.base",
+      "@target.int": "system.abilities.int.base",
+      "@target.per": "system.abilities.per.base",
+      "@target.wil": "system.abilities.vol.base",
+      "@target.vol": "system.abilities.vol.base",
+      "@target.cha": "system.abilities.cha.base",
+      "@target.atc": "system.combat.melee.base",
+      "@target.mel": "system.combat.melee.base",
+      "@target.atd": "system.combat.ranged.base",
+      "@target.ran": "system.combat.ranged.base",
+      "@target.atm": "system.combat.magic.base",
+      "@target.mag": "system.combat.magic.base",
+      "@target.ini": "system.combat.init.base",
+      "@target.def": "system.combat.def.base",
+      "@target.niv": "system.attributes.level.base",
+      "@target.lvl": "system.attributes.level.base",
+    }
+
+    let targets = [...game.user.targets].length > 0 ? [...game.user.targets] : canvas.tokens.objects.children.filter((t) => t._controlled)
+    if (targets.length !== 0) {
+      Object.keys(CBL).forEach((shortcut) => {
+        if (replacedFormula.includes(shortcut)) {
+          let targetactorid = targets[0].document.actorId
+          let targetactor = game.actors.get(targetactorid)
+          let property = foundry.utils.getProperty(targetactor, CBL[shortcut])
+          replacedFormula = replacedFormula.replace(shortcut, foundry.utils.getProperty(targetactor, CBL[shortcut]))
+        }
+      })
+    }
 
     /**
      * Calculates the total rank based on a given formula and keyword.

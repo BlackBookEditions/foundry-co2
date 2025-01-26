@@ -48,13 +48,19 @@ export class Resolver extends foundry.abstract.DataModel {
     const actionName = action.label
 
     const skillFormula = this.skill.formula[0].part
-    const crit = this.skill.crit
-    const diff = this.skill.diff
-    const skillFormulaToEvaluate = !(skillFormula.includes("d") || skillFormula.includes("D"))
+    const crit = this.skill.crit    
+    const diffToEvaluate = this.skill.difficulty.match("[0-9]{0,}[d|D][0-9]{1,}")
+    let diff = ""
+    if (diffToEvaluate) {
+      diff = Utils.evaluateWithDice(actor, this.skill.difficulty, item.uuid)
+    } else {
+      diff = Utils.evaluate(actor, this.skill.difficulty, item.uuid, true)
+    }
+    const skillFormulaToEvaluate = !(skillFormula.match("[0-9]{0,}[d|D][0-9]{1,}")
     let skillFormulaEvaluated = skillFormulaToEvaluate ? Utils.evaluate(actor, skillFormula, item.uuid, true) : Utils.evaluateWithDice(actor, skillFormula, item.uuid)
 
     const damageFormula = this.dmg.formula[0].part
-    const damageFormulaToEvaluate = !(damageFormula.includes("d") || damageFormula.includes("D"))
+    const damageFormulaToEvaluate = !damageFormula.match("[0-9]{0,}[d|D][0-9]{1,}")
     let damageFormulaEvaluated = damageFormulaToEvaluate ? Utils.evaluate(actor, damageFormula, item.uuid, true) : Utils.evaluateWithDice(actor, damageFormula, item.uuid)
 
     new CoAttackCheck(actor, item).init({
@@ -81,7 +87,7 @@ export class Resolver extends foundry.abstract.DataModel {
     const type = "damage"
 
     let damageFormulaEvaluated =
-      damageFormula.includes("d") || damageFormula.includes("D") ? Utils.evaluateWithDice(actor, damageFormula, item.uuid) : Utils.evaluate(actor, damageFormula, item.uuid)
+      damageFormula.match("[0-9]{0,}[d|D][0-9]{1,}") ? Utils.evaluateWithDice(actor, damageFormula, item.uuid) : Utils.evaluate(actor, damageFormula, item.uuid)
     new CoAttackCheck(actor, item).init({ auto, type, itemName, actionName, damageFormulaEvaluated })
   }
 }
