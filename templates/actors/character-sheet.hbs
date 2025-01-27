@@ -13,6 +13,17 @@
                     <span class="level adjustable">{{attributes.level}}</span>
                 {{/if}}
             </div>
+            <div class="flexrow" style="margin-top:0.25em;">
+                <div class="adjustment-select flexrow">                    
+                    {{#each actions as |a aid|}}                    
+                        {{#each a.modifiers as |m mid| }}                                                                                              
+                           {{#if (isActionState m)}}                                                         
+                                <span class="adjustment elite trait">{{localize (concat "CO.label.long." m.target)}}</span>
+                          {{/if}}
+                        {{/each}}
+                    {{/each}}
+                </div>
+            </div>
         </header>
         {{!-- Sheet Tab Navigation --}}
         <nav class="sheet-tabs tabs" data-group="primary">
