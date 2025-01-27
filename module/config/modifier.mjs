@@ -42,6 +42,10 @@ export const MODIFIERS_SUBTYPE = Object.freeze({
     id: "skill",
     label: "CO.modifier.subtype.skill",
   },
+  state: {
+    id: "state",
+    label: "CO.modifier.subtype.state",
+  },
 })
 
 export const MODIFIERS_TARGET = Object.freeze({
@@ -108,5 +112,9 @@ export const MODIFIERS_TARGET = Object.freeze({
   mp: {
     id: "mp",
     label: "CO.label.long.mp",
+  },
+  darkvision: {
+    id: "darkvision",
+    label: "CO.label.long.darkvision",
   },
 })

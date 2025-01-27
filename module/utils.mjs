@@ -131,6 +131,13 @@ export default class Utils {
           replacedFormula = replacedFormula.replace(shortcut, foundry.utils.getProperty(targetactor, CBL[shortcut]))
         }
       })
+    } else {
+      //Si on a pas ciblé ou si on ne trouve pas la cible
+      Object.keys(CBL).forEach((shortcut) => {
+        if (replacedFormula.includes(shortcut)) {
+          replacedFormula = replacedFormula.replace(shortcut, "")
+        }
+      })
     }
 
     /**
@@ -168,12 +175,12 @@ export default class Utils {
 
     replacedFormula = calculateTotalRank(replacedFormula, "@rang")
     replacedFormula = calculateTotalRank(replacedFormula, "@rank")
-
+    console.log(replacedFormula)
     // Remaining formula
     if (replacedFormula.includes("@")) {
       replacedFormula = replacedFormula.replace("@", "actor.system.")
     }
-
+    console.log(replacedFormula)
     if (withDice) return replacedFormula
     else {
       if (toEvaluate) return eval(replacedFormula)

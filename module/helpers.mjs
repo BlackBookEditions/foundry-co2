@@ -50,4 +50,8 @@ export default function registerHandlebarsHelpers() {
     if (actor.isTrainedWithShield(itemId)) return "MAITRISE"
     return "NON MAITRISE"
   })
+  Handlebars.registerHelper("isActionState", function (modifier) {
+    if (modifier.subtype === "state") return true
+    else return false
+  })
 }

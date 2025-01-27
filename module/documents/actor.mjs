@@ -20,12 +20,11 @@ export default class COActor extends Actor {
       const img = SYSTEM.ACTOR_ICONS[this.type]
       this.updateSource({ img })
     }
-
     // Configure prototype token settings
     if (this.type === "character") {
       const prototypeToken = {}
       Object.assign(prototypeToken, {
-        sight: { enabled: true },
+        sight: { enabled: true, visionMode: "basic" },
         actorLink: true,
         disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
       })
@@ -453,7 +452,6 @@ export default class COActor extends Actor {
     const updateModifiers = { _id: newFeature[0].id, "system.modifiers": newModifiers }
 
     await this.updateEmbeddedDocuments("Item", [updateModifiers])
-
     // Create all Paths
     let updatedPathsUuids = []
     for (const path of feature.system.paths) {

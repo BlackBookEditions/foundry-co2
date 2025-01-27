@@ -73,6 +73,7 @@
         "critrange": "Critique",
         "rank": "Rang",
         "add": "Ajouter",
+        "darkvision": "Vision dans le noir",
         "sendToChat": "Envoyer sur le chat",
         "edit": "Editer",
         "editItem": "Editer l'objet",
@@ -419,7 +420,8 @@
         "combat": "Combat",
         "attribute": "Attribut",
         "resource": "Ressource",
-        "skill": "Jet de compétence"
+        "skill": "Jet de compétence",
+        "state": "Etat"
       },
       "target": {
         "agi": "Agilité",

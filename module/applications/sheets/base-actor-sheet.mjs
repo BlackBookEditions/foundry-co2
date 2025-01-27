@@ -22,10 +22,8 @@ export default class CoBaseActorSheet extends ActorSheet {
     context.inventory = this.actor.inventory
     context.unlocked = this.actor.isUnlocked
     context.locked = !this.actor.isUnlocked
-
     // Select options
     context.choiceMoveUnit = SYSTEM.MOVEMENT_UNIT
-
     console.log("Actor Sheet context", context)
     return context
   }

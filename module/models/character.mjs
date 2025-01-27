@@ -137,6 +137,15 @@ export default class CharacterData extends ActorData {
   }
 
   /**
+   * Retrieves the state modifiers for the character.
+   *
+   * @returns {Array} An array of state modifiers.
+   */
+  get stateModifiers() {
+    return this._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.state.id)
+  }
+
+  /**
    * Retrieves an array of modifiers from various sources associated with the character.
    * The sources include features, profiles, capacities, and equipment.
    * Each source is checked for enabled modifiers of the specified type and subtype.
@@ -210,6 +219,7 @@ export default class CharacterData extends ActorData {
     // XP dépensés dans les capacités des voies
     this.attributes.xp.max = 2 * this.attributes.level
     this.attributes.xp.value = this._computeXP()
+    this._prepareVision(this.stateModifiers)
   }
 
   /**
@@ -264,6 +274,43 @@ export default class CharacterData extends ActorData {
     }
 
     return { total: total, tooltip: tooltip }
+  }
+
+  /**
+   * On va regarder si on a un modifier qui modifie la vision
+   * @param {*} modifiers
+   */
+  _prepareVision(modifiers) {
+    if (!modifiers) return { total: 0, tooltip: "" }
+    let currentactor = this.parent
+    let modifiersVision = modifiers.find((m) => m.target === "darkvision")
+    //console.log("passage dans _prepareVision")
+    //console.log(this.parent.prototypeToken.sight)
+
+    if (modifiersVision && this.parent.prototypeToken.sight.visionMode !== "darkvision") {
+      //console.log("je vais assigner la darkvision à " + currentactor.name + " qui est de type " + currentactor.type)
+      const prototypeToken = {}
+      Object.assign(prototypeToken, {
+        sight: { enabled: true, visionMode: "darkvision" },
+        actorLink: true,
+        disposition: 1,
+      })
+      this.parent?.updateSource({ prototypeToken })
+    }
+
+    //inversement si on a pas de darkvision
+    if (!modifiersVision && this.parent.prototypeToken.sight?.visionMode === "darkvision") {
+      //on le retire
+      const prototypeToken = {}
+      Object.assign(prototypeToken, {
+        sight: { enabled: true, visionMode: "basic" },
+        actorLink: true,
+        disposition: 1,
+      })
+      this.parent?.updateSource({ prototypeToken })
+    }
+
+    return true
   }
 
   _prepareAttack(key, skill, abilityBonus, bonuses) {
