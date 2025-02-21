@@ -916,7 +916,7 @@ strong,
   position: relative;
   text-transform: uppercase;
   width: 6em;
-  height: 1.5em;
+  height: 1.5rem;
 }
 .co.dialog.edit-abilities-dialog .window-content .row-column button.locked,
 .co.dialog.edit-abilities-dialog .window-content .row-column button.selected {
@@ -5349,7 +5349,7 @@ strong,
 }
 .co.sheet.item .window-content form .sheet-body .description {
   height: 100%;
-  font-size: 1.5em;
+  font-size: 1.5rem;
 }
 .co.sheet.item .window-content form .sheet-body .details {
   padding: 10px;
