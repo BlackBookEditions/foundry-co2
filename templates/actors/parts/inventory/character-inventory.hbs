@@ -5,11 +5,10 @@
     <h3 class="item-name flexrow">{{localize "CO.ui.richness"}}</h3>
   </li>
   <div class="flexrow">
-    {{#each system.currencies as |currency id|}}
-      {{log "currency" currency}}
+    {{#each system.wealth as |currency id|}}
       <div class="flexrow">
-        <label>{{localize currency.key}}</label>
-        <input class="current center" type="number" name="system.currencies.{{id}}.value" value="{{currency.value}}" data-dtype="Number" placeholder="0" />
+        <label>{{localize (concat 'CO.currency.' id)}} : </label>
+        <input class="current center" type="number" name="system.wealth.{{id}}.value" value="{{currency.value}}" data-dtype="Number" placeholder="0" />
       </div>
     {{/each}}
   </div>

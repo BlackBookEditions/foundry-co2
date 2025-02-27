@@ -372,9 +372,9 @@
       }
     },
     "currency": {
-      "gp": "Pièces d'or :",
-      "sp": "Pièces d'argent :",
-      "cp": "Pièces de cuivre :"
+      "gp": "Pièces d'or",
+      "sp": "Pièces d'argent",
+      "cp": "Pièces de cuivre"
     },
     "tabs": {
       "main": "Principal",

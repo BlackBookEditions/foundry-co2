@@ -4,10 +4,6 @@ import ActorData from "./actor.mjs"
 import Utils from "../utils.mjs"
 import CoChat from "../chat.mjs"
 import DefaultConfiguration from "../config/configuration.mjs"
-
-import { CORoll, COAttackRoll, COSkillRoll } from "../documents/roll.mjs"
-import { DictionaryValue } from "./schemas/Dictionary.mjs"
-
 export default class CharacterData extends ActorData {
   static defineSchema() {
     const fields = foundry.data.fields
@@ -64,13 +60,18 @@ export default class CharacterData extends ActorData {
       }),
       languages: new fields.ArrayField(new fields.StringField()),
     })
-    schema.currencies = new fields.SchemaField(
+
+    // Currencies
+    const currencyField = (label) => {
+      const schema = {
+        value: new fields.NumberField({ required: true, nullable: false, initial: 0, integer: true }),
+      }
+      return new fields.SchemaField(schema, { label })
+    }
+
+    schema.wealth = new fields.SchemaField(
       Object.values(SYSTEM.CURRENCY).reduce((obj, currency) => {
-        const initial = {
-          key: currency.label,
-          value: 0,
-        }
-        obj[currency.id] = new fields.EmbeddedDataField(DictionaryValue, { label: currency.label, nullable: false, initial: initial })
+        obj[currency.id] = currencyField(currency.label)
         return obj
       }, {}),
     )
