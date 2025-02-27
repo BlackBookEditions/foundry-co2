@@ -589,7 +589,7 @@ export default class CharacterData extends ActorData {
    * @returns {Array} An array of items that are of type 'CAPACITY' and are spells.
    */
   get spells() {
-    return this.parent.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.isSpell)
+    return this.parent.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.isSpell && item.system.learned)
   }
 
   /**
