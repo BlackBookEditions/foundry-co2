@@ -223,6 +223,7 @@
       "type": "Type",
       "label": "Label",
       "img": "Image",
+      "richness": "Richesse",
       "chatFlavor": "Message chat",
       "activable": "Activable",
       "enabled": "Activé(s)",
@@ -369,6 +370,11 @@
         "secondary": "Sec.",
         "tertiary": "Ter."
       }
+    },
+    "currency": {
+      "gp": "Pièces d'or :",
+      "sp": "Pièces d'argent :",
+      "cp": "Pièces de cuivre :"
     },
     "tabs": {
       "main": "Principal",
@@ -618,7 +624,7 @@
       "verySmall": "Très petite",
       "small": "Petite",
       "medium": "Moyenne",
-      "large": "Grande",      
+      "large": "Grande",
       "huge": "Enorme",
       "colossal": "Colossale"
     },

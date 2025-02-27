@@ -6,6 +6,7 @@ import CoChat from "../chat.mjs"
 import DefaultConfiguration from "../config/configuration.mjs"
 
 import { CORoll, COAttackRoll, COSkillRoll } from "../documents/roll.mjs"
+import { DictionaryValue } from "./schemas/Dictionary.mjs"
 
 export default class CharacterData extends ActorData {
   static defineSchema() {
@@ -63,6 +64,16 @@ export default class CharacterData extends ActorData {
       }),
       languages: new fields.ArrayField(new fields.StringField()),
     })
+    schema.currencies = new fields.SchemaField(
+      Object.values(SYSTEM.CURRENCY).reduce((obj, currency) => {
+        const initial = {
+          key: currency.label,
+          value: 0,
+        }
+        obj[currency.id] = new fields.EmbeddedDataField(DictionaryValue, { label: currency.label, nullable: false, initial: initial })
+        return obj
+      }, {}),
+    )
 
     return foundry.utils.mergeObject(super.defineSchema(), schema)
   }

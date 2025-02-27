@@ -54,3 +54,18 @@ export const EQUIPMENT_DAMAGETYPE = {
     label: "CO.damage.magic",
   },
 }
+
+export const EQUIPMENT_CURRENCIES = {
+  gp: {
+    id: "gp",
+    label: "CO.currency.gp",
+  },
+  sp: {
+    id: "sp",
+    label: "CO.currency.sp",
+  },
+  cp: {
+    id: "cp",
+    label: "CO.currency.cp",
+  },
+}

@@ -45,7 +45,6 @@ export default class COItem extends Item {
    */
   getModifiersFromActions(filterEnabled = false) {
     const filteredActions = filterEnabled ? this.actions.filter((action) => action.properties.enabled) : this.actions
-
     let modifiers = []
     for (const action of filteredActions) {
       modifiers.push(...action.modifiers)
