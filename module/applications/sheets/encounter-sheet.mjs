@@ -36,6 +36,7 @@ export default class COEncounterSheet extends CoBaseActorSheet {
     html.find(".rollable").click(this._onRoll.bind(this))
     html.find(".toggle-action").click(this._onUseAction.bind(this))
     html.find(".capacity-learn").click(this._onLearnedToggle.bind(this))
+    html.find(".size-select").change(this._OnSizeChange.bind(this))
     html.find(".inventory-equip").click(this._onEquippedToggle.bind(this))
   }
 
@@ -51,6 +52,18 @@ export default class COEncounterSheet extends CoBaseActorSheet {
     } else if (action === "unactivate") {
       this.actor.activateAction(false, source, indice, type)
     }
+  }
+
+  /**
+   * Action de selection : change la taille du prototypeToken en fonction du choix de la taille
+   * @param {*} event
+   */
+  async _OnSizeChange(event) {
+    //Va demander à l'acteur de mettre à jour la taille de ses tokens
+    const li = $(event.currentTarget)
+    console.log(li)
+    const size = li.val()
+    await this.actor.updateSize(size)
   }
 
   /**

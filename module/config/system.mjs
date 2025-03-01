@@ -33,6 +33,36 @@ export const SIZES = {
   huge: "CO.size.huge",
   colossal: "CO.size.colossal",
 }
+export const TOKEN_SIZE = {
+  tiny: {
+    size: 0.5,
+    scale: 0.5,
+  },
+  verSmall: {
+    size: 0.5,
+    scale: 1,
+  },
+  small: {
+    size: 1,
+    scale: 0.75,
+  },
+  medium: {
+    size: 1,
+    scale: 1,
+  },
+  large: {
+    size: 2,
+    scale: 1,
+  },
+  huge: {
+    size: 3,
+    scale: 1,
+  },
+  colossal: {
+    size: 4,
+    scale: 1,
+  },
+}
 
 export const DICES = { d4: "d4", d6: "d6", d8: "d8", d10: "d10", d12: "d12", d20: "d20" }
 export const RECOVERY_DICES = { d6: "d6", d8: "d8", d10: "d10" }
@@ -94,4 +124,5 @@ export const SYSTEM = {
   RESOLVER_SCOPE: ACTION.RESOLVER_SCOPE,
   RESOURCES: CHARACTER.RESOURCES,
   SIZES,
+  TOKEN_SIZE,
 }

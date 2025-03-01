@@ -25,13 +25,16 @@ export default class COActor extends Actor {
     // Configure prototype token settings
     if (this.type === "character") {
       const prototypeToken = {}
+
       Object.assign(prototypeToken, {
         sight: { enabled: true, visionMode: "basic" },
         actorLink: true,
         disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
       })
+
       this.updateSource({ prototypeToken })
     }
+    await this.updateSize(this.system.details.size)
   }
 
   getRollData() {
@@ -457,6 +460,30 @@ export default class COActor extends Actor {
 
     // Mise à jour de l'item et de ses actions
     await this._toggleItemFieldAndActions(itemId, "equipped")
+  }
+
+  /**
+   * Update the size of Tokens for this Actor.
+   * @returns {Promise<void>}
+   */
+  async updateSize(currentsize) {
+    //to do : transofmrer ça en tableau et y faire references
+    const sizemodifier = SYSTEM.TOKEN_SIZE[currentsize]
+    console.log(sizemodifier)
+    // Prototype token size
+    if (sizemodifier.size !== this.prototypeToken.width) {
+      await this.update({ prototypeToken: { width: sizemodifier.size, height: sizemodifier.size } })
+    }
+    // Active token sizes
+    if (canvas.scene) {
+      const tokens = this.getActiveTokens()
+      const updates = []
+      for (const token of tokens) {
+        if (token.width !== sizemodifier.size) updates.push({ _id: token.id, width: sizemodifier.size, height: sizemodifier.size })
+      }
+      await canvas.scene.updateEmbeddedDocuments("Token", updates)
+    }
+    //TO DO : trouver comment modifier l'echelle...
   }
 
   /**

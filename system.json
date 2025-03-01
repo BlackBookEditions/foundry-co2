@@ -54,6 +54,7 @@
     "units": "m"
   },
   "primaryTokenAttribute": "attributes.hp",
+  "secondaryTokenAttribute": "resources.mana",
   "socket": true,
   "initiative": "1d20",
   "url": "",

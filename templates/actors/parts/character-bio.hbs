@@ -1,48 +1,55 @@
 <h3 class="form-header"><a class="section-toggle">{{localize "CO.ui.misc"}}</a></h3>
 <div class="misc foldable">
-    <div class="form-group">
-        <label>{{localize "CO.ui.size"}}</label>
-        <div class="form-fields">
-            <select name="system.details.size" data-type="String" style="width:100%">
-                {{selectOptions choiceSize selected=details.size localize=true}}
-            </select>
-        </div>
+  <div class="form-group">
+    <label>{{localize "CO.ui.size"}}</label>
+    <div class="form-fields">
+      <select class="size-select" name="system.details.size" data-type="String" style="width:100%">
+        {{selectOptions choiceSize selected=details.size localize=true}}
+      </select>
     </div>
-    <div class="form-group">
-        <label>{{localize "CO.ui.languages"}}</label>
-        <div class="form-fields">
-            <input class="field-value" name="system.details.languages" type="text" value="{{system.details.languages}}" placeholder="{{localize 'CO.ui.languages'}}" data-dtype="String">
-        </div>
+  </div>
+  <div class="form-group">
+    <label>{{localize "CO.ui.languages"}}</label>
+    <div class="form-fields">
+      <input
+        class="field-value"
+        name="system.details.languages"
+        type="text"
+        value="{{system.details.languages}}"
+        placeholder="{{localize 'CO.ui.languages'}}"
+        data-dtype="String"
+      />
     </div>
+  </div>
 </div>
 <h3 class="form-header"><a class="section-toggle">{{localize "CO.ui.biography"}}</a></h3>
 <div class="bio notes foldable">
-    <div class="notes-section">
-        <label class="details-label">{{localize "CO.ui.public"}}</label>
-        <div class="notes-text">
-            {{editor system.details.biography.public target="system.details.biography.public" button=true owner=owner editable=editable}}
-        </div>
+  <div class="notes-section">
+    <label class="details-label">{{localize "CO.ui.public"}}</label>
+    <div class="notes-text">
+      {{editor system.details.biography.public target="system.details.biography.public" button=true owner=owner editable=editable}}
     </div>
-    <div class="notes-section">
-        <label class="details-label">{{localize "CO.ui.private"}}</label>
-        <div class="notes-text">
-            {{editor system.details.biography.private target="system.details.biography.private" button=true owner=owner editable=editable}}
-        </div>
+  </div>
+  <div class="notes-section">
+    <label class="details-label">{{localize "CO.ui.private"}}</label>
+    <div class="notes-text">
+      {{editor system.details.biography.private target="system.details.biography.private" button=true owner=owner editable=editable}}
     </div>
+  </div>
 </div>
 
 <h3 class="form-header"><a class="section-toggle">{{localize "CO.ui.appearance"}}</a></h3>
 <div class="appearance notes foldable">
-    <div class="notes-section">
-        <label class="details-label">{{localize "CO.ui.public"}}</label>
-        <div class="notes-text">
-            {{editor system.details.appearance.public target="system.details.appearance.public" button=true owner=owner editable=editable}}
-        </div>
+  <div class="notes-section">
+    <label class="details-label">{{localize "CO.ui.public"}}</label>
+    <div class="notes-text">
+      {{editor system.details.appearance.public target="system.details.appearance.public" button=true owner=owner editable=editable}}
     </div>
-    <div class="notes-section">
-        <label class="details-label">{{localize "CO.ui.private"}}</label>
-        <div class="notes-text">
-            {{editor system.details.appearance.private target="system.details.appearance.private" button=true owner=owner editable=editable}}
-        </div>
+  </div>
+  <div class="notes-section">
+    <label class="details-label">{{localize "CO.ui.private"}}</label>
+    <div class="notes-text">
+      {{editor system.details.appearance.private target="system.details.appearance.private" button=true owner=owner editable=editable}}
     </div>
+  </div>
 </div>
