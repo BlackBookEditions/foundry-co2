@@ -1,5 +1,5 @@
 <form class="{{cssClass}} flexrow no-wrap" autocomplete="off">
-    {{!log "Chroniques Oubliées | encounter" this}}
+    {{log "Chroniques Oubliées | encounter" this}}
     {{> "systems/co/templates/encounter/parts/encounter-sidebar.hbs"}}
     <div class="main">
         <header class="npc-sheet-header">
@@ -10,18 +10,14 @@
             </div>
             <div class="flexrow" style="justify-content: space-between; width: 100%;">
                 <div class="flexrow" style="flex: auto;">
-                    <select class="archetype-select traits-list-item" name="system.details.archetype" data-type="String" style="width:100%">
-                        {{selectOptions choiceArchetypes selected=system.details.archetype localize=true}}
-                    </select>
+                    
                     <select class="category-select traits-list-item" name="system.details.category" data-type="String" style="width:100%">
                         {{selectOptions choiceCategories selected=system.details.category localize=true}}
                     </select>
                     <select class="size-select traits-list-item" name="system.details.size" data-type="String" style="width:100%">
-                        {{selectOptions choiceSizes selected=system.details.size localize=true}}
+                        {{selectOptions choiceSizes selected=system.details.size localize=true }}
                     </select>
-                    <select class="bossrank-select traits-list-item" name="system.details.bossRank" data-type="String" style="width:100%">
-                        {{selectOptions choiceBossRanks selected=system.details.bossRank localize=true}}
-                    </select>
+                   
                 </div>
             </div>
         </header>

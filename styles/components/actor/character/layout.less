@@ -12,12 +12,13 @@
     min-width: 630px;
     .window-content {
       padding: 0;
-      form.editable, form.locked {
+      form.editable,
+      form.locked {
         padding: 0;
         margin: 0;
         .main {
           i.toggle-action {
-            font-size:16px;
+            font-size: 16px;
           }
           .character-sheet-header {
             display: flex;
@@ -71,17 +72,11 @@
               color: white;
               text-transform: uppercase;
               background-color: #002664;
-              &.archetype-select {
-                background-color: #323232;
-              }
               &.category-select {
                 background-color: #566193;
               }
               &.size-select {
                 background-color: #3a7a58;
-              }
-              &.bossrank-select {
-                background-color: #98513d;
               }
             }
           }
@@ -124,15 +119,18 @@
                 right: 0;
               }
             }
-            .main, .effects{
-              .features-container, .actions-container, .effects-container{
-                .items-container()
+            .main,
+            .effects {
+              .features-container,
+              .actions-container,
+              .effects-container {
+                .items-container();
               }
               .ability-scores {
                 margin: 0;
                 padding: 0;
                 display: grid;
-                grid: 1fr/repeat(7, 1fr);
+                grid: 1fr / repeat(7, 1fr);
                 justify-content: center;
                 list-style: none;
                 gap: 12px;
@@ -197,7 +195,7 @@
                     display: flex;
                     border-radius: 0;
                     font-size: 0;
-                    border: 1px solid #D3CCBC;
+                    border: 1px solid #d3ccbc;
                     background: rgba(211, 204, 188, 0.2);
                     margin-top: 4px;
                     height: 30px;
@@ -213,19 +211,19 @@
                   }
                 }
                 .ability.key {
-                  .ability-id, .ability-mod {
+                  .ability-id,
+                  .ability-mod {
                     //color: var(--alt-dark);
                     color: var(--primary);
-
                   }
                 }
               }
             }
             .inventory {
-              .items-container()
+              .items-container();
             }
             .capacities {
-              .items-container()
+              .items-container();
             }
             .bio {
             }

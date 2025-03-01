@@ -16,29 +16,17 @@ export default class EncounterData extends ActorData {
 
     schema.pasteData = new fields.HTMLField()
     schema.details = new fields.SchemaField({
-      archetype: new fields.StringField({
-        required: false,
-        nullable: true,
-        initial: SYSTEM.ENCOUNTER_ARCHETYPES.standard,
-        options: SYSTEM.ENCOUNTER_ARCHETYPES,
-      }),
       category: new fields.StringField({
         required: false,
         nullable: true,
-        initial: SYSTEM.ENCOUNTER_CATEGORIES.humanoid,
+        initial: Object.keys(SYSTEM.ENCOUNTER_CATEGORIES).find((key) => SYSTEM.ENCOUNTER_CATEGORIES[key] === SYSTEM.ENCOUNTER_CATEGORIES.humanoid),
         options: SYSTEM.ENCOUNTER_CATEGORIES,
       }),
       size: new fields.StringField({
         required: false,
         nullable: true,
-        initial: SYSTEM.SIZES.medium,
+        initial: Object.keys(SYSTEM.SIZES).find((key) => SYSTEM.SIZES[key] === SYSTEM.SIZES.medium),
         options: SYSTEM.SIZES,
-      }),
-      bossRank: new fields.StringField({
-        required: false,
-        nullable: true,
-        initial: SYSTEM.ENCOUNTER_BOSS_RANKS.noboss,
-        options: SYSTEM.ENCOUNTER_BOSS_RANKS,
       }),
       description: new fields.SchemaField({
         private: new fields.HTMLField(),
