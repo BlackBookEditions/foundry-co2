@@ -467,23 +467,21 @@ export default class COActor extends Actor {
    * @returns {Promise<void>}
    */
   async updateSize(currentsize) {
-    //to do : transofmrer ça en tableau et y faire references
     const sizemodifier = SYSTEM.TOKEN_SIZE[currentsize]
-    console.log(sizemodifier)
     // Prototype token size
-    if (sizemodifier.size !== this.prototypeToken.width) {
-      await this.update({ prototypeToken: { width: sizemodifier.size, height: sizemodifier.size } })
+    if (sizemodifier.size !== this.prototypeToken.width || sizemodifier.scale !== this.prototypeToken.texture.scaleX) {
+      await this.update({ prototypeToken: { width: sizemodifier.size, height: sizemodifier.size, "texture.scaleX": sizemodifier.scale, "texture.scaleY": sizemodifier.scale } })
     }
     // Active token sizes
     if (canvas.scene) {
       const tokens = this.getActiveTokens()
       const updates = []
       for (const token of tokens) {
-        if (token.width !== sizemodifier.size) updates.push({ _id: token.id, width: sizemodifier.size, height: sizemodifier.size })
+        if (token.width !== sizemodifier.size || sizemodifier.scale !== this.prototypeToken.texture.scaleX)
+          updates.push({ _id: token.id, width: sizemodifier.size, height: sizemodifier.size, "texture.scaleX": sizemodifier.scale, "texture.scaleY": sizemodifier.scale })
       }
       await canvas.scene.updateEmbeddedDocuments("Token", updates)
     }
-    //TO DO : trouver comment modifier l'echelle...
   }
 
   /**

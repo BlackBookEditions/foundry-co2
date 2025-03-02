@@ -47,7 +47,7 @@ export default class COCharacterSheet extends CoBaseActorSheet {
     html.find(".attack").click(this._onUseAction.bind(this))
     html.find(".damage").click(this._onUseAction.bind(this))
     html.find(".capacity-learn").click(this._onLearnedToggle.bind(this))
-    html.find(".size-select").change(this._OnSizeChange.bind(this))
+    html.find(".size-select").change(this._onSizeChange.bind(this))
     html.find(".inventory-equip").click(this._onEquippedToggle.bind(this))
     html.find(".use-recovery").click(this._onUseRecovery.bind(this))
   }
@@ -74,11 +74,10 @@ export default class COCharacterSheet extends CoBaseActorSheet {
    * Action de selection : change la taille du prototypeToken en fonction du choix de la taille
    * @param {*} event
    */
-  async _OnSizeChange(event) {
+  async _onSizeChange(event) {
     //Va demander à l'acteur de mettre à jour la taille de ses tokens
-    const li = $(event.currentTarget)
-    console.log(li)
-    const size = li.val()
+    const li = event.target.value
+    const size = li
     await this.actor.updateSize(size)
   }
 
