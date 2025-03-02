@@ -474,7 +474,7 @@ export default class COActor extends Actor {
     }
     // Active token sizes
     if (canvas.scene) {
-      const tokens = this.getActiveTokens()
+      const tokens = this.getActiveTokens(true)
       const updates = []
       for (const token of tokens) {
         if (token.width !== sizemodifier.size || sizemodifier.scale !== this.prototypeToken.texture.scaleX)
