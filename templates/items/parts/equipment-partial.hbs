@@ -111,8 +111,10 @@
         <div class="form-fields">
             <input class="field-value" name="system.quantity.current" type="text" value="{{system.quantity.current}}" placeholder="{{localize 'CO.ui.current'}}" data-dtype="Number">
             {{#if (or system.properties.stackable isConsumable)}}
+                {{# if (or unlocked system.quantity.max)}}
                 /
                 <input class="field-value" name="system.quantity.max" type="text" value="{{system.quantity.max}}" placeholder="{{localize 'CO.ui.max'}}" data-dtype="Number">
+                {{/if}}
         </div>
     </div>
     <div class="form-group">
