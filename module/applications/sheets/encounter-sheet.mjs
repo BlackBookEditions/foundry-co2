@@ -100,7 +100,7 @@ export default class COEncounterSheet extends CoBaseActorSheet {
    * @private
    */
   async _onDeleteItem(event) {
-    event.preventDefault()
+    event.preventDefault()    
     const li = $(event.currentTarget).parents(".item")
     const itemId = li.data("itemId")
     const itemType = li.data("itemType")
@@ -133,7 +133,6 @@ export default class COEncounterSheet extends CoBaseActorSheet {
     event.preventDefault()
     const li = $(event.currentTarget).parents(".item")
     const pathId = li.data("itemId")
-
     this.actor.deletePath(pathId)
   }
 
@@ -143,11 +142,10 @@ export default class COEncounterSheet extends CoBaseActorSheet {
    * @private
    */
   async _onDeleteCapacity(event) {
-    event.preventDefault()
-    const li = $(event.currentTarget).parents(".item")
-    const capacityId = li.data("itemId")
-
-    await this.actor.deleteCapacity(capacityId)
+    event.preventDefault()    
+    const li = $(event.currentTarget).parents(".item")  
+    const itemUuid = li.data("itemUuid")    
+    await this.actor.deleteCapacity(itemUuid)
   }
 
   /** @inheritdoc */
