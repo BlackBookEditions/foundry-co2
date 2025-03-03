@@ -685,7 +685,9 @@ export default class COActor extends Actor {
       let item = this.getItemWithKey(equipmentData.system.slug)
       if (item?.system?.properties?.stackable) {
         let quantity = item.system.quantity.current + equipmentData.system.quantity.current
-        quantity = Math.min(quantity, item.system.quantity.max)
+        if (item.system.quantity.max) {
+          quantity = Math.min(quantity, item.system.quantity.max)
+        }        
         await item.update({ "system.quantity.current": quantity })
         return item.uuid
       }

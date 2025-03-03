@@ -27,7 +27,7 @@ export default class EquipmentData extends ItemData {
       damagetype: new fields.StringField({ required: true }),
       quantity: new fields.SchemaField({
         current: new fields.NumberField({ required: true, nullable: false, initial: 1, integer: true }),
-        max: new fields.NumberField({ required: true, nullable: false, initial: 1, integer: true }),
+        max: new fields.NumberField({ required: true, nullable: true, initial: 1, integer: true }),
         destroyIfEmpty: new fields.BooleanField(),
       }),
       charges: new fields.SchemaField({
