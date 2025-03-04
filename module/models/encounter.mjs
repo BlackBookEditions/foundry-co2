@@ -142,6 +142,18 @@ export default class EncounterData extends ActorData {
   // #endregion
 
   /**
+   * Checks if there are any bonus dice modifiers for a given attack type.
+   *
+   * @param {string} attackType The type of attack to check for bonus dice modifiers.
+   * @returns {boolean} - Returns true if there are bonus dice modifiers for the given attack type, otherwise false.
+   */
+  hasBonusDiceForAttack(attackType) {
+    if (!attackType) return false
+    const modifiers = this.bonusDiceModifiers.filter((m) => m.target === attackType)
+    return modifiers.length > 0
+  }
+
+  /**
    * Add an attack as an embedded item
    * @param {COItem} attack
    * @returns {number} id of the created capacity

@@ -407,6 +407,7 @@ export default class COActor extends Actor {
      @param {string("attack","damage")} type  define if it's an attack or just a damage
    */
   async activateAction(state, source, indice, type) {
+    
     const item = await fromUuid(source)
     if (!item) return
 
@@ -419,7 +420,7 @@ export default class COActor extends Actor {
       await item.update({ "system.actions": newActions })
     }
     // Action instantanée
-    else {
+    else {      
       if (CONFIG.debug.co?.actions) console.debug(Utils.log(`COActor - activateAction - Action instantanée`), state, source, indice, type, item)
       const action = foundry.utils.deepClone(item.system.actions[indice])
       // Recherche des resolvers de l'action
