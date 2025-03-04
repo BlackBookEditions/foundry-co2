@@ -30,16 +30,15 @@ export default class EncounterData extends ActorData {
       }),
       description: new fields.SchemaField({
         private: new fields.HTMLField(),
-        public: new fields.HTMLField(),
-        //pour indiquer les immunité, propriétés spéciales
-        properties: new fields.HTMLField(),
+        public: new fields.HTMLField(),        
       }),
       notes: new fields.SchemaField({
         private: new fields.HTMLField(),
         public: new fields.HTMLField(),
       }),
       languages: new fields.ArrayField(new fields.StringField()),
-      
+      //pour indiquer les immunité, propriétés spéciales
+      properties: new fields.HTMLField(),
     })
 
     return foundry.utils.mergeObject(super.defineSchema(), schema)
