@@ -188,6 +188,31 @@
         "feet": "ft"
       }
     },
+    "customStatus": {
+      "blind" : "Aveuglé",
+      "blindDescription" : "‑5 en Init., attaque et DEF, ‑10 en attaque à distance. Les attaques magiques nécessitant de voir la cible sont impossibles",
+      "weakened": "Affaibli",
+      "weakenedDescription":"Dé malus à tous les tests",
+      "outOfBreath": "Essoufflé",
+      "outOfBreathDescription": "Le déplacement est limité à 5 m par action de mouvement",
+      "stun" : "Etourdi",
+      "stunDescription":"Aucune action possible et ‑5 en DEF",
+      "immobilized":"Immobilisé",
+      "immobilizedDescription":"Pas de déplacement et dé malus aux tests d’attaque.",
+      "invalid": "Invalide",
+      "invalidDescription": "Le déplacement est limité à 5 m par action de mouvement",
+      "dead" : "Mort",
+      "deadDescription" : "Vous êtes mort",
+      "paralysis" : "Paralysé",
+      "paralysisDescription" : "Aucune action possible, en cas 1 d’attaque touché automatiquement et subit un critique.",
+      "slowed" : "Ralenti",
+      "slowedDescription": "Une seule action par round (action d’attaque ou de mouvement).",
+      "overturned": "Renversé",
+      "overturnedDescription": "‑5 en attaque et DEF, nécessite une action d’attaque pour se relever",
+      "surprised": "Surpris",
+      "surprisedDescription":"Pas d’action et ‑5 en DEF au premier round de combat."
+
+    },
     "ui": {
       "none": "--",
       "id": "ID",

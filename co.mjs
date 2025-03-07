@@ -6,6 +6,7 @@ globalThis.SYSTEM = SYSTEM
 import * as models from "./module/models/_module.mjs"
 import * as documents from "./module/documents/_module.mjs"
 import * as applications from "./module/applications/_module.mjs"
+import * as effects from "./module/models/active-effect.mjs"
 
 // Helpers
 import preloadHandlebarsTemplates from "./module/templates.mjs"
@@ -51,7 +52,21 @@ Hooks.once("init", async function () {
   CONFIG.Actor.documentClass = documents.COActor
   CONFIG.Item.documentClass = documents.COItem
   CONFIG.ChatMessage.documentClass = documents.COChatMessage
+  console.log(CONFIG.statusEffects)
+  console.log(CONFIG.specialStatusEffects)
+  CONFIG.ActiveEffect.sheetClass = effects.COActiveEffectConfig;
 
+  //Traduction du tableau des conditions
+  const customeffects = SYSTEM.STATUS_EFFECT.map(element => {
+    return {
+      ...element,
+      name: game.i18n.localize(element.name)
+    };
+  });
+  
+
+  CONFIG.statusEffects = customeffects
+  console.log(CONFIG.statusEffects)
   // Dice system configuration
   CONFIG.Dice.rolls.push(documents.CORoll, documents.COSkillRoll, documents.COAttackRoll)
 

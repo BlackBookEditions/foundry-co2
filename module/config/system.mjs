@@ -9,6 +9,7 @@ import * as FEATURE from "./feature.mjs"
 import * as MODIFIERS from "./modifier.mjs"
 import * as PATH from "./path.mjs"
 import * as PROFILE from "./profile.mjs"
+import * as EFFECTS from "./effects.mjs"
 
 export const ASCII = `
    ******    *******  
@@ -106,6 +107,8 @@ export const SYSTEM = {
   EQUIPMENT_DAMAGETYPE: EQUIPMENT.EQUIPMENT_DAMAGETYPE,
   EQUIPMENT_RARITY: EQUIPMENT.EQUIPMENT_RARITY,
   EQUIPMENT_SUBTYPES: EQUIPMENT.EQUIPMENT_SUBTYPES,
+  EFFECTS: EFFECTS.EFFECTS_DESCRIPTION,
+  STATUS_EFFECT: EFFECTS.CUSTOM_STATUS_EFFECT,
   FAMILIES: PROFILE.FAMILIES,
   FEATURE_SUBTYPE: FEATURE.FEATURE_SUBTYPE,
   ITEM_ICONS: ITEM.ITEM_ICONS,
