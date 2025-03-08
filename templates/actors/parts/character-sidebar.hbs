@@ -459,14 +459,14 @@
       <div class="sidebar-section-content">
         <div class="labelled-field">
           <label>{{localize "CO.label.long.base"}}</label>
-          <input class="hp-base" type="number" name="system.resources.mana.base" value="{{resources.mana.base}}" data-dtype="Number" placeholder="0" readonly />
+          <input class="mp-base" type="number" name="system.resources.mana.base" value="{{resources.mana.base}}" data-dtype="Number" placeholder="0" readonly />
         </div>
       </div>
       <div class="sidebar-section-content">
         <div class="labelled-field">
           <label>{{localize "CO.label.long.bonus"}}</label>
           <input
-            class="hp-bonus"
+            class="mp-bonus"
             type="text"
             name="system.resources.mana.bonuses.sheet"
             value="{{numberFormat resources.mana.bonuses.sheet decimals=0 sign=true}}"
@@ -485,7 +485,7 @@
         <h4>{{localize "CO.label.long.movement"}}</h4>
       </div>
       <div class="mvt-base labelled-field">
-        {{attributes.movement.base}}&nbsp;{{attributes.movement.unit}}
+        {{attributes.movement.value}}&nbsp;{{attributes.movement.unit}}
       </div>
     </div>
     {{#if unlocked}}
@@ -496,6 +496,19 @@
           <select name="system.attributes.movement.unit" data-type="String">
             {{selectOptions choiceMoveUnit selected=system.attributes.movement.unit localize=true}}
           </select>
+        </div>
+      </div>
+      <div class="sidebar-section-content">
+        <div class="labelled-field">
+          <label>{{localize "CO.label.long.bonus"}}</label>
+          <input
+            class="movment-bonus"
+            type="text"
+            name="system.attributes.movement.bonuses.sheet"
+            value="{{numberFormat attributes.movement.bonuses.sheet decimals=0 sign=true}}"
+            data-dtype="Number"
+            placeholder="0"
+          />
         </div>
       </div>
     {{/if}}

@@ -38,7 +38,7 @@ export const CUSTOM_STATUS_EFFECT= [
       img: "systems/co/ui/effects/immobilized.webp",
       changes:[
         {
-            key: "system.attribute.movment.bonuses.effects",
+            key: "system.attribute.movment.base",
             mode: 5,
             value: 0
         }
@@ -64,7 +64,7 @@ export const CUSTOM_STATUS_EFFECT= [
       img: "icons/svg/paralysis.svg",
       changes:[
         {
-            key: "system.attribute.movment.bonuses.effects",
+            key: "system.attributes.movement.base",
             mode: 5,
             value: 0
         }
@@ -110,8 +110,8 @@ export const CUSTOM_STATUS_EFFECT= [
       changes:[
         {
             key: "system.attributes.movement.bonuses.effects",
-            mode: 5,
-            value: 5
+            mode: 2,
+            value: -5
         }
         ],
         description:"CO.customStatus.outOfBreathDescription"   
@@ -128,8 +128,8 @@ export const CUSTOM_STATUS_EFFECT= [
       changes:[
         {
             key: "system.attributes.movement.bonuses.effects",
-            mode: 5,
-            value: 5
+            mode: 2,
+            value: -5
         }
         ],
         description:"CO.customStatus.invalidDescription"

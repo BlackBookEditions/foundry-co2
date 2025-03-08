@@ -258,6 +258,8 @@ export default class CharacterData extends ActorData {
 
     this._prepareHPMax()
 
+    this._prepareMovement()
+
     // Préparation des données de combat : Attaque de contact, attaque à distance, attaque magique, initiative, défense
     for (const [key, skill] of Object.entries(this.combat)) {
       if (key === SYSTEM.COMBAT.crit.id || key === SYSTEM.COMBAT.dr.id) {
@@ -366,6 +368,11 @@ export default class CharacterData extends ActorData {
       hpMaxModifiers.tooltip,
       Utils.getTooltip("Bonus", hpMaxBonuses),
     )
+  }
+
+  _prepareMovement() {
+    console.log(this.attributes.movement.bonuses.effects)
+    this.attributes.movement.value = this.attributes.movement.base + this.attributes.movement.bonuses.sheet + this.attributes.movement.bonuses.effects
   }
 
   /**
