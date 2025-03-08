@@ -39,6 +39,20 @@ export default class COActor extends Actor {
     }
   }
 
+  /**
+   * Appelé lorsque des données sont mises à jour ? Donc quand on active un condition state ?
+   * @param {*} data 
+   * @param {*} options 
+   * @param {*} userId 
+   */
+  _onUpdate(data, options, userId) {
+    super._onUpdate(data, options, userId);
+    console.log("je passe dans onupdate")
+    console.log(data)
+    console.log(options)
+    console.log(userId)
+  }
+
   getRollData() {
     const rollData = { ...this.system }
 

@@ -52,21 +52,9 @@ Hooks.once("init", async function () {
   CONFIG.Actor.documentClass = documents.COActor
   CONFIG.Item.documentClass = documents.COItem
   CONFIG.ChatMessage.documentClass = documents.COChatMessage
-  console.log(CONFIG.statusEffects)
-  console.log(CONFIG.specialStatusEffects)
-  CONFIG.ActiveEffect.sheetClass = effects.COActiveEffectConfig;
-
-  //Traduction du tableau des conditions
-  const customeffects = SYSTEM.STATUS_EFFECT.map(element => {
-    return {
-      ...element,
-      name: game.i18n.localize(element.name)
-    };
-  });
+  CONFIG.statusEffects = SYSTEM.STATUS_EFFECT
   
-
-  CONFIG.statusEffects = customeffects
-  console.log(CONFIG.statusEffects)
+  
   // Dice system configuration
   CONFIG.Dice.rolls.push(documents.CORoll, documents.COSkillRoll, documents.COAttackRoll)
 
@@ -125,6 +113,26 @@ Hooks.once("init", async function () {
   }
 
   console.info(Utils.log("Initialized"))
+})
+
+/* -------------------------------------------- */
+/*  Localization                                */
+/* -------------------------------------------- */
+
+Hooks.once("i18nInit", function() {
+  //Traduction du tableau des conditions
+  const customeffects = CONFIG.statusEffects.map(element => {
+    return {
+      ...element,
+      name: game.i18n.localize(element.name),
+      description: game.i18n.localize(element.description),
+    };
+  });
+
+  customeffects.sort((a, b) => a.name.localeCompare(b.name));
+  CONFIG.statusEffects = customeffects;
+  console.log(CONFIG.statusEffects)
+  
 })
 
 Hooks.once("ready", async function () {
