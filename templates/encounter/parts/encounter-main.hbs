@@ -47,12 +47,13 @@
     <div class="section-body">
         <ol class="attacks-list strikes-list item-list">
             {{#each attacks as |attack id|}}
+                {{!log attack}}
                 {{!log "Chroniques Oubliées | attack" attack id}}
                 <!--                <div class="labelled-field" data-attribute="str">-->
                 <!--                    <label class="rollable"><a>{{!localize (concat "CO.abilities.short." id)}} {{!#if ability.superior}}*{{!/if}}</a></label>-->
                 <!--                    <input class="modifier" type="text" name="system.abilities.{{!id}}.mod" value="{{!numberFormat ability.mod decimals=0 sign=true}}" data-dtype="Number" placeholder="0">-->
                 <!--                </div>-->
-                <li class="item attack flexrow" data-item-type="attack" data-item-uuid="{{attack.uuid}}" draggable="false">
+                <li class="item attack flexrow" data-item-type="attack" data-item-uuid="{{attack.uuid}}" data-item-id="{{attack.id}}" draggable="false">
                     <div class="attack-header">
                         <h4 class="attack-name tags">
                             {{#if (eq attack.system.subtype "melee")}}
@@ -79,7 +80,7 @@
                                 <button type="button" class="btn attack-button toggle-action" data-tooltip="" data-action="activate" data-type="attack" data-source="{{attack.uuid}}" data-indice="0">{{localize "CO.label.long.attack"}} {{attack.system.displayValues.attack}}</button>
                             </div>
                             <div class="damage sub-section">
-                                <button type="button" class="damage-button tooltipstered toggle-action" data-action="activate" data-type="damage" data-source="{{attack.system.displayValues.source}}" data-indice="0">{{localize "CO.label.long.damage"}} {{attack.system.displayValues.damage}}</button>
+                                <button type="button" class="damage-button tooltipstered toggle-action" data-action="activate" data-type="damage" data-source="{{attack.uuid}}" data-indice="0">{{localize "CO.label.long.damage"}} {{attack.system.displayValues.damage}}</button>
                             </div>
                         </div>
                         <div class="attack-detail sub-section expandable expanded">
@@ -115,9 +116,9 @@
                                 {{#if action.properties.temporary}}
                                     <a class="item-control item-activate">
                                         {{#if action.properties.enabled}}
-                                            <i class="fas fa-dice-d20 green toggle-action" style="font-size:16px" data-tooltip="Désactiver" data-action="unactivate" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
+                                            <i class="fas fa-power-off green toggle-action" style="font-size:16px" data-tooltip="Désactiver" data-action="unactivate" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
                                         {{else}}
-                                            <i class="fas fa-dice-d20 gray toggle-action" style="font-size:16px" data-tooltip="Activer" data-action="activate" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
+                                            <i class="fas fa-power-off gray toggle-action" style="font-size:16px" data-tooltip="Activer" data-action="activate" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
                                         {{/if}}
                                     </a>
                                 {{else}}

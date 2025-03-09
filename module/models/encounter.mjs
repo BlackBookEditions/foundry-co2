@@ -87,26 +87,28 @@ export default class EncounterData extends ActorData {
     this._prepareAbilities()
 
     this._prepareHPMax()
-
+    
     for (const [key, skill] of Object.entries(this.combat)) {
       console.debug(skill)
       // Somme du bonus de la feuille et du bonus des effets
       const bonuses = Object.values(skill.bonuses).reduce((prev, curr) => prev + curr)
-
+      const combatModifiersBonus = this.computeTotalModifiersByTarget(this.combatModifiers, key)
       if (key === SYSTEM.COMBAT.init.id) {
-        skill.value = skill.base + bonuses
+        
+        skill.value = skill.base + bonuses + combatModifiersBonus.total
       }
 
       if (key === SYSTEM.COMBAT.def.id) {
-        skill.value = skill.base + bonuses
+        skill.value = skill.base + bonuses + combatModifiersBonus.total
       }
 
       if (key === SYSTEM.COMBAT.dr.id) {
-        skill.value = skill.base + bonuses
+        skill.value = skill.base + bonuses + combatModifiersBonus.total
       }
     }
 
     this.magic = this.abilities.vol.value + (this.attributes.nc === 0.5 ? 1 : this.attributes.nc)
+    
   }
 
   /**
@@ -176,6 +178,27 @@ export default class EncounterData extends ActorData {
     })
     return allActions
   }
+
+     /**
+   * Return the total modifier and the tooltip for the given target and an array of modifiers.
+   * @param {Array} modifiers An array of modifier objects.
+   * @param {SYSTEM.MODIFIERS.MODIFIER_TARGET} target The target for which the modifiers are filtered.
+   **/
+     computeTotalModifiersByTarget(modifiers, target) {
+      if (!modifiers) return { total: 0, tooltip: "" }
+  
+      let modifiersByTarget = modifiers.filter((m) => m.target === target)
+  
+      let total = modifiersByTarget.map((m) => m.evaluate(this.parent)).reduce((acc, curr) => acc + curr, 0)
+  
+      let tooltip = ""
+      for (const modifier of modifiersByTarget) {
+        let partialTooltip = modifier.getTooltip(this.parent)
+        if (partialTooltip !== null) tooltip += partialTooltip
+      }
+  
+      return { total: total, tooltip: tooltip }
+    }
 
   // #endregion
 
