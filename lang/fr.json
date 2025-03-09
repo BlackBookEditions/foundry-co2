@@ -219,12 +219,12 @@
       "unconscious": "Inconscient",
       "partialDef": "Défense partielle (A)",
       "partialDefDescription": "+3 en DEF et aux tests opposés pour résister à une attaque ou un effet pendant 1 round",
-      "partialDefactivate":"Activer la défense partielle (A)",
-      "partialDefdeactivate":"Désactiver la défense partielle (A)",
+      "partialDefActivate":"Activer la défense partielle (A)",
+      "partialDefDeactivate":"Désactiver la défense partielle (A)",
       "fullDef" : "Défense totale (L)",
       "fullDefDescription":"+5 en DEF et aux tests opposés pour résister à une attaque ou un effet pendant 1 round",
-      "fullDefactivate":"Activer la défense totale (L)",
-      "fullDefdeactivate":"Désactiver la défense totale (L)"
+      "fullDefActivate":"Activer la défense totale (L)",
+      "fullDefDeactivate":"Désactiver la défense totale (L)"
     },
     "ui": {
       "none": "--",

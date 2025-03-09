@@ -65,9 +65,9 @@ export default class COEncounterSheet extends CoBaseActorSheet {
     const action = dataset.action
     let activation = false
     if (action === "activate") {
-      activation = this.actor.activateEffect({ state: true, effectid })
+      activation = this.actor.activateCOStatusEffect({ state: true, effectid })
     } else if (action === "unactivate") {
-      activation = this.actor.activateEffect({ state: false, effectid })
+      activation = this.actor.activateCOStatusEffect({ state: false, effectid })
     }
 
   }

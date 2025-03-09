@@ -272,7 +272,7 @@ export default class COActor extends Actor {
   }
 
   /**
-   * Acccesseur permettant de d'obtenir un des effets actif sur l'acteur. Return undefinie si non trouvé
+   * Accesseur permettant de d'obtenir un des effets actif sur l'acteur. Retourne true ou false
    */
   hasEffect(effectid) {    
     return this.statuses.has(effectid)
@@ -439,13 +439,8 @@ export default class COActor extends Actor {
    * @param {*} indice  indice of the action in the array of actions
      @param {string("attack","damage")} type  define if it's an attack or just a damage
    */
-  async activateEffect({ state, effectid } = {}) {
-    //vérifie que l'effect existe dans la liste
-    const currenteffect = SYSTEM.STATUS_EFFECT.find( (e) => e.id === effectid)
-    if (!currenteffect) {
-      console.log("id d'effet non trouvé : ", effectid)
-      return
-    }    
+  async activateCOStatusEffect({ state, effectid } = {}) {
+    
     //On ne peux pas activer à la fois la defense partielle et la defense totale    
     if(effectid == "partialDef" && state === true)
     {      
