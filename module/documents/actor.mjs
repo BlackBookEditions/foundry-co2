@@ -272,6 +272,13 @@ export default class COActor extends Actor {
   }
 
   /**
+   * Acccesseur permettant de d'obtenir un des effets actif sur l'acteur. Return undefinie si non trouvé
+   */
+  hasEffect(effectid) {    
+    return this.statuses.has(effectid)
+  }
+
+  /**
    * Checks if the actor can use capacities based on their equipped armor and shields
    *
    * @returns {boolean} Returns true if the actor is trained with the equipped armor and/or shield
@@ -423,6 +430,40 @@ export default class COActor extends Actor {
     const training = item.system.martialCategory
     if (profile.system.martialTrainingsShields[training]) return true
     return false
+  }
+
+  /**
+   * Active ou désactive un effet de statut
+   * @param {*} state true to enable the effect, false to disable the effect
+   * @param {*} effectname  id
+   * @param {*} indice  indice of the action in the array of actions
+     @param {string("attack","damage")} type  define if it's an attack or just a damage
+   */
+  async activateEffect({ state, effectid } = {}) {
+    //vérifie que l'effect existe dans la liste
+    const currenteffect = SYSTEM.STATUS_EFFECT.find( (e) => e.id === effectid)
+    if (!currenteffect) {
+      console.log("id d'effet non trouvé : ", effectid)
+      return
+    }    
+    //On ne peux pas activer à la fois la defense partielle et la defense totale    
+    if(effectid == "partialDef" && state === true)
+    {      
+        if(this.hasEffect("fullDef"))
+        {
+          //TODO : envoyer un message au jour pour lui dire qu'il ne peux pas utilsier les deux en meme temps
+          return
+        }        
+    }
+    if(effectid == "fullDef" && state === true)
+      {        
+          if(this.hasEffect("partialDef"))
+          {
+            //TODO : envoyer un message au jour pour lui dire qu'il ne peux pas utilsier les deux en meme temps
+            return
+          }
+      }
+    this.toggleStatusEffect(effectid, state)
   }
 
   /**

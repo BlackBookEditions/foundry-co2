@@ -250,4 +250,28 @@ export const CUSTOM_STATUS_EFFECT = [
     name: "Inconscient",
     img: "icons/svg/unconscious.svg",
   },
+  {
+    id: "partialDef",
+    name: "CO.customStatus.partialDef",
+    img: "systems/co/ui/effects/partialdef.webp",
+    changes: [
+      {
+        key: "system.combat.def.bonuses.effects",
+        mode: 2,
+        value: 3,
+      }],
+    description: "CO.customStatus.partialDefDescription",
+  },
+  {
+    id: "fullDef",
+    name: "CO.customStatus.fullDef",
+    img: "systems/co/ui/effects/totalDef.webp",
+    changes: [
+      {
+        key: "system.combat.def.bonuses.effects",
+        mode: 2,
+        value: 5,
+      }],
+    description: "CO.customStatus.fullDefDescription",
+  }
 ]

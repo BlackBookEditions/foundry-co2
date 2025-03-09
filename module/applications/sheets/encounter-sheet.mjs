@@ -23,6 +23,11 @@ export default class COEncounterSheet extends CoBaseActorSheet {
     context.choiceCategories = SYSTEM.ENCOUNTER_CATEGORIES
     context.choiceBossRanks = SYSTEM.ENCOUNTER_BOSS_RANKS
     context.choiceSizes = SYSTEM.SIZES
+     //Activation desactivation des defenses
+     context.partialDef = this.actor.hasEffect("partialDef") ? true : false
+     context.partialfa = "fa-solid fa-shield-halved"
+     context.fullDef = this.actor.hasEffect("fullDef") ? true : false
+     context.fullfa = "fa-solid fa-shield"
     if (CONFIG.debug.co?.sheets) console.debug(Utils.log(`COEncounterSheet - context`), context)
     return context
   }
@@ -34,6 +39,7 @@ export default class COEncounterSheet extends CoBaseActorSheet {
     html.find(".path-delete").click(this._onDeletePath.bind(this))
     html.find(".rollable").click(this._onRoll.bind(this))
     html.find(".toggle-action").click(this._onUseAction.bind(this))
+    html.find(".toggle-effect").click(this._onUseEffect.bind(this))
     html.find(".capacity-learn").click(this._onLearnedToggle.bind(this))
     html.find(".inventory-equip").click(this._onEquippedToggle.bind(this))
   }
@@ -50,6 +56,20 @@ export default class COEncounterSheet extends CoBaseActorSheet {
     } else if (action === "unactivate") {
       this.actor.activateAction(false, source, indice, type)
     }
+  }
+
+  _onUseEffect(event) {
+    event.preventDefault()
+    const dataset = event.currentTarget.dataset
+    const effectid = dataset.effect
+    const action = dataset.action
+    let activation = false
+    if (action === "activate") {
+      activation = this.actor.activateEffect({ state: true, effectid })
+    } else if (action === "unactivate") {
+      activation = this.actor.activateEffect({ state: false, effectid })
+    }
+
   }
 
   /**

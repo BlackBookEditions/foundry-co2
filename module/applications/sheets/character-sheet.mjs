@@ -37,6 +37,13 @@ export default class COCharacterSheet extends CoBaseActorSheet {
     context.choiceAbilities = SYSTEM.ABILITIES
     context.choiceSize = SYSTEM.SIZES
 
+    //Activation desactivation des defenses    
+    context.partialDef = this.actor.hasEffect("partialDef") ? true : false
+    context.partialfa = "fa-solid fa-shield-halved"
+    context.fullDef = this.actor.hasEffect("fullDef") ? true : false
+    context.fullfa = "fa-solid fa-shield"
+    console.log(context.partialDef, context.fullDef)
+
     if (CONFIG.debug.co?.sheets) console.debug(Utils.log(`COCharacterSheet - context`), context)
     return context
   }
@@ -49,6 +56,7 @@ export default class COCharacterSheet extends CoBaseActorSheet {
     html.find(".path-delete").click(this._onDeletePath.bind(this))
     html.find(".rollable").click(this._onRoll.bind(this))
     html.find(".toggle-action").click(this._onUseAction.bind(this))
+    html.find(".toggle-effect").click(this._onUseEffect.bind(this))
     html.find(".attack").click(this._onUseAction.bind(this))
     html.find(".damage").click(this._onUseAction.bind(this))
     html.find(".capacity-learn").click(this._onLearnedToggle.bind(this))
@@ -75,6 +83,20 @@ export default class COCharacterSheet extends CoBaseActorSheet {
     } else if (action === "unactivate") {
       activation = this.actor.activateAction({ state: false, source, indice, type })
     }
+  }
+
+  _onUseEffect(event) {
+    event.preventDefault()
+    const dataset = event.currentTarget.dataset
+    const effectid = dataset.effect
+    const action = dataset.action      
+    let activation = false
+    if (action === "activate") {
+      activation = this.actor.activateEffect({ state: true, effectid })
+    } else if (action === "unactivate") {
+      activation = this.actor.activateEffect({ state: false, effectid })
+    }
+
   }
 
   /** @inheritDoc */

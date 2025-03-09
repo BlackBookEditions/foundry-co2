@@ -24,6 +24,22 @@
 <div class="attacks section-container">
     <div class="section-header">
         <h4>{{localize "CO.label.long.attacks"}}</h4>
+        <div class="actions-controls controls" style="margin-right:5px">
+            <a class="item-control">
+                {{#if partialDef}}
+                    <i class="{{partialfa}} green toggle-effect" data-tooltip="{{localize 'CO.customStatus.partialDefdeactivate'}}" data-action="unactivate" data-effect="partialDef"></i>
+                {{else}}
+                    <i class="{{partialfa}} gray toggle-effect" data-tooltip="{{localize 'CO.customStatus.partialDefactivate'}}" data-action="activate" data-effect="partialDef"></i>
+                {{/if}}
+            </a>
+            <a class="item-control">
+                {{#if fullDef}}
+                    <i class="{{fullfa}} green toggle-effect" data-tooltip="{{localize 'CO.ui.deactivate'}}" data-action="unactivate" data-effect="fullDef"></i>
+                {{else}}
+                    <i class="{{fullfa}} gray toggle-effect" data-tooltip="{{localize 'CO.ui.activate'}}" data-action="activate" data-effect="fullDef"></i>
+                {{/if}}
+            </a>
+        </div>
         <div class="attacks-controls controls">
             <a class="item-control item-create" data-type="attack" data-tooltip="{{localize 'CO.label.long.add'}}"><i class="fas fa-plus"></i></a>
         </div>
