@@ -89,7 +89,7 @@
         <ol class="actions-container items-container">
             <ol class="item-list">
                 {{#each visibleActivableActions as |action id|}}
-                    {{log (concat "Chroniques Oubliées | action " id) action}}
+                    {{!log (concat "Chroniques Oubliées | action " id) action}}
                         <li class="item flexrow action {{#if action.properties.temporary}}{{#unless action.properties.enabled}}deactivated{{/unless}}{{/if}}" draggable="true" data-item-uuid="{{action.source}}" data-indice="{{action.indice}}">
                             <div class="item-name flexrow">
                                 <a class="item-image item-edit" style="background-image: url('{{{actionImg}}}')"></a>

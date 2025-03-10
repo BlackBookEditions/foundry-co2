@@ -160,25 +160,25 @@ export default class CharacterData extends ActorData {
    * @returns {Array} An array of ability modifiers.
    */
   get abilityModifiers() {
-    return this.parent._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.ability.id)
+    return this._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.ability.id)
   }
 
   /**
-     * Gets the resource modifiers for the character.
-     *
-     * @returns {Array} An array of resource modifiers.
-     */
+   * Gets the resource modifiers for the character.
+   *
+   * @returns {Array} An array of resource modifiers.
+   */
   get resourceModifiers() {
-    return this.parent._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.resource.id)
+    return this._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.resource.id)
   }
 
-   /**
+  /**
    * Retrieves the state modifiers for the character.
    *
    * @returns {Array} An array of state modifiers.
    */
-   get stateModifiers() {
-    return this.parent._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.state.id)
+  get stateModifiers() {
+    return this._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.state.id)
   }
 
   /**
@@ -187,7 +187,7 @@ export default class CharacterData extends ActorData {
    * @returns {Array} An array of state modifiers.
    */
   get bonusDiceModifiers() {
-    return this.parent._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.bonusDice.id)
+    return this._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.bonusDice.id)
   }
 
   /**
@@ -196,15 +196,67 @@ export default class CharacterData extends ActorData {
    * @returns {Array} An array of state modifiers.
    */
   get malusDiceModifiers() {
-    return this.parent._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.malusDice.id)
+    return this._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.malusDice.id)
   }
 
-   /**
+  /**
+   * Retrieves an array of combat modifiers from various sources associated with the character.
+   *
+   * @returns {Array} An array of combat modifiers.
+   */
+  get combatModifiers() {
+    return this._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.combat.id)
+  }
+
+  /**
+   * Retrieves the attribute modifiers for the character.
+   *
+   * @returns {Array} An array of attribute modifiers.
+   */
+  get attributeModifiers() {
+    return this._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.attribute.id)
+  }
+
+  /**
+   * Retrieves the skill modifiers for the character.
+   *
+   * @returns {Array} An array of skill modifiers.
+   */
+  get skillModifiers() {
+    return this._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.skill.id)
+  }
+
+  /**
+   * Retrieves an array of modifiers from various sources associated with the character.
+   * The sources include features, profiles, capacities, and equipment.
+   * Each source is checked for enabled modifiers of the specified type and subtype.
+   * For features and profiles, the modifiers are in the item
+   * for capacities and equipment, the modifiers are in the actions
+   *
+   * @param {string} subtype The subtype of the modifier.
+   * @returns {Array} An array of modifiers.
+   */
+  _getModifiers(subtype) {
+    const sources = ["features", "profiles", "capacities", "equipments"]
+    let modifiersArray = []
+
+    sources.forEach((source) => {
+      let items = this.parent.source
+      if (items) {
+        let allModifiers = items.reduce((mods, item) => mods.concat(item.enabledModifiers), []).filter((m) => m.subtype === subtype)
+        modifiersArray.push(...allModifiers)
+      }
+    })
+
+    return modifiersArray
+  }
+
+  /**
    * Return the total modifier and the tooltip for the given target and an array of modifiers.
    * @param {Array} modifiers An array of modifier objects.
    * @param {SYSTEM.MODIFIERS.MODIFIER_TARGET} target The target for which the modifiers are filtered.
    **/
-   computeTotalModifiersByTarget(modifiers, target) {
+  computeTotalModifiersByTarget(modifiers, target) {
     if (!modifiers) return { total: 0, tooltip: "" }
 
     let modifiersByTarget = modifiers.filter((m) => m.target === target)
@@ -219,7 +271,6 @@ export default class CharacterData extends ActorData {
 
     return { total: total, tooltip: tooltip }
   }
- 
 
   async prepareDerivedData() {
     super.prepareDerivedData()
@@ -365,8 +416,6 @@ export default class CharacterData extends ActorData {
   _prepareMovement() {
     this.attributes.movement.value = this.attributes.movement.base + this.attributes.movement.bonuses.sheet + this.attributes.movement.bonuses.effects
   }
-
-  
 
   /**
    * On regarde si un modifier modifie la vision

@@ -106,7 +106,7 @@
             <ol class="item-list">
                 {{#each visibleActivableActions as |action id|}}
                     {{!log (concat "Chroniques Oubliées | action " id) action}}
-                    <li class="item flexrow" draggable="true" {{#if action.properties.temporary}}{{#unless action.properties.enabled}}style="opacity: 60%" {{/unless}} {{/if}}>
+                    <li class="item flexrow {{#if action.properties.temporary}}{{#unless action.properties.enabled}}deactivated{{/unless}}{{/if}}" draggable="true" data-item-uuid="{{action.source}}" data-indice="{{action.indice}}">
                         <div class="item-name flexrow">
                             <div class="item-image" style="background-image: url('{{{actionImg}}}')"></div>
                             <h4><a class="item-control item-edit">{{action.itemName}} : {{action.label}}</a>&nbsp;{{{action.icon}}}</h4>
@@ -116,9 +116,9 @@
                                 {{#if action.properties.temporary}}
                                     <a class="item-control item-activate">
                                         {{#if action.properties.enabled}}
-                                            <i class="fas fa-power-off green toggle-action" style="font-size:16px" data-tooltip="Désactiver" data-action="unactivate" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
+                                            <i class="fas fa-power-off green toggle-action" style="font-size:16px" data-tooltip="{{localize 'CO.ui.deactivate'}}" data-action="unactivate" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
                                         {{else}}
-                                            <i class="fas fa-power-off gray toggle-action" style="font-size:16px" data-tooltip="Activer" data-action="activate" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
+                                            <i class="fas fa-power-off gray toggle-action" style="font-size:16px" data-tooltip="{{localize 'CO.ui.activate'}}" data-action="activate" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
                                         {{/if}}
                                     </a>
                                 {{else}}

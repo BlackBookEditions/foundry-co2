@@ -309,64 +309,6 @@ export default class COActor extends Actor {
     return 0
   }
 
-   
-  /**
-   * Retrieves an array of combat modifiers from various sources associated with the character.
-   *
-   * @returns {Array} An array of combat modifiers.
-   */
-  get combatModifiers() {
-    return this._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.combat.id)
-  }
-
-  /**
-   * Retrieves the attribute modifiers for the character.
-   *
-   * @returns {Array} An array of attribute modifiers.
-   */
-  get attributeModifiers() {
-    return this._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.attribute.id)
-  }
-
-
-  /**
-   * Retrieves the skill modifiers for the character.
-   *
-   * @returns {Array} An array of skill modifiers.
-   */
-  get skillModifiers() {
-    return this._getModifiers(SYSTEM.MODIFIERS_SUBTYPE.skill.id)
-  }
-
- 
-
-  /**
-   * Retrieves an array of modifiers from various sources associated with the character.
-   * The sources include features, profiles, capacities, and equipment.
-   * Each source is checked for enabled modifiers of the specified type and subtype.
-   * For features and profiles, the modifiers are in the item
-   * for capacities and equipment, the modifiers are in the actions
-   *
-   * @param {string} subtype The subtype of the modifier.
-   * @returns {Array} An array of modifiers.
-   */
-  _getModifiers(subtype) {
-    const sources = ["features", "profiles", "capacities", "equipments"]
-    let modifiersArray = []
-
-    sources.forEach((source) => {
-      let items = this.source
-      if (items) {
-        let allModifiers = items.reduce((mods, item) => mods.concat(item.enabledModifiers), []).filter((m) => m.subtype === subtype)
-        modifiersArray.push(...allModifiers)
-      }
-    })
-
-    return modifiersArray
-  }
-
- 
-
   // #endregion
 
   // #region Méthodes publiques
@@ -527,14 +469,8 @@ export default class COActor extends Actor {
    * @param {*} shiftKey true if the shift key is pressed
      @param {string("attack","damage")} type  define if it's an attack or just a damage
    */
-<<<<<<< Updated upstream
-
   async activateAction({ state, source, indice, type, shiftKey = null } = {}) {
-=======
-  async activateAction({ state, source, indice, type, shiftKey = null } = {}) {    
->>>>>>> Stashed changes
     const item = await fromUuid(source)
-    console.log("item : ", source)
     if (!item) return
 
     if (CONFIG.debug.co?.actions) console.debug(Utils.log(`COActor - activateAction`), state, source, indice, type, item)
@@ -580,9 +516,9 @@ export default class COActor extends Actor {
     // Action avec une durée : changement de l'état de l'action
     if (item.system.actions[indice].properties.temporary) {
       if (CONFIG.debug.co?.actions) console.debug(Utils.log(`COActor - activateAction - Action avec une durée`), state, source, indice, type, shiftKey, item)
+
       const newActions = item.system.toObject().actions
       newActions[indice].properties.enabled = state
-      console.log(newActions)
       await item.update({ "system.actions": newActions })
     }
     // Action instantanée
