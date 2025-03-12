@@ -176,15 +176,6 @@ export default class EncounterData extends ActorData {
     for (const [key, ability] of Object.entries(this.abilities)) {
       // Somme du bonus de la feuille et du bonus des actives effects
       const bonuses = Object.values(ability.bonuses).reduce((prev, curr) => prev + curr)
-
-      // Prise en compte d'un modifier qui donne un dé bonus
-      if (this.bonusDiceModifiers) {
-        let bonusDice = this.bonusDiceModifiers.find((m) => m.target === key)
-        if (bonusDice) {
-          ability.superior = true
-        }
-      }
-
       ability.value = ability.base + bonuses
       ability.tooltipValue = Utils.getTooltip(Utils.getAbilityName(key), ability.base).concat(Utils.getTooltip("Bonus", bonuses))
     }
