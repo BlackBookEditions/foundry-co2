@@ -42,8 +42,6 @@ export default class COCharacterSheet extends CoBaseActorSheet {
     context.partialfa = "fa-solid fa-shield-halved"
     context.fullDef = this.actor.hasEffect("fullDef") ? true : false
     context.fullfa = "fa-solid fa-shield"
-    console.log(context.partialDef, context.fullDef)
-
     if (CONFIG.debug.co?.sheets) console.debug(Utils.log(`COCharacterSheet - context`), context)
     return context
   }

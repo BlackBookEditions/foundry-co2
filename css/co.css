@@ -851,7 +851,7 @@ strong,
   overflow: auto;
   height: 80%;
   width: 100%;
-  min-height: 100%;
+  min-height: 80%;
   max-height: 100%;
   font-size: 1rem;
 }
