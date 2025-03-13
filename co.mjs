@@ -107,19 +107,19 @@ Hooks.once("init", async function () {
     game.system.CONST.martialTrainingsShields = []
   }
 
-  // Initiative
+  // Combat trakcker
   if (game.settings.get("co", "usevarInit")) {
     CONFIG.Combat.initiative = {
       formula: "1d6x + @combat.init.value",
-      decimals: 2,
+      decimals: 0,
     }
   } else {
     CONFIG.Combat.initiative = {
       formula: "@combat.init.value",
-      decimals: 2,
+      decimals: 0,
     }
   }
-
+  CONFIG.Combat.documentClass = models.CombatCO
   console.info(Utils.log("Initialized"))
 })
 
@@ -139,7 +139,6 @@ Hooks.once("i18nInit", function () {
 
   customeffects.sort((a, b) => a.name.localeCompare(b.name))
   CONFIG.statusEffects = customeffects
-  console.log(CONFIG.statusEffects)
 })
 
 Hooks.once("ready", async function () {
