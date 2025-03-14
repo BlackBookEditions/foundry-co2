@@ -145,7 +145,7 @@ export default class CharacterData extends ActorData {
     return this.profile ? SYSTEM.FAMILIES[this.profile.system.family].recoveryBonus : 0
   }
 
-  get level() {
+  get currentLevel() {
     return this.attributes.level
   }
 

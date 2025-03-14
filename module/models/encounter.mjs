@@ -82,7 +82,7 @@ export default class EncounterData extends ActorData {
     return foundry.utils.mergeObject(super.defineSchema(), schema)
   }
 
-  get level() {
+  get currentLevel() {
     return this.attributes.nc
   }
 

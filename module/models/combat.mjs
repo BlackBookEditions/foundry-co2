@@ -45,8 +45,8 @@ export default class CombatCO extends Combat {
     const ia = Number.isNumeric(a.initiative) ? a.initiative : -Infinity
     const ib = Number.isNumeric(b.initiative) ? b.initiative : -Infinity
     if (ia === ib) {
-      let blevel = b.actor.system.level
-      let alevel = a.actor.system.level
+      let blevel = b.actor.system.currentLevel
+      let alevel = a.actor.system.currentLevel
       if (blevel > alevel) return 1
       if (blevel < alevel) return -1
       if (blevel === alevel) {
