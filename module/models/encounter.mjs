@@ -82,6 +82,10 @@ export default class EncounterData extends ActorData {
     return foundry.utils.mergeObject(super.defineSchema(), schema)
   }
 
+  get level() {
+    return this.attributes.nc
+  }
+
   /**
    * Retrieves an array of combat modifiers from various sources associated with the character.
    *

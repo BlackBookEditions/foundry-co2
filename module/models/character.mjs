@@ -145,6 +145,10 @@ export default class CharacterData extends ActorData {
     return this.profile ? SYSTEM.FAMILIES[this.profile.system.family].recoveryBonus : 0
   }
 
+  get level() {
+    return this.attributes.level
+  }
+
   /**
    * Retrieves the profile item from the items array.
    *

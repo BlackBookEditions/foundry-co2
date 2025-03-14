@@ -1454,4 +1454,32 @@ export default class COActor extends Actor {
     }
     return targets
   }
+
+  /**
+   * On change de round donc on peux gérer des actions qui se terminent "à la fin du round"
+   * @param {CombatCO} combat L'instance du combat en cours
+   * @param {*} updateData : contient {round, turn}
+   * @param {*} updateOptions contiens {direction: -1, worldTime: {delta: advanceTime}} -1 si on reviens en arriere et 1 si on avance
+   */
+  combatNewRound(combat, updateData, updateOptions) {
+    //Ici on va gérer qu'on arrive dans un nouveau round il faut faire attention car le MJ peux revenir en arrière !
+    //on va notamment gérer la durée des effets en round ou secondes je suppose
+    /*console.log("combatRound", combat)
+    console.log("combatRound", updateData)
+    console.log("combatRound", updateOptions)*/
+  }
+
+  /**
+   * On change de tour donc on peux gérer des actions qui se terminent "à la fin du round"
+   * @param {CombatCO} combat L'instance du combat en cours
+   * @param {*} updateData : contient {round, turn}
+   * @param {*} updateOptions contiens {direction: -1, worldTime: {delta: CONFIG.time.turnTime} -1 si on reviens en arriere et 1 si on avance
+   */
+  combatNewTurn(combat, updateData, updateOptions) {
+    //Ici on va gérer qu'on arrive dans un nouveau round il faut faire attention car le MJ peux revenir en arrière !
+    //on va notamment gérer la durée des effets en round ou secondes je suppose
+    /*console.log("combatTurn", combat)
+    console.log("combatTurn", updateData)
+    console.log("combatTurn", updateOptions)*/
+  }
 }

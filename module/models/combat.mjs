@@ -34,85 +34,6 @@
 
 export default class CombatCO extends Combat {
   /**
-   * Begin the combat encounter, advancing to round 1 and turn 1
-   * @returns {Promise<Combat>}
-   */
-  async startCombat() {
-    await super.startCombat()
-    return this
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Advance the combat to the next turn
-   * @returns {Promise<Combat>}
-   */
-  async nextTurn() {
-    await super.nextTurn()
-    return this
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Rewind the combat to the previous turn
-   * @returns {Promise<Combat>}
-   */
-  async previousTurn() {
-    await super.previousTurn()
-    return this
-  }
-
-  /**
-   * Advance the combat to the next round
-   * @returns {Promise<Combat>}
-   */
-  async nextRound() {
-    await super.nextRound()
-  }
-
-  /**
-   * Rewind the combat to the previous round
-   * @returns {Promise<Combat>}
-   */
-  async previousRound() {
-    await super.previousRound()
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Display a dialog querying the GM whether they wish to end the combat encounter and empty the tracker
-   * @returns {Promise<Combat>}
-   */
-  async endCombat() {
-    await super.endCombat()
-    return this
-  }
-
-  /**
-   * Return the Array of combatants sorted into initiative order, breaking ties alphabetically by name.
-   * @returns {Combatant[]}
-   */
-  setupTurns() {
-    this.turns ||= []
-    // Determine the turn order and the current turn
-    const turns = this.combatants.contents.sort(this._sortCombatants)
-    if (this.turn !== null) this.turn = Math.clamp(this.turn, 0, turns.length - 1)
-
-    // Update state tracking
-    let c = turns[this.turn]
-    this.current = this._getCurrentState(c)
-
-    // One-time initialization of the previous state
-    if (!this.previous) this.previous = this.current
-
-    // Return the array of prepared turns
-    return (this.turns = turns)
-  }
-
-  /**
    * Define how the array of Combatants is sorted in the displayed list of the tracker.
    * This method can be overridden by a system or module which needs to display combatants in an alternative order.
    * The default sorting rules sort in descending order of initiative using combatant IDs for tiebreakers.
@@ -124,14 +45,8 @@ export default class CombatCO extends Combat {
     const ia = Number.isNumeric(a.initiative) ? a.initiative : -Infinity
     const ib = Number.isNumeric(b.initiative) ? b.initiative : -Infinity
     if (ia === ib) {
-      let blevel = 1
-      let alevel = 1
-      if (b.actor.type === "encounter") blevel = b.actor.system.attributes.nc
-      else blevel = b.actor.system.attributes.level
-      if (a.actor.type === "encounter") alevel = a.actor.system.attributes.nc
-      else alevel = a.actor.system.attributes.level
-
-      console.log(blevel, alevel)
+      let blevel = b.actor.system.level
+      let alevel = a.actor.system.level
       if (blevel > alevel) return 1
       if (blevel < alevel) return -1
       if (blevel === alevel) {
