@@ -455,7 +455,10 @@
         "title": "Dépenser un point de récupération",
         "content": "<p>Souhaitez-vous dépenser 1 point de récupération ?",
         "rollTitle": "Point de récupération"
-      }
+      },
+      "restManaPoint": "Récupérez-vous le maximum de point de mana ?",
+      "restmpRecupTitle": "Récupération de mana",
+      "restHpRecovered": "Vous avez récupéré {0} points de vigueur"
     },
     "roll": {
       "skillcheck": "Test de compétence",
