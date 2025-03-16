@@ -44,7 +44,7 @@
       "warningProfileCreated": "Le profil a été créé.",
       "warningNotEnoughMana": "Pas assez de mana pour lancer le sort.",
       "warningLevelTooLow": "Vous n'avez pas le niveau minimum pour apprendre cette capacité.",
-      "warningApplyDamageNoTarget" : "Vous devez sélectionner au moins une cible pour appliquer les dommages"
+      "warningApplyDamageNoTarget": "Vous devez sélectionner au moins une cible pour appliquer les dommages"
     },
     "tooltip": {
       "formulaAttack": "Formule d'attaque (sans le dé)",
@@ -224,12 +224,12 @@
       "unconscious": "Inconscient",
       "partialDef": "Défense partielle (A)",
       "partialDefDescription": "+3 en DEF et aux tests opposés pour résister à une attaque ou un effet pendant 1 round",
-      "partialDefActivate":"Activer la défense partielle (A)",
-      "partialDefDeactivate":"Désactiver la défense partielle (A)",
-      "fullDef" : "Défense totale (L)",
-      "fullDefDescription":"+5 en DEF et aux tests opposés pour résister à une attaque ou un effet pendant 1 round",
-      "fullDefActivate":"Activer la défense totale (L)",
-      "fullDefDeactivate":"Désactiver la défense totale (L)"
+      "partialDefActivate": "Activer la défense partielle (A)",
+      "partialDefDeactivate": "Désactiver la défense partielle (A)",
+      "fullDef": "Défense totale (L)",
+      "fullDefDescription": "+5 en DEF et aux tests opposés pour résister à une attaque ou un effet pendant 1 round",
+      "fullDefActivate": "Activer la défense totale (L)",
+      "fullDefDeactivate": "Désactiver la défense totale (L)"
     },
     "ui": {
       "none": "--",
@@ -326,6 +326,8 @@
       "buy": "Apprendre",
       "unbuy": "Ne pas apprendre",
       "recovery": "Dé de récupération",
+      "rapidRest": "Récupération rapide",
+      "fullRest": "Récupération complète",
       "pvLevel": "Points de vigueur par niveau",
       "noTarget": "Vous n'avez ciblé personne",
       "critTooltip": "Laisser vide pour utiliser la valeur par défaut du personnage",
@@ -451,7 +453,7 @@
       "skillCheck": "Test de compétence",
       "spendRecoveryPoint": {
         "title": "Dépenser un point de récupération",
-        "content": "<p>Êtes-vous sûr de vouloir dépenser 1 point de récupération ?",
+        "content": "<p>Souhaitez-vous dépenser 1 point de récupération ?",
         "rollTitle": "Point de récupération"
       }
     },

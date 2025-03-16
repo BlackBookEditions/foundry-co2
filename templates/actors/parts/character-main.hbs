@@ -68,6 +68,12 @@
     <div class="section-header">
         <h4>{{localize "CO.ui.actions"}}</h4>
         <div class="actions-controls controls">
+            <a class="item-control">                
+                <i class="fa-solid fa-mug-saucer active-rest" data-tooltip="{{localize 'CO.ui.rapidRest'}}" data-option="rapidRest"></i>
+            </a>
+            <a class="item-control">
+                <i class="fa-solid fa-bed active-rest" data-tooltip="{{localize 'CO.ui.fullRest'}}" data-option="fullRest"></i>
+            </a>
             <a class="item-control">
                 {{#if partialDef}}
                     <i class="{{partialfa}} green toggle-effect" data-tooltip="{{localize 'CO.customStatus.partialDefDeactivate'}}" data-action="unactivate" data-effect="partialDef"></i>

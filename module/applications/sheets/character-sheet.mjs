@@ -61,6 +61,7 @@ export default class COCharacterSheet extends CoBaseActorSheet {
     html.find(".capacity-unlearn").click(this._onUnlearnCapacity.bind(this))
     html.find(".inventory-equip").click(this._onEquippedToggle.bind(this))
     html.find(".use-recovery").click(this._onUseRecovery.bind(this))
+    html.find(".active-rest").click(this._onUseRecovery.bind(this))
   }
 
   /**
@@ -125,16 +126,19 @@ export default class COCharacterSheet extends CoBaseActorSheet {
   }
 
   /**
-   * Dépense un point de récupération avec récupération de point de vie ou sans si Shift + Clic
+   * Va déclencher la gestion de la récupération rapide/récupération total
+   * avec possibilité de ne pas dépenser de point avec shift + clic
    * @param {*} event
    * @private
    */
   _onUseRecovery(event) {
     event.preventDefault()
-    if (event.shiftKey) {
-      return this.actor.useRecovery(false)
-    }
-    return this.actor.useRecovery(true)
+    const dataset = event.currentTarget.dataset
+    let isFullRest = false
+    let useRecoveryPoint = true
+    if (dataset.option && dataset.option === "fullRest") isFullRest = true
+    if (event.shiftKey) useRecoveryPoint = false
+    return this.actor.system.useRecovery(isFullRest, useRecoveryPoint)
   }
 
   /**
