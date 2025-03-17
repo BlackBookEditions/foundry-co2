@@ -921,7 +921,11 @@ strong,
   margin: 0;
   height: 100%;
   width: 100%;
+<<<<<<< Updated upstream
   min-height: 200px;
+=======
+  min-height: 50px;
+>>>>>>> Stashed changes
 }
 .co .editor .editor-content {
   padding: 5px;
