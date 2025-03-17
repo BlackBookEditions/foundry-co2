@@ -125,19 +125,19 @@
                                 {{else}}
                                     {{#if (or (eq action.type 'melee') (eq action.type 'ranged') (eq action.type 'magical'))}}
                                         <a class="item-control">
-                                            <i class="fas fa-dice-d20 green toggle-action" style="font-size:16px" data-tooltip="Attaque" data-action="activate" data-type="attack" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
+                                            <i class="fas fa-dice-d20 green toggle-action" style="font-size:16px" data-tooltip="{{localize 'CO.label.long.attack'}}" data-action="activate" data-type="attack" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
                                         </a>
                                         <a class="item-control">
-                                            <i class="fas fa-dice-d20 green toggle-action" style="font-size:16px" data-tooltip="Dommages" data-action="activate" data-type="damage" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
+                                            <i class="fas fa-dice-d20 green toggle-action" style="font-size:16px" data-tooltip="{{localize 'CO.label.long.damage'}}" data-action="activate" data-type="damage" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
                                         </a>
                                     {{else}}
                                         <a class="item-control">
-                                            <i class="fa-solid green fa-sword toggle-action" style="font-size:16px" data-tooltip="Utiliser" data-action="activate" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
+                                            <i class="fa-solid fa-hand-pointer green toggle-action" style="font-size:16px" data-tooltip="{{localize 'CO.ui.use'}}" data-action="activate" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
                                         </a>
                                     {{/if}}
                                 {{/if}}
                             {{/if}}
-                            <a class="item-chat chat" data-tooltip="localize CO.label.long.sendToChat" data-chat-type="action" data-indice="{{action.indice}}" data-source="{{action.source}}"><i class="fas fa-fw fa-comment-alt"></i></a>
+                            <a class="item-chat chat" data-tooltip="{{localize 'CO.label.long.sendToChat'}}" data-chat-type="action" data-indice="{{action.indice}}" data-source="{{action.source}}"><i class="fas fa-fw fa-comment-alt"></i></a>
                         </div>
                     </li>
                 {{/each}}
