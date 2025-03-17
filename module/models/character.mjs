@@ -421,7 +421,8 @@ export default class CharacterData extends ActorData {
   }
 
   _prepareMovement() {
-    this.attributes.movement.value = this.attributes.movement.base + this.attributes.movement.bonuses.sheet + this.attributes.movement.bonuses.effects
+    const movementModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "mov")
+    this.attributes.movement.value = this.attributes.movement.base + this.attributes.movement.bonuses.sheet + this.attributes.movement.bonuses.effects + movementModifiers.total
   }
 
   /**

@@ -177,7 +177,9 @@ export default class EncounterData extends ActorData {
   }
 
   _prepareMovement() {
-    this.attributes.movement.value = this.attributes.movement.base + this.attributes.movement.bonuses.sheet + this.attributes.movement.bonuses.effects
+    const movementModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "mov")
+    console.log(movementModifiers)
+    this.attributes.movement.value = this.attributes.movement.base + this.attributes.movement.bonuses.sheet + this.attributes.movement.bonuses.effects + movementModifiers.total
   }
 
   /**
