@@ -136,6 +136,12 @@ export default class EncounterData extends ActorData {
 
     this._prepareHPMax()
 
+    this._prepareMovement()
+
+    this._prepareCombat()
+  }
+
+  _prepareCombat() {
     for (const [key, skill] of Object.entries(this.combat)) {
       // Somme du bonus de la feuille et du bonus des effets
       const bonuses = Object.values(skill.bonuses).reduce((prev, curr) => prev + curr)
@@ -168,6 +174,10 @@ export default class EncounterData extends ActorData {
     }
 
     this.magic = this.abilities.vol.value + (this.attributes.nc === 0.5 ? 1 : this.attributes.nc)
+  }
+
+  _prepareMovement() {
+    this.attributes.movement.value = this.attributes.movement.base + this.attributes.movement.bonuses.sheet + this.attributes.movement.bonuses.effects
   }
 
   /**

@@ -7,7 +7,7 @@
     <div class="section-body">
         <div class="list">
             {{#each abilities as |ability id|}}
-                {{log 'encounter-main' ability id}}
+                {{!log 'encounter-main' ability id}}
                 <div class="labelled-field" data-attribute="str">
                     <label class="rollable"><a>{{localize (concat "CO.abilities.short." id)}}{{#if ability.superior}}*{{/if}}</a></label>
                     {{#if ../unlocked}}
@@ -63,7 +63,7 @@
                             {{#if (eq attack.system.subtype "ranged")}}
                                 <span><strong>{{localize "CO.label.short.ranged"}}</strong><span class="activity-icon"><i class="fas fa-fw fa-bow-arrow"></i></span>{{attack.name}} {{attack.system.actions.0.label}}</span>
                             {{/if}}
-                            {{#if (eq attack.system.subtype "magical")}}
+                            {{#if (eq attack.system.subtype "magic")}}
                                 <span><strong>{{localize "CO.label.short.magic"}}</strong><span class="activity-icon"><i class="fas fa-fw fa-wand-magic-sparkles"></i></span>{{attack.name}} {{attack.system.actions.0.label}}</span>
                             {{/if}}
                         </h4>
