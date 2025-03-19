@@ -137,7 +137,7 @@
                         </li>
                 {{/each}}
                 {{#each ActivableChargeableActions as |action id|}}
-                    {{log (concat "Chroniques Oubliées | action " id) action}}
+                    {{!log (concat "Chroniques Oubliées | action " id) action}}
                         <li class="item flexrow action {{#unless action.properties.enabled}}deactivated{{/unless}}" draggable="true" data-item-uuid="{{action.source}}" data-indice="{{action.indice}}">
                             <div class="item-name flexrow">
                                 <a class="item-image item-edit" style="background-image: url('{{{actionImg}}}')"></a>
@@ -151,12 +151,10 @@
                                         {{else}}
                                             <i class="{{action.iconFA}} gray toggle-action" data-tooltip="{{localize 'CO.label.long.needCharges'}}" data-action="activate" data-type="attack" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
                                         {{/if}}
-                                    </a> 
-                                    {{#if action.properties.enabled}}
+                                    </a>                                     
                                         <a class="item-control">
                                             <i class="fa-regular fa-hand-back-fist darkgreen toggle-action" data-tooltip="{{localize 'CO.label.long.damage'}}" data-action="activate" data-type="damage" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
-                                        </a> 
-                                    {{/if}}                                                           
+                                        </a>                                                                                               
                                     <a class="item-chat chat" data-tooltip="{{localize 'CO.label.long.sendToChat'}}"  data-chat-type="action" data-indice="{{action.indice}}" data-source="{{action.source}}"><i class="fas fa-fw fa-comment-alt"></i></a>
                                 {{/if}}
                             </div>

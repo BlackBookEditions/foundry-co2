@@ -102,10 +102,12 @@ export default class COItem extends Item {
    * Renvoi true si une capacité avec une fréquence d'utilisation possède toujours une charge
    * @returns {boolean}
    */
-  async getHasCharge() {
+  getHasCharge() {
     if (this.type === SYSTEM.ITEM_TYPE.capacity.id && this.system.frequency !== SYSTEM.CAPACITY_FREQUENCY.none.id && this.system.charges.current !== 0) {
       return true
-    } else return false
+    } else {
+      return false
+    }
   }
 
   /**

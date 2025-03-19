@@ -750,7 +750,7 @@ export default class CharacterData extends ActorData {
     let rp = this.resources.recovery
     let mp = this.resources.mana
     const hd = this.hd
-
+    this.recoverCapacityCharges(isFullRest)
     // Récupération rapide
     if (!isFullRest) {
       if (rp.value <= 0) return ui.notifications.warn(game.i18n.localize("CO.notif.warningNoMoreRecoveryPoints"))
@@ -810,6 +810,27 @@ export default class CharacterData extends ActorData {
 
         await this._applyRecovery(rp, hp, formula, game.i18n.localize("CO.dialogs.fullRest.title"))
       }
+    }
+  }
+
+  /**
+   * Fonction qui va permetttre de recharger les charges d'utilisation de capacités lors des récupération
+   * @param {boolean} full indique si il s'agit d'une récupération rapide (false) ou longue (true)
+   */
+  recoverCapacityCharges(full) {
+    const capacities = this.parent.capacities
+    if (capacities.length !== 0) {
+      capacities.forEach((capacity) => {
+        if (capacity.system.frequency === SYSTEM.CAPACITY_FREQUENCY.daily.id && full) {
+          capacity.system.charges.current = capacity.system.charges.max
+          capacity.update({ "system.charges.current": capacity.system.charges.current })
+        }
+        if (capacity.system.frequency === SYSTEM.CAPACITY_FREQUENCY.combat.id) {
+          // Que ce soit une recup rapid ou complete ça reset
+          capacity.system.charges.current = capacity.system.charges.max
+          capacity.update({ "system.charges.current": capacity.system.charges.current })
+        }
+      })
     }
   }
 

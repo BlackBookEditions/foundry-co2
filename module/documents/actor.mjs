@@ -602,6 +602,16 @@ export default class COActor extends Actor {
           }
         }
       }
+      // Si c'est une capacité avec une charge il faut la consommer
+      if (item.type === SYSTEM.ITEM_TYPE.capacity.id && item.getHasCharge() && item.system.frequency !== SYSTEM.CAPACITY_FREQUENCY.none.id) {
+        item.system.charges.current = Math.max(item.system.charges.current - 1, 0)
+        await item.update({ "system.charges.current": item.system.charges.current })
+        if (item.system.charges.current === 0) {
+          const newActions = item.system.toObject().actions
+          newActions[indice].properties.enabled = false
+          await item.update({ "system.actions": newActions })
+        }
+      }
     }
 
     return true
@@ -1590,7 +1600,6 @@ export default class COActor extends Actor {
   combatNewTurn(combat, updateData, updateOptions) {
     // Ici on va gérer qu'on arrive dans un nouveau round il faut faire attention car le MJ peux revenir en arrière !
     // on va notamment gérer la durée des effets en round ou secondes je suppose
-    console.log("combatTurn", combat, updateData, updateOptions)
   }
 
   async consumeAmmunition(item) {
