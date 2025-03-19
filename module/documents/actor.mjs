@@ -506,6 +506,10 @@ export default class COActor extends Actor {
       return ui.notifications.warn(game.i18n.localize("CO.notif.warningNoAmmo"))
     }
 
+    // Si la capacité a des charges est ce qu'il lui en reste ?
+    if (item.type === SYSTEM.ITEM_TYPE.capacity.id && !item.getHasCharge() && item.system.frequency !== SYSTEM.CAPACITY_FREQUENCY.none.id)
+      return ui.notifications.warn(game.i18n.localize("CO.notif.warningNoCharge"))
+
     // TODO Incantation
     // Magie profane (famille des mages) : En revanche, il n’est pas possible d’utiliser un bouclier et une arme ou une arme dans chaque main tout en lançant des sorts de magie profane.
     // Magie divine (famille des mystiques) : respecter les armes autorisées

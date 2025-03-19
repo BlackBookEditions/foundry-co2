@@ -46,7 +46,8 @@
       "warningLevelTooLow": "Vous n'avez pas le niveau minimum pour apprendre cette capacité.",
       "warningApplyDamageNoTarget": "Vous devez sélectionner au moins une cible pour appliquer les dommages",
       "warningNoMoreRecoveryPoints": "Vous n'avez plus de dés de récupération.",
-      "warningNoAmmo": "Vous n'avez plus de munitions."
+      "warningNoAmmo": "Vous n'avez plus de munitions.",
+      "warningNoCharge": "Votre nombre d'utilisation restante est insuffisant"
     },
     "tooltip": {
       "formulaAttack": "Formule d'attaque (sans le dé)",
