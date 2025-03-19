@@ -122,6 +122,8 @@
         "martialTraining": "Formation martiale",
         "martialTrainings": "Formations martiales",
         "current": "Actuel",
+        "usageFrequency": "Fréquence d'utilisation",
+        "usageNumber": "Nombre d'utilisation",
         "formulaAttack": "Attaque",
         "formulaDamage": "Dommages",
         "melee": "Attaque de contact",
@@ -134,7 +136,8 @@
         "skillBonus": "Bonus à l'attaque",
         "skillMalus": "Malus à l'attaque",
         "damageBonus": "Bonus aux dommages",
-        "damageMalus": "Malus aux dommages"
+        "damageMalus": "Malus aux dommages",
+        "needCharges": "Vous devez vous reposer pour récupérer des utilisations"
       },
       "short": {
         "label": "Label",
@@ -641,6 +644,11 @@
           "m": "M",
           "f": "G"
         }
+      },
+      "frequency": {
+        "none": "",
+        "combat": "Combat",
+        "daily": "Quotidien"
       }
     },
     "encounter": {

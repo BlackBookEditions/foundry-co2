@@ -24,9 +24,9 @@ export default class COCharacterSheet extends CoBaseActorSheet {
     context.xpMax = this.actor.system.attributes.xp.max
     context.xpSpent = await this.actor.system.getSpentXP()
     context.xpLeft = await this.actor.system.getAvailableXP()
-
     context.visibleActions = await this.actor.getVisibleActions()
-    context.visibleActivableActions = await this.actor.getVisibleActivableActions()
+    context.visibleActivableActions = (await this.actor.getVisibleActivableActions()) ?? []
+    context.ActivableChargeableActions = await this.actor.getActivableChargeableActions()
     context.visibleNonActivableActions = await this.actor.getVisibleNonActivableActions()
     context.visibleActivableTemporaireActions = await this.actor.getVisibleActivableTemporaireActions()
     context.visibleNonActivableNonTemporaireActions = await this.actor.getVisibleNonActivableNonTemporaireActions()

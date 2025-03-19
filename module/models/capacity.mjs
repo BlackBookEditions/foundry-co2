@@ -2,6 +2,14 @@ import ItemData from "./item.mjs"
 import { Action } from "./schemas/action.mjs"
 import { SYSTEM } from "../config/system.mjs"
 export default class CapacityData extends ItemData {
+  /**
+   * Définie les éléments composant une capacité
+   * {string} subtype : capacity
+   * {string} actionType : none, l, a, m, f (Limité, Attaque, Mouvement)
+   * {boolean} learned : Indique si on a appris ou pas la capacité
+   * {object} charges : Compte le nombre d'utilisations restantes
+   *
+   */
   static defineSchema() {
     const fields = foundry.data.fields
     return foundry.utils.mergeObject(super.defineSchema(), {
@@ -9,17 +17,17 @@ export default class CapacityData extends ItemData {
       actionType: new fields.StringField({ required: true, choices: SYSTEM.CAPACITY_ACTION_TYPE, initial: "none" }),
       learned: new fields.BooleanField({}),
       charges: new fields.SchemaField({
-        current: new fields.NumberField({ required: false, nullable: true, integer: true }),
-        max: new fields.NumberField({ required: false, nullable: true, integer: true }),
+        current: new fields.NumberField({ required: false, nullable: true, integer: true, initial: 1 }),
+        max: new fields.NumberField({ required: false, nullable: true, integer: true, initial: 1 }),
       }),
       properties: new fields.SchemaField({
         spell: new fields.BooleanField({}),
-        chargeable: new fields.BooleanField({}),
       }),
       path: new fields.DocumentUUIDField({ type: "Item" }),
       cost: new fields.NumberField({ required: true, nullable: false, integer: true, initial: -1 }),
       manaCost: new fields.NumberField({ required: true, nullable: false, integer: true, initial: -1 }),
       actions: new fields.ArrayField(new fields.EmbeddedDataField(Action)),
+      frequency: new fields.StringField({ required: true, choices: SYSTEM.CAPACITY_FREQUENCY, initial: "none" }),
     })
   }
 
@@ -51,6 +59,10 @@ export default class CapacityData extends ItemData {
 
   get hasManaCost() {
     return this.manaCost !== -1
+  }
+
+  get hasFrequency() {
+    return this.frequency !== "none"
   }
 
   /**

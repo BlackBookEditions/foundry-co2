@@ -29,31 +29,31 @@
   <div class="form-group">
     <label>{{localize "CO.ui.xpCost"}}</label>
     <div class="form-fields">
-      <label class="field-value"> 
+      <label class="field-value">
         {{#if locked}}
           {{#if system.hasCost}}
-            <input type="text" name="system.cost" value="{{system.cost}}" readonly />            
+            <input type="text" name="system.cost" value="{{system.cost}}" readonly />
           {{/if}}
         {{else}}
           <input type="text" name="system.cost" value="{{system.cost}}" />
         {{/if}}
       </label>
     </div>
-  </div>  
+  </div>
   <div class="form-group">
     <label>{{localize "CO.ui.manaCost"}}</label>
     <div class="form-fields">
-      <label class="field-value"> 
+      <label class="field-value">
         {{#if locked}}
           {{#if system.hasManaCost}}
-            <input type="text" name="system.manaCost" value="{{system.manaCost}}" readonly />            
+            <input type="text" name="system.manaCost" value="{{system.manaCost}}" readonly />
           {{/if}}
         {{else}}
           <input type="text" name="system.manaCost" value="{{system.manaCost}}" />
         {{/if}}
       </label>
     </div>
-  </div>    
+  </div>
   <div class="form-group">
     <label>{{localize "CO.label.long.actionType"}}</label>
     <div class="form-fields">
@@ -63,6 +63,24 @@
     </div>
   </div>
   <div class="form-group">
+    <label>{{localize "CO.label.long.usageFrequency"}}</label>
+    <div class="form-fields">
+      <select name="system.frequency" data-type="String" style="width:100%">
+        {{selectOptions choiceCapacityFrequency selected=system.frequency localize=true}}
+      </select>
+    </div>
+  </div>
+  {{#if system.hasFrequency}}
+    <div class="form-group">
+      <label>{{localize "CO.label.long.usageNumber"}}</label>
+      <div class="form-fields">
+        <input class="field-value" name="system.charges.current" type="text" value="{{system.charges.current}}" placeholder="{{localize 'CO.ui.current'}}" data-dtype="Number" />
+        /
+        <input class="field-value" name="system.charges.max" type="text" value="{{system.charges.max}}" placeholder="{{localize 'CO.ui.max'}}" data-dtype="Number" />
+      </div>
+    </div>
+  {{/if}}
+  <div class="form-group">
     <label>{{localize "CO.label.long.properties"}}</label>
     <div class="form-fields">
       {{#each system.properties as |prop idx|}}
@@ -70,18 +88,5 @@
       {{/each}}
     </div>
   </div>
-  <br />
-
-  {{#if system.properties.chargeable}}
-    <div class="form-group">
-      <label>{{localize "CO.ui.charges"}}</label>
-      <div class="form-fields">
-        <input class="field-value" name="system.charges.current" type="text" value="{{system.charges.current}}" placeholder="{{localize 'CO.ui.current'}}" data-dtype="Number" />
-        /
-        <input class="field-value" name="system.charges.max" type="text" value="{{system.charges.max}}" placeholder="{{localize 'CO.ui.max'}}" data-dtype="Number" />
-      </div>
-    </div>
-
-  {{/if}}
 </div>
 {{!> "systems/co/templates/items/parts/actions/action-partial.hbs"}}

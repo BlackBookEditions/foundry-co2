@@ -136,6 +136,32 @@
                             </div>
                         </li>
                 {{/each}}
+                {{#each ActivableChargeableActions as |action id|}}
+                    {{log (concat "Chroniques Oubliées | action " id) action}}
+                        <li class="item flexrow action {{#unless action.properties.enabled}}deactivated{{/unless}}" draggable="true" data-item-uuid="{{action.source}}" data-indice="{{action.indice}}">
+                            <div class="item-name flexrow">
+                                <a class="item-image item-edit" style="background-image: url('{{{actionImg}}}')"></a>
+                                <h4>{{action.itemName}}{{#if action.hasLabel}} - {{action.label}}{{/if}}&nbsp;{{{action.icon}}} {{#if action.hasQuantity}}<span data-tooltip="Quantité restante">({{action.quantity}})</span>{{/if}} {{#if action.hasCharges}}<span data-tooltip="Quantité restante">({{action.charges}})</span>{{/if}} {{#if action.parent.hasActionType}} ({{action.parent.actionTypeShort}}){{/if}}{{#if action.parent.isSpell}} * (Mana : {{action.manaCost}}{{#if (gt @root.actor.manaCostFromArmor 0)}} Malus armure : {{@root.actor.manaCostFromArmor}}{{/if}}){{/if}}</h4>
+                            </div>
+                            <div class="item-controls-3">                                
+                                {{#if (or (eq action.type 'melee') (eq action.type 'ranged') (eq action.type 'magical'))}}
+                                    <a class="item-control">
+                                        {{#if action.properties.enabled}}
+                                            <i class="{{action.iconFA}} blue toggle-action" data-tooltip="{{localize 'CO.label.long.attack'}}" data-action="activate" data-type="attack" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
+                                        {{else}}
+                                            <i class="{{action.iconFA}} gray toggle-action" data-tooltip="{{localize 'CO.label.long.needCharges'}}" data-action="activate" data-type="attack" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
+                                        {{/if}}
+                                    </a> 
+                                    {{#if action.properties.enabled}}
+                                        <a class="item-control">
+                                            <i class="fa-regular fa-hand-back-fist darkgreen toggle-action" data-tooltip="{{localize 'CO.label.long.damage'}}" data-action="activate" data-type="damage" data-source="{{action.source}}" data-indice="{{action.indice}}"></i>
+                                        </a> 
+                                    {{/if}}                                                           
+                                    <a class="item-chat chat" data-tooltip="{{localize 'CO.label.long.sendToChat'}}"  data-chat-type="action" data-indice="{{action.indice}}" data-source="{{action.source}}"><i class="fas fa-fw fa-comment-alt"></i></a>
+                                {{/if}}
+                            </div>
+                    </li>
+                {{/each}}
             </ol>
         </ol>
     </div>

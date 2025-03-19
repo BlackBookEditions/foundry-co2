@@ -88,6 +88,27 @@ export default class COItem extends Item {
   }
 
   /**
+   * Renvoi true si c'est une capacité avec une fréquence d'utilisation, false sinon
+   * @returns {boolean}
+   */
+  async getIsActivableAndChargeable() {
+    if (foundry.utils.isEmpty(this.system.actions)) return false
+    if (this.type === SYSTEM.ITEM_TYPE.capacity.id && this.system.frequency !== SYSTEM.CAPACITY_FREQUENCY.none.id && this.system.learned) {
+      return true
+    } else return false
+  }
+
+  /**
+   * Renvoi true si une capacité avec une fréquence d'utilisation possède toujours une charge
+   * @returns {boolean}
+   */
+  async getHasCharge() {
+    if (this.type === SYSTEM.ITEM_TYPE.capacity.id && this.system.frequency !== SYSTEM.CAPACITY_FREQUENCY.none.id && this.system.charges.current !== 0) {
+      return true
+    } else return false
+  }
+
+  /**
    * Basic info for a capacity : uuid, name, img, description
    */
   get infos() {
