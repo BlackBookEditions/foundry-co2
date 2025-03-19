@@ -327,7 +327,7 @@ export default class COActor extends Actor {
         allActions.push(...itemActions)
       }
       // Pour les capacités, une armure non maîtrisée empêche son utilisation et on met les capacité chargeable de coté
-      if (SYSTEM.ITEM_TYPE.capacity.id === item.type && this.canUseCapacities && !item.getIsActivableAndChargeable()) {
+      if (SYSTEM.ITEM_TYPE.capacity.id === item.type && this.canUseCapacities && item.getIsActivableAndChargeable() === false) {
         const itemActions = await item.getVisibleActions(this)
         allActions.push(...itemActions)
       }
