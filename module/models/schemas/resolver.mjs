@@ -17,6 +17,8 @@ export class Resolver extends foundry.abstract.DataModel {
     const fields = foundry.data.fields
     return {
       type: new fields.StringField({ required: true, initial: "auto" }),
+      bonusDiceAdd: new fields.BooleanField({ initial: false }),
+      malusDiceAdd: new fields.BooleanField({ initial: false }),
       skill: new fields.ObjectField(),
       dmg: new fields.ObjectField(),
       target: new fields.SchemaField({
@@ -74,7 +76,9 @@ export class Resolver extends foundry.abstract.DataModel {
     damageFormula = Utils.evaluateFormulaCustomValues(actor, damageFormula, item.uuid)
     let damageFormulaEvaluated = Roll.replaceFormulaData(damageFormula, actor.getRollData())
     const damageFormulaTooltip = this.dmg.formula
-
+    console.log("ce resolver", this)
+    console.log("bonusDice", this.bonusDiceAdd)
+    console.log("malusDice", this.malusDiceAdd)
     const result = await actor.rollAttack(item, {
       auto: false,
       type,
@@ -86,6 +90,8 @@ export class Resolver extends foundry.abstract.DataModel {
       damageFormulaTooltip,
       critical: this.skill.crit,
       difficulty: this.skill.difficulty,
+      bonusDice: this.bonusDiceAdd === true ? 1 : 0,
+      malusDice: this.malusDiceAdd === true ? 1 : 0,
     })
 
     if (result === null) return false
@@ -105,8 +111,15 @@ export class Resolver extends foundry.abstract.DataModel {
     damageFormula = Utils.evaluateFormulaCustomValues(actor, damageFormula, item.uuid)
     let damageFormulaEvaluated = Roll.replaceFormulaData(damageFormula, actor.getRollData())
     const damageFormulaTooltip = this.dmg.formula
-
-    const result = await actor.rollAttack(item, { auto: true, type: "damage", actionName: action.label, damageFormula: damageFormulaEvaluated, damageFormulaTooltip })
+    const result = await actor.rollAttack(item, {
+      auto: true,
+      type: "damage",
+      actionName: action.label,
+      damageFormula: damageFormulaEvaluated,
+      damageFormulaTooltip,
+      bonusDice: this.bonusDiceAdd === true ? 1 : 0,
+      malusDice: this.malusDiceAdd === true ? 1 : 0,
+    })
     if (result === null) return false
     return true
   }

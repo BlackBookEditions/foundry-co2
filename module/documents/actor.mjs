@@ -346,7 +346,7 @@ export default class COActor extends Actor {
         let itemActions = await item.getVisibleActions(this)
         if (itemActions) {
           for (const action of itemActions) {
-            action.properties.enabled = item.getHasCharge()
+            action.properties.enabled = item.hasCharge()
           }
         }
         allActions.push(...itemActions)
@@ -507,7 +507,7 @@ export default class COActor extends Actor {
     }
 
     // Si la capacité a des charges est ce qu'il lui en reste ?
-    if (item.type === SYSTEM.ITEM_TYPE.capacity.id && !item.getHasCharge() && item.system.frequency !== SYSTEM.CAPACITY_FREQUENCY.none.id)
+    if (item.type === SYSTEM.ITEM_TYPE.capacity.id && !item.hasCharge() && item.system.frequency !== SYSTEM.CAPACITY_FREQUENCY.none.id)
       return ui.notifications.warn(game.i18n.localize("CO.notif.warningNoCharge"))
 
     // TODO Incantation
@@ -562,7 +562,6 @@ export default class COActor extends Actor {
       const action = foundry.utils.deepClone(item.system.actions[indice])
       // Recherche des resolvers de l'action
       let resolvers = Object.values(action.resolvers).map((r) => foundry.utils.deepClone(r))
-
       // Résolution de tous les resolvers avant de continuer
       results = await Promise.all(resolvers.map((resolver) => resolver.resolve(this, item, action, type)))
 
@@ -607,7 +606,7 @@ export default class COActor extends Actor {
         }
       }
       // Si c'est une capacité avec une charge il faut la consommer
-      if (item.type === SYSTEM.ITEM_TYPE.capacity.id && item.getHasCharge() && item.system.frequency !== SYSTEM.CAPACITY_FREQUENCY.none.id) {
+      if (item.type === SYSTEM.ITEM_TYPE.capacity.id && item.hasCharge() && item.system.frequency !== SYSTEM.CAPACITY_FREQUENCY.none.id) {
         item.system.charges.current = Math.max(item.system.charges.current - 1, 0)
         await item.update({ "system.charges.current": item.system.charges.current })
         if (item.system.charges.current === 0) {
@@ -1382,7 +1381,6 @@ export default class COActor extends Actor {
     if (critical === undefined || critical === "") {
       critical = this.system.combat.crit.value
     }
-
     // Gestion des dés bonus et malus
     let bonusDices = 0
     let malusDices = 0

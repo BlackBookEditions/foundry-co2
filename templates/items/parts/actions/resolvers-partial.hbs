@@ -9,14 +9,16 @@
             
         </div>
         {{#each action.resolvers as |r id|}}
-            {{!log 'action.resolver' r}}
+            {{log 'action.resolver' r}}
             <div class="flexrow resolver" data-item-id="{{id}}" data-action-id="{{../idx}}" data-item-type="resolver">
                 <div class="form-fields flex2">
                     <div class="form-group">
                         <label>{{localize "CO.ui.type"}}</label>
-                        <select name="system.actions.{{../idx}}.resolvers.{{id}}.type" data-type="String" style="width:100%">
+                        <select name="system.actions.{{../idx}}.resolvers.{{id}}.type" data-type="String" style="width:50%;margin-right:10px">
                             {{selectOptions @root.choiceResolverTypes selected=r.type localize=true}}
                         </select>   
+                        <label class="checkbox"><input type="checkbox" name="system.actions.{{../idx}}.resolvers.{{id}}.bonusDiceAdd" {{checked r.bonusDiceAdd}}> {{localize "CO.modifier.subtype.bonusDice"}}</label>
+                        <label class="checkbox"><input type="checkbox" name="system.actions.{{../idx}}.resolvers.{{id}}.malusDiceAdd" {{checked r.malusDiceAdd}}> {{localize "CO.modifier.subtype.malusDice"}}</label>
                         <div class="form-fields flex0"><a class="resolver-delete"><i class="fas fa-trash"></i></a></div>    
                     </div>             
                 </div>    
