@@ -47,7 +47,8 @@
       "warningApplyDamageNoTarget": "Vous devez sélectionner au moins une cible pour appliquer les dommages",
       "warningNoMoreRecoveryPoints": "Vous n'avez plus de dés de récupération.",
       "warningNoAmmo": "Vous n'avez plus de munitions.",
-      "warningNoCharge": "Votre nombre d'utilisations restantes est insuffisant"
+      "warningNoCharge": "Votre nombre d'utilisation restante est insuffisant",
+      "cantUseAllDef": "Vous ne pouvez pas utilsier les deux types de défense simultanément"
     },
     "tooltip": {
       "formulaAttack": "Formule d'attaque (sans le dé)",
@@ -445,6 +446,32 @@
       "sp": "Pièces d'argent",
       "cp": "Pièces de cuivre"
     },
+    "customEffect": {
+      "damage": "Dommages",
+      "damageDescription": "Fait des dégats par unité de temps (round/secondes)",
+      "heal": "Soins",
+      "healDescription": "Soigne par unité de temps (round/secondes)",
+      "buff": "Amélioration",
+      "buffDescription": "Augmente des capacités pendant un laps de temps (round/secondes)",
+      "debuff": "Affaiblissement",
+      "debuffDescription": "Diminue des capacités pendant un laps de temps (round/secondes)",
+      "status": "Statut",
+      "statusDescription": "Applique un statut pendant un laps de temps (round/secondes)",
+      "fire": "Feu",
+      "fireDescription": "Applique des dégats de type feu",
+      "ice": "Glace",
+      "iceDescription": "Applique des dégats de type glace",
+      "lightning": "Électrique",
+      "lightningDescription": "Applique des dégats de type électrique",
+      "poison": "Poison",
+      "poisonDescription": "Applique des dégats de type poison",
+      "disease": "Maladie",
+      "diseaseDescription": "Applique des dégats de type maladie",
+      "putrid": "Putréfaction",
+      "putridDescription": "Applique des dégats de type putréfaction",
+      "sacred": "Sacré",
+      "sacredDescription": "Applique des dégats/soins de type sacré"
+    },
     "tabs": {
       "main": "Principal",
       "notes": "Notes",
@@ -615,7 +642,8 @@
       "action": "Action",
       "path": "Voie",
       "capacity": "Capacité",
-      "attack": "Attaque (Rencontre)"
+      "attack": "Attaque (Rencontre)",
+      "customEffect": "Effet personnalisé"
     },
     "equipment": {
       "subtypes": {

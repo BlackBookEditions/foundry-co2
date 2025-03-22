@@ -17,7 +17,9 @@ export class Hitpoints {
           if (finalAmount > -1) finalAmount = -1
         }
 
-        const newHp = currentHp + finalAmount
+        let newHp = currentHp + finalAmount
+        if (newHp > target.actor.system.attributes.hp.max) newHp = target.actor.system.attributes.hp.max
+        if (newHp < 0) newHp = 0
 
         target.actor.update({ "system.attributes.hp.value": newHp })
       }

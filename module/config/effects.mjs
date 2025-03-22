@@ -277,3 +277,69 @@ export const CUSTOM_STATUS_EFFECT = [
     description: "CO.customStatus.fullDefDescription",
   },
 ]
+
+export const CUSTOM_EFFECT = {
+  damage: {
+    id: "damage",
+    name: "CO.customEffect.damage",
+    description: "CO.customEffect.damageDescription",
+  },
+  status: {
+    id: "status",
+    name: "CO.customEffect.status",
+    description: "CO.customEffect.statusDescription",
+  },
+  heal: {
+    id: "heal",
+    name: "CO.customEffect.heal",
+    description: "CO.customEffect.healDescription",
+  },
+  buff: {
+    id: "buff",
+    name: "CO.customEffect.buff",
+    description: "CO.customEffect.buffDescription",
+  },
+  debuff: {
+    id: "debuff",
+    name: "CO.customEffect.debuff",
+    description: "CO.customEffect.debuffDescription",
+  },
+}
+
+export const CUSTOM_EFFECT_ELEMENT = {
+  fire: {
+    id: "fire",
+    name: "CO.customEffect.fire",
+    description: "CO.customEffect.fireDescription",
+  },
+  ice: {
+    id: "ice",
+    name: "CO.customEffect.ice",
+    description: "CO.customEffect.iceDescription",
+  },
+  lightning: {
+    id: "lightning",
+    name: "CO.customEffect.lightning",
+    description: "CO.customEffect.lightningDescription",
+  },
+  poison: {
+    id: "poison",
+    name: "CO.customEffect.poison",
+    description: "CO.customEffect.poisonDescription",
+  },
+  sacred: {
+    id: "sacred",
+    name: "CO.customEffect.sacred",
+    description: "CO.customEffect.sacredDescription",
+  },
+  putrid: {
+    id: "putrid",
+    name: "CO.customEffect.putrid",
+    description: "CO.customEffect.putridDescription",
+  },
+  disease: {
+    id: "disease",
+    name: "CO.customEffect.disease",
+    description: "CO.customEffect.diseaseDescription",
+  },
+}

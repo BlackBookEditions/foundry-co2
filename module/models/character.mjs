@@ -3,6 +3,7 @@ import { BaseValue } from "./schemas/base-value.mjs"
 import ActorData from "./actor.mjs"
 import Utils from "../utils.mjs"
 import CoChat from "../chat.mjs"
+import { CustomEffectData } from "./customEffect.mjs"
 import DefaultConfiguration from "../config/configuration.mjs"
 export default class CharacterData extends ActorData {
   static defineSchema() {
@@ -125,6 +126,8 @@ export default class CharacterData extends ActorData {
       }, {}),
     )
 
+    schema.currentEffects = new fields.ArrayField(new fields.EmbeddedDataField(CustomEffectData))
+
     return foundry.utils.mergeObject(super.defineSchema(), schema)
   }
 
@@ -242,6 +245,11 @@ export default class CharacterData extends ActorData {
         modifiersArray.push(...allModifiers)
       }
     })
+    //Onprend en compte les customEffect en cours
+    if (currentEffects) {
+      for (const effect of currentEffects) {
+        modifiersArray.push(...effect.modifiers)
+    }
 
     return modifiersArray
   }
