@@ -463,14 +463,12 @@ export default class COActor extends Actor {
     // On ne peut pas activer à la fois la défense partielle et la défense totale
     if (effectid === "partialDef" && state === true) {
       if (this.hasEffect("fullDef")) {
-        // TODO : envoyer un message au joueur pour lui dire qu'il ne peut pas utiliser les deux en même temps
-        return
+        return ui.notifications.warn(game.i18n.localize("CO.notif.cantUseAllDef"))
       }
     }
     if (effectid === "fullDef" && state === true) {
       if (this.hasEffect("partialDef")) {
-        // TODO : envoyer un message au joueur pour lui dire qu'il ne peut pas utiliser les deux en même temps
-        return
+        return ui.notifications.warn(game.i18n.localize("CO.notif.cantUseAllDef"))
       }
     }
     return await this.toggleStatusEffect(effectid, state)
@@ -1574,13 +1572,22 @@ export default class COActor extends Actor {
     await roll.roll()
     // TODO Qui est soigné ? Pour le moment soi même :)
     if (targetType === SYSTEM.RESOLVER_TARGET.self.id) {
-      let hp = this.system.attributes.hp
-      hp.value += roll.total
-      if (hp.value > hp.max) hp.value = hp.max
-      this.update({ "system.attributes.hp": hp })
+      applyHealAndDamage(roll.total)
     }
     const messageData = { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", speaker }
     await roll.toMessage(messageData)
+  }
+
+  /**
+   * Applique les soins sur soi meme
+   * @param {integer} healValue heal or damageValue (heal > 0 and damage < 0)
+   */
+  async applyHealAndDamage(healValue) {
+    let hp = this.system.attributes.hp
+    hp.value += healValue
+    if (hp.value > hp.max) hp.value = hp.max
+    if (hp.value < 0) hp.value = 0
+    this.update({ "system.attributes.hp": hp })
   }
   // #endregion
 
@@ -1642,10 +1649,15 @@ export default class COActor extends Actor {
    * @param {*} updateData : contient {round, turn}
    * @param {*} updateOptions contiens {direction: -1, worldTime: {delta: advanceTime}} -1 si on reviens en arriere et 1 si on avance
    */
-  combatNewRound(combat, updateData, updateOptions) {
+  async combatNewRound(combat, updateData, updateOptions) {
     // Ici on va gérer qu'on arrive dans un nouveau round il faut faire attention car le MJ peux revenir en arrière !
     // On va notamment gérer la durée des effets en round ou secondes je suppose
-    // console.log("combatRound", combat, updateData, updateOptions)
+    console.log("combatRound", combat, updateData, updateOptions)
+    if (this.system.currentEffects) {
+      for (let i = this.system.currentEffects.length - 1; i >= 0; i--) {
+        await this.system.currentEffects[i].onNextRound(updateData, updateOptions)
+      }
+    }
   }
 
   /**
@@ -1654,9 +1666,21 @@ export default class COActor extends Actor {
    * @param {*} updateData : contient {round, turn}
    * @param {*} updateOptions contiens {direction: -1, worldTime: {delta: CONFIG.time.turnTime} -1 si on reviens en arriere et 1 si on avance
    */
-  combatNewTurn(combat, updateData, updateOptions) {
+  async combatNewTurn(combat, updateData, updateOptions) {
     // Ici on va gérer qu'on arrive dans un nouveau round il faut faire attention car le MJ peux revenir en arrière !
     // on va notamment gérer la durée des effets en round ou secondes je suppose
+    console.log("combatTurn", combat, updateData, updateOptions)
+    console.log(combat.combatant)
+    if (combat.combatant.actor.uuid === this.uuid && this.system.currentEffects) {
+      console.log("je suis bien sur l'acteur qui a l'uuid ", combat.combatant.actor.uuid)
+      for (let i = this.system.currentEffects.length - 1; i >= 0; i--) {
+        effect.onNextTurn(updateData, updateOptions) // On applique les effet du round en cours
+        if (this.system.currentEffects[i].remainingDuration <= 0) {
+          await this.system.currentEffects.onEndApplyEffect(this)
+          this.system.currentEffects.splice(i, 1)
+        }
+      }
+    }
   }
   // #endregion
 }

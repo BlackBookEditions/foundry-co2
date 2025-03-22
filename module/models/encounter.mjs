@@ -2,6 +2,7 @@ import { SYSTEM } from "../config/system.mjs"
 import { BaseValue } from "./schemas/base-value.mjs"
 import ActorData from "./actor.mjs"
 import Utils from "../utils.mjs"
+import { CustomEffectData } from "./customEffect.mjs"
 
 export default class EncounterData extends ActorData {
   static defineSchema() {
@@ -78,6 +79,8 @@ export default class EncounterData extends ActorData {
       // Pour indiquer les immunités ou propriétés spéciales
       properties: new fields.HTMLField(),
     })
+
+    schema.currentEffects = new fields.ArrayField(new fields.EmbeddedDataField(CustomEffectData))
 
     return foundry.utils.mergeObject(super.defineSchema(), schema)
   }
