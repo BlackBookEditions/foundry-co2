@@ -210,3 +210,14 @@ export const RESOLVER_SCOPE = Object.freeze({
     label: "CO.resolver.scope.all",
   },
 })
+
+export const RESOLVER_RESULT = Object.freeze({
+  success: {
+    id: "success",
+    label: "CO.resolver.additionalEffect.onSuccess",
+  },
+  fail: {
+    id: "fail",
+    label: "CO.resolver.additionalEffect.onFail",
+  },
+})

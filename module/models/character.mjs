@@ -245,10 +245,11 @@ export default class CharacterData extends ActorData {
         modifiersArray.push(...allModifiers)
       }
     })
-    //Onprend en compte les customEffect en cours
-    if (currentEffects) {
-      for (const effect of currentEffects) {
+    // Onprend en compte les customEffect en cours
+    if (this.currentEffects) {
+      for (const effect of this.currentEffects) {
         modifiersArray.push(...effect.modifiers)
+      }
     }
 
     return modifiersArray

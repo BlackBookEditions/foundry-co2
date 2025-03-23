@@ -141,6 +141,14 @@ Hooks.once("i18nInit", function () {
 
   customeffects.sort((a, b) => a.name.localeCompare(b.name))
   CONFIG.statusEffects = customeffects
+
+  // Parcourir et mettre à jour chaque élément pour les traduire
+  for (const key in SYSTEM.CUSTOM_EFFECT_ELEMENT) {
+    if (newValues[key]) {
+      SYSTEM.CUSTOM_EFFECT_ELEMENT[key].name = newValues[key].name
+      SYSTEM.CUSTOM_EFFECT_ELEMENT[key].description = newValues[key].description
+    }
+  }
 })
 
 /* -------------------------------------------- */

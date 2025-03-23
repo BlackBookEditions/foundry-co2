@@ -627,6 +627,17 @@
         "enemies": "Ennemis",
         "all": "Tout le monde",
         "title": "Catégorie"
+      },
+      "additionalEffect": {
+        "active": "Effets supplémentaires",
+        "applyOn": "s'applique sur :",
+        "onSuccess": "Sur un succès",
+        "onFail": "Sur un echec",
+        "applyFormula": "dommages/soins",
+        "applyFormulaTooltip": "Appliquer des dommages/soins sur la durée",
+        "type": "type d'energie",
+        "statusAvailable": "Statuts disponibles",
+        "statuses": "Liste des status"
       }
     },
     "itemTypes": {
