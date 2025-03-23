@@ -26,6 +26,15 @@ export class Resolver extends foundry.abstract.DataModel {
         number: new fields.NumberField({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
         scope: new fields.StringField({ required: true, choices: SYSTEM.RESOLVER_SCOPE, initial: SYSTEM.RESOLVER_SCOPE.all.id }),
       }),
+      additionalEffect: new fields.SchemaField({
+        active: new fields.BooleanField({ initial: false }),
+        applyOn: new fields.StringField({ required: true, choices: SYSTEM.RESOLVER_RESULT, initial: SYSTEM.RESOLVER_RESULT.success.id }),
+        statuses: new fields.StringField(),
+        duration: new fields.NumberField({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        unite: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: "round" }),
+        formule: new fields.StringField({ required: false }),
+        elementType: new fields.StringField({ required: false }),
+      }),
     }
   }
 

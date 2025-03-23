@@ -39,6 +39,12 @@ export default class CoBaseItemSheet extends ItemSheet {
   _sheetMode = this.constructor.SHEET_MODES.PLAY
 
   /**
+   * Le choix fait sur la selection des statuts
+   * @type {string}
+   */
+  selectedStatus = {}
+
+  /**
    * Is the sheet currently in 'Play' mode?
    * @type {boolean}
    */
@@ -149,16 +155,27 @@ export default class CoBaseItemSheet extends ItemSheet {
     context.locked = this.isPlayMode
 
     context.systemFields = this.document.system.schema.fields
-
     context.choiceActionTypes = SYSTEM.ACTION_TYPES
     context.choiceConditionObjects = SYSTEM.CONDITION_OBJECTS
     context.choiceConditionPredicates = SYSTEM.CONDITION_PREDICATES
     context.choiceConditionTargets = SYSTEM.CONDITION_TARGETS
     context.choiceResolverTypes = SYSTEM.RESOLVER_TYPE
+    context.choiceResolverApplyOn = SYSTEM.RESOLVER_RESULT
     context.choiceResolverTargets = SYSTEM.RESOLVER_TARGET
     context.choiceResolverScopes = SYSTEM.RESOLVER_SCOPE
     context.choiceModifierSubtypes = SYSTEM.MODIFIERS.MODIFIERS_SUBTYPE
     context.choiceModifierTargets = SYSTEM.MODIFIERS.MODIFIERS_TARGET
+    context.choiceDurationUnit = SYSTEM.COMBAT_UNITE
+    context.choiceEnergies = []
+    // Parcourir chaque élément et ajouter le nom au tableau
+    context.choiceEnergies.push("")
+    for (const key in SYSTEM.CUSTOM_EFFECT_ELEMENT) {
+      context.choiceEnergies.push(SYSTEM.CUSTOM_EFFECT_ELEMENT[key].name)
+    }
+    context.choiceConditionStates = SYSTEM.STATUS_EFFECT.reduce((acc, effect) => {
+      acc[effect.id] = effect.name
+      return acc
+    }, {})
     context.choiceModifierAbilityTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "ability"))
     context.choiceModifierCombatTargets = Object.fromEntries(
       Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "combat" || value.subtype === "attack"),
@@ -196,6 +213,8 @@ export default class CoBaseItemSheet extends ItemSheet {
     html.find(".action-add").click(this._onAddAction.bind(this))
     html.find(".action-delete").click(this._onDeleteAction.bind(this))
     html.find(".sheet-change-lock").click(this._onSheetChangelock.bind(this))
+    html.find(".resolver-statutadd").click(this._onAddStatut.bind(this))
+    html.find(".resolver-select-status").change(this._onSelectStatus.bind(this))
   }
 
   /**
@@ -276,6 +295,24 @@ export default class CoBaseItemSheet extends ItemSheet {
     })
     newActions.push(action)
     return this.item.update({ "system.actions": newActions })
+  }
+
+  _onSelectStatus(event) {
+    event.preventDefault()
+    this.selectedStatus = event.currentTarget.value
+  }
+
+  _onAddStatut(event) {
+    event.preventDefault()
+    const dataset = event.currentTarget.dataset
+    const actions = this.item.toObject().system.actions
+
+    const itemid = dataset.itemId
+    const actionId = dataset.actionId
+    console.log("actions[actionId].resolvers[itemid].additionalEffect.statuses", actions[actionId].resolvers[itemid].additionalEffect.statuses)
+    if (actions[actionId].resolvers[itemid].additionalEffect.statuses) actions[actionId].resolvers[itemid].additionalEffect.statuses += `, ${this.selectedStatus}`
+    else actions[actionId].resolvers[itemid].additionalEffect.statuses = this.selectedStatus
+    return this.item.update({ "system.actions": actions })
   }
 
   /**
