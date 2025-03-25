@@ -142,4 +142,14 @@ export default function registerHooks() {
       document.system.spendDR(1)
     }
   })
+
+  Hooks.on("applyEffect", (targets, customEffect) => {
+    if (game.user.isGM) {
+      // En tant que GM il peux appliquer les effets sur les acteurs
+      for (let i = 0; i < targets.length; i++) {
+        const target = targets[i]
+        target.actor.applyCustomEffect(customEffect)
+      }
+    }
+  })
 }

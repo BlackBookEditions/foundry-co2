@@ -2,6 +2,7 @@ import { SYSTEM } from "../config/system.mjs"
 import { Modifier } from "../models/schemas/modifier.mjs"
 import { CORoll, COSkillRoll, COAttackRoll } from "./roll.mjs"
 import Utils from "../utils.mjs"
+import { CustomEffectData } from "../models/customEffect.mjs"
 
 /**
  * @class COActor
@@ -224,6 +225,15 @@ export default class COActor extends Actor {
   }
 
   /**
+   * Renvoi true si l'acteur est en incapacité de faire quelque chose
+   */
+  get isIncapacitated() {
+    if (this.system.attributes.hp.value === 0) return true
+    if (this.hasEffect("immobilized") || this.hasEffect("paralysis") || this.hasEffect("stun") || this.hasEffect("unconscious") || this.hasEffect("dead")) return true
+    return false
+  }
+
+  /**
    * Retourne Toutes les actions de tous les objets
    */
   get actions() {
@@ -404,6 +414,14 @@ export default class COActor extends Actor {
   }
 
   /**
+   * Renvoi la liste des effets personnalisé actuellement sur l'acteur
+   * @returns {Array<CustomEffectData>} Tableau de customEffectData
+   */
+  getCustomEffects() {
+    return this.system.currentEffects
+  }
+
+  /**
    * Vérifie si le personnage est entraîné avec une arme
    * @param {*} itemId
    * @returns {boolean}
@@ -471,7 +489,9 @@ export default class COActor extends Actor {
         return ui.notifications.warn(game.i18n.localize("CO.notif.cantUseAllDef"))
       }
     }
-    return await this.toggleStatusEffect(effectid, state)
+    let hasEffect = this.statuses.has(effectid)
+    if (hasEffect && state === false) return await this.toggleStatusEffect(effectid, state)
+    if (!hasEffect && state === true) return await this.toggleStatusEffect(effectid, state)
   }
 
   /**
@@ -1564,6 +1584,7 @@ export default class COActor extends Actor {
     if (item.system.properties.reloadable) {
       await this.consumeAmmunition(item)
     }
+    return results
   }
 
   // FIXME Finir la méthode
@@ -1580,13 +1601,26 @@ export default class COActor extends Actor {
 
   /**
    * Applique les soins sur soi meme
-   * @param {integer} healValue heal or damageValue (heal > 0 and damage < 0)
+   * Positif les degats péridiques sont traités comme des dégats et devrait être réduit ou amplifié en fonction de résistance/vulnérabilité (voir plus tard).
+   * Negatif les degats péridiques sont traités comme des soins et ne devrait pas être affecté par des résistance ou vulnérabilité.
+   * @param {integer} healValue heal or damageValue (heal < 0 and damage > 0)
    */
   async applyHealAndDamage(healValue) {
+    let message = ""
+    if (healValue > 0) {
+      message = game.i18n.localize("CO.notif.damaged").replace("{actorName}", this.name).replace("{amount}", healValue.toString())
+    } else {
+      message = game.i18n.localize("CO.notif.healed").replace("{actorName}", this.name).replace("{amount}", healValue.toString())
+    }
+    await ui.chat.processMessage(message, { actor: this.id, alias: this.name })
+
     let hp = this.system.attributes.hp
-    hp.value += healValue
+    hp.value -= healValue
     if (hp.value > hp.max) hp.value = hp.max
-    if (hp.value < 0) hp.value = 0
+    if (hp.value < 0) {
+      hp.value = 0
+      if (this.type !== SYSTEM.ACTOR_TYPE.character.id) this.toggleStatusEffect("dead", true)
+    }
     this.update({ "system.attributes.hp": hp })
   }
   // #endregion
@@ -1644,43 +1678,160 @@ export default class COActor extends Actor {
   // #region Méthodes pour le CombatTracker
 
   /**
-   * On change de round donc on peut gérer des actions qui se terminent "à la fin du round"
-   * @param {CombatCO} combat L'instance du combat en cours
-   * @param {*} updateData : contient {round, turn}
-   * @param {*} updateOptions contiens {direction: -1, worldTime: {delta: advanceTime}} -1 si on reviens en arriere et 1 si on avance
+   * On change de round donc on peut gérer le temps restant
+   * @param {integer} round numéro du round en cours
+   * @param {integer} turn : le numéro du tour en cours
    */
-  async combatNewRound(combat, updateData, updateOptions) {
+  combatNewRound(round, turn) {
     // Ici on va gérer qu'on arrive dans un nouveau round il faut faire attention car le MJ peux revenir en arrière !
     // On va notamment gérer la durée des effets en round ou secondes je suppose
-    console.log("combatRound", combat, updateData, updateOptions)
+  }
+
+  /**
+   * On va supprimer les customEffect restant surl'acteur
+   * @param {COCombat} combat
+   */
+  combaEnding(combat) {
     if (this.system.currentEffects) {
       for (let i = this.system.currentEffects.length - 1; i >= 0; i--) {
-        await this.system.currentEffects[i].onNextRound(updateData, updateOptions)
+        this.deleteCustomEffect(this.system.currentEffects[i])
       }
     }
   }
 
   /**
-   * On change de tour donc on peut gérer des actions qui se terminent "à la fin du round"
-   * @param {CombatCO} combat L'instance du combat en cours
-   * @param {*} updateData : contient {round, turn}
-   * @param {*} updateOptions contiens {direction: -1, worldTime: {delta: CONFIG.time.turnTime} -1 si on reviens en arriere et 1 si on avance
+   * Supprime un customEffet de l'acteur
+   * @param {CustomEffectData} customEffect
    */
-  async combatNewTurn(combat, updateData, updateOptions) {
-    // Ici on va gérer qu'on arrive dans un nouveau round il faut faire attention car le MJ peux revenir en arrière !
-    // on va notamment gérer la durée des effets en round ou secondes je suppose
-    console.log("combatTurn", combat, updateData, updateOptions)
-    console.log(combat.combatant)
-    if (combat.combatant.actor.uuid === this.uuid && this.system.currentEffects) {
-      console.log("je suis bien sur l'acteur qui a l'uuid ", combat.combatant.actor.uuid)
-      for (let i = this.system.currentEffects.length - 1; i >= 0; i--) {
-        effect.onNextTurn(updateData, updateOptions) // On applique les effet du round en cours
-        if (this.system.currentEffects[i].remainingDuration <= 0) {
-          await this.system.currentEffects.onEndApplyEffect(this)
-          this.system.currentEffects.splice(i, 1)
-        }
+  async deleteCustomEffect(customEffect) {
+    // Supprime le statut
+    if (customEffect.statuses.length > 0) {
+      for (const status of customEffect.statuses) {
+        this.activateCOStatusEffect({ state: false, effectid: status })
+      }
+    }
+    this.system.currentEffects.splice(this.system.currentEffects.indexOf(customEffect), 1)
+    this.update({ "system.currentEffects": this.system.currentEffects })
+  }
+
+  /**
+   * On applique les effets supplémentaires
+   * @param {CustomEffectData} effect : custom effect appliqué sur l'acteur probablement à cause d'un skill
+   */
+  applyCustomEffect(effect) {
+    // Si j'ai déjà ce debuff je peux pas le cumuler !
+    const debuf = this.system.currentEffects.find((c) => c.nom === effect.nom)
+    if (debuf) return
+    // On doit maintenant déterminer le round de combat
+    this.startApplyingCustomEffect(effect, game.combat.round)
+  }
+
+  /**
+   * Commence à appliquer l'effet en l'initialisant et en activant les différents status
+   * @param {CustomEffectData} effect
+   * @param {integer} round
+   */
+  startApplyingCustomEffect(effect, round) {
+    effect.startedAt = round
+    if (effect.unite === SYSTEM.COMBAT_UNITE.round) {
+      effect.lastRound = effect.startedAt + effect.duration
+      console.log("lastRound:", effect.lastRound)
+    } else {
+      effect.lastRound = effect.startedAt + Math.round(effect.duration / CONFIG.time.roundTime)
+    }
+    // Applique le statut
+    if (effect.statuses && effect.statuses.length > 0) {
+      for (const status of effect.statuses) {
+        this.activateCOStatusEffect({ state: true, effectid: status })
+      }
+    }
+    this.system.currentEffects.push(effect)
+    this.update({ "system.currentEffects": this.system.currentEffects })
+  }
+
+  /* -------------------------------------------- */
+  /*  Combat Encounters and Turn Order            */
+  /* -------------------------------------------- */
+
+  /**
+   * Actions that occur at the beginning of an Actor's turn in Combat.
+   * This method is only called for one User who has ownership permission over the Actor.
+   */
+  async onStartTurn() {
+    // Re-prepare data and re-render the actor sheet
+    this.reset()
+    this._sheet?.render(false)
+    console.log(`C'est au tour de ${this.name} de jouer`)
+    // Apply damage-over-time before recovery
+    await this.applyDamageOverTime()
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * L'actions est déclenché lorsqu'un acteur termine son tour de combat.
+   * Cette méthode est uniquement appelée sur l'utilisateur qui a des droits sur l'acteur.
+   */
+  onEndTurn() {
+    // Re-prepare data and re-render the actor sheet
+    this.reset()
+    this._sheet?.render(false)
+    console.log(`Le tour de ${this.name} est terminé`)
+    // Retire les custom Effect qui se terminent à la fin du tour
+    this.expireEffects(false)
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Actions déclenchée lorsqu'un acteur quitte le combat tracker.
+   */
+  onLeaveCombat() {
+    // Re-prepare data and re-render the actor sheet
+    this.reset()
+    this._sheet?.render(false)
+    for (let i = this.system.currentEffects.length - 1; i >= 0; i--) {
+      this.deleteCustomEffect(this.system.currentEffects[i])
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Applique les effets de degats/soins qui sont actuellement actif sur l'acteur.
+   * Positif les degats péridiques sont traités comme des dégats et devrait être réduit ou amplifié en fonction de résistance/vulnérabilité (voir plus tard).
+   * Negatif les degats péridiques sont traités comme des soins et ne devrait pas être affecté par des résistance ou vulnérabilité.
+   * @returns {Promise<void>}
+   */
+  async applyDamageOverTime() {
+    for (const effect of this.system.currentEffects) {
+      // Ici on devrait tenir compte du type d'energie (feu/glace etc) et d'eventuelle resistance/vulnerabilite à voir plus tard
+      if (!effect.formule || effect.formule.length === 0) continue
+      // Doit on jeter un dé ou c'est une valeur fixe ?
+      const diceInclude = effect.formule.match("d[0-9]{1,}")
+      let formulResult = effect.formule
+      if (diceInclude) {
+        const roll = new Roll(formulResult)
+        await roll.evaluate()
+        formulResult = roll.total
+      }
+      await this.applyHealAndDamage(formulResult)
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /**
+   * Expire active effects whose durations have concluded at the end of the Actor's turn.
+   * @param {boolean} start       Is it the start of the turn (true) or the end of the turn (false)   *
+   */
+  expireEffects(start = true) {
+    for (let i = this.system.currentEffects.length - 1; i >= 0; i--) {
+      if (this.system.currentEffects[i].startedAt + this.system.currentEffects[i].duration <= game.combat.round) {
+        this.deleteCustomEffect(this.system.currentEffects[i])
       }
     }
   }
+
   // #endregion
 }

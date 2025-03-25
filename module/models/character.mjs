@@ -413,7 +413,7 @@ export default class CharacterData extends ActorData {
     const hpMaxModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "hp")
 
     this.attributes.hp.max = this.attributes.hp.base + hpMaxBonuses + hpMaxModifiers.total
-    this.attributes.hp.tooltip = tooltipBase.concat(hpMaxModifiers.tooltip,Utils.getTooltip("Bonus", hpMaxBonuses))
+    this.attributes.hp.tooltip = tooltipBase.concat(hpMaxModifiers.tooltip, Utils.getTooltip("Bonus", hpMaxBonuses))
   }
 
   _prepareMovement() {

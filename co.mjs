@@ -162,13 +162,13 @@ Hooks.once("i18nInit", function () {
  * @param {*} updateData : contient {round, turn}
  * @param {*} updateOptions contiens {direction: -1, worldTime: {delta: advanceTime}} -1 si on reviens en arriere et 1 si on avance
  */
-Hooks.on("combatRound", function (combat, updateData, updateOptions) {
-  if (combat.combatants) {
-    combat.combatants.forEach((combatant) => {
-      if (combatant.actor) combatant.actor.combatNewRound(combat, updateData, updateOptions)
-    })
-  }
-})
+/*Hooks.on("combatRound", function (combat, updateData, updateOptions) {
+  combat.combatants.forEach((combatant) => {
+    if (combatant.actor) combatant.actor.combatNewRound(combat, updateData, updateOptions)
+  })
+  // Le premier combattant n'a pas de signalement "combatTurn" il faut l'appliquer pour lui
+  combat.turns[updateData.turn].actor.combatNewTurn(combat, updateData, updateOptions)
+})*/
 
 /**
  * On change de tour d'action d'un combattant
@@ -180,10 +180,23 @@ Hooks.on("combatRound", function (combat, updateData, updateOptions) {
  * @param {*} updateData : contient {round, turn: next}
  * @param {*} updateOptions contiens {direction: 1, worldTime: {delta: CONFIG.time.turnTime}} -1 si on reviens en arriere et 1 si on avance
  */
-
+/*
 Hooks.on("combatTurn", function (combat, updateData, updateOptions) {
-  if (combat.combatant) combat.combatant.actor.combatNewTurn(combat, updateData, updateOptions)
-})
+  combat.turns[updateData.turn].actor.combatNewTurn(combat, updateData, updateOptions)
+})*/
+
+/**
+ * Evenement indiquant la fin d'un combat
+ */
+/*
+Hooks.on("combatEnd", function (combat) {
+  console.log("combatEnd", combat)
+  if (combat.combatants) {
+    combat.combatants.forEach((combatant) => {
+      if (combatant.actor) combatant.actor.combaEnding(combat)
+    })
+  }
+})*/
 
 Hooks.once("ready", async function () {
   if (DEVELOPMENT_MODE) {
