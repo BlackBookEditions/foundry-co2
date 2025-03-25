@@ -48,7 +48,9 @@
       "warningNoMoreRecoveryPoints": "Vous n'avez plus de dés de récupération.",
       "warningNoAmmo": "Vous n'avez plus de munitions.",
       "warningNoCharge": "Votre nombre d'utilisation restante est insuffisant",
-      "cantUseAllDef": "Vous ne pouvez pas utilsier les deux types de défense simultanément"
+      "cantUseAllDef": "Vous ne pouvez pas utilsier les deux types de défense simultanément",
+      "healed": "{actorName} a été soigné de {amount}",
+      "damaged": "{actorName} perd {amount} points de vigueur"
     },
     "tooltip": {
       "formulaAttack": "Formule d'attaque (sans le dé)",
@@ -447,10 +449,8 @@
       "cp": "Pièces de cuivre"
     },
     "customEffect": {
-      "damage": "Dommages",
-      "damageDescription": "Fait des dégats par unité de temps (round/secondes)",
-      "heal": "Soins",
-      "healDescription": "Soigne par unité de temps (round/secondes)",
+      "damageOrHeal": "Dommages ou soins",
+      "damageOrHealDescription": "Fait des dégats/soins par unité de temps (round/secondes)",
       "buff": "Amélioration",
       "buffDescription": "Augmente des capacités pendant un laps de temps (round/secondes)",
       "debuff": "Affaiblissement",
@@ -634,7 +634,7 @@
         "onSuccess": "Sur un succès",
         "onFail": "Sur un echec",
         "applyFormula": "dommages/soins",
-        "applyFormulaTooltip": "Appliquer des dommages/soins sur la durée",
+        "applyFormulaTooltip": "Appliquer des dommages (-X)/soins(+X) sur la durée",
         "type": "type d'energie",
         "statusAvailable": "Statuts disponibles",
         "statuses": "Liste des status"

@@ -19,6 +19,11 @@ export class CORoll extends Roll {
     }
   }
 
+  /**
+   * Fonction qui va analyser les valeurs du jet de dé et indiquer s'il s'agit d'un succes ou non ainsi que les infos
+   * @param {*} roll
+   * @returns { diceResult, total, isCritical, isFumble, difficulty, isSuccess, isFailure }
+   */
   static analyseRollResult(roll) {
     let result = {}
     if ((roll instanceof COAttackRoll && roll.options.type === "attack") || roll instanceof COSkillRoll) {

@@ -297,11 +297,20 @@ export default class CoBaseItemSheet extends ItemSheet {
     return this.item.update({ "system.actions": newActions })
   }
 
+  /**
+   * Va mémoriser le choix qui a été sélectionné pour les conditionsState
+   * @param {*} event
+   */
   _onSelectStatus(event) {
     event.preventDefault()
     this.selectedStatus = event.currentTarget.value
   }
 
+  /**
+   * Lorsque l'on va cliquer le le bouton pour ajouter un conditionState à mettre dnas les effets supplémentaires d'une attaque
+   * @param {*} event
+   * @returns
+   */
   _onAddStatut(event) {
     event.preventDefault()
     const dataset = event.currentTarget.dataset
@@ -309,7 +318,6 @@ export default class CoBaseItemSheet extends ItemSheet {
 
     const itemid = dataset.itemId
     const actionId = dataset.actionId
-    console.log("actions[actionId].resolvers[itemid].additionalEffect.statuses", actions[actionId].resolvers[itemid].additionalEffect.statuses)
     if (actions[actionId].resolvers[itemid].additionalEffect.statuses) actions[actionId].resolvers[itemid].additionalEffect.statuses += `, ${this.selectedStatus}`
     else actions[actionId].resolvers[itemid].additionalEffect.statuses = this.selectedStatus
     return this.item.update({ "system.actions": actions })

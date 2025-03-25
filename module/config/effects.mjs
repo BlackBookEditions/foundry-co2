@@ -279,20 +279,15 @@ export const CUSTOM_STATUS_EFFECT = [
 ]
 
 export const CUSTOM_EFFECT = {
-  damage: {
-    id: "damage",
-    name: "CO.customEffect.damage",
-    description: "CO.customEffect.damageDescription",
+  damageOrHeal: {
+    id: "damageOrHeal",
+    name: "CO.customEffect.damageOrHeal",
+    description: "CO.customEffect.damageOrHealDescription",
   },
   status: {
     id: "status",
     name: "CO.customEffect.status",
     description: "CO.customEffect.statusDescription",
-  },
-  heal: {
-    id: "heal",
-    name: "CO.customEffect.heal",
-    description: "CO.customEffect.healDescription",
   },
   buff: {
     id: "buff",

@@ -47,10 +47,11 @@
                     <div class="form-fields flex1 center"><input name="system.actions.{{../idx}}.resolvers.{{id}}.dmg.formula" type="text" value="{{r.dmg.formula}}" data-dtype="String" /></div>
                 </div>
             {{/if}}            
-            {{#if (eq r.type @root.choiceResolverTypes.heal.id)}}
+            
                 <div class="flexrow strong">
-                    <div class="form-fields flex1 center" data-tooltip="{{localize "CO.ui.formulaTooltip"}}">{{localize "CO.ui.healformula"}}</div>
-                    <div></div>
+                    {{#if (eq r.type @root.choiceResolverTypes.heal.id)}}
+                        <div class="form-fields flex1 center" data-tooltip="{{localize "CO.ui.formulaTooltip"}}">{{localize "CO.ui.healformula"}}</div>
+                    {{/if}}
                     <div class="form-fields flex1 center">{{localize "CO.ui.target"}}</div>
                     {{#if (eq r.target.type "multiple")}}
                         <div class="form-fields flex1 center">{{localize "CO.resolver.target.number"}}</div>
@@ -60,8 +61,9 @@
                     {{/if}}
                 </div>
                 <div class="flexrow"> 
+                    {{#if (eq r.type @root.choiceResolverTypes.heal.id)}}
                     <div class="form-fields flex1 center"><input name="system.actions.{{../idx}}.resolvers.{{id}}.skill.formula" type="text" value="{{r.skill.formula}}" data-dtype="String" /></div>
-                    <div></div>
+                    {{/if}}
                     <div class="form-fields flex1 center">                    
                         <select name="system.actions.{{../idx}}.resolvers.{{id}}.target.type" data-type="String" style="width:100%">
                             {{selectOptions @root.choiceResolverTargets selected=r.target.type localize=true}}
@@ -76,7 +78,7 @@
                         </select>
                     {{/if}}
                 </div>
-            {{/if}}
+           
              <div class="form-fields flex2">
                     <div class="form-group">
                 <label class="checkbox"><input type="checkbox" name="system.actions.{{../idx}}.resolvers.{{id}}.additionalEffect.active" {{checked r.additionalEffect.active}}> {{localize "CO.resolver.additionalEffect.active"}}</label>

@@ -33,6 +33,82 @@
  */
 
 export default class CombatCO extends Combat {
+  /* -------------------------------------------- */
+  /*  Document Methods                            */
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  async previousRound() {
+    if (!game.user.isGM) {
+      ui.notifications.warn("COMBAT.WarningCannotChangeRound", { localize: true })
+      return this
+    }
+    return super.previousRound()
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  async nextRound() {
+    if (!game.user.isGM) {
+      ui.notifications.warn("COMBAT.WarningCannotChangeRound", { localize: true })
+      return this
+    }
+    return super.nextRound()
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  _onDelete(options, userId) {
+    super._onDelete(options, userId)
+    for (const c of this.combatants) {
+      if (c.actor) {
+        c.actor.reset()
+        c.actor._sheet?.render(false)
+      }
+    }
+  }
+
+  /** @override */
+  async _onStartTurn(combatant) {
+    await super._onStartTurn(combatant)
+    return combatant.actor.onStartTurn(this.turn, this.round)
+  }
+
+  /** @override */
+  async _onStartRound() {
+    await super._onStartRound()
+    if (this.turns.length < 2) return
+
+    // Identify the first combatant to act in the round
+    const firstCombatant = this.turns[0]
+    const firstActor = firstCombatant?.actor
+
+    // Identify the last non-incapacitated combatant to act in the round
+    let lastCombatant
+    for (let i = this.turns.length - 1; i > 0; i--) {
+      if (this.turns[i].actor?.isIncapacitated !== true) {
+        lastCombatant = this.turns[i]
+        break
+      }
+    }
+    const lastActor = lastCombatant?.actor
+    for (let t = 0; t < this.turns.length; t++) {
+      this.turns[t].actor?.combatNewRound(this.round, this.turn)
+    }
+  }
+
+  /* -------------------------------------------- */
+
+  /** @inheritDoc */
+  async _onEndTurn(combatant) {
+    await super._onEndTurn(combatant)
+    await combatant.actor.onEndTurn(this.turn, this.round)
+    combatant.updateResource()
+    this.debounceSetup()
+  }
+
   /**
    * Define how the array of Combatants is sorted in the displayed list of the tracker.
    * This method can be overridden by a system or module which needs to display combatants in an alternative order.
