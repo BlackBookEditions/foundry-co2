@@ -1468,7 +1468,7 @@ export default class COActor extends Actor {
         showDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
       }
     }
-
+    console.log("rollAttack avant modif difficulty : ", difficulty)
     // Si la difficulté dépend de la cible unique
     if (!auto && useDifficulty && targets === undefined) {
       if (difficulty && difficulty?.includes("@cible")) {
@@ -1492,6 +1492,8 @@ export default class COActor extends Actor {
         }
       }
     }
+
+    console.log("rollAttack apres modif difficulty : ", difficulty)
 
     // Gestion du critique
     if (critical === undefined || critical === "") {
@@ -1622,11 +1624,20 @@ export default class COActor extends Actor {
     await roll.roll()
     // TODO Qui est soigné ? Pour le moment soi même :)
     if (targetType === SYSTEM.RESOLVER_TARGET.self.id) {
-      applyHealAndDamage(roll.total)
+      this.applyHealAndDamage(roll.total)
     } else if (targetType === SYSTEM.RESOLVER_TARGET.single.id || targetType === SYSTEM.RESOLVER_TARGET.multiple.id) {
-      console.log(`je vais appliquer le soin ${roll.total} sur`, targets)
-      if (CONFIG.debug.co?.resolvers) console.debug(Utils.log("Heal Targets", targets))
-      Hooks.callAll("applyHealing", targets, this.name, roll.total)
+      if (game.user.isGM) Hooks.callAll("applyHealing", targets, this.name, roll.total)
+      else {
+        const uuidList = targets.map((obj) => obj.uuid)
+        game.socket.emit(`system.${SYSTEM.ID}`, {
+          action: "heal",
+          data: {
+            targets: uuidList,
+            healAmount: roll.total,
+            fromUserId: this.uuid,
+          },
+        })
+      }
     }
   }
 

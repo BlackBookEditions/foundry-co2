@@ -1,3 +1,5 @@
+import { CustomEffectData } from "./models/customEffect.mjs"
+
 /**
  * Prise en charge des evènements transmis par le socket selon le type d'action transmis.
  *
@@ -12,7 +14,9 @@ export function handleSocketEvent({ action = null, data = {} } = {}) {
     case "buff":
       return _buff(data)
     case "heal":
-      return _heal(data.toUserId, data.healAmount, data.fromUserId, data.resolver)
+      return _heal(data)
+    case "customEffect":
+      return _customEffect(data)
     case "oppositeRoll":
       return _oppositeRoll(data)
   }
@@ -34,33 +38,43 @@ export function _buff({ userId } = {}) {
 
 /** * @description
  * //Fonction qui va proposer dans le chat d'appliquer des soins
- * @param {*} toACtorId : Liste d'id d'acteur cible
+ * @param {*} targets : Liste d'uuid d'acteur cible
  * @param {int} Quantité de PV restaurés
  * @param {string} id de l'acteur à l'origine du soin
- * @param {Resolver} resolver Instance de la classe resolver définissant le soin
  */
-export async function _heal({ toACtorId, healAmount, fromUserId, resolver }) {
-  console.debug(`handleSocketEvent _heal from ${fromUserId} to ${toUserId} amount ${healAmount} !`)
-
-  const actor = game.actors.get(target)
-  if (actor) {
-    if (actor.testUserPermission(game.user, "OWNER", { exact: true })) {
-      //je suis bien sur l'utilisateur possédant l'acteur ciblé, j'applique les soins à mon personnage
-      actor.system.attributes.hp.value += healAmount
-      if (actor.system.attributes.hp.value > actor.system.attributes.hp.max) actor.system.attributes.hp.value = actor.system.attributes.hp.max
-      actor.update({ "system.attributes.hp.value": actor.system.attributes.hp.value })
-      //envoyer un petit message chat pour dire qu'il a été soigné par l'auteur
-      let content = "vous avez été soigné par "
-      const autor = game.actors.get(fromUserId)
-      if (autor) {
-        content += " " + autor.name
-      }
-      await ChatMessage.implementation.create({
-        content,
-        speaker: ChatMessage.implementation.getSpeaker({ actor }),
-        whisper: game.user,
-      })
+export async function _heal({ targets, healAmount, fromUserId }) {
+  if (game.user.isGM) {
+    //Attention la fonction applyHealAndDamage attend une valeur negative pour du heal
+    let totalHeal = healAmount
+    if (totalHeal > 0) totalHeal = -totalHeal
+    // En tant que GM il peux appliquer les effets sur les acteurs
+    for (let i = 0; i < targets.length; i++) {
+      const actor = await fromUuid(targets[i])
+      console.log("l'actor vaut ", actor)
+      console.log(actor.name, " reçoit ", totalHeal, " pv provenant de ", fromUserId)
+      actor.applyHealAndDamage(totalHeal)
     }
+  }
+}
+/**
+ * Fonction qui va provoquer la mise en place d'un custom Effect sur le client donné s'il est dans la liste
+ * @param {*} data : Ensemble des données transmises par packet via le socket
+ * @param {*} data.userId: game.user.id,
+ * @param {CustomEffectData} data.ce CustomEffetcs à appliquer
+ * @param {string} data.ce.nom Nom de l'item source
+ * @param {string} data.ce.source UUID de l'item source
+ * @param {string} data.ce.statuses: liste des status à appliquer
+ * @param {int} data.ce.duration this.additionalEffect.duration
+ * @param {string} data.ce.unite this.additionalEffect.unite
+ * @param {string} data.ce.formule: ce.formule,
+ * @param {string} data.ce.elementType: this.additionalEffect.elementType,
+ * @param {string} data.ce.effectType: SYSTEM.CUSTOM_EFFECT.status.id,
+ * @param {Set<int>} data.ce.targets: uuidList,
+ */
+export async function _customEffect(data) {
+  if (game.user.isGM) {
+    //je suis une cible donc je m'applique l'effet
+    console.log("je reçoit un message socket avec comme donnée : ", data)
   }
 }
 
