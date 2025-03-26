@@ -49,7 +49,7 @@
       "warningNoAmmo": "Vous n'avez plus de munitions.",
       "warningNoCharge": "Votre nombre d'utilisation restante est insuffisant",
       "cantUseAllDef": "Vous ne pouvez pas utilsier les deux types de défense simultanément",
-      "healed": "{actorName} a été soigné de {amount}",
+      "healed": "{actorName} a été soigné de {amount} point de vigueur",
       "damaged": "{actorName} perd {amount} points de vigueur"
     },
     "tooltip": {
@@ -633,8 +633,8 @@
         "applyOn": "s'applique sur :",
         "onSuccess": "Sur un succès",
         "onFail": "Sur un echec",
-        "applyFormula": "dommages/soins",
-        "applyFormulaTooltip": "Appliquer des dommages (-X)/soins(+X) sur la durée",
+        "applyFormula": "dommages/soins périodique",
+        "applyFormulaTooltip": "Appliquer des dommages (+X)/soins(-X) sur la durée",
         "type": "type d'energie",
         "statusAvailable": "Statuts disponibles",
         "statuses": "Liste des status"

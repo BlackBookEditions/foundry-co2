@@ -142,13 +142,32 @@ export default function registerHooks() {
       document.system.spendDR(1)
     }
   })
-
+  /**
+   * Demande d'appliquer ds custom Effects à des cibles. Seul le MJ peux le faire
+   */
   Hooks.on("applyEffect", (targets, customEffect) => {
     if (game.user.isGM) {
       // En tant que GM il peux appliquer les effets sur les acteurs
       for (let i = 0; i < targets.length; i++) {
         const target = targets[i]
         target.actor.applyCustomEffect(customEffect)
+      }
+    }
+  })
+
+  /**
+   * Demande d'appliquer des Soins à des cibles. Seul le MJ peux le faire
+   * Attention pour la fonction appelé il faut que les soins soient en negatif
+   */
+  Hooks.on("applyHealing", (targets, originName, amount) => {
+    if (game.user.isGM) {
+      let totalHeal = amount
+      if (totalHeal > 0) totalHeal = -totalHeal
+      // En tant que GM il peux appliquer les effets sur les acteurs
+      for (let i = 0; i < targets.length; i++) {
+        const target = targets[i]
+        console.log(target.name, " reçoit ", totalHeal, " pv provenant de ", originName)
+        target.actor.applyHealAndDamage(totalHeal)
       }
     }
   })
