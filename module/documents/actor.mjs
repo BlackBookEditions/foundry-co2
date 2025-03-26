@@ -473,7 +473,7 @@ export default class COActor extends Actor {
    * @param {Object} [params={}] Les paramètres de la fonction.
    * @param {boolean} params.state L'état à définir pour l'effet (true pour activer, false pour désactiver).
    * @param {string} params.effectid L'ID de l'effet à basculer.
-   * @returns {Promise<void>} Une promesse qui se résout lorsque l'effet de statut a été basculé.
+   * @returns {Promise<boolean>} Renvoi true si ça a été appliqué et false sinon (immunisé ?)
    *
    * @throws {Error} Si les effets de défense partielle et totale sont tentés d'être activés simultanément.
    */
@@ -489,9 +489,29 @@ export default class COActor extends Actor {
         return ui.notifications.warn(game.i18n.localize("CO.notif.cantUseAllDef"))
       }
     }
+    // Imunisé aux altération de mouvement ?
+    if ((effectid === "stun" || effectid === "immobilized" || effectid === "paralysis") && state === true) {
+      const state = this.modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.movementImpairment.id)
+      if (state && state.length > 0) {
+        // Immunisé on ne l'applique pas
+        ui.notifications.info(`${this.name} ${game.i18n.localize("CO.label.long.movementImpairment")}`)
+        return false
+      }
+    }
+    // Imunisé aux poisons ?
+    if (effectid === "poison" && state === true) {
+      const state = this.modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.poisonimmunity.id)
+      if (state && state.length > 0) {
+        // Immunisé on ne l'applique pas
+        ui.notifications.info(`${this.name} ${game.i18n.localize("CO.label.long.poisonimmunity")}`)
+        return false
+      }
+    }
+
     let hasEffect = this.statuses.has(effectid)
     if (hasEffect && state === false) return await this.toggleStatusEffect(effectid, state)
     if (!hasEffect && state === true) return await this.toggleStatusEffect(effectid, state)
+    return true
   }
 
   /**
@@ -761,7 +781,7 @@ export default class COActor extends Actor {
 
     // Throw an error if any target had an error
     for (const target of targets) {
-      if (target.error) throw new Error(target.error)
+      if (target.error) ui.notifications.error(target.error)
     }
     return targets
   }
@@ -1587,16 +1607,26 @@ export default class COActor extends Actor {
     return results
   }
 
-  // FIXME Finir la méthode
+  /**
+   * Fonction assurant les jet de dé pour le soin
+   * @param {COItem} item Item à l'origine du soin (ex : Restauration mineure de prêtre)
+   * @param {object} param1 Elements permettant le calcul du soin :
+   * @param {string} param1.actionName  action déclencheur
+   * @param {string} param1.healFormula formule utilisée pour le soin
+   * @param {string}  param1.targetType : indique si on se cible soit-même, ou d'autres personnes etc.
+   * @param {Array<COActor>} param1.targets : une liste d'acteurs ciblés
+   */
   async rollHeal(item, { actionName = "", healFormula = undefined, targetType = SYSTEM.RESOLVER_TARGET.none.id, targets = [] } = {}) {
     let roll = new Roll(healFormula)
     await roll.roll()
     // TODO Qui est soigné ? Pour le moment soi même :)
     if (targetType === SYSTEM.RESOLVER_TARGET.self.id) {
       applyHealAndDamage(roll.total)
+    } else if (targetType === SYSTEM.RESOLVER_TARGET.single.id || targetType === SYSTEM.RESOLVER_TARGET.multiple.id) {
+      console.log(`je vais appliquer le soin ${roll.total} sur`, targets)
+      if (CONFIG.debug.co?.resolvers) console.debug(Utils.log("Heal Targets", targets))
+      Hooks.callAll("applyHealing", targets, this.name, roll.total)
     }
-    const messageData = { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", speaker }
-    await roll.toMessage(messageData)
   }
 
   /**
@@ -1606,14 +1636,6 @@ export default class COActor extends Actor {
    * @param {integer} healValue heal or damageValue (heal < 0 and damage > 0)
    */
   async applyHealAndDamage(healValue) {
-    let message = ""
-    if (healValue > 0) {
-      message = game.i18n.localize("CO.notif.damaged").replace("{actorName}", this.name).replace("{amount}", healValue.toString())
-    } else {
-      message = game.i18n.localize("CO.notif.healed").replace("{actorName}", this.name).replace("{amount}", healValue.toString())
-    }
-    await ui.chat.processMessage(message, { actor: this.id, alias: this.name })
-
     let hp = this.system.attributes.hp
     hp.value -= healValue
     if (hp.value > hp.max) hp.value = hp.max
@@ -1622,6 +1644,15 @@ export default class COActor extends Actor {
       if (this.type !== SYSTEM.ACTOR_TYPE.character.id) this.toggleStatusEffect("dead", true)
     }
     this.update({ "system.attributes.hp": hp })
+
+    let message = ""
+    if (healValue > 0) {
+      message = game.i18n.localize("CO.notif.damaged").replace("{actorName}", this.name).replace("{amount}", healValue.toString())
+    } else {
+      message = game.i18n.localize("CO.notif.healed").replace("{actorName}", this.name).replace("{amount}", Math.abs(healValue).toString())
+    }
+
+    await ui.chat.processMessage(message, { actor: this._id, alias: this.name })
   }
   // #endregion
 
@@ -1675,17 +1706,9 @@ export default class COActor extends Actor {
   }
   // #endregion
 
-  // #region Méthodes pour le CombatTracker
-
-  /**
-   * On change de round donc on peut gérer le temps restant
-   * @param {integer} round numéro du round en cours
-   * @param {integer} turn : le numéro du tour en cours
-   */
-  combatNewRound(round, turn) {
-    // Ici on va gérer qu'on arrive dans un nouveau round il faut faire attention car le MJ peux revenir en arrière !
-    // On va notamment gérer la durée des effets en round ou secondes je suppose
-  }
+  /* -------------------------------------------- */
+  /*  Combat Encounters and Turn Order            */
+  /* -------------------------------------------- */
 
   /**
    * On va supprimer les customEffect restant surl'acteur
@@ -1707,7 +1730,7 @@ export default class COActor extends Actor {
     // Supprime le statut
     if (customEffect.statuses.length > 0) {
       for (const status of customEffect.statuses) {
-        this.activateCOStatusEffect({ state: false, effectid: status })
+        await this.activateCOStatusEffect({ state: false, effectid: status })
       }
     }
     this.system.currentEffects.splice(this.system.currentEffects.indexOf(customEffect), 1)
@@ -1731,7 +1754,7 @@ export default class COActor extends Actor {
    * @param {CustomEffectData} effect
    * @param {integer} round
    */
-  startApplyingCustomEffect(effect, round) {
+  async startApplyingCustomEffect(effect, round) {
     effect.startedAt = round
     if (effect.unite === SYSTEM.COMBAT_UNITE.round) {
       effect.lastRound = effect.startedAt + effect.duration
@@ -1742,16 +1765,14 @@ export default class COActor extends Actor {
     // Applique le statut
     if (effect.statuses && effect.statuses.length > 0) {
       for (const status of effect.statuses) {
-        this.activateCOStatusEffect({ state: true, effectid: status })
+        let result = await this.activateCOStatusEffect({ state: true, effectid: status })
+        if (result === false) return false // On applique pas l'effet s'il y a une immunité (cas d'un result === false)
       }
     }
     this.system.currentEffects.push(effect)
     this.update({ "system.currentEffects": this.system.currentEffects })
+    return true
   }
-
-  /* -------------------------------------------- */
-  /*  Combat Encounters and Turn Order            */
-  /* -------------------------------------------- */
 
   /**
    * Actions that occur at the beginning of an Actor's turn in Combat.

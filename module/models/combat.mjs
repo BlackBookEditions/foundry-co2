@@ -93,10 +93,6 @@ export default class CombatCO extends Combat {
         break
       }
     }
-    const lastActor = lastCombatant?.actor
-    for (let t = 0; t < this.turns.length; t++) {
-      this.turns[t].actor?.combatNewRound(this.round, this.turn)
-    }
   }
 
   /* -------------------------------------------- */
