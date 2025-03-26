@@ -2,6 +2,7 @@ import { SYSTEM } from "../../config/system.mjs"
 import Utils from "../../utils.mjs"
 import COActor from "../../documents/actor.mjs"
 import { CustomEffectData } from "../customEffect.mjs"
+import { handleSocketEvent } from "../../socket.mjs"
 
 /**
  * Resolver
@@ -117,9 +118,27 @@ export class Resolver extends foundry.abstract.DataModel {
     if (this.target.type === SYSTEM.RESOLVER_TARGET.self.id) actor.applyCustomEffect(ce)
     else {
       const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.name)
-      console.log("je vais appliquer l'effets sur", targets)
-      if (CONFIG.debug.co?.resolvers) console.debug(Utils.log("CustomEffect Targets", targets))
-      Hooks.callAll("applyEffect", targets, ce)
+      const uuidList = targets.map((obj) => obj.uuid)
+      if (game.user.isGM) Hooks.callAll("applyEffect", targets, ce)
+      else {
+        game.socket.emit(`system.${SYSTEM.ID}`, {
+          action: "customEffect",
+          data: {
+            userId: game.user.id,
+            ce: {
+              nom: item.name,
+              source: item.uuid,
+              statuses: this.additionalEffect.statuses,
+              duration: this.additionalEffect.duration,
+              unite: this.additionalEffect.unite,
+              formule: ce.formule,
+              elementType: this.additionalEffect.elementType,
+              effectType: SYSTEM.CUSTOM_EFFECT.status.id,
+            },
+            targets: uuidList,
+          },
+        })
+      }
     }
   }
 
@@ -138,7 +157,6 @@ export class Resolver extends foundry.abstract.DataModel {
       this.target.scope = SYSTEM.RESOLVER_SCOPE.all.id
       this.target.number = 1
     }
-
     let skillFormula = this.skill.formula
     skillFormula = Utils.evaluateFormulaCustomValues(actor, skillFormula, item.uuid)
     let skillFormulaEvaluated = Roll.replaceFormulaData(skillFormula, actor.getRollData())
@@ -181,7 +199,6 @@ export class Resolver extends foundry.abstract.DataModel {
    */
   async auto(actor, item, action) {
     if (CONFIG.debug.co?.resolvers) console.debug(Utils.log(`Resolver auto`), actor, item, action)
-
     let damageFormula = this.dmg.formula
     damageFormula = Utils.evaluateFormulaCustomValues(actor, damageFormula, item.uuid)
     let damageFormulaEvaluated = Roll.replaceFormulaData(damageFormula, actor.getRollData())
@@ -212,7 +229,7 @@ export class Resolver extends foundry.abstract.DataModel {
     healFormula = Utils.evaluateFormulaCustomValues(actor, healFormula)
     let healFormulaEvaluated = Roll.replaceFormulaData(healFormula, actor.getRollData())
 
-    const targets = actor.acquireTargets(this.target.type, this.target.scope, action)
+    const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.name)
     if (CONFIG.debug.co?.resolvers) console.debug(Utils.log("Heal Targets", targets))
 
     await actor.rollHeal(item, { actionName: action.label, healFormula: healFormulaEvaluated, targetType: this.target.type, targets: targets })

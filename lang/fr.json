@@ -343,7 +343,7 @@
       "pvLevel": "Points de vigueur par niveau",
       "noTarget": "Vous n'avez ciblé personne",
       "critTooltip": "Laisser vide pour utiliser la valeur par défaut du personnage",
-      "formulaTooltip": "Vous pouvez utiliser : @agi, @con, @for, @per, @cha, @int, @vol, @atc, @atd, @atm, @def, @ini, @niv, d4°, @toutrang[x], @rang, @rang[x,x,x,x,x]",
+      "formulaTooltip": "Vous pouvez utiliser : @agi, @con, @for, @per, @cha, @int, @vol, @atc, @atd, @atm, @def, @ini, @niv, d4°, @toutrang[x], @rang, @rang[x,x,x,x,x], @cible.def, @opposite",
       "activate": "Activer",
       "deactivate": "Désactiver",
       "use": "Utiliser",
