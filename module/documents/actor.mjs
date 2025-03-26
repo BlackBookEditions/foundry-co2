@@ -756,12 +756,13 @@ export default class COActor extends Actor {
    *
    * @param {string} targetType The type of target to acquire. Can be "none", "self", "single", or "multiple".
    * @param {string} targetScope The scope of the target acquisition : allies, enemies, all.
-   * @param {Object} actionName The name of the action to be performed on the targets.
+   * @param {string} actionName The name of the action to be performed on the targets.
+   * @param {integer} targetNumber The number maximum of targets.
    * @param {Object} [options={}] Additional options for target acquisition.
    * @returns {Array} An array of acquired targets.
    * @throws {Error} Throws an error if any target has an error.
    */
-  acquireTargets(targetType, targetScope, actionName, options = {}) {
+  acquireTargets(targetType, targetScope, targetNumber, actionName, options = {}) {
     if (!canvas.ready) return []
     let targets
 
@@ -772,10 +773,10 @@ export default class COActor extends Actor {
         targets = this.getActiveTokens(true).map(this.#getTargetFromToken)
         break
       case "single":
-        targets = this.#getTargets(actionName, targetScope, true)
+        targets = this.#getTargets(actionName, targetScope, targetNumber, true)
         break
       case "multiple":
-        targets = this.#getTargets(actionName, targetScope, false)
+        targets = this.#getTargets(actionName, targetScope, targetNumber, false)
         break
     }
 
@@ -1282,7 +1283,7 @@ export default class COActor extends Actor {
     // Si la difficulté dépend de la cible unique
     if (oppositeRoll && useDifficulty && targets === undefined) {
       if (difficulty && difficulty.includes("@cible")) {
-        targets = this.acquireTargets("single", "all", actionName)
+        targets = this.acquireTargets("single", "all", 1, actionName)
         if (targets.length === 0) {
           difficulty = null
         }
@@ -1295,7 +1296,7 @@ export default class COActor extends Actor {
 
       // Si l'attaque demande un jet opposé contre la cible
       else if (difficulty && difficulty.includes("@oppose")) {
-        targets = this.acquireTargets("single", "all", actionName)
+        targets = this.acquireTargets("single", "all", 1, actionName)
         if (targets.length === 0) {
           difficulty = null
         }
@@ -1471,7 +1472,7 @@ export default class COActor extends Actor {
     // Si la difficulté dépend de la cible unique
     if (!auto && useDifficulty && targets === undefined) {
       if (difficulty && difficulty?.includes("@cible")) {
-        targets = this.acquireTargets("single", "all", actionName)
+        targets = this.acquireTargets("single", "all", 1, actionName)
         if (targets.length === 0) {
           difficulty = null
         }
@@ -1485,7 +1486,7 @@ export default class COActor extends Actor {
       // Si l'attaque demande un jet opposé contre la cible
       else if (difficulty && difficulty.includes("@oppose")) {
         oppositeRoll = true
-        targets = this.acquireTargets("single", "all", actionName)
+        targets = this.acquireTargets("single", "all", 1, actionName)
         if (targets.length === 0) {
           difficulty = null
         }
@@ -1671,7 +1672,7 @@ export default class COActor extends Actor {
     return { token, actor: token.actor, uuid: token.actor.uuid, name: token.name }
   }
 
-  #getTargets(actionName, scope, single) {
+  #getTargets(actionName, scope, number, single) {
     const tokens = game.user.targets
     let errorAll
 
@@ -1681,9 +1682,9 @@ export default class COActor extends Actor {
     }
 
     // Too many targets
-    if ((single && tokens.size > 1) || (!single && tokens.size > this.target.number)) {
+    if ((single && tokens.size > 1) || (!single && tokens.size > number)) {
       errorAll = game.i18n.format("CO.notif.warningIncorrectTargets", {
-        number: single ? 1 : this.target.number,
+        number: single ? 1 : number,
         action: actionName,
       })
     }
