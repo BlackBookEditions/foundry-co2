@@ -44,14 +44,12 @@ export function _buff({ userId } = {}) {
  */
 export async function _heal({ targets, healAmount, fromUserId }) {
   if (game.user.isGM) {
-    //Attention la fonction applyHealAndDamage attend une valeur negative pour du heal
+    // Attention la fonction applyHealAndDamage attend une valeur negative pour du heal
     let totalHeal = healAmount
     if (totalHeal > 0) totalHeal = -totalHeal
     // En tant que GM il peux appliquer les effets sur les acteurs
     for (let i = 0; i < targets.length; i++) {
       const actor = await fromUuid(targets[i])
-      console.log("l'actor vaut ", actor)
-      console.log(actor.name, " reçoit ", totalHeal, " pv provenant de ", fromUserId)
       actor.applyHealAndDamage(totalHeal)
     }
   }
@@ -73,14 +71,39 @@ export async function _heal({ targets, healAmount, fromUserId }) {
  */
 export async function _customEffect(data) {
   if (game.user.isGM) {
-    //je suis une cible donc je m'applique l'effet
+    // Je suis une cible donc je m'applique l'effet
     console.log("je reçoit un message socket avec comme donnée : ", data)
+    // Conception de l'effet
+    const custom = new CustomEffectData({
+      nom: data.ce.nom,
+      source: data.ce.source,
+      statuses: data.ce.statuses,
+      duration: data.ce.duration,
+      unite: data.ce.unite,
+      formule: data.ce.formule,
+      elementType: data.ce.elementType,
+      effectType: data.ce.effectType,
+      startedAt: game.combat.round,
+      remainingDuration: data.ce.duration,
+    })
+    for (let i = 0; i < data.targets.length; i++) {
+      const actor = await fromUuid(data.targets[i])
+      actor.applyCustomEffect(custom)
+    }
   }
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.userId
+ * @param root0.messageId
+ * @param root0.rolls
+ * @param root0.result
+ */
 export async function _oppositeRoll({ userId, messageId, rolls, result } = {}) {
   console.log(`handleSocketEvent _oppositeRoll from ${userId} !`, messageId, rolls, result)
-  //const currentUser = game.user._id
+  // Const currentUser = game.user._id
   if (game.user.isGM) {
     const message = game.messages.get(messageId)
     await message.update({ rolls: rolls, "system.result": result })
