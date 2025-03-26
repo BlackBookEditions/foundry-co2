@@ -116,7 +116,7 @@ export class Resolver extends foundry.abstract.DataModel {
     // Gestion de la cible
     if (this.target.type === SYSTEM.RESOLVER_TARGET.self.id) actor.applyCustomEffect(ce)
     else {
-      const targets = actor.acquireTargets(this.target.type, this.target.scope, action)
+      const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.name)
       console.log("je vais appliquer l'effets sur", targets)
       if (CONFIG.debug.co?.resolvers) console.debug(Utils.log("CustomEffect Targets", targets))
       Hooks.callAll("applyEffect", targets, ce)
