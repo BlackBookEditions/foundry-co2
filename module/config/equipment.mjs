@@ -21,18 +21,27 @@ export const EQUIPMENT_SUBTYPES = {
   },
 }
 
+// Livre de Règles, Page 193
 export const EQUIPMENT_RARITY = {
   common: {
     id: "common",
     label: "CO.rarity.common",
   },
-  medium: {
-    id: "medium",
-    label: "CO.rarity.medium",
+  precious: {
+    id: "precious",
+    label: "CO.rarity.precious",
+  },
+  exotic: {
+    id: "exotic",
+    label: "CO.rarity.exotic",
   },
   rare: {
     id: "rare",
     label: "CO.rarity.rare",
+  },
+  veryRare: {
+    id: "veryRare",
+    label: "CO.rarity.veryRare",
   },
   unique: {
     id: "unique",

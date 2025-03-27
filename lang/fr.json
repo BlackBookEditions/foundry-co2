@@ -704,9 +704,11 @@
       }
     },
     "rarity": {
-      "common": "Commun",
-      "medium": "Moyen",
+      "common": "Ordinaire",
+      "precious": "Précieux",
+      "exotic": "Exotique",
       "rare": "Rare",
+      "veryRare": "Très rare",
       "unique": "Unique"
     },
     "damage": {
