@@ -2146,7 +2146,8 @@ strong,
   border-color: #ababab;
 }
 .co.sheet.actor.character {
-  min-width: 630px;
+  min-height: 480px;
+  min-width: 760px;
 }
 .co.sheet.actor.character .window-content {
   padding: 0;
@@ -3976,7 +3977,8 @@ strong,
   border-top: 1px solid #c9c7b8;
 }
 .co.sheet.actor.encounter {
-  min-width: 585px;
+  min-height: 480px;
+  min-width: 625px;
 }
 .co.sheet.actor.encounter .window-content {
   padding: 0;
@@ -5399,6 +5401,10 @@ strong,
   border: none;
   outline: 2px solid white;
   box-shadow: 3px 3px 5px gray;
+}
+.co.sheet.item {
+  min-height: 400px;
+  min-width: 400px;
 }
 .co.sheet.item .window-content {
   display: flex;
