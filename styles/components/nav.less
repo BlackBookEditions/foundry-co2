@@ -37,9 +37,9 @@
   justify-content: space-around;
   align-items: baseline;
   margin-bottom: 0.5rem;
-  border-top: 1px solid var(--color-border-light-primary);
-  border-bottom: 1px solid var(--secondary-background);
-  border-bottom: 1px solid var(--color-border-light-primary);
+  padding: 0 0.75em;
+  border: 0 !important;
+  border-bottom: 1px solid var(--primary) !important;
 
   .item {
     flex: 1 1 auto;
@@ -48,8 +48,9 @@
     font-weight: 600;
     margin: 0;
     &.active {
+      background-color: var(--primary);
+      color: var(--color-text-trait);
       text-shadow: 0 0 10px var(--color-shadow-primary);
-      text-decoration: underline;
     }
     &.disabled {
       color: #ababab;
