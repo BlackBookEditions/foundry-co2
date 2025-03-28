@@ -163,13 +163,9 @@ export const RESOLVER_TYPE = Object.freeze({
     id: "heal",
     label: "CO.resolver.types.heal",
   },
-  buff: {
-    id: "buff",
-    label: "CO.resolver.types.buff",
-  },
-  debuff: {
-    id: "debuff",
-    label: "CO.resolver.types.debuff",
+  buffDebuff: {
+    id: "buffDebuff",
+    label: "CO.resolver.types.buffDebuff",
   },
   consumable: {
     id: "consumable",

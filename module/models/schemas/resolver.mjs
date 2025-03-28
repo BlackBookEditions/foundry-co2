@@ -32,10 +32,11 @@ export class Resolver extends foundry.abstract.DataModel {
         active: new fields.BooleanField({ initial: false }),
         applyOn: new fields.StringField({ required: true, choices: SYSTEM.RESOLVER_RESULT, initial: SYSTEM.RESOLVER_RESULT.success.id }),
         statuses: new fields.StringField(),
-        duration: new fields.NumberField({ required: true, nullable: false, integer: true, min: 0, initial: 0 }),
+        duration: new fields.StringField({ required: true, nullable: false, initial: "0" }),
         unite: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: "round" }),
         formule: new fields.StringField({ required: false }),
         elementType: new fields.StringField({ required: false }),
+        applyBuff: new fields.BooleanField({ initial: false }),
       }),
     }
   }
@@ -48,6 +49,7 @@ export class Resolver extends foundry.abstract.DataModel {
       heal: function () {},
       auto: function () {},
       consume: function () {},
+      buffDebuff: function () {},
     }
   }
 
@@ -63,6 +65,9 @@ export class Resolver extends foundry.abstract.DataModel {
         return await this.heal(actor, item, action)
       case "consumable":
         return await this.consume(actor, item, action)
+      case "buffDebuff":
+        return await this.buffDebuff(actor, item, action)
+
       default:
         return false
     }
@@ -76,16 +81,24 @@ export class Resolver extends foundry.abstract.DataModel {
    */
   async manageAdditionalEffect(actor, item, action) {
     if (!game.combat) {
-      console.log("applyAdditionalEffect : pas de combat en cours !")
+      game.ui.notify.warn("Pas de combat en cours !")
       return false // Si pas de combat, pas d'effet sur la durée
     }
+    // Evaluation de la durée si besoin
+    let durationResult = Utils.evaluateFormulaCustomValues(actor, this.additionalEffect.duration)
+    durationResult = Roll.replaceFormulaData(durationResult, actor.getRollData())
+    console.log("duration", durationResult)
+    if (/[+\-*/%]/.test(durationResult) === true) durationResult = eval(durationResult)
+    console.log("duration", durationResult)
+
     // Conception de l'effet
     const ce = new CustomEffectData({
       nom: item.name,
       source: item.uuid,
+      slug: item.name.slugify(),
       statuses: this.additionalEffect.statuses,
-      duration: this.additionalEffect.duration,
       unite: this.additionalEffect.unite,
+      duration: parseInt(durationResult),
       formule: this.additionalEffect.formule,
       elementType: this.additionalEffect.elementType,
       effectType: SYSTEM.CUSTOM_EFFECT.status.id,
@@ -109,10 +122,20 @@ export class Resolver extends foundry.abstract.DataModel {
       }
     }
 
-    // evaluation de la formule à partir du caster
+    console.log("duration", ce.duration)
+
+    // Evaluation de la formule à partir du caster
     let formulResult = Utils.evaluateFormulaCustomValues(actor, ce.formule)
     formulResult = Roll.replaceFormulaData(formulResult, actor.getRollData())
     ce.formule = formulResult
+
+    // Est ce que l'on a des modifier à appliquer
+    if (action.modifiers && action.modifiers.length > 0 && this.additionalEffect.applyBuff === true) {
+      for (let i = 0; i < action.modifiers.length; i++) {
+        const mod = foundry.utils.deepClone(action.modifiers[i])
+        ce.modifiers.push(mod)
+      }
+    }
 
     // Gestion de la cible
     if (this.target.type === SYSTEM.RESOLVER_TARGET.self.id) actor.applyCustomEffect(ce)
@@ -134,12 +157,14 @@ export class Resolver extends foundry.abstract.DataModel {
               formule: ce.formule,
               elementType: this.additionalEffect.elementType,
               effectType: SYSTEM.CUSTOM_EFFECT.status.id,
+              modifiers: ce.modifiers,
             },
             targets: uuidList,
           },
         })
       }
     }
+    return true
   }
 
   /**
@@ -184,8 +209,11 @@ export class Resolver extends foundry.abstract.DataModel {
 
     if (result === null) return false
     console.log("result", result)
-    if (result[0].isSuccess && this.additionalEffect.active) {
+    if (result[0].isSuccess && this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.success.id) {
       console.log("le resultat est un succes")
+      await this.manageAdditionalEffect(actor, item, action)
+    } else if (result[0].isFailure && this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.fail.id) {
+      console.log("le resultat est un echec")
       await this.manageAdditionalEffect(actor, item, action)
     }
     return true
@@ -226,14 +254,31 @@ export class Resolver extends foundry.abstract.DataModel {
     if (CONFIG.debug.co?.resolvers) console.debug(Utils.log(`Resolver heal`), actor, item, action)
 
     let healFormula = this.skill.formula
-    healFormula = Utils.evaluateFormulaCustomValues(actor, healFormula)
+    healFormula = Utils.evaluateFormulaCustomValues(actor, healFormula, item.uuid)
     let healFormulaEvaluated = Roll.replaceFormulaData(healFormula, actor.getRollData())
+    console.log("healFormulaEvaluated", healFormulaEvaluated)
 
     const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.name)
     if (CONFIG.debug.co?.resolvers) console.debug(Utils.log("Heal Targets", targets))
 
     await actor.rollHeal(item, { actionName: action.label, healFormula: healFormulaEvaluated, targetType: this.target.type, targets: targets })
     return true
+  }
+
+  /**
+   * Resolver pour les actions de type buff ou debuff.
+   * Un buff ou un debuff est une amélioration/affaiblissement temporaire d'un ou plusieurs individus
+   * on doit forcément avoir coché la case effets supplémentaire pour définir une durée en round à minima
+   * @param {COActor} actor : l'acteur qui execute l'action
+   * @param {COItem} item : la source de l'action
+   * @param {Action} action : l'action
+   */
+  async buffDebuff(actor, item, action) {
+    if (action.modifiers && action.modifiers.length > 0 && this.additionalEffect.active && this.additionalEffect.applyBuff === true) {
+      return await this.manageAdditionalEffect(actor, item, action)
+    } else {
+      return false
+    }
   }
 
   /**

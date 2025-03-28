@@ -206,6 +206,8 @@
     "customStatus": {
       "blind": "Aveuglé",
       "blindDescription": "‑5 en Init., attaque et DEF, ‑10 en attaque à distance. Les attaques magiques nécessitant de voir la cible sont impossibles",
+      "dance": "Danse irrésistible",
+      "danceDescription": "Vous ne pouvez pas vous retenir de danser",
       "weakened": "Affaibli",
       "weakenedDescription": "Dé malus à tous les tests",
       "outOfBreath": "Essoufflé",
@@ -238,7 +240,9 @@
       "fullDef": "Défense totale (L)",
       "fullDefDescription": "+5 en DEF et aux tests opposés pour résister à une attaque ou un effet pendant 1 round",
       "fullDefActivate": "Activer la défense totale (L)",
-      "fullDefDeactivate": "Désactiver la défense totale (L)"
+      "fullDefDeactivate": "Désactiver la défense totale (L)",
+      "heroSong": "Chant des héros",
+      "heroSongDescription": "Le chant des héros vous donne un bonus de +1 à tous les tests"
     },
     "ui": {
       "none": "--",
@@ -609,8 +613,7 @@
         "ranged": "Attaque à distance",
         "magical": "Attaque magique",
         "heal": "Soin",
-        "buff": "Amélioration",
-        "debuff": "Affaiblissement",
+        "buffDebuff": "Buff/Debuff",
         "auto": "Attaque automatique"
       },
       "target": {
@@ -637,7 +640,8 @@
         "applyFormulaTooltip": "Appliquer des dommages (+X)/soins(-X) sur la durée",
         "type": "type d'energie",
         "statusAvailable": "Statuts disponibles",
-        "statuses": "Liste des status"
+        "statuses": "Liste des status",
+        "applyBuff": "Applique buff/debuff ?"
       }
     },
     "itemTypes": {

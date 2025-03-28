@@ -1,4 +1,3 @@
-{{log 'effects' this}}
 <div class="effects section-container">
   <div class="section-header">
     <h4>{{localize "CO.label.long.effects"}}</h4>
@@ -82,7 +81,7 @@
               <!-- <a class="item-image item-edit" style="background-image: url('{{{actionImg}}}')"></a> -->
               <h4>{{effect.nom}}</h4>
               {{#if ../unlocked}}
-                <a class="item-control customEffect-delete" data-tooltip={{localize "CO.ui.remove"}} data-ce-Name={{effect.nom}}><i class="fas fa-trash"></i></a>
+                <a class="item-control customEffect-delete" data-tooltip={{localize "CO.ui.remove"}} data-ce-Name={{effect.slug}}><i class="fas fa-trash"></i></a>
               {{/if}}
             </div>
             <div class="item-controls-2"></div>
