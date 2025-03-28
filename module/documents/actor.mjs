@@ -491,20 +491,24 @@ export default class COActor extends Actor {
     }
     // Imunisé aux altération de mouvement ?
     if ((effectid === "stun" || effectid === "immobilized" || effectid === "paralysis") && state === true) {
-      const state = this.modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.movementImpairment.id)
-      if (state && state.length > 0) {
-        // Immunisé on ne l'applique pas
-        ui.notifications.info(`${this.name} ${game.i18n.localize("CO.label.long.movementImpairment")}`)
-        return false
+      if (this.system.modifiers) {
+        const state = this.system.modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.movementImpairment.id)
+        if (state && state.length > 0) {
+          // Immunisé on ne l'applique pas
+          ui.notifications.info(`${this.name} ${game.i18n.localize("CO.label.long.movementImpairment")}`)
+          return false
+        }
       }
     }
     // Imunisé aux poisons ?
     if (effectid === "poison" && state === true) {
-      const state = this.modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.poisonimmunity.id)
-      if (state && state.length > 0) {
-        // Immunisé on ne l'applique pas
-        ui.notifications.info(`${this.name} ${game.i18n.localize("CO.label.long.poisonimmunity")}`)
-        return false
+      if (this.system.modifiers) {
+        const state = this.system.modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.poisonimmunity.id)
+        if (state && state.length > 0) {
+          // Immunisé on ne l'applique pas
+          ui.notifications.info(`${this.name} ${game.i18n.localize("CO.label.long.poisonimmunity")}`)
+          return false
+        }
       }
     }
 
@@ -980,7 +984,6 @@ export default class COActor extends Actor {
     itemData.system.mainProfile = true
     itemData = itemData instanceof Array ? itemData : [itemData]
     const newProfile = await this.createEmbeddedDocuments("Item", itemData)
-
     if (newProfile[0].system.modifiers.length > 0) {
       // Update the source of all modifiers with the uuid of the new embedded profile created
       const newModifiers = newProfile[0].system.toObject().modifiers
@@ -1022,7 +1025,6 @@ export default class COActor extends Actor {
    */
   async addPath(path, profile = null) {
     let itemData = path.toObject()
-
     // If path creation is related to a profile creation
     // Update maxDefenseArmor
     if (profile !== null) {
@@ -1031,9 +1033,7 @@ export default class COActor extends Actor {
 
     // Create the path
     const newPath = await this.createEmbeddedDocuments("Item", [itemData])
-
     let updatedCapacitiesUuids = []
-
     // Create all capacities
     for (const capacity of path.system.capacities) {
       let capa = await fromUuid(capacity)
@@ -1045,7 +1045,6 @@ export default class COActor extends Actor {
         updatedCapacitiesUuids.push(newCapacityUuid)
       }
     }
-
     // Update the array of capacities of the path with ids of created path
     await newPath[0].update({ "system.capacities": updatedCapacitiesUuids })
 
@@ -1468,7 +1467,6 @@ export default class COActor extends Actor {
         showDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
       }
     }
-    console.log("rollAttack avant modif difficulty : ", difficulty)
     // Si la difficulté dépend de la cible unique
     if (!auto && useDifficulty && targets === undefined) {
       if (difficulty && difficulty?.includes("@cible")) {
@@ -1492,8 +1490,6 @@ export default class COActor extends Actor {
         }
       }
     }
-
-    console.log("rollAttack apres modif difficulty : ", difficulty)
 
     // Gestion du critique
     if (critical === undefined || critical === "") {
@@ -1622,7 +1618,6 @@ export default class COActor extends Actor {
   async rollHeal(item, { actionName = "", healFormula = undefined, targetType = SYSTEM.RESOLVER_TARGET.none.id, targets = [] } = {}) {
     let roll = new Roll(healFormula)
     await roll.roll()
-    // TODO Qui est soigné ? Pour le moment soi même :)
     if (targetType === SYSTEM.RESOLVER_TARGET.self.id) {
       this.applyHealAndDamage(roll.total)
     } else if (targetType === SYSTEM.RESOLVER_TARGET.single.id || targetType === SYSTEM.RESOLVER_TARGET.multiple.id) {
@@ -1649,6 +1644,11 @@ export default class COActor extends Actor {
    */
   async applyHealAndDamage(healValue) {
     let hp = this.system.attributes.hp
+    if (healValue > 0) {
+      //si ce sont des degat il faut déduire la Résistance
+      healValue -= this.system.combat.dr
+      if (healValue < 0) healValue = 0
+    }
     hp.value -= healValue
     if (hp.value > hp.max) hp.value = hp.max
     if (hp.value < 0) {
@@ -1767,22 +1767,38 @@ export default class COActor extends Actor {
    * @param {integer} round
    */
   async startApplyingCustomEffect(effect, round) {
-    effect.startedAt = round
-    if (effect.unite === SYSTEM.COMBAT_UNITE.round) {
-      effect.lastRound = effect.startedAt + effect.duration
-      console.log("lastRound:", effect.lastRound)
+    const effetData = effect.toObject()
+    console.log("effectToObject : ", effetData)
+    const modifiers = foundry.utils.deepClone(effect.modifiers)
+    let newEffect = new CustomEffectData(effetData)
+    newEffect.modifiers.push(...modifiers)
+    console.log("newEffect : ", newEffect)
+    newEffect.startedAt = round
+    if (newEffect.unite === SYSTEM.COMBAT_UNITE.round) {
+      newEffect.lastRound = newEffect.startedAt + newEffect.duration
     } else {
-      effect.lastRound = effect.startedAt + Math.round(effect.duration / CONFIG.time.roundTime)
+      newEffect.lastRound = newEffect.startedAt + Math.round(newEffect.duration / CONFIG.time.roundTime)
     }
+    console.log("lastRound:", newEffect.lastRound, "duration :", newEffect.duration, "startedAt", newEffect.startedAt)
     // Applique le statut
-    if (effect.statuses && effect.statuses.length > 0) {
-      for (const status of effect.statuses) {
+    if (newEffect.statuses && newEffect.statuses.length > 0) {
+      for (const status of newEffect.statuses) {
         let result = await this.activateCOStatusEffect({ state: true, effectid: status })
         if (result === false) return false // On applique pas l'effet s'il y a une immunité (cas d'un result === false)
       }
     }
-    this.system.currentEffects.push(effect)
-    this.update({ "system.currentEffects": this.system.currentEffects })
+    const customE = this.system.currentEffects
+    customE.push(newEffect)
+    console.log("je vias faire un update sur customE", customE)
+    this.update({ "system.currentEffects": customE })
+    const index = this.system.currentEffects.findIndex((effect) => effect.slug === newEffect.slug)
+    this.update({ [`system.currentEffects[${index}]`]: modifiers })
+    console.log("system.currentEffects : ", this.system.currentEffects)
+
+    // Si il y a des dommage on les applique dès le premier round
+    if (newEffect.formule) {
+      await this.applyDamageOverTime()
+    }
     return true
   }
 

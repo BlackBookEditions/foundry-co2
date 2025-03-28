@@ -245,10 +245,14 @@ export default class CharacterData extends ActorData {
         modifiersArray.push(...allModifiers)
       }
     })
-    // Onprend en compte les customEffect en cours
+    // On prend en compte les customEffect en cours
     if (this.currentEffects) {
       for (const effect of this.currentEffects) {
-        modifiersArray.push(...effect.modifiers)
+        // console.log("preparation de l'acteur ", this.parent.name, " j'ajoute l'effet ", effect, "il y a ", effect.modifiers.length, "modifiers")
+        for (let i = 0; i < effect.modifiers.length; i++) {
+          const copy = { ...effect.modifiers[i] }
+          modifiersArray.push(copy)
+        }
       }
     }
 
@@ -262,13 +266,14 @@ export default class CharacterData extends ActorData {
    **/
   computeTotalModifiersByTarget(modifiers, target) {
     if (!modifiers) return { total: 0, tooltip: "" }
-
+    //console.log("target", target)
     let modifiersByTarget = modifiers.filter((m) => m.target === target)
 
     // Ajout des modifiers qui affecte toutes les cibles
     modifiersByTarget.push(...modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.all.id))
-
-    let total = modifiersByTarget.map((m) => m.evaluate(this.parent)).reduce((acc, curr) => acc + curr, 0)
+    //console.log(modifiersByTarget)
+    let total = 0
+    if (modifiersByTarget && modifiersByTarget.length > 0) total = modifiersByTarget.map((m) => m.evaluate(this.parent)).reduce((acc, curr) => acc + curr, 0)
 
     let tooltip = ""
     for (const modifier of modifiersByTarget) {

@@ -93,7 +93,7 @@ export default class COCharacterSheet extends CoBaseActorSheet {
     const dataset = event.currentTarget.dataset
     console.log(dataset)
     let effectname = dataset.ceName
-    const ce = this.actor.system.currentEffects.find((ce) => ce.nom === effectname)
+    const ce = this.actor.system.currentEffects.find((ce) => ce.slug === effectname)
     if (ce) {
       console.log("je dois supprimer ", ce)
       await this.actor.deleteCustomEffect(ce)

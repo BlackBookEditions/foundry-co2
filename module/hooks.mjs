@@ -147,6 +147,7 @@ export default function registerHooks() {
    */
   Hooks.on("applyEffect", (targets, customEffect) => {
     if (game.user.isGM) {
+      console.log("je passe par le hook", customEffect)
       // En tant que GM il peux appliquer les effets sur les acteurs
       for (let i = 0; i < targets.length; i++) {
         const target = targets[i]
@@ -166,7 +167,6 @@ export default function registerHooks() {
       // En tant que GM il peux appliquer les effets sur les acteurs
       for (let i = 0; i < targets.length; i++) {
         const target = targets[i]
-        console.log(target.name, " reçoit ", totalHeal, " pv provenant de ", originName)
         target.actor.applyHealAndDamage(totalHeal)
       }
     }

@@ -1,4 +1,5 @@
 import { CustomEffectData } from "./models/customEffect.mjs"
+import { Modifier } from "./models/schemas/modifier.mjs"
 
 /**
  * Prise en charge des evènements transmis par le socket selon le type d'action transmis.
@@ -11,28 +12,12 @@ import { CustomEffectData } from "./models/customEffect.mjs"
 export function handleSocketEvent({ action = null, data = {} } = {}) {
   console.debug("handleSocketEvent", action, data)
   switch (action) {
-    case "buff":
-      return _buff(data)
     case "heal":
       return _heal(data)
     case "customEffect":
       return _customEffect(data)
     case "oppositeRoll":
       return _oppositeRoll(data)
-  }
-}
-
-/**
- * Handles the socket event to ask for a roll.
- *
- * @param {Object} [options={}] The options object.
- * @param {string} [options.userId] The ID of the user who initiated the roll.
- */
-export function _buff({ userId } = {}) {
-  console.debug(`handleSocketEvent _buff from ${userId} !`)
-  const currentUser = game.user._id
-  if (userId === currentUser) {
-    // Ajouter un message chat pour dire : vous avez reçu une amélioration de XXX et gérer l'ajout de l'amélioration temporaire
   }
 }
 
@@ -68,6 +53,7 @@ export async function _heal({ targets, healAmount, fromUserId }) {
  * @param {string} data.ce.formule: ce.formule,
  * @param {string} data.ce.elementType: this.additionalEffect.elementType,
  * @param {string} data.ce.effectType: SYSTEM.CUSTOM_EFFECT.status.id,
+ * @param {Modifier} data.ce.modifiers: liste de modifiers,
  * @param {Set<int>} data.ce.targets: uuidList,
  */
 export async function _customEffect(data) {
@@ -86,7 +72,12 @@ export async function _customEffect(data) {
       effectType: data.ce.effectType,
       startedAt: game.combat.round,
       remainingDuration: data.ce.duration,
+      slug: data.ce.slug,
     })
+    for (let i = 0; i < data.ce.modifiers.length; i++) {
+      const modifier = data.ce.modifiers[i]
+      ce.modifiers.push(new Modifier(modifier))
+    }
     for (let i = 0; i < data.targets.length; i++) {
       const actor = await fromUuid(data.targets[i])
       actor.applyCustomEffect(custom)
