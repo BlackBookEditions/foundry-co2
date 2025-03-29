@@ -389,18 +389,33 @@ export default class COActor extends Actor {
     const modifiersByTarget = this.system.skillModifiers.filter((m) => m.target === ability)
     // Ajout des modifiers qui affecte toutes les cibles
     modifiersByTarget.push(...this.system.skillModifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.all.id))
-
+    // Si le modifier est d'origine d'un customEffectData il ne faut pas chercher sa source
     let bonuses = []
     for (const modifier of modifiersByTarget) {
-      const sourceInfos = modifier.getSourceInfos(this)
-      bonuses.push({
-        sourceType: sourceInfos.sourceType,
-        name: sourceInfos.name,
-        description: sourceInfos.description,
-        pathType: sourceInfos.pathType,
-        value: modifier.evaluate(this),
-        additionalInfos: modifier.additionalInfos,
-      })
+      console.log(modifier)
+      if (!modifier.parent) {
+        const customeffect = this.system.currentEffects.find((e) => e.source === modifier.source)
+        if (customeffect) {
+          bonuses.push({
+            sourceType: "CustomEffectData",
+            name: customeffect.nom,
+            description: customeffect.nom,
+            pathType: "",
+            value: modifier.evaluate(this),
+            additionalInfos: "",
+          })
+        }
+      } else {
+        const sourceInfos = modifier.getSourceInfos(this)
+        bonuses.push({
+          sourceType: sourceInfos.sourceType,
+          name: sourceInfos.name,
+          description: sourceInfos.description,
+          pathType: sourceInfos.pathType,
+          value: modifier.evaluate(this),
+          additionalInfos: modifier.additionalInfos,
+        })
+      }
     }
     return bonuses
   }
@@ -1645,7 +1660,7 @@ export default class COActor extends Actor {
   async applyHealAndDamage(healValue) {
     let hp = this.system.attributes.hp
     if (healValue > 0) {
-      //si ce sont des degat il faut déduire la Résistance
+      // Si ce sont des degat il faut déduire la Résistance
       healValue -= this.system.combat.dr.value
       if (healValue < 0) healValue = 0
     }
@@ -1769,7 +1784,7 @@ export default class COActor extends Actor {
   async startApplyingCustomEffect(effect, round) {
     const newEffect = effect.toObject()
     newEffect.modifiers = effect.modifiers
-    // console.log("newEffect : ", newEffect)
+    // Console.log("newEffect : ", newEffect)
     newEffect.startedAt = round
     if (newEffect.unite === SYSTEM.COMBAT_UNITE.round) {
       newEffect.lastRound = newEffect.startedAt + newEffect.duration

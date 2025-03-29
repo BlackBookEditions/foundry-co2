@@ -75,7 +75,7 @@ export async function _customEffect(data) {
     })
     for (let i = 0; i < data.ce.modifiers.length; i++) {
       const modifier = data.ce.modifiers[i]
-      ce.modifiers.push(new Modifier(modifier))
+      custom.modifiers.push(new Modifier(modifier))
     }
     for (let i = 0; i < data.targets.length; i++) {
       const actor = await fromUuid(data.targets[i])
