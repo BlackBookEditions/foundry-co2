@@ -2,7 +2,7 @@ import { SYSTEM } from "../config/system.mjs"
 import { BaseValue } from "./schemas/base-value.mjs"
 import ActorData from "./actor.mjs"
 import Utils from "../utils.mjs"
-import { CustomEffectData } from "./customEffect.mjs"
+import { CustomEffectData } from "./schemas/custom-effect.mjs"
 
 export default class EncounterData extends ActorData {
   static defineSchema() {

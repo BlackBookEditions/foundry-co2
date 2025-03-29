@@ -1,7 +1,7 @@
 import { SYSTEM } from "../../config/system.mjs"
 import Utils from "../../utils.mjs"
 import COActor from "../../documents/actor.mjs"
-import { CustomEffectData } from "../customEffect.mjs"
+import { CustomEffectData } from "./custom-effect.mjs"
 import { handleSocketEvent } from "../../socket.mjs"
 
 /**
@@ -81,7 +81,7 @@ export class Resolver extends foundry.abstract.DataModel {
    */
   async manageAdditionalEffect(actor, item, action) {
     if (!game.combat) {
-      game.ui.notify.warn("Pas de combat en cours !")
+      ui.notifications.warn("Pas de combat en cours !")
       return false // Si pas de combat, pas d'effet sur la durée
     }
     // Evaluation de la durée si besoin
@@ -138,7 +138,7 @@ export class Resolver extends foundry.abstract.DataModel {
     }
 
     // Gestion de la cible
-    if (this.target.type === SYSTEM.RESOLVER_TARGET.self.id) actor.applyCustomEffect(ce)
+    if (this.target.type === SYSTEM.RESOLVER_TARGET.self.id) await actor.applyCustomEffect(ce)
     else {
       const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.name)
       const uuidList = targets.map((obj) => obj.uuid)

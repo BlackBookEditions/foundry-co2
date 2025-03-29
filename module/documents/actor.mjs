@@ -1,8 +1,8 @@
 import { SYSTEM } from "../config/system.mjs"
 import { Modifier } from "../models/schemas/modifier.mjs"
+import { CustomEffectData } from "../models/schemas/custom-effect.mjs"
 import { CORoll, COSkillRoll, COAttackRoll } from "./roll.mjs"
 import Utils from "../utils.mjs"
-import { CustomEffectData } from "../models/customEffect.mjs"
 
 /**
  * @class COActor
@@ -1232,9 +1232,9 @@ export default class COActor extends Actor {
    * @param {number} [options.malusDice] Le nombre de dés malus à soustraire du jet.
    * @param {number} [options.difficulty] La difficulté du test.
    * @param {boolean} [options.oppositeRoll=false] Si le test est un jet opposé.
-   * @param {boolean} [options.useDifficulty] Si la difficulté doit être utilisée.
-   * @param {boolean} [options.showDifficulty] Si la difficulté doit être affichée.
-   * @param {boolean} [options.withDialog=true] Si une boîte de dialogue doit être affichée.
+   * @param {boolean} [options.useDifficulty] Si la difficulté doit être utilisée : dépend de l'option du système displayDifficulty
+   * @param {boolean} [options.showDifficulty] Si la difficulté doit être affichée : dépend de displayDifficulty et du user
+   * @param {boolean} [options.withDialog=true] Si une boîte de dialogue doit être affichée ou non.
    * @param {Array} [options.targets] Les cibles du test.
    * @returns {Promise} Le résultat du test de compétence.
    */
@@ -1646,14 +1646,14 @@ export default class COActor extends Actor {
     let hp = this.system.attributes.hp
     if (healValue > 0) {
       //si ce sont des degat il faut déduire la Résistance
-      healValue -= this.system.combat.dr
+      healValue -= this.system.combat.dr.value
       if (healValue < 0) healValue = 0
     }
     hp.value -= healValue
     if (hp.value > hp.max) hp.value = hp.max
     if (hp.value < 0) {
       hp.value = 0
-      if (this.type !== SYSTEM.ACTOR_TYPE.character.id) this.toggleStatusEffect("dead", true)
+      if (this.type !== "character") this.toggleStatusEffect("dead", true)
     }
     this.update({ "system.attributes.hp": hp })
 
@@ -1753,12 +1753,12 @@ export default class COActor extends Actor {
    * On applique les effets supplémentaires
    * @param {CustomEffectData} effect : custom effect appliqué sur l'acteur probablement à cause d'un skill
    */
-  applyCustomEffect(effect) {
+  async applyCustomEffect(effect) {
     // Si j'ai déjà ce debuff je peux pas le cumuler !
-    const debuf = this.system.currentEffects.find((c) => c.nom === effect.nom)
+    const debuf = this.system.currentEffects.find((c) => c.slug === effect.slug)
     if (debuf) return
     // On doit maintenant déterminer le round de combat
-    this.startApplyingCustomEffect(effect, game.combat.round)
+    await this.startApplyingCustomEffect(effect, game.combat.round)
   }
 
   /**
@@ -1767,12 +1767,9 @@ export default class COActor extends Actor {
    * @param {integer} round
    */
   async startApplyingCustomEffect(effect, round) {
-    const effetData = effect.toObject()
-    console.log("effectToObject : ", effetData)
-    const modifiers = foundry.utils.deepClone(effect.modifiers)
-    let newEffect = new CustomEffectData(effetData)
-    newEffect.modifiers.push(...modifiers)
-    console.log("newEffect : ", newEffect)
+    const newEffect = effect.toObject()
+    newEffect.modifiers = effect.modifiers
+    // console.log("newEffect : ", newEffect)
     newEffect.startedAt = round
     if (newEffect.unite === SYSTEM.COMBAT_UNITE.round) {
       newEffect.lastRound = newEffect.startedAt + newEffect.duration
@@ -1787,16 +1784,13 @@ export default class COActor extends Actor {
         if (result === false) return false // On applique pas l'effet s'il y a une immunité (cas d'un result === false)
       }
     }
-    const customE = this.system.currentEffects
-    customE.push(newEffect)
-    console.log("je vias faire un update sur customE", customE)
-    this.update({ "system.currentEffects": customE })
-    const index = this.system.currentEffects.findIndex((effect) => effect.slug === newEffect.slug)
-    this.update({ [`system.currentEffects[${index}]`]: modifiers })
-    console.log("system.currentEffects : ", this.system.currentEffects)
+
+    let currentEffects = foundry.utils.deepClone(this.system.currentEffects)
+    currentEffects.push(newEffect)
+    await this.update({ "system.currentEffects": currentEffects })
 
     // Si il y a des dommage on les applique dès le premier round
-    if (newEffect.formule) {
+    if (effect.formule) {
       await this.applyDamageOverTime()
     }
     return true

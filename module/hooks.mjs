@@ -145,14 +145,11 @@ export default function registerHooks() {
   /**
    * Demande d'appliquer ds custom Effects à des cibles. Seul le MJ peux le faire
    */
-  Hooks.on("applyEffect", (targets, customEffect) => {
+  Hooks.on("applyEffect", async (targets, customEffect) => {
     if (game.user.isGM) {
       console.log("je passe par le hook", customEffect)
       // En tant que GM il peux appliquer les effets sur les acteurs
-      for (let i = 0; i < targets.length; i++) {
-        const target = targets[i]
-        target.actor.applyCustomEffect(customEffect)
-      }
+      await Promise.all(targets.map((target) => target.actor.applyCustomEffect(customEffect)))
     }
   })
 

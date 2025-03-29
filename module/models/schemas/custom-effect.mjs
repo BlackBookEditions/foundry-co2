@@ -1,7 +1,5 @@
-import ItemData from "./item.mjs"
-import { SYSTEM } from "../config/system.mjs"
-import { Modifier } from "./schemas/modifier.mjs"
-import Utils from "../utils.mjs"
+import { SYSTEM } from "../../config/system.mjs"
+import { Modifier } from "./modifier.mjs"
 
 /**
  * Subtype : "customEffect"
