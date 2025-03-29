@@ -5,6 +5,7 @@ import Utils from "../utils.mjs"
 import CoChat from "../chat.mjs"
 import { CustomEffectData } from "./schemas/custom-effect.mjs"
 import DefaultConfiguration from "../config/configuration.mjs"
+import { Modifier } from "./schemas/modifier.mjs"
 export default class CharacterData extends ActorData {
   static defineSchema() {
     const fields = foundry.data.fields
@@ -248,10 +249,10 @@ export default class CharacterData extends ActorData {
     // On prend en compte les customEffect en cours
     if (this.currentEffects) {
       for (const effect of this.currentEffects) {
-        // console.log("preparation de l'acteur ", this.parent.name, " j'ajoute l'effet ", effect, "il y a ", effect.modifiers.length, "modifiers")
         for (let i = 0; i < effect.modifiers.length; i++) {
           const copy = { ...effect.modifiers[i] }
-          modifiersArray.push(copy)
+          const mod = new Modifier(copy)
+          modifiersArray.push(mod)
         }
       }
     }
@@ -266,12 +267,20 @@ export default class CharacterData extends ActorData {
    **/
   computeTotalModifiersByTarget(modifiers, target) {
     if (!modifiers) return { total: 0, tooltip: "" }
-    //console.log("target", target)
     let modifiersByTarget = modifiers.filter((m) => m.target === target)
 
     // Ajout des modifiers qui affecte toutes les cibles
-    modifiersByTarget.push(...modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.all.id))
-    //console.log(modifiersByTarget)
+    // Attention on utilise "toutes les cibles uniquement sur un jet de competence ou une Caractéristique ! sinon on va le compter aussi pour le combat etc et on va doubler les bonus apres..."
+    const liste = [
+      SYSTEM.MODIFIERS_TARGET.agi.id,
+      SYSTEM.MODIFIERS_TARGET.for.id,
+      SYSTEM.MODIFIERS_TARGET.con.id,
+      SYSTEM.MODIFIERS_TARGET.cha.id,
+      SYSTEM.MODIFIERS_TARGET.int.id,
+      SYSTEM.MODIFIERS_TARGET.vol.id,
+      SYSTEM.MODIFIERS_TARGET.per.id,
+    ]
+    if (liste.includes(target)) modifiersByTarget.push(...modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.all.id && m.subtype !== SYSTEM.MODIFIERS_SUBTYPE.skill.id))
     let total = 0
     if (modifiersByTarget && modifiersByTarget.length > 0) total = modifiersByTarget.map((m) => m.evaluate(this.parent)).reduce((acc, curr) => acc + curr, 0)
 
@@ -474,6 +483,7 @@ export default class CharacterData extends ActorData {
     // Le bonus de niveau est limité à 10
     const levelBonus = Math.min(this.attributes.level, 10)
     const combatModifiers = this.computeTotalModifiersByTarget(this.combatModifiers, key)
+
     skill.base = abilityBonus + levelBonus
     skill.tooltipBase = Utils.getTooltip(game.i18n.localize("CO.label.long.level"), levelBonus).concat(Utils.getTooltip(Utils.getAbilityName(skill.ability), abilityBonus))
 

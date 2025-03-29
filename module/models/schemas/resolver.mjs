@@ -152,7 +152,7 @@ export class Resolver extends foundry.abstract.DataModel {
               nom: item.name,
               source: item.uuid,
               statuses: this.additionalEffect.statuses,
-              duration: this.additionalEffect.duration,
+              duration: ce.duration,
               unite: this.additionalEffect.unite,
               formule: ce.formule,
               elementType: this.additionalEffect.elementType,
