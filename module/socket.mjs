@@ -1,4 +1,4 @@
-import { CustomEffectData } from "./models/customEffect.mjs"
+import { CustomEffectData } from "./models/schemas/custom-effect.mjs"
 import { Modifier } from "./models/schemas/modifier.mjs"
 
 /**
@@ -80,7 +80,7 @@ export async function _customEffect(data) {
     }
     for (let i = 0; i < data.targets.length; i++) {
       const actor = await fromUuid(data.targets[i])
-      actor.applyCustomEffect(custom)
+      await actor.applyCustomEffect(custom)
     }
   }
 }

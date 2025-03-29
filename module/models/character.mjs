@@ -3,7 +3,7 @@ import { BaseValue } from "./schemas/base-value.mjs"
 import ActorData from "./actor.mjs"
 import Utils from "../utils.mjs"
 import CoChat from "../chat.mjs"
-import { CustomEffectData } from "./customEffect.mjs"
+import { CustomEffectData } from "./schemas/custom-effect.mjs"
 import DefaultConfiguration from "../config/configuration.mjs"
 export default class CharacterData extends ActorData {
   static defineSchema() {
