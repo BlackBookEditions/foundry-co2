@@ -27,7 +27,6 @@ export function handleSocketEvent({ action = null, data = {} } = {}) {
  * @param {int} Quantité de PV restaurés
  * @param {string} id de l'acteur à l'origine du soin
  */
-export async function _heal({ toACtorId, healAmount, fromUserId, resolver }) {
 export async function _heal({ targets, healAmount, fromUserId }) {
   if (game.user.isGM) {
     // Attention la fonction applyHealAndDamage attend une valeur negative pour du heal
