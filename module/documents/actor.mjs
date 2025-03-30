@@ -1594,15 +1594,15 @@ export default class COActor extends Actor {
         },
         { rollMode: rolls[0].options.rollMode },
       )
-
-      // TODO Afficher uniquement si c'est un succès
-      // Affichage du jet de dégâts dans le cas d'un jet combiné, si ce n'est pas un jet opposé et que l'attaque est un succès
-      if (game.settings.get("co", "useComboRolls") && !rolls[0].options.oppositeRoll && results[0].isSuccess) {
-        if (rolls[1])
-          await rolls[1].toMessage(
-            { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid }, speaker },
-            { rollMode: rolls[1].options.rollMode },
-          )
+      if (results.isSuccess) {
+        // Affichage du jet de dégâts dans le cas d'un jet combiné, si ce n'est pas un jet opposé et que l'attaque est un succès
+        if (game.settings.get("co", "useComboRolls") && !rolls[0].options.oppositeRoll && results[0].isSuccess) {
+          if (rolls[1])
+            await rolls[1].toMessage(
+              { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid }, speaker },
+              { rollMode: rolls[1].options.rollMode },
+            )
+        }
       }
     }
 
@@ -1633,6 +1633,9 @@ export default class COActor extends Actor {
   async rollHeal(item, { actionName = "", healFormula = undefined, targetType = SYSTEM.RESOLVER_TARGET.none.id, targets = [] } = {}) {
     let roll = new Roll(healFormula)
     await roll.roll()
+    let healValue = roll.total
+    if (healValue > 0) healValue = -healValue // La fonction applyHealOrDamage applique des soins si negatif et degat si positif
+
     if (targetType === SYSTEM.RESOLVER_TARGET.self.id) {
       this.applyHealAndDamage(roll.total)
     } else if (targetType === SYSTEM.RESOLVER_TARGET.single.id || targetType === SYSTEM.RESOLVER_TARGET.multiple.id) {
