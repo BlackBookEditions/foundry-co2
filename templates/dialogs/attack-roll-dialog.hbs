@@ -43,14 +43,14 @@
             <input class="field-value" id="skillMalus" name="skillMalus" type="text" value="{{skillMalus}}" data-dtype="String"/>
         </div>
     </div>
-    
+     {{#if showDifficulty}}
         <div class="form-group" style="{{#if showDifficulty}}visibility:visible;{{else}}visibility:collapse;{{/if}}" >
             <label>{{localize 'CO.label.long.difficulty'}}</label>
             <div class="form-fields">
                 <input class="field-value" id="difficulty" name="difficulty" type="text" value="{{difficulty}}" data-dtype="String" data-tooltip="{{difficultyTooltip}}" {{#if auto}}readonly{{/if}}/>
             </div>
         </div>
-    
+    {{/if}}    
     <div class="form-group">
         <label>{{localize 'CO.label.long.critrange'}}</label>
         <div class="form-fields">
