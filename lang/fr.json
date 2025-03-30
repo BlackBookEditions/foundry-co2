@@ -47,10 +47,10 @@
       "warningApplyDamageNoTarget": "Vous devez sélectionner au moins une cible pour appliquer les dommages",
       "warningNoMoreRecoveryPoints": "Vous n'avez plus de dés de récupération.",
       "warningNoAmmo": "Vous n'avez plus de munitions.",
-      "warningNoCharge": "Votre nombre d'utilisation restante est insuffisant",
-      "cantUseAllDef": "Vous ne pouvez pas utilsier les deux types de défense simultanément",
-      "healed": "{actorName} a été soigné de {amount} point de vigueur",
-      "damaged": "{actorName} perd {amount} points de vigueur"
+      "warningNoCharge": "Votre nombre d'utilisations restantes est insuffisant",
+      "cantUseAllDef": "Vous ne pouvez pas utiliser les deux types de défense simultanément",
+      "healed": "{actorName} a été soigné de {amount} point(s) de vigueur",
+      "damaged": "{actorName} perd {amount} point(s) de vigueur"
     },
     "tooltip": {
       "formulaAttack": "Formule d'attaque (sans le dé)",

@@ -98,7 +98,7 @@
                 </div>
                 <div class="flexrow">
                     
-                    <div class="form-fields flex1 center"><input name="system.actions.{{../idx}}.resolvers.{{id}}.additionalEffect.formule" type="text" value="{{r.additionalEffect.formule}}" data-dtype="String"  /></div>                
+                    <div class="form-fields flex1 center"><input name="system.actions.{{../idx}}.resolvers.{{id}}.additionalEffect.formula" type="text" value="{{r.additionalEffect.formula}}" data-dtype="String"  /></div>                
                      <select name="system.actions.{{../idx}}.resolvers.{{id}}.additionalEffect.elementType" data-type="String" style="width:50%;margin-right:10px">
                             {{selectOptions @root.choiceEnergies selected=r.additionalEffect.elementType localize=true}}
                         </select>
@@ -124,8 +124,8 @@
                             <input class="field-value" name="system.actions.{{../idx}}.resolvers.{{id}}.additionalEffect.duration"  type="text" value="{{r.additionalEffect.duration}}" placeholder="{{localize 'CO.resolver.additionalEffect.duration'}}" data-dtype="String" />
                         </div>
                         <label>{{localize "CO.ui.unit"}}</label>
-                        <select name="system.actions.{{../idx}}.resolvers.{{id}}.additionalEffect.unite" data-type="String" style="width:50%;margin-right:10px">
-                            {{selectOptions @root.choiceDurationUnit selected=r.additionalEffect.unite localize=true}}
+                        <select name="system.actions.{{../idx}}.resolvers.{{id}}.additionalEffect.unit" data-type="String" style="width:50%;margin-right:10px">
+                            {{selectOptions @root.choiceDurationUnit selected=r.additionalEffect.unit localize=true}}
                         </select>
                     </div>
                 </div>

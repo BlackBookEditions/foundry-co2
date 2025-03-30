@@ -33,8 +33,8 @@ export class Resolver extends foundry.abstract.DataModel {
         applyOn: new fields.StringField({ required: true, choices: SYSTEM.RESOLVER_RESULT, initial: SYSTEM.RESOLVER_RESULT.success.id }),
         statuses: new fields.StringField(),
         duration: new fields.StringField({ required: true, nullable: false, initial: "0" }),
-        unite: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: "round" }),
-        formule: new fields.StringField({ required: false }),
+        unit: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: "round" }),
+        formula: new fields.StringField({ required: false }),
         elementType: new fields.StringField({ required: false }),
         applyBuff: new fields.BooleanField({ initial: false }),
       }),
@@ -97,16 +97,16 @@ export class Resolver extends foundry.abstract.DataModel {
       source: item.uuid,
       slug: item.name.slugify(),
       statuses: this.additionalEffect.statuses,
-      unite: this.additionalEffect.unite,
+      unit: this.additionalEffect.unit,
       duration: parseInt(durationResult),
-      formule: this.additionalEffect.formule,
+      formula: this.additionalEffect.formula,
       elementType: this.additionalEffect.elementType,
       effectType: SYSTEM.CUSTOM_EFFECT.status.id,
       startedAt: game.combat.round,
       remainingDuration: this.additionalEffect.duration,
     })
 
-    if (this.additionalEffect.formule && this.additionalEffect.formule !== "0" && this.additionalEffect.formule !== "") {
+    if (this.additionalEffect.formula && this.additionalEffect.formula !== "0" && this.additionalEffect.formula !== "") {
       ce.effectType = SYSTEM.CUSTOM_EFFECT.damageOrHeal.id
     } else if (this.additionalEffect.statuses && this.additionalEffect.statuses !== "") {
       ce.effectType = SYSTEM.CUSTOM_EFFECT.status.id
@@ -125,9 +125,9 @@ export class Resolver extends foundry.abstract.DataModel {
     console.log("duration", ce.duration)
 
     // Evaluation de la formule à partir du caster
-    let formulResult = Utils.evaluateFormulaCustomValues(actor, ce.formule)
+    let formulResult = Utils.evaluateFormulaCustomValues(actor, ce.formula)
     formulResult = Roll.replaceFormulaData(formulResult, actor.getRollData())
-    ce.formule = formulResult
+    ce.formula = formulResult
 
     // Est ce que l'on a des modifier à appliquer
     if (action.modifiers && action.modifiers.length > 0 && this.additionalEffect.applyBuff === true) {
@@ -153,8 +153,8 @@ export class Resolver extends foundry.abstract.DataModel {
               source: item.uuid,
               statuses: this.additionalEffect.statuses,
               duration: ce.duration,
-              unite: this.additionalEffect.unite,
-              formule: ce.formule,
+              unit: this.additionalEffect.unit,
+              formula: ce.formula,
               elementType: this.additionalEffect.elementType,
               effectType: SYSTEM.CUSTOM_EFFECT.status.id,
               modifiers: ce.modifiers,

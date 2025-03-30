@@ -48,7 +48,7 @@ export async function _heal({ targets, healAmount, fromUserId }) {
  * @param {string} data.ce.source UUID de l'item source
  * @param {string} data.ce.statuses: liste des status à appliquer
  * @param {int} data.ce.duration this.additionalEffect.duration
- * @param {string} data.ce.unite this.additionalEffect.unite
+ * @param {string} data.ce.unit this.additionalEffect.unit
  * @param {string} data.ce.formule: ce.formule,
  * @param {string} data.ce.elementType: this.additionalEffect.elementType,
  * @param {string} data.ce.effectType: SYSTEM.CUSTOM_EFFECT.status.id,
@@ -65,8 +65,8 @@ export async function _customEffect(data) {
       source: data.ce.source,
       statuses: data.ce.statuses,
       duration: data.ce.duration,
-      unite: data.ce.unite,
-      formule: data.ce.formule,
+      unit: data.ce.unit,
+      formula: data.ce.formula,
       elementType: data.ce.elementType,
       effectType: data.ce.effectType,
       startedAt: game.combat.round,

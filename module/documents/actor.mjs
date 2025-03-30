@@ -1786,7 +1786,7 @@ export default class COActor extends Actor {
     newEffect.modifiers = effect.modifiers
     // Console.log("newEffect : ", newEffect)
     newEffect.startedAt = round
-    if (newEffect.unite === SYSTEM.COMBAT_UNITE.round) {
+    if (newEffect.unit === SYSTEM.COMBAT_UNITE.round) {
       newEffect.lastRound = newEffect.startedAt + newEffect.duration
     } else {
       newEffect.lastRound = newEffect.startedAt + Math.round(newEffect.duration / CONFIG.time.roundTime)
@@ -1805,7 +1805,7 @@ export default class COActor extends Actor {
     await this.update({ "system.currentEffects": currentEffects })
 
     // Si il y a des dommage on les applique dès le premier round
-    if (effect.formule) {
+    if (effect.formula) {
       await this.applyDamageOverTime()
     }
     return true
@@ -1864,10 +1864,10 @@ export default class COActor extends Actor {
   async applyDamageOverTime() {
     for (const effect of this.system.currentEffects) {
       // Ici on devrait tenir compte du type d'energie (feu/glace etc) et d'eventuelle resistance/vulnerabilite à voir plus tard
-      if (!effect.formule || effect.formule.length === 0) continue
+      if (!effect.a || effect.formula.length === 0) continue
       // Doit on jeter un dé ou c'est une valeur fixe ?
-      const diceInclude = effect.formule.match("d[0-9]{1,}")
-      let formulResult = effect.formule
+      const diceInclude = effect.formula.match("d[0-9]{1,}")
+      let formulResult = effect.formula
       if (diceInclude) {
         const roll = new Roll(formulResult)
         await roll.evaluate()
