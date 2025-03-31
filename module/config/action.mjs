@@ -212,6 +212,10 @@ export const RESOLVER_RESULT = Object.freeze({
     id: "success",
     label: "CO.resolver.additionalEffect.onSuccess",
   },
+  successMore10: {
+    id: "successMore10",
+    label: "CO.resolver.additionalEffect.successMore10",
+  },
   fail: {
     id: "fail",
     label: "CO.resolver.additionalEffect.onFail",

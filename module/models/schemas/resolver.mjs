@@ -206,14 +206,18 @@ export class Resolver extends foundry.abstract.DataModel {
       bonusDice: this.bonusDiceAdd ? 1 : 0,
       malusDice: this.malusDiceAdd ? 1 : 0,
     })
-
-    if (result === null) return false
     console.log("result", result)
+    if (result === null) return false
     if (result[0].isSuccess && this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.success.id) {
-      console.log("le resultat est un succes")
       await this.manageAdditionalEffect(actor, item, action)
     } else if (result[0].isFailure && this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.fail.id) {
-      console.log("le resultat est un echec")
+      await this.manageAdditionalEffect(actor, item, action)
+    } else if (
+      result[0].isSuccess &&
+      result[0].total >= result[0].difficulty + 10 &&
+      this.additionalEffect.active &&
+      this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.successMore10.id
+    ) {
       await this.manageAdditionalEffect(actor, item, action)
     }
     return true

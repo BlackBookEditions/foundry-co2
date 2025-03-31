@@ -775,8 +775,8 @@ export default class COActor extends Actor {
    *
    * @param {string} targetType The type of target to acquire. Can be "none", "self", "single", or "multiple".
    * @param {string} targetScope The scope of the target acquisition : allies, enemies, all.
-   * @param {string} actionName The name of the action to be performed on the targets.
    * @param {integer} targetNumber The number maximum of targets.
+   * @param {string} actionName The name of the action to be performed on the targets.
    * @param {Object} [options={}] Additional options for target acquisition.
    * @returns {Array} An array of acquired targets.
    * @throws {Error} Throws an error if any target has an error.
@@ -1678,8 +1678,9 @@ export default class COActor extends Actor {
     } else {
       message = game.i18n.localize("CO.notif.healed").replace("{actorName}", this.name).replace("{amount}", Math.abs(healValue).toString())
     }
-
-    await ui.chat.processMessage(message, { actor: this._id, alias: this.name })
+    const speaker = ChatMessage.getSpeaker({ actor: this.id, scene: canvas.scene })
+    console.log(speaker)
+    await ui.chat.processMessage(message, { actor: this })
   }
   // #endregion
 
@@ -1793,10 +1794,12 @@ export default class COActor extends Actor {
     }
     console.log("lastRound:", newEffect.lastRound, "duration :", newEffect.duration, "startedAt", newEffect.startedAt)
     // Applique le statut
-    if (newEffect.statuses && newEffect.statuses.length > 0) {
+    if (newEffect.statuses && newEffect.statuses !== "") {
       for (const status of newEffect.statuses) {
-        let result = await this.activateCOStatusEffect({ state: true, effectid: status })
-        if (result === false) return false // On applique pas l'effet s'il y a une immunité (cas d'un result === false)
+        if (status !== "") {
+          let result = await this.activateCOStatusEffect({ state: true, effectid: status })
+          if (result === false) return false // On applique pas l'effet s'il y a une immunité (cas d'un result === false)
+        }
       }
     }
 
@@ -1805,7 +1808,9 @@ export default class COActor extends Actor {
     await this.update({ "system.currentEffects": currentEffects })
 
     // Si il y a des dommage on les applique dès le premier round
+    console.log("formula", effect.formula)
     if (effect.formula) {
+      console.log("je dois appliquer les degats")
       await this.applyDamageOverTime()
     }
     return true
@@ -1864,7 +1869,7 @@ export default class COActor extends Actor {
   async applyDamageOverTime() {
     for (const effect of this.system.currentEffects) {
       // Ici on devrait tenir compte du type d'energie (feu/glace etc) et d'eventuelle resistance/vulnerabilite à voir plus tard
-      if (!effect.a || effect.formula.length === 0) continue
+      if (!effect.formula || effect.formula.length === 0) continue
       // Doit on jeter un dé ou c'est une valeur fixe ?
       const diceInclude = effect.formula.match("d[0-9]{1,}")
       let formulResult = effect.formula

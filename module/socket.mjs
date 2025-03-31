@@ -24,8 +24,8 @@ export function handleSocketEvent({ action = null, data = {} } = {}) {
 /** * @description
  * //Fonction qui va proposer dans le chat d'appliquer des soins
  * @param {*} targets : Liste d'uuid d'acteur cible
- * @param {int} Quantité de PV restaurés
- * @param {string} id de l'acteur à l'origine du soin
+ * @param {int} healAmount Quantité de PV restaurés
+ * @param {string} fromUserId  Id de l'acteur à l'origine du soin
  */
 export async function _heal({ targets, healAmount, fromUserId }) {
   if (game.user.isGM) {
@@ -85,16 +85,15 @@ export async function _customEffect(data) {
 }
 
 /**
- *
- * @param root0
- * @param root0.userId
- * @param root0.messageId
- * @param root0.rolls
- * @param root0.result
+ * Va demander au MJ d'afficher un test d'opposition ?
+ * @param {Object} data Objet passé en paramètre de l'émission du socket
+ * @param {Uuid} data.userId Id de l'utilisateur qui doit faire le test d'opposition
+ * @param {int} data.messageId Id du message à afficher
+ * @param {Roll} data.rolls Le jet de dé à réaliser avec des infos pré remplies
+ * @param {*} data.result Le resultat coté attaquant
  */
 export async function _oppositeRoll({ userId, messageId, rolls, result } = {}) {
   console.log(`handleSocketEvent _oppositeRoll from ${userId} !`, messageId, rolls, result)
-  // const currentUser = game.user._id
   if (game.user.isGM) {
     const message = game.messages.get(messageId)
     await message.update({ rolls: rolls, "system.result": result })

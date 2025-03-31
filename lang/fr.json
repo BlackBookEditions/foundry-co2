@@ -49,8 +49,8 @@
       "warningNoAmmo": "Vous n'avez plus de munitions.",
       "warningNoCharge": "Votre nombre d'utilisations restantes est insuffisant",
       "cantUseAllDef": "Vous ne pouvez pas utiliser les deux types de défense simultanément",
-      "healed": "{actorName} a été soigné de {amount} point(s) de vigueur",
-      "damaged": "{actorName} perd {amount} point(s) de vigueur"
+      "healed": "{actorName} a été soigné de {amount} points de vigueur",
+      "damaged": "{actorName} perd {amount} points de vigueur"
     },
     "tooltip": {
       "formulaAttack": "Formule d'attaque (sans le dé)",
@@ -641,7 +641,8 @@
         "type": "type d'energie",
         "statusAvailable": "Statuts disponibles",
         "statuses": "Liste des status",
-        "applyBuff": "Applique buff/debuff ?"
+        "applyBuff": "Applique buff/debuff ?",
+        "successMore10": "Succès de +10"
       }
     },
     "itemTypes": {
