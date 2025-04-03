@@ -53,6 +53,9 @@ button {
   margin: 0.25em;
   background: rgba(0, 0, 0, 0.1);
   border: @borderGroove;
+  &:hover {
+    border: @borderGroove;
+  }
 }
 
 select {
@@ -126,6 +129,20 @@ label.checkbox {
       }
     }
 
+    div {
+      display: flex;
+      gap: 8px;
+      input[type="radio"] {
+        flex: 0;
+        align-self: center;
+        margin-top: -8px;
+
+        + label {
+          flex: 1;
+          align-self: center;
+        }
+      }
+    }
   }
 
   // Stacked Groups

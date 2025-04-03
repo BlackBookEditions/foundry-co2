@@ -674,6 +674,13 @@ strong,
   cursor: pointer;
   background: rgba(0, 0, 0, 0.2);
 }
+.application.dialog.co.skill-roll .bonus-item {
+  flex: 1;
+  flex-wrap: nowrap !important;
+}
+.application.dialog.co.skill-roll .bonus-item .skill-bonuses .flexrow {
+  flex-wrap: nowrap !important;
+}
 .application.dialog.co.attack-roll .dialog-content {
   gap: 1px;
 }
@@ -777,6 +784,9 @@ strong,
   background: rgba(0, 0, 0, 0.1);
   border: 2px groove #eeede0;
 }
+.co button:hover {
+  border: 2px groove #eeede0;
+}
 .co select {
   color: #4b4a44;
   font-family: var(--sans-serif);
@@ -845,6 +855,19 @@ strong,
 .co .form-group .form-fields label.checkbox {
   flex: auto;
   text-align: left;
+}
+.co .form-group .form-fields div {
+  display: flex;
+  gap: 8px;
+}
+.co .form-group .form-fields div input[type="radio"] {
+  flex: 0;
+  align-self: center;
+  margin-top: -8px;
+}
+.co .form-group .form-fields div input[type="radio"] + label {
+  flex: 1;
+  align-self: center;
 }
 .co .form-group.stacked label {
   flex: 0 0 100%;
@@ -966,6 +989,7 @@ strong,
   padding: 4px;
 }
 .co.dialog.skill-roll .skill-bonuses .bonus-item .bonus-name {
+  flex: 1 100%;
   margin-left: 5px;
 }
 .co.dialog.skill-roll .skill-bonuses .bonus-item.checked {
@@ -5587,4 +5611,25 @@ strong,
   width: 27px;
   border: none;
   outline: 1px solid white;
+}
+.co.dialog .window-content {
+  background: url(../../../ui/parchment.jpg) repeat;
+}
+.co.dialog button {
+  color: #000;
+}
+.co.dialog button:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+.theme-dark .co.dialog .form-group:hover label {
+  color: #000;
+}
+.theme-dark .co.dialog .form-fields select {
+  background: rgba(0, 0, 0, 0.1);
+}
+.theme-dark .co.dialog button {
+  color: #000;
+}
+.theme-dark .co.dialog button:hover {
+  background: rgba(0, 0, 0, 0.1);
 }

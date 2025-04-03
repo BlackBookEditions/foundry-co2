@@ -28,4 +28,43 @@
   //@import "components/actor/actor.less";
   //@import "components/item/item.less";
   //@import "components/action/action.less";
+
+  &.dialog {
+    .window-content {
+      background: url(../../../ui/parchment.jpg) repeat;
+    }
+  }
+
+  &.dialog {
+    button {
+      color: #000;
+      &:hover {
+        background: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+
+.theme-dark {
+  .co {
+    &.dialog {
+      .form-group:hover {
+        label {
+          color: #000;
+        }
+      }
+      .form-fields {
+        select {
+          background: rgba(0, 0, 0, 0.1);
+        }
+      }
+
+      button {
+        color: #000;
+        &:hover {
+          background: rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+  }
 }
