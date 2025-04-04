@@ -392,7 +392,6 @@ export default class COActor extends Actor {
     // Si le modifier est d'origine d'un customEffectData il ne faut pas chercher sa source
     let bonuses = []
     for (const modifier of modifiersByTarget) {
-      console.log(modifier)
       if (!modifier.parent) {
         const customeffect = this.system.currentEffects.find((e) => e.source === modifier.source)
         if (customeffect) {
@@ -1509,7 +1508,6 @@ export default class COActor extends Actor {
         }
       }
     }
-
     // Gestion du critique
     if (critical === undefined || critical === "") {
       critical = this.system.combat.crit.value
@@ -1529,8 +1527,6 @@ export default class COActor extends Actor {
     if (item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.subtype === SYSTEM.EQUIPMENT_SUBTYPES.weapon.id) {
       if (!this.isTrainedWithWeapon(item.id)) malusDices += 1
     }
-    console.log("bonusDices", bonusDices)
-    console.log("malusDices", malusDices)
     if (bonusDice) bonusDices += bonusDice
     if (malusDice) malusDices += malusDice
 
@@ -1577,7 +1573,6 @@ export default class COActor extends Actor {
       targets,
       hasTargets: targets?.length > 0,
     }
-
     let rolls = await COAttackRoll.prompt(dialogContext, { withDialog: withDialog })
     if (!rolls) return null
 
@@ -1603,24 +1598,26 @@ export default class COActor extends Actor {
             targets: targetsUuid,
             result: results[0],
             linkedRoll: linkedRoll,
-            customEffect: {
-              nom: customEffect.nom,
-              source: customEffect.source,
-              statuses: customEffect.statuses,
-              duration: customEffect.duration,
-              unit: customEffect.unit,
-              formula: customEffect.formula,
-              elementType: customEffect.elementType,
-              effectType: customEffect.effectType,
-              modifiers: customEffect.modifiers,
-            },
+            oppositeRoll,
+            customEffect: customEffect
+              ? {
+                  nom: customEffect.nom,
+                  source: customEffect.source,
+                  statuses: customEffect.statuses,
+                  duration: customEffect.duration,
+                  unit: customEffect.unit,
+                  formula: customEffect.formula,
+                  elementType: customEffect.elementType,
+                  effectType: customEffect.effectType,
+                  modifiers: customEffect.modifiers,
+                }
+              : null,
             applyType: applyType,
           },
         },
         { rollMode: rolls[0].options.rollMode },
       )
 
-      // TODO Afficher uniquement si c'est un succès
       // Affichage du jet de dégâts dans le cas d'un jet combiné, si ce n'est pas un jet opposé et que l'attaque est un succès
       if (game.settings.get("co", "useComboRolls") && !rolls[0].options.oppositeRoll && results[0].isSuccess) {
         if (rolls[1])
@@ -1809,14 +1806,12 @@ export default class COActor extends Actor {
   async startApplyingCustomEffect(effect, round) {
     const newEffect = effect.toObject()
     newEffect.modifiers = effect.modifiers
-    // Console.log("newEffect : ", newEffect)
     newEffect.startedAt = round
     if (newEffect.unit === SYSTEM.COMBAT_UNITE.round) {
       newEffect.lastRound = newEffect.startedAt + newEffect.duration
     } else {
       newEffect.lastRound = newEffect.startedAt + Math.round(newEffect.duration / CONFIG.time.roundTime)
     }
-    console.log("lastRound:", newEffect.lastRound, "duration :", newEffect.duration, "startedAt", newEffect.startedAt)
     // Applique le statut
     if (newEffect.statuses && newEffect.statuses.length > 0) {
       for (const status of newEffect.statuses) {
@@ -1844,7 +1839,6 @@ export default class COActor extends Actor {
     // Re-prepare data and re-render the actor sheet
     this.reset()
     this._sheet?.render(false)
-    console.log(`C'est au tour de ${this.name} de jouer`)
     // Apply damage-over-time before recovery
     await this.applyDamageOverTime()
   }
@@ -1859,7 +1853,6 @@ export default class COActor extends Actor {
     // Re-prepare data and re-render the actor sheet
     this.reset()
     this._sheet?.render(false)
-    console.log(`Le tour de ${this.name} est terminé`)
     // Retire les custom Effect qui se terminent à la fin du tour
     this.expireEffects(false)
   }

@@ -182,7 +182,6 @@ export class COSkillRoll extends CORoll {
     await roll.evaluate()
 
     const toolTip = await roll.getTooltip()
-
     roll.options = {
       actorId: dialogContext.actor.id,
       rollMode: withDialog ? rollContext.rollMode : dialogContext.rollMode,
@@ -220,7 +219,6 @@ export class COSkillRoll extends CORoll {
 
   async _getChatCardData(flavor, isPrivate) {
     const rollResults = CORoll.analyseRollResult(this)
-    console.log("COSkillRoll _getChatCardData options", this.options)
     return {
       actor: this.options.actor,
       speaker: ChatMessage.getSpeaker({ actor: this.options.actor, scene: canvas.scene }),
@@ -307,7 +305,6 @@ export class COAttackRoll extends CORoll {
             radio.addEventListener("change", (event) => {
               event.preventDefault()
               event.stopPropagation()
-              console.log("event", event)
               let newFormula
               switch (event.target.value) {
                 case "standard":

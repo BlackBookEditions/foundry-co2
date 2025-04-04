@@ -210,7 +210,6 @@ export class Resolver extends foundry.abstract.DataModel {
     let ce = null
     if (this.additionalEffect.active) ce = await this.getAdditionalEffect(actor, item, action)
 
-    console.log("avant d'etre mis dans le rollAttack", ce)
     const result = await actor.rollAttack(item, {
       auto: false,
       type,
@@ -274,7 +273,6 @@ export class Resolver extends foundry.abstract.DataModel {
     let healFormula = this.skill.formula
     healFormula = Utils.evaluateFormulaCustomValues(actor, healFormula, item.uuid)
     let healFormulaEvaluated = Roll.replaceFormulaData(healFormula, actor.getRollData())
-    console.log("healFormulaEvaluated", healFormulaEvaluated)
 
     const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.name)
     if (CONFIG.debug.co?.resolvers) console.debug(Utils.log("Heal Targets", targets))

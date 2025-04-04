@@ -54,7 +54,6 @@ export default function registerHooks() {
     }
 
     html.find(".toggle-action").click(async (event) => {
-      console.log("Hook toggle-action", event)
       const shiftKey = !!event.shiftKey
       const dataset = event.currentTarget.dataset
 
@@ -80,7 +79,6 @@ export default function registerHooks() {
       const oppositeTarget = dataset.oppositeTarget
 
       const messageId = event.currentTarget.closest(".message").dataset.messageId
-      console.log("Message ID", messageId)
 
       const actor = await fromUuid(oppositeTarget)
       const value = Utils.evaluateOppositeFormula(oppositeValue, actor)
@@ -91,9 +89,7 @@ export default function registerHooks() {
       let rolls = message.rolls
       rolls[0].options.oppositeRoll = false
       rolls[0].options.difficulty = difficulty
-      console.log(rolls[0])
       let newResult = CORoll.analyseRollResult(rolls[0])
-      console.log(message)
       if (newResult.isSuccess && message.system.linkedRoll.total) {
         const damageRoll = Roll.fromData(message.system.linkedRoll)
         await damageRoll.toMessage(
@@ -103,13 +99,11 @@ export default function registerHooks() {
       }
       // Détermine si on doit appliquer un customeffect
       let shouldApplyCe = false
-      console.log(message.system.applyType, SYSTEM.RESOLVER_RESULT.success.id, newResult.isSuccess, message.system.customEffect)
       if (message.system.applyType === SYSTEM.RESOLVER_RESULT.success.id && newResult.isSuccess && message.system.customEffect) {
         shouldApplyCe = true
       } else if (message.system.applyType === SYSTEM.RESOLVER_RESULT.fail.id && newResult.isFailure && message.system.customEffect) {
         shouldApplyCe = true
       }
-      console.log("shouldApplyCe", shouldApplyCe, "message.applyType", message.system.applyType, "message.customEffect", message.system.customEffect)
       // Le MJ peut mettre à jour le message de chat
       if (game.user.isGM) {
         await message.update({ rolls: rolls, "system.result": newResult })
@@ -138,7 +132,6 @@ export default function registerHooks() {
       }
       // Sinon on emet un socket pour mettre à jour le message de chat
       else {
-        console.log("on emet sur le hook")
         game.socket.emit(`system.${SYSTEM.ID}`, {
           action: "oppositeRoll",
           data: {
@@ -191,7 +184,6 @@ export default function registerHooks() {
    */
   Hooks.on("applyEffect", async (targets, customEffect) => {
     if (game.user.isGM) {
-      console.log("je passe par le hook", customEffect)
       for (let i = 0; i < data.ce.modifiers.length; i++) {
         const modifier = data.ce.modifiers[i]
         custom.modifiers.push(new Modifier(modifier))

@@ -58,7 +58,6 @@ export async function _heal({ targets, healAmount, fromUserId }) {
 export async function _customEffect(data) {
   if (game.user.isGM) {
     // Je suis une cible donc je m'applique l'effet
-    console.log("je reçoit un message socket avec comme donnée : ", data)
     // Conception de l'effet
     const custom = new CustomEffectData({
       nom: data.ce.nom,
@@ -95,7 +94,6 @@ export async function _customEffect(data) {
  *@param root0.ce CustomeffectData à appliquer
  */
 export async function _oppositeRoll({ userId, messageId, rolls, result } = {}) {
-  console.log(`handleSocketEvent _oppositeRoll from ${userId} !`, messageId, rolls, result, applyType, ce)
   if (game.user.isGM) {
     const message = game.messages.get(messageId)
     await message.update({ rolls: rolls, "system.result": result })

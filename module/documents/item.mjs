@@ -232,7 +232,6 @@ export default class COItem extends Item {
    * Update the rank for an embedded path item
    */
   async updateRank() {
-    console.log("item updateRank")
     if (this.type !== SYSTEM.ITEM_TYPE.path.id || !this.actor) return
     let max = 0
 
