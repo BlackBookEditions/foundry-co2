@@ -74,22 +74,23 @@ export class Resolver extends foundry.abstract.DataModel {
   }
 
   /**
-   * On va déterminer comment gérer les effets selon les cibles
+   * Génère un CustomEffectData à partir des informations de ce resolver
    * @param {COActor} actor
    * @param {COItem} item
    * @param {Action} action
+   * @returns {Promize<CustomEffectData>} CustomEffet généré à partir des données du resolvers
    */
-  async manageAdditionalEffect(actor, item, action) {
-    if (!game.combat) {
-      ui.notifications.warn("Pas de combat en cours !")
-      return false // Si pas de combat, pas d'effet sur la durée
-    }
+  async getAdditionalEffect(actor, item, action) {
     // Evaluation de la durée si besoin
     let durationResult = Utils.evaluateFormulaCustomValues(actor, this.additionalEffect.duration)
     durationResult = Roll.replaceFormulaData(durationResult, actor.getRollData())
-    console.log("duration", durationResult)
+    if (/\b\d+d\d+\b/.test(durationResult) === true) {
+      //il faut un lancé de dé
+      const roll = new Roll(durationResult)
+      await roll.evaluate()
+      durationResult = roll.total
+    }
     if (/[+\-*/%]/.test(durationResult) === true) durationResult = eval(durationResult)
-    console.log("duration", durationResult)
 
     // Conception de l'effet
     const ce = new CustomEffectData({
@@ -122,8 +123,6 @@ export class Resolver extends foundry.abstract.DataModel {
       }
     }
 
-    console.log("duration", ce.duration)
-
     // Evaluation de la formule à partir du caster
     let formulResult = Utils.evaluateFormulaCustomValues(actor, ce.formula)
     formulResult = Roll.replaceFormulaData(formulResult, actor.getRollData())
@@ -136,6 +135,22 @@ export class Resolver extends foundry.abstract.DataModel {
         ce.modifiers.push(mod)
       }
     }
+
+    return ce
+  }
+
+  /**
+   * On va déterminer comment gérer les effets selon les cibles
+   * @param {COActor} actor
+   * @param {COItem} item
+   * @param {Action} action
+   */
+  async manageAdditionalEffect(actor, item, action) {
+    if (!game.combat) {
+      ui.notifications.warn("Pas de combat en cours !")
+      return false // Si pas de combat, pas d'effet sur la durée
+    }
+    const ce = await this.getAdditionalEffect(actor, item, action)
 
     // Gestion de la cible
     if (this.target.type === SYSTEM.RESOLVER_TARGET.self.id) await actor.applyCustomEffect(ce)
@@ -192,6 +207,10 @@ export class Resolver extends foundry.abstract.DataModel {
     let damageFormulaEvaluated = Roll.replaceFormulaData(damageFormula, actor.getRollData())
     const damageFormulaTooltip = this.dmg.formula
 
+    let ce = null
+    if (this.additionalEffect.active) ce = await this.getAdditionalEffect(actor, item, action)
+
+    console.log("avant d'etre mis dans le rollAttack", ce)
     const result = await actor.rollAttack(item, {
       auto: false,
       type,
@@ -205,15 +224,14 @@ export class Resolver extends foundry.abstract.DataModel {
       difficulty: this.skill.difficulty,
       bonusDice: this.bonusDiceAdd ? 1 : 0,
       malusDice: this.malusDiceAdd ? 1 : 0,
+      customEffect: this.additionalEffect.active ? ce : null,
+      applyType: this.additionalEffect.applyOn,
     })
 
     if (result === null) return false
-    console.log("result", result)
     if (result[0].isSuccess && this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.success.id) {
-      console.log("le resultat est un succes")
       await this.manageAdditionalEffect(actor, item, action)
     } else if (result[0].isFailure && this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.fail.id) {
-      console.log("le resultat est un echec")
       await this.manageAdditionalEffect(actor, item, action)
     }
     return true

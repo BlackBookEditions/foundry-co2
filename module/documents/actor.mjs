@@ -1425,6 +1425,8 @@ export default class COActor extends Actor {
    * @param {string} [options.damageFormula=undefined] La formule pour le jet de dégâts.
    * @param {string} [options.damageFormulaTooltip=""] L'infobulle pour la formule de dégâts.
    * @param {UUID[]} [options.targets=undefined] Les cibles de l'attaque.
+   * @param {CustomEffectData} [options.customEffect] Eventuellement un customEffect à traiter selon des conditions précisées
+   * @param {string} [options.applyType] si c'est sur un succes ou un echec que l'on applique le customeffect
    * @returns {Promise<null|Array>} Le résultat du jet, ou null si le jet a été annulé.
    */
   async rollAttack(
@@ -1452,6 +1454,8 @@ export default class COActor extends Actor {
       damageFormula = undefined,
       damageFormulaTooltip = "",
       targets = undefined,
+      customEffect = undefined,
+      applyType = "",
     } = {},
   ) {
     // Si l'arme a la propriété "reloadable", on vérifie si l'arme assez de munitions
@@ -1518,11 +1522,15 @@ export default class COActor extends Actor {
     // Gestion du dé bonus : en fonction de la formule, on déduit le type d'attaque et on cherche dans les modifiers
     if (this.system.hasBonusDiceForAttack(Utils.getAttackTypeFromFormula(skillFormulaTooltip))) bonusDices += 1
 
+    // Gestion du dé malus : en fonction de la formule, on déduit le type d'attaque et on cherche dans les modifiers
+    if (this.system.hasMalusDiceForAttack(Utils.getAttackTypeFromFormula(skillFormulaTooltip))) malusDices += 1
+
     // Maitrise de l'arme : Si le personnage utilise une arme qu’il ne maîtrise pas, il subit un dé malus au test d’attaque.
     if (item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.subtype === SYSTEM.EQUIPMENT_SUBTYPES.weapon.id) {
       if (!this.isTrainedWithWeapon(item.id)) malusDices += 1
     }
-
+    console.log("bonusDices", bonusDices)
+    console.log("malusDices", malusDices)
     if (bonusDice) bonusDices += bonusDice
     if (malusDice) malusDices += malusDice
 
@@ -1590,7 +1598,24 @@ export default class COActor extends Actor {
           speaker,
           style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           type: "action",
-          system: { subtype: "attack", targets: targetsUuid, result: results[0], linkedRoll },
+          system: {
+            subtype: "attack",
+            targets: targetsUuid,
+            result: results[0],
+            linkedRoll: linkedRoll,
+            customEffect: {
+              nom: customEffect.nom,
+              source: customEffect.source,
+              statuses: customEffect.statuses,
+              duration: customEffect.duration,
+              unit: customEffect.unit,
+              formula: customEffect.formula,
+              elementType: customEffect.elementType,
+              effectType: customEffect.effectType,
+              modifiers: customEffect.modifiers,
+            },
+            applyType: applyType,
+          },
         },
         { rollMode: rolls[0].options.rollMode },
       )

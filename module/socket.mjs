@@ -91,12 +91,34 @@ export async function _customEffect(data) {
  * @param root0.messageId
  * @param root0.rolls
  * @param root0.result
+ * @param root0.applyType Le customeffect s'applique à quel moment ? Succes, Echec, succes de plus de X ?...
+ *@param root0.ce CustomeffectData à appliquer
  */
 export async function _oppositeRoll({ userId, messageId, rolls, result } = {}) {
-  console.log(`handleSocketEvent _oppositeRoll from ${userId} !`, messageId, rolls, result)
-  // const currentUser = game.user._id
+  console.log(`handleSocketEvent _oppositeRoll from ${userId} !`, messageId, rolls, result, applyType, ce)
   if (game.user.isGM) {
     const message = game.messages.get(messageId)
     await message.update({ rolls: rolls, "system.result": result })
+    if (ce) {
+      const actor = await fromUuid(oppositeTarget)
+      const custom = new CustomEffectData({
+        nom: ce.nom,
+        source: ce.source,
+        statuses: ce.statuses,
+        duration: ce.duration,
+        unit: ce.unit,
+        formula: ce.formula,
+        elementType: ce.elementType,
+        effectType: ce.effectType,
+        startedAt: game.combat.round,
+        remainingDuration: ce.duration,
+        slug: ce.slug,
+      })
+      for (let i = 0; i < data.ce.modifiers.length; i++) {
+        const modifier = data.ce.modifiers[i]
+        custom.modifiers.push(new Modifier(modifier))
+      }
+      await actor.applyCustomEffect(custom)
+    }
   }
 }

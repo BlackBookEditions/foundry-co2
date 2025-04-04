@@ -1,4 +1,5 @@
 import BaseMessageData from "./base-message.mjs"
+import { CustomEffectData } from "./schemas/custom-effect.mjs"
 
 export default class ActionMessageData extends BaseMessageData {
   static defineSchema() {
@@ -11,6 +12,8 @@ export default class ActionMessageData extends BaseMessageData {
       }),
       result: new fields.ObjectField(),
       linkedRoll: new fields.ObjectField(),
+      customEffect: new fields.EmbeddedDataField(CustomEffectData),
+      applyType: new fields.StringField({ required: false }),
     })
   }
 

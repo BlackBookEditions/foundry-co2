@@ -919,7 +919,19 @@ export default class CharacterData extends ActorData {
    */
   hasBonusDiceForAttack(attackType) {
     if (!attackType) return false
-    const modifiers = this.bonusDiceModifiers.filter((m) => m.target === attackType)
+    const modifiers = this.bonusDiceModifiers.filter((m) => m.target === attackType && m.subtype === SYSTEM.MODIFIERS_SUBTYPE.bonusDice.id)
+    return modifiers.length > 0
+  }
+
+  /**
+   * Checks if there are any malus dice modifiers for a given attack type.
+   *
+   * @param {string} attackType The type of attack to check for malus dice modifiers.
+   * @returns {boolean} - Returns true if there are malus dice modifiers for the given attack type, otherwise false.
+   */
+  hasMalusDiceForAttack(attackType) {
+    if (!attackType) return false
+    const modifiers = this.malusDiceModifiers.filter((m) => m.target === attackType && m.subtype === SYSTEM.MODIFIERS_SUBTYPE.malusDice.id)
     return modifiers.length > 0
   }
 

@@ -2,6 +2,8 @@ import { SYSTEM } from "./config/system.mjs"
 import { CORoll } from "./documents/roll.mjs"
 import { Hitpoints } from "./hitpoints.mjs"
 import { createCOMacro } from "./macros.mjs"
+import { CustomEffectData } from "./models/schemas/custom-effect.mjs"
+import { Modifier } from "./models/schemas/modifier.mjs"
 import Utils from "./utils.mjs"
 
 /**
@@ -76,46 +78,88 @@ export default function registerHooks() {
       const dataset = event.currentTarget.dataset
       const oppositeValue = dataset.oppositeValue
       const oppositeTarget = dataset.oppositeTarget
-      console.log("Jet opposé", oppositeValue, oppositeTarget)
 
       const messageId = event.currentTarget.closest(".message").dataset.messageId
       console.log("Message ID", messageId)
 
       const actor = await fromUuid(oppositeTarget)
       const value = Utils.evaluateOppositeFormula(oppositeValue, actor)
-
       const formula = `1d20 + ${value}`
       const roll = await new Roll(formula).roll()
       const difficulty = roll.total
-
       const message = game.messages.get(messageId)
-
       let rolls = message.rolls
       rolls[0].options.oppositeRoll = false
       rolls[0].options.difficulty = difficulty
-
+      console.log(rolls[0])
       let newResult = CORoll.analyseRollResult(rolls[0])
-      if (newResult.isSuccess) {
+      console.log(message)
+      if (newResult.isSuccess && message.system.linkedRoll.total) {
         const damageRoll = Roll.fromData(message.system.linkedRoll)
         await damageRoll.toMessage(
           { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },
           { rollMode: rolls[0].options.rollMode },
         )
       }
-
+      // Détermine si on doit appliquer un customeffect
+      let shouldApplyCe = false
+      console.log(message.system.applyType, SYSTEM.RESOLVER_RESULT.success.id, newResult.isSuccess, message.system.customEffect)
+      if (message.system.applyType === SYSTEM.RESOLVER_RESULT.success.id && newResult.isSuccess && message.system.customEffect) {
+        shouldApplyCe = true
+      } else if (message.system.applyType === SYSTEM.RESOLVER_RESULT.fail.id && newResult.isFailure && message.system.customEffect) {
+        shouldApplyCe = true
+      }
+      console.log("shouldApplyCe", shouldApplyCe, "message.applyType", message.system.applyType, "message.customEffect", message.system.customEffect)
       // Le MJ peut mettre à jour le message de chat
       if (game.user.isGM) {
         await message.update({ rolls: rolls, "system.result": newResult })
+        // S'il y a des customEffect à appliquer on le fait mais il faut recomposer le customEffectData
+        if (shouldApplyCe) {
+          const custom = new CustomEffectData({
+            nom: message.system.customEffect.nom,
+            source: message.system.customEffect.source,
+            statuses: message.system.customEffect.statuses,
+            duration: message.system.customEffect.duration,
+            unit: message.system.customEffect.unit,
+            formula: message.system.customEffect.formula,
+            elementType: message.system.customEffect.elementType,
+            effectType: message.system.customEffect.effectType,
+            startedAt: game.combat.round,
+            remainingDuration: message.system.customEffect.duration,
+            slug: message.system.customEffect.slug,
+          })
+          for (let i = 0; i < message.system.customEffect.modifiers.length; i++) {
+            const modifier = message.system.customEffect.modifiers[i]
+            custom.modifiers.push(new Modifier(modifier))
+          }
+
+          await actor.applyCustomEffect(custom)
+        }
       }
       // Sinon on emet un socket pour mettre à jour le message de chat
       else {
+        console.log("on emet sur le hook")
         game.socket.emit(`system.${SYSTEM.ID}`, {
           action: "oppositeRoll",
           data: {
             userId: game.user.id,
+            actorUuid: oppositeTarget,
             messageId: message.id,
             rolls: rolls,
             result: newResult,
+            applyType: message.system.applyType,
+            ce: shouldApplyCe
+              ? {
+                  nom: message.system.customEffect.nom,
+                  source: message.system.customEffect.source,
+                  statuses: message.system.customEffect.statuses,
+                  duration: message.system.customEffect.duration,
+                  unit: message.system.customEffect.unit,
+                  formula: message.system.customEffect.formula,
+                  elementType: message.system.customEffect.elementType,
+                  modifiers: message.system.customEffect.modifiers,
+                }
+              : null,
           },
         })
       }
@@ -148,6 +192,10 @@ export default function registerHooks() {
   Hooks.on("applyEffect", async (targets, customEffect) => {
     if (game.user.isGM) {
       console.log("je passe par le hook", customEffect)
+      for (let i = 0; i < data.ce.modifiers.length; i++) {
+        const modifier = data.ce.modifiers[i]
+        custom.modifiers.push(new Modifier(modifier))
+      }
       // En tant que GM il peux appliquer les effets sur les acteurs
       await Promise.all(targets.map((target) => target.actor.applyCustomEffect(customEffect)))
     }

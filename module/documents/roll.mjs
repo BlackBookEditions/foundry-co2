@@ -302,12 +302,6 @@ export class COAttackRoll extends CORoll {
           },
         ],
         render: (event, dialog) => {
-          const inputs = dialog.querySelectorAll(".bonus-item")
-          if (inputs) {
-            inputs.forEach((input) => {
-              input.addEventListener("click", this._onToggleCheckSkillBonus.bind(this))
-            })
-          }
           const radios = dialog.querySelectorAll('input[name="dice"]')
           radios.forEach((radio) => {
             radio.addEventListener("change", (event) => {
