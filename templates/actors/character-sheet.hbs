@@ -18,15 +18,20 @@
                         {{#if a.properties.enabled}}                  
                             {{#each a.modifiers as |m mid| }}                                                                                              
                             {{#if m.isState}}                                                         
-                                    <span class="adjustment elite trait">{{localize (concat "CO.label.long." m.target)}}</span>
+                                <span class="adjustment elite trait">{{localize (concat "CO.label.long." m.target)}}</span>
                             {{/if}}
                             {{/each}}
                         {{/if}}
                     {{/each}}
                 </div>
             </div>
+            {{#if alwaysShowAbilities}}
+            <!-- ABILITIES -->
+            {{> "systems/co/templates/actors/parts/character-abilities.hbs"}}
+            {{/if}}
         </header>
-        {{!-- Sheet Tab Navigation --}}
+
+        {{!-- Sheet Tab Navigation --}}        
         <nav class="sheet-tabs tabs" data-group="primary">
             <a class="item" data-tab="main" data-tooltip="{{ localize 'CO.tabs.main' }}">{{ localize "CO.tabs.main" }}</a>
             <a class="item" data-tab="inventory" data-tooltip="{{ localize 'CO.tabs.inventory' }}">{{ localize "CO.tabs.inventory" }}</a>

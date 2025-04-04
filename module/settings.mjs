@@ -70,4 +70,13 @@ export default function registerSystemSettings() {
       gm: "CO.settings.checkFreeHandsBeforeEquip.gm",
     },
   })
+
+  game.settings.register("co", "alwaysShowAbilities", {
+    name: "CO.settings.alwaysShowAbilities.name",
+    hint: "CO.settings.alwaysShowAbilities.hint",
+    scope: "world",
+    config: true,
+    default: "false",
+    type: Boolean,
+  })
 }

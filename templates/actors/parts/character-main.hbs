@@ -1,29 +1,7 @@
-<div class="abilities-scores section-container">
-    <div class="section-header">
-        <h4>{{localize "CO.label.long.abilities"}}</h4>
-        <div class="attacks-controls controls">
-        {{#if unlocked}}
-        <a class="abilities-edit" data-tooltip="{{localize 'CO.ui.editStats'}}" data-action="edit-ability-scores"><i class="fas fa-fw fa-edit"></i></a>
-        {{/if}}
-        </div>
-    </div>
-    <!-- ABILITIES -->
-    <div class="section-body">
-        <ol class="ability-scores">
-            {{#each abilities as |ability id|}}
-            {{!log (concat "Chroniques Oubliées | " id) ability}}
-                <li class="ability key" data-ability="{{id}}">
-                    <label class="details-label ability-name">{{localize (concat 'CO.abilities.long.' id)}}</label>
-                    <h2 class="ability-id">
-                        {{localize (concat "CO.abilities.short." id)}}
-                        {{#if ability.superior}}<i class="fas fa-asterisk"></i>{{/if}}
-                    </h2>
-                    <h3 class="ability-mod rollable" data-tooltip="{{ability.tooltipValue}}" data-roll-type="skillcheck" data-roll-target="{{id}}">{{numberFormat ability.value decimals=0 sign=true}}</h3>
-                </li>
-            {{/each}}
-        </ol>
-    </div>
-</div>
+{{#if (not alwaysShowAbilities)}}
+<!-- ABILITIES -->
+{{> "systems/co/templates/actors/parts/character-abilities.hbs"}}
+{{/if}}
 
 <div class="features section-container">
     <div class="section-header">

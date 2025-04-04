@@ -1,40 +1,10 @@
 {{log 'encounter-main' this}}
 
+{{#if (not alwaysShowAbilities)}}
 <!-- ABILITIES -->
-<div class="abilities-scores section-container">
-    <div class="section-header">
-        <h4>{{localize "CO.label.long.abilities"}}</h4>
-    </div>
-    <!-- ABILITY MODIFIERS -->
-    <div class="section-body">
-        <ol class="ability-scores">
-            {{#each abilities as |ability id|}}
-                <li class="ability key" data-ability="{{id}}">
-                    <label class="details-label ability-name">
-                        {{localize (concat 'CO.abilities.long.' id)}}
-                    </label>
-                    <h2 class="ability-id">
-                        {{localize (concat "CO.abilities.short." id)}}
-                        {{#if ../unlocked}}
-                        <input type="checkbox" name="system.abilities.{{id}}.superior" {{checked ability.superior}} data-tooltip="{{localize 'CO.ui.checkForSuperiorAbility'}}" >
-                        {{else}}
-                        {{#if ability.superior}}<i class="fas fa-asterisk"></i>{{/if}}
-                        {{/if}}
-                    </h2>
-                    {{#if ../unlocked}}
-                    <h3 class="ability-mod">
-                        <input class="modifier" type="text" name="system.abilities.{{id}}.base" value="{{numberFormat ability.base sign=true}}" data-dtype="Number" placeholder="0">
-                    </h3>
-                    {{else}}
-                    <h3 class="ability-mod rollable" data-tooltip="{{ability.tooltipValue}}" data-roll-type="skillcheck" data-roll-target="{{id}}">
-                        {{numberFormat ability.value decimals=0 sign=true}}
-                    </h3>
-                    {{/if}}
-                </li>
-            {{/each}}
-        </ol>
-    </div>
-</div>
+{{> "systems/co/templates/encounter/parts/encounter-abilities.hbs"}}
+{{/if}}
+
 <!-- ATTACKS -->
 <div class="attacks section-container">
     <div class="section-header">

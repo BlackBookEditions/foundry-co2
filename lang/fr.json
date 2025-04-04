@@ -808,6 +808,10 @@
         "none": "Ne pas vérifier",
         "all": "Vérification (ignorable par tous)",
         "gm": "Vérification (ignorable uniquement par le MJ)"
+      },
+      "alwaysShowAbilities": {
+        "name": "Toujours afficher les caractéristiques",
+        "hint": "Toujours afficher les caractéristiques des personnages et des rencontres au-dessus des onglets."
       }
     }
   }

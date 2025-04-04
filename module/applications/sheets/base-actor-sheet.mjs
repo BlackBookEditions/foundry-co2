@@ -50,6 +50,7 @@ export default class CoBaseActorSheet extends ActorSheet {
     context.inventory = this.actor.inventory
     context.unlocked = this.isEditMode
     context.locked = this.isPlayMode
+    context.alwaysShowAbilities = game.settings.get("co", "alwaysShowAbilities")
     // Select options
     context.choiceMoveUnit = SYSTEM.MOVEMENT_UNIT
 

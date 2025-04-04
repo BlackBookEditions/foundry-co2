@@ -20,7 +20,12 @@
                    
                 </div>
             </div>
+            {{#if alwaysShowAbilities}}
+            <!-- ABILITIES -->
+            {{> "systems/co/templates/encounter/parts/encounter-abilities.hbs"}}
+            {{/if}}
         </header>
+
         {{!-- Sheet Tab Navigation --}}
         <nav class="sheet-tabs tabs" data-group="primary">
             <a class="item" data-tab="main" data-tooltip="{{ localize 'CO.tabs.main' }}">{{ localize 'CO.tabs.main' }}</a>

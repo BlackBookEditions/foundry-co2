@@ -38,6 +38,11 @@ export default function registerHandlebarsHelpers() {
     if (value === false || value === "none") return false
     return true
   })
+  Handlebars.registerHelper("isDisabled", function (configKey) {
+    const value = game.settings.get("co", configKey)
+    if (value === false || value === "none") return true
+    return false
+  })
   Handlebars.registerHelper("isTrainedWithWeapon", function (actor, itemId) {
     if (actor.isTrainedWithWeapon(itemId)) return '<i class="fa-solid fa-circle-check" data-tooltip="Maitrise" data-tooltip-direction="UP"></i>'
     return '<i class="fa-regular fa-circle-xmark" data-tooltip="Pas de maitrise" data-tooltip-direction="UP"></i>'

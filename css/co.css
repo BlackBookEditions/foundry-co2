@@ -3242,128 +3242,6 @@ strong,
   padding: 0.25em 0.5em;
   border-top: 1px solid #c9c7b8;
 }
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .main .ability-scores,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .main .ability-scores,
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .effects .ability-scores,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .effects .ability-scores {
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid: 1fr / repeat(7, 1fr);
-  justify-content: center;
-  list-style: none;
-  gap: 12px;
-}
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .main .ability-scores .ability,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .main .ability-scores .ability,
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .effects .ability-scores .ability,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .effects .ability-scores .ability {
-  display: grid;
-  grid: "prefix" auto "mod" 1fr "score" auto "label" auto / 1fr;
-  column-gap: 10px;
-  align-items: center;
-}
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .main .ability-scores .ability .details-label,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .main .ability-scores .ability .details-label,
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .effects .ability-scores .ability .details-label,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .effects .ability-scores .ability .details-label {
-  font-family: var(--sans-serif);
-  font-size: 0.625rem;
-  font-weight: 800;
-  line-height: 1;
-  text-transform: uppercase;
-  color: var(--alt-dark);
-  margin-right: 2px;
-  white-space: nowrap;
-}
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .main .ability-scores .ability .ability-name,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .main .ability-scores .ability .ability-name,
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .effects .ability-scores .ability .ability-name,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .effects .ability-scores .ability .ability-name {
-  grid-area: label;
-  margin: 0;
-  text-align: center;
-  padding: 2px;
-  color: var(--primary);
-  opacity: 0.4;
-}
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .main .ability-scores .ability .ability-id,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .main .ability-scores .ability .ability-id,
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .effects .ability-scores .ability .ability-id,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .effects .ability-scores .ability .ability-id {
-  text-transform: capitalize;
-  grid-area: prefix;
-  font: 400 22px var(--serif-condensed);
-  color: var(--alt-dark);
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  border: none;
-  position: relative;
-}
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .main .ability-scores .ability .ability-id i.fas,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .main .ability-scores .ability .ability-id i.fas,
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .effects .ability-scores .ability .ability-id i.fas,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .effects .ability-scores .ability .ability-id i.fas {
-  font-size: var(--font-size-12);
-  vertical-align: super;
-}
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .main .ability-scores .ability h3.ability-mod,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .main .ability-scores .ability h3.ability-mod,
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .effects .ability-scores .ability h3.ability-mod,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .effects .ability-scores .ability h3.ability-mod {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-image-repeat: repeat;
-  border-image-source: url("../ui/frame-elegant.svg");
-  border-image-slice: 11;
-  border-image-width: 14px;
-  border-bottom: none;
-  border-style: double;
-  grid-area: mod;
-  font-size: var(--font-size-24);
-  font-family: var(--serif);
-  font-weight: 700;
-  height: 46px;
-  margin: 0;
-  padding-right: 4px;
-}
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .main .ability-scores .ability .ability-score,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .main .ability-scores .ability .ability-score,
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .effects .ability-scores .ability .ability-score,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .effects .ability-scores .ability .ability-score {
-  grid-area: score;
-  display: flex;
-  border-radius: 0;
-  font-size: 0;
-  border: 1px solid #d3ccbc;
-  background: rgba(211, 204, 188, 0.2);
-  margin-top: 4px;
-  height: 30px;
-  align-items: center;
-  justify-content: center;
-}
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .main .ability-scores .ability .ability-score div,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .main .ability-scores .ability .ability-score div,
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .effects .ability-scores .ability .ability-score div,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .effects .ability-scores .ability .ability-score div {
-  text-align: center;
-  font-size: var(--font-size-16);
-  font-family: var(--serif);
-  line-height: 16px;
-  height: 16px;
-}
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .main .ability-scores .ability.key .ability-id,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .main .ability-scores .ability.key .ability-id,
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .effects .ability-scores .ability.key .ability-id,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .effects .ability-scores .ability.key .ability-id,
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .main .ability-scores .ability.key .ability-mod,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .main .ability-scores .ability.key .ability-mod,
-.co.sheet.actor.character .window-content form.editable .main .sheet-body .effects .ability-scores .ability.key .ability-mod,
-.co.sheet.actor.character .window-content form.locked .main .sheet-body .effects .ability-scores .ability.key .ability-mod {
-  color: var(--primary);
-}
 .co.sheet.actor.character .window-content form.editable .main .sheet-body .inventory,
 .co.sheet.actor.character .window-content form.locked .main .sheet-body .inventory {
   list-style: none;
@@ -3993,6 +3871,110 @@ strong,
   line-height: 16px;
   padding: 0.25em 0.5em;
   border-top: 1px solid #c9c7b8;
+}
+.co.sheet.actor.character .window-content form.editable .ability-scores,
+.co.sheet.actor.character .window-content form.locked .ability-scores {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid: 1fr / repeat(7, 1fr);
+  justify-content: center;
+  list-style: none;
+  gap: 12px;
+}
+.co.sheet.actor.character .window-content form.editable .ability-scores .ability,
+.co.sheet.actor.character .window-content form.locked .ability-scores .ability {
+  display: grid;
+  grid: "prefix" auto "mod" 1fr "score" auto "label" auto / 1fr;
+  column-gap: 10px;
+  align-items: center;
+}
+.co.sheet.actor.character .window-content form.editable .ability-scores .ability .details-label,
+.co.sheet.actor.character .window-content form.locked .ability-scores .ability .details-label {
+  font-family: var(--sans-serif);
+  font-size: 0.625rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--alt-dark);
+  margin-right: 2px;
+  white-space: nowrap;
+}
+.co.sheet.actor.character .window-content form.editable .ability-scores .ability .ability-name,
+.co.sheet.actor.character .window-content form.locked .ability-scores .ability .ability-name {
+  grid-area: label;
+  margin: 0;
+  text-align: center;
+  padding: 2px;
+  color: var(--primary);
+  opacity: 0.4;
+}
+.co.sheet.actor.character .window-content form.editable .ability-scores .ability .ability-id,
+.co.sheet.actor.character .window-content form.locked .ability-scores .ability .ability-id {
+  text-transform: capitalize;
+  grid-area: prefix;
+  font: 400 22px var(--serif-condensed);
+  color: var(--alt-dark);
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  position: relative;
+}
+.co.sheet.actor.character .window-content form.editable .ability-scores .ability .ability-id i.fas,
+.co.sheet.actor.character .window-content form.locked .ability-scores .ability .ability-id i.fas {
+  font-size: var(--font-size-12);
+  vertical-align: super;
+}
+.co.sheet.actor.character .window-content form.editable .ability-scores .ability h3.ability-mod,
+.co.sheet.actor.character .window-content form.locked .ability-scores .ability h3.ability-mod {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-image-repeat: repeat;
+  border-image-source: url("../ui/frame-elegant.svg");
+  border-image-slice: 11;
+  border-image-width: 14px;
+  border-bottom: none;
+  border-style: double;
+  grid-area: mod;
+  font-size: var(--font-size-24);
+  font-family: var(--serif);
+  font-weight: 700;
+  height: 46px;
+  margin: 0;
+  padding-right: 4px;
+}
+.co.sheet.actor.character .window-content form.editable .ability-scores .ability .ability-score,
+.co.sheet.actor.character .window-content form.locked .ability-scores .ability .ability-score {
+  grid-area: score;
+  display: flex;
+  border-radius: 0;
+  font-size: 0;
+  border: 1px solid #d3ccbc;
+  background: rgba(211, 204, 188, 0.2);
+  margin-top: 4px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+}
+.co.sheet.actor.character .window-content form.editable .ability-scores .ability .ability-score div,
+.co.sheet.actor.character .window-content form.locked .ability-scores .ability .ability-score div {
+  text-align: center;
+  font-size: var(--font-size-16);
+  font-family: var(--serif);
+  line-height: 16px;
+  height: 16px;
+}
+.co.sheet.actor.character .window-content form.editable .ability-scores .ability.key .ability-id,
+.co.sheet.actor.character .window-content form.locked .ability-scores .ability.key .ability-id,
+.co.sheet.actor.character .window-content form.editable .ability-scores .ability.key .ability-mod,
+.co.sheet.actor.character .window-content form.locked .ability-scores .ability.key .ability-mod {
+  color: var(--primary);
+}
+.co.sheet.actor.character .window-content form.editable header > .abilities-scores,
+.co.sheet.actor.character .window-content form.locked header > .abilities-scores {
+  margin: 0 8px;
 }
 .co.sheet.actor.encounter {
   min-height: 480px;
@@ -4780,166 +4762,6 @@ strong,
   padding: 0.25em 0.5em;
   border-top: 1px solid #c9c7b8;
 }
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores {
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid: 1fr / repeat(7, 1fr);
-  justify-content: center;
-  list-style: none;
-  gap: 12px;
-}
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability {
-  display: grid;
-  grid: "prefix" auto "mod" 1fr "score" auto "label" auto / 1fr;
-  column-gap: 10px;
-  align-items: center;
-}
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability .details-label,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability .details-label,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability .details-label,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability .details-label {
-  font-family: var(--sans-serif);
-  font-size: 0.625rem;
-  font-weight: 800;
-  line-height: 1;
-  text-transform: uppercase;
-  color: var(--alt-dark);
-  margin-right: 2px;
-  white-space: nowrap;
-}
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability .ability-name,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability .ability-name,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability .ability-name,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability .ability-name {
-  grid-area: label;
-  margin: 0;
-  text-align: center;
-  padding: 2px;
-  color: var(--primary);
-  opacity: 0.4;
-}
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability .ability-id,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability .ability-id,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability .ability-id,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability .ability-id {
-  text-transform: capitalize;
-  grid-area: prefix;
-  font: 400 22px var(--serif-condensed);
-  color: var(--alt-dark);
-  text-align: center;
-  margin: 0;
-  padding: 0;
-  border: none;
-  position: relative;
-}
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability .ability-id i.fas,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability .ability-id i.fas,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability .ability-id i.fas,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability .ability-id i.fas {
-  font-size: var(--font-size-12);
-  vertical-align: super;
-}
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability .ability-id input[type="checkbox"],
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability .ability-id input[type="checkbox"],
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability .ability-id input[type="checkbox"],
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability .ability-id input[type="checkbox"] {
-  height: 16px;
-  width: 12px;
-}
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability h3.ability-mod,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability h3.ability-mod,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability h3.ability-mod,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability h3.ability-mod {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-image-repeat: repeat;
-  border-image-source: url("../ui/frame-elegant.svg");
-  border-image-slice: 11;
-  border-image-width: 14px;
-  border-bottom: none;
-  border-style: double;
-  grid-area: mod;
-  font-size: var(--font-size-24);
-  font-family: var(--serif);
-  font-weight: 700;
-  height: 46px;
-  margin: 0;
-  padding-right: 4px;
-}
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability h3.ability-mod input[type="text"],
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability h3.ability-mod input[type="text"],
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability h3.ability-mod input[type="text"],
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability h3.ability-mod input[type="text"] {
-  color: inherit;
-  font-size: var(--font-size-24);
-  font-family: var(--serif);
-  font-weight: 700;
-  height: 46px;
-  text-align: center;
-}
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability h3.ability-mod input[type="text"]:hover,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability h3.ability-mod input[type="text"]:hover,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability h3.ability-mod input[type="text"]:hover,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability h3.ability-mod input[type="text"]:hover,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability h3.ability-mod input[type="text"]:focus,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability h3.ability-mod input[type="text"]:focus,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability h3.ability-mod input[type="text"]:focus,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability h3.ability-mod input[type="text"]:focus,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability h3.ability-mod input[type="text"]:focus-visible,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability h3.ability-mod input[type="text"]:focus-visible,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability h3.ability-mod input[type="text"]:focus-visible,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability h3.ability-mod input[type="text"]:focus-visible {
-  background: rgba(0, 0, 0, 0.1);
-  border: none;
-  box-shadow: none;
-  outline: none;
-  margin: 0 6px 0 10px;
-  padding-top: 4px;
-  padding-right: 4px;
-}
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability .ability-score,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability .ability-score,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability .ability-score,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability .ability-score {
-  grid-area: score;
-  display: flex;
-  border-radius: 0;
-  font-size: 0;
-  border: 1px solid #d3ccbc;
-  background: rgba(211, 204, 188, 0.2);
-  margin-top: 4px;
-  height: 30px;
-  align-items: center;
-  justify-content: center;
-}
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability .ability-score div,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability .ability-score div,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability .ability-score div,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability .ability-score div {
-  text-align: center;
-  font-size: var(--font-size-16);
-  font-family: var(--serif);
-  line-height: 16px;
-  height: 16px;
-}
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability.key .ability-id,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability.key .ability-id,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability.key .ability-id,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability.key .ability-id,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .main .ability-scores .ability.key .ability-mod,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .main .ability-scores .ability.key .ability-mod,
-.co.sheet.actor.encounter .window-content form.editable .main .sheet-body .effects .ability-scores .ability.key .ability-mod,
-.co.sheet.actor.encounter .window-content form.locked .main .sheet-body .effects .ability-scores .ability.key .ability-mod {
-  color: var(--primary);
-}
 .co.sheet.actor.encounter .window-content form.editable .main .sheet-body .loot,
 .co.sheet.actor.encounter .window-content form.locked .main .sheet-body .loot {
   list-style: none;
@@ -5569,6 +5391,138 @@ strong,
   line-height: 16px;
   padding: 0.25em 0.5em;
   border-top: 1px solid #c9c7b8;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid: 1fr / repeat(7, 1fr);
+  justify-content: center;
+  list-style: none;
+  gap: 12px;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability {
+  display: grid;
+  grid: "prefix" auto "mod" 1fr "score" auto "label" auto / 1fr;
+  column-gap: 10px;
+  align-items: center;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability .details-label,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability .details-label {
+  font-family: var(--sans-serif);
+  font-size: 0.625rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--alt-dark);
+  margin-right: 2px;
+  white-space: nowrap;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability .ability-name,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability .ability-name {
+  grid-area: label;
+  margin: 0;
+  text-align: center;
+  padding: 2px;
+  color: var(--primary);
+  opacity: 0.4;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability .ability-id,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability .ability-id {
+  text-transform: capitalize;
+  grid-area: prefix;
+  font: 400 22px var(--serif-condensed);
+  color: var(--alt-dark);
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  position: relative;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability .ability-id i.fas,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability .ability-id i.fas {
+  font-size: var(--font-size-12);
+  vertical-align: super;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability .ability-id input[type="checkbox"],
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability .ability-id input[type="checkbox"] {
+  height: 16px;
+  width: 12px;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability h3.ability-mod,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability h3.ability-mod {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-image-repeat: repeat;
+  border-image-source: url("../ui/frame-elegant.svg");
+  border-image-slice: 11;
+  border-image-width: 14px;
+  border-bottom: none;
+  border-style: double;
+  grid-area: mod;
+  font-size: var(--font-size-24);
+  font-family: var(--serif);
+  font-weight: 700;
+  height: 46px;
+  margin: 0;
+  padding-right: 4px;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability h3.ability-mod input[type="text"],
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability h3.ability-mod input[type="text"] {
+  color: inherit;
+  font-size: var(--font-size-24);
+  font-family: var(--serif);
+  font-weight: 700;
+  height: 46px;
+  text-align: center;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability h3.ability-mod input[type="text"]:hover,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability h3.ability-mod input[type="text"]:hover,
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability h3.ability-mod input[type="text"]:focus,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability h3.ability-mod input[type="text"]:focus,
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability h3.ability-mod input[type="text"]:focus-visible,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability h3.ability-mod input[type="text"]:focus-visible {
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  box-shadow: none;
+  outline: none;
+  margin: 0 6px 0 10px;
+  padding-top: 4px;
+  padding-right: 4px;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability .ability-score,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability .ability-score {
+  grid-area: score;
+  display: flex;
+  border-radius: 0;
+  font-size: 0;
+  border: 1px solid #d3ccbc;
+  background: rgba(211, 204, 188, 0.2);
+  margin-top: 4px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability .ability-score div,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability .ability-score div {
+  text-align: center;
+  font-size: var(--font-size-16);
+  font-family: var(--serif);
+  line-height: 16px;
+  height: 16px;
+}
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability.key .ability-id,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability.key .ability-id,
+.co.sheet.actor.encounter .window-content form.editable .ability-scores .ability.key .ability-mod,
+.co.sheet.actor.encounter .window-content form.locked .ability-scores .ability.key .ability-mod {
+  color: var(--primary);
+}
+.co.sheet.actor.encounter .window-content form.editable header > .abilities-scores,
+.co.sheet.actor.encounter .window-content form.locked header > .abilities-scores {
+  margin: 0 8px;
 }
 .co .action-icon {
   width: 48px;
