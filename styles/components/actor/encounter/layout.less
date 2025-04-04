@@ -10,9 +10,10 @@
 &.sheet {
   &.actor.encounter {
     min-height: 480px;
-    min-width: 625px;
+    min-width: 760px;
     .window-content {
       padding: 0;
+      overflow: hidden;
       form.editable,
       form.locked {
         height: 100%;
@@ -90,6 +91,121 @@
               .actions-container,
               .effects-container {
                 .items-container();
+              }
+              .ability-scores {
+                margin: 0;
+                padding: 0;
+                display: grid;
+                grid: 1fr / repeat(7, 1fr);
+                justify-content: center;
+                list-style: none;
+                gap: 12px;
+                .ability {
+                  display: grid;
+                  grid: "prefix" auto "mod" 1fr "score" auto "label" auto/1fr;
+                  column-gap: 10px;
+                  align-items: center;
+                  .details-label {
+                    font-family: var(--sans-serif);
+                    font-size: 0.625rem;
+                    font-weight: 800;
+                    line-height: 1;
+                    text-transform: uppercase;
+                    color: var(--alt-dark);
+                    margin-right: 2px;
+                    white-space: nowrap;
+                  }
+                  .ability-name {
+                    grid-area: label;
+                    margin: 0;
+                    text-align: center;
+                    padding: 2px;
+                    color: var(--primary);
+                    opacity: 0.4;
+                  }
+                  .ability-id {
+                    text-transform: capitalize;
+                    grid-area: prefix;
+                    font: 400 22px var(--serif-condensed);
+                    color: var(--alt-dark);
+                    text-align: center;
+                    margin: 0;
+                    padding: 0;
+                    border: none;
+                    position: relative;
+                    i.fas {
+                      font-size: var(--font-size-12);
+                      vertical-align: super;
+                    }
+                    input[type="checkbox"] {
+                      height: 16px;
+                      width: 12px;
+                    }
+                  }
+                  h3.ability-mod {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border-image-repeat: repeat;
+                    border-image-source: url("../ui/frame-elegant.svg");
+                    border-image-slice: 11;
+                    border-image-width: 14px;
+                    border-bottom: none;
+                    border-style: double;
+                    grid-area: mod;
+                    font-size: var(--font-size-24);
+                    font-family: var(--serif);
+                    font-weight: 700;
+                    height: 46px;
+                    margin: 0;
+                    padding-right: 4px;
+                    input[type="text"] {
+                      color: inherit;
+                      font-size: var(--font-size-24);
+                      font-family: var(--serif);
+                      font-weight: 700;
+                      height: 46px;
+                      text-align: center;
+                      &:hover,
+                      &:focus,
+                      &:focus-visible {
+                        background: rgba(0, 0, 0, 0.1);
+                        border: none;
+                        box-shadow: none;
+                        outline: none;
+                        margin: 0 6px 0 10px;
+                        padding-top: 4px;
+                        padding-right: 4px;
+                      }
+                    }
+                  }
+                  .ability-score {
+                    grid-area: score;
+                    display: flex;
+                    border-radius: 0;
+                    font-size: 0;
+                    border: 1px solid #d3ccbc;
+                    background: rgba(211, 204, 188, 0.2);
+                    margin-top: 4px;
+                    height: 30px;
+                    align-items: center;
+                    justify-content: center;
+                    div {
+                      text-align: center;
+                      font-size: var(--font-size-16);
+                      font-family: var(--serif);
+                      line-height: 16px;
+                      height: 16px;
+                    }
+                  }
+                }
+                .ability.key {
+                  .ability-id,
+                  .ability-mod {
+                    //color: var(--alt-dark);
+                    color: var(--primary);
+                  }
+                }
               }
             }
             .loot {

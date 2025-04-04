@@ -361,7 +361,8 @@
       "melee": "Contact",
       "ranged": "Distance",
       "magic": "Magique",
-      "mainProfile": "Profil principal"
+      "mainProfile": "Profil principal",
+      "checkForSuperiorAbility": "Cocher pour activer la carac. supérieure !"
     },
     "properties": {
       "attack": "Attaque",
