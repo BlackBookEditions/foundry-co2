@@ -91,13 +91,11 @@ export default class COCharacterSheet extends CoBaseActorSheet {
   async _onDeleteCustomEffect(event) {
     event.preventDefault()
     const dataset = event.currentTarget.dataset
-    console.log(dataset)
     let effectname = dataset.ceName
     const ce = this.actor.system.currentEffects.find((ce) => ce.slug === effectname)
     if (ce) {
-      console.log("je dois supprimer ", ce)
       await this.actor.deleteCustomEffect(ce)
-    } else console.log("pas trouvé : ", effectname)
+    }
   }
 
   /**

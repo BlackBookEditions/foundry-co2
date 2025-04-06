@@ -99,7 +99,6 @@ export default class COEncounterSheet extends CoBaseActorSheet {
   async _onDeleteItem(event) {
     event.preventDefault()
     const li = $(event.currentTarget).parents(".item")
-    console.log(li)
     const itemId = li.data("itemId")
     const itemUUID = li.data("itemUuid")
     const itemType = li.data("itemType")
