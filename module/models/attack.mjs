@@ -95,7 +95,7 @@ export default class AttackData extends ItemData {
       let action = actions[0]
       if (action.hasResolvers) {
         let resolver = action.resolvers[0]
-        attack = `+${resolver?.skill?.formula}`
+        attack = `${resolver?.skill?.formula}`
         damage = `${resolver?.dmg?.formula}`
       }
       source = action.source
