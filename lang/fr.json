@@ -363,7 +363,10 @@
       "ranged": "Distance",
       "magic": "Magique",
       "mainProfile": "Profil principal",
-      "checkForSuperiorAbility": "Cocher pour activer la carac. supérieure !"
+      "checkForSuperiorAbility": "Cocher pour activer la carac. supérieure !",
+      "addCapacityMsg": "Glissez déposez une capacité ici",
+      "linkedCapacity": "Capacité liée",
+      "parentCapacity": "Capacité parente"
     },
     "properties": {
       "attack": "Attaque",

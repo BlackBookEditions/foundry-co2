@@ -1116,6 +1116,44 @@ export default class COActor extends Actor {
   }
 
   /**
+   * Ajoute une capacité sous une autre capacité
+   * @param {*} capacity la capacité à ajouter
+   * @param {*} parentUuid Le uuid de la capacité parente
+   * @returns {string} renvoi l'uuid de la nouvelle capacité copiée
+   */
+  async addSubCapacity(capacity, parentUuid) {
+    let capacityData = capacity.toObject()
+    capacityData.system.path = null
+    capacityData.system.learned = true
+    capacityData.system.cost = 0 // A priorsi si on est là c'est que l'on passe par une capacité qui en donne une autre donc c'est gratuit
+    console.log("parentUuid", parentUuid)
+    capacityData.system.parentCapacity = parentUuid // On met une référence à la capacité parente
+    const newCapacity = await this.createEmbeddedDocuments("Item", [capacityData])
+    // Update the source of all actions and all modifiers of the actions
+    if (newCapacity[0].actions.length > 0) {
+      const actions = newCapacity[0].toObject().system.actions
+      for (const action of actions) {
+        action.source = newCapacity[0].uuid
+        // Update the source of all modifiers if there are some
+        if (action.modifiers.length > 0) {
+          for (const modifier of action.modifiers) {
+            modifier.source = newCapacity[0].uuid
+          }
+        }
+      }
+
+      await newCapacity[0].update({ "system.actions": actions })
+    }
+
+    const parent = await fromUuid(parentUuid)
+    console.log("la capacité parente :", parent)
+    parent.system.linkedCapacity = newCapacity[0].uuid
+    await parent.update({ "system.linkedCapacity": newCapacity[0].uuid })
+
+    return newCapacity[0].uuid
+  }
+
+  /**
    * Add an equipment as an embedded item
    * @param {COItem} equipment
    * Retourne {number} id of the created path
@@ -1237,7 +1275,13 @@ export default class COActor extends Actor {
    */
   async deleteCapacity(capacityUuid) {
     const capacity = await fromUuid(capacityUuid)
-
+    // Avant on va vérifier que cette capacité n'est pas liée à une autre
+    this.capacities.forEach((c) => {
+      if (c.system.linkedCapacity === capacityUuid) {
+        c.system.linkedCapacity = null
+        c.update({ "system.linkedCapacity": null })
+      }
+    })
     if (capacity) {
       this.deleteEmbeddedDocuments("Item", [capacity.id])
     }

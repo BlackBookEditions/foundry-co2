@@ -266,10 +266,37 @@ export default class COCharacterSheet extends CoBaseActorSheet {
       case SYSTEM.ITEM_TYPE.path.id:
         return await this.actor.addPath(item)
       case SYSTEM.ITEM_TYPE.capacity.id:
-        return await this.actor.addCapacity(item, null)
+        // Alors là soit on depose n'importe ou sur la feuille, soit on depose dans une zone prévue pour y ajouter des 'sous-capacités'
+        // On va pas les ajouter de la même manière selon le cas.
+        if (this.isDropZone(event)) {
+          // C'est une sous capacité on cherche la capacité parente
+          let parentitem = $(event.target).closest(".item-list")
+          let parentitemuuid = parentitem.data("itemUuid")
+          return await this.actor.addSubCapacity(item, parentitemuuid)
+        } else {
+          return await this.actor.addCapacity(item, null)
+        }
       default:
         return false
     }
+  }
+
+  /** Vérifie si une balise parent à une classe 'dropzone'
+   * @param {event} event
+   * @returns {bool} true si oui false si non
+   */
+  async isDropZone(event) {
+    if (event.target.tagName === "DIV" && event.target.classList.contains("dropzone")) return true // Si la balise elle ememe est uen dropzone
+    let parent = event.target.parentElement
+
+    // Remontez dans l'arborescence DOM pour trouver un parent <div> avec la classe "dropzone"
+    while (parent) {
+      if (parent.tagName === "DIV" && parent.classList.contains("dropzone")) {
+        return true
+      }
+      parent = parent.parentElement
+    }
+    return false
   }
 
   /**

@@ -203,14 +203,23 @@ export default class COItem extends Item {
   }
 
   /**
-   * Add a capacity to an item of type Path or Feature
+   * Add a capacity to an item of type Path, Feature or Capacity
    * @param {*} uuid
    */
-  addCapacity(uuid) {
+  async addCapacity(uuid) {
+    // For Path and Feature, the capacities are in the system.capacities
     if (this.type === SYSTEM.ITEM_TYPE.path.id || this.type === SYSTEM.ITEM_TYPE.feature.id) {
       let newCapacities = foundry.utils.duplicate(this.system.capacities)
       newCapacities.push(uuid)
       return this.update({ "system.capacities": newCapacities })
+    }
+    // For Capacity, it's only if the linkedCapacity is allowed, and the capacity is possessed by the actor, and has been learned
+    if (this.type === SYSTEM.ITEM_TYPE.capacity.id && this.system.learned && this.system.allowLinkedCapacity && this.system.path.includes("Actor")) {
+      const actor = game.actors.get(this.system.path.split(".")[1])
+      const capacity = await fromUuid(uuid)
+      let capacityData = capacity.toObject()
+      const newCapacity = await actor.createEmbeddedDocuments("Item", [capacityData])
+      return this.update({ "system.linkedCapacity": newCapacity[0].uuid })
     }
     return false
   }

@@ -41,6 +41,9 @@ export default class CapacityData extends ItemData {
       cost: new fields.NumberField({ required: true, nullable: false, integer: true, initial: -1 }),
       manaCost: new fields.NumberField({ required: true, nullable: false, integer: true, initial: -1 }),
       actions: new fields.ArrayField(new fields.EmbeddedDataField(Action)),
+      allowLinkedCapacity: new fields.BooleanField({ initial: false }),
+      linkedCapacity: new fields.DocumentUUIDField({ type: "Item" }),
+      parentCapacity: new fields.DocumentUUIDField({ type: "Item" }),
     })
   }
 
@@ -74,12 +77,40 @@ export default class CapacityData extends ItemData {
     return this.manaCost !== -1
   }
 
+  get hasParent() {
+    return this.parentCapacity !== null
+  }
+
   get hasFrequency() {
     return this.frequency !== SYSTEM.CAPACITY_FREQUENCY.none.id
   }
 
   get hasCharges() {
     return this.charges.current > 0
+  }
+
+  get linkedCapacityName() {
+    if (this.allowLinkedCapacity && this.linkedCapacity) {
+      const linkedCapacity = fromUuidSync(this.linkedCapacity)
+      if (linkedCapacity) return linkedCapacity.name
+    }
+    return ""
+  }
+
+  get linkedCapacityImg() {
+    if (this.allowLinkedCapacity && this.linkedCapacity) {
+      const linkedCapacity = fromUuidSync(this.linkedCapacity)
+      if (linkedCapacity) return linkedCapacity.img
+    }
+    return "systems/co/ui/effects/question.webp"
+  }
+
+  get linkedCapacityItem() {
+    if (this.allowLinkedCapacity && this.linkedCapacity) {
+      const linkedCapacity = fromUuidSync(this.linkedCapacity)
+      if (linkedCapacity) return linkedCapacity
+    }
+    return null
   }
 
   /**

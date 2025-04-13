@@ -123,8 +123,14 @@ export default class Utils {
    */
   static _replaceRank(actor, content, source) {
     // Pour connaitre le rang d'une voie il faut remonter à la source pour savoir de quelle voie il s'agit
-    const itemSource = fromUuidSync(source)
+    let itemSource = fromUuidSync(source)
     if (!itemSource || itemSource.type !== "capacity") return content
+
+    // Si on est sur une capacité enfant on depend du rang du parent
+    if (itemSource.system.parentCapacity) {
+      console.log("ReplaceRank sur une capacité enfant, on remplace par le parent pour le calcul : ", itemSource.system.parentCapacity)
+      itemSource = fromUuidSync(itemSource.system.parentCapacity)
+    }
 
     if (CONFIG.debug.co?.rolls) console.debug(Utils.log(`Utils - _replaceRank - actor, formula, source, itemSource`), actor, content, source, itemSource)
     const pathUuid = itemSource.system.path
@@ -189,8 +195,14 @@ export default class Utils {
    */
   static _replaceAllRank(actor, content, source) {
     const { id } = foundry.utils.parseUuid(source)
-    const itemSource = actor.items.get(id)
+    let itemSource = actor.items.get(id)
     if (itemSource.type !== "capacity") return formula
+
+    // Si on est sur une capacité enfant on depend du rang du parent
+    if (itemSource.system.parentCapacity) {
+      console.log("ReplaceRank sur une capacité enfant, on remplace par le parent pour le calcul : ", itemSource.system.parentCapacity)
+      itemSource = fromUuidSync(itemSource.system.parentCapacity)
+    }
 
     let startRank = content.includes("@allrank") ? content.substring(content.indexOf("@allrank")) : content.substring(content.indexOf("@toutrang"))
     let extract = startRank.substring(startRank.indexOf("[") + 1, startRank.indexOf("]"))

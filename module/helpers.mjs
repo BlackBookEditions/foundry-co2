@@ -5,11 +5,17 @@ export default function registerHandlebarsHelpers() {
   Handlebars.registerHelper("add", function (a, b) {
     return parseInt(a) + parseInt(b)
   })
-  /*Handlebars.registerHelper("concat", function (a, b) {
+  /* Handlebars.registerHelper("concat", function (a, b) {
     return a + b
   })*/
   Handlebars.registerHelper("isset", function (value) {
     return value !== undefined
+  })
+  Handlebars.registerHelper("isNotNull", function (value) {
+    return value !== null
+  })
+  Handlebars.registerHelper("isNull", function (value) {
+    return value === null
   })
   Handlebars.registerHelper("sum", function (arr, init) {
     return arr.reduce((previousValue, currentValue) => previousValue + currentValue, init)

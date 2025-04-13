@@ -19,6 +19,7 @@
         <input class="field-value" name="system.path" readonly type="text" value="{{system.path}}" data-dtype="String" />
       </div>
     </div>
+    <br />
   {{/if}}
   <div class="form-group">
     <label>{{localize "CO.ui.learned"}}</label>
@@ -26,6 +27,40 @@
       <label class="checkbox"> <input type="checkbox" name="system.learned" {{checked system.learned}} /></label>
     </div>
   </div>
+  <div class="form-group">
+    <label>Autorise une capacité liée</label>
+    <div class="form-fields">
+      <label class="checkbox"> <input type="checkbox" name="system.allowLinkedCapacity" {{checked system.allowLinkedCapacity}} /></label>
+    </div>
+  </div>
+  {{#if system.allowLinkedCapacity}}
+    <div class="form-group">
+      <label>{{localize "CO.ui.linkedCapacity"}}</label>
+      <div class="form-group">
+        {{#if (isNotNull system.linkedCapacity)}}
+          {{#if locked}}
+            <input type="text" name="system.linkedCapacity" value="{{system.linkedCapacity}}" readonly />
+          {{else}}
+            <input type="text" name="system.linkedCapacity" value="{{system.linkedCapacity}}" />
+          {{/if}}
+        {{/if}}
+      </div>
+    </div>
+  {{/if}}
+  {{#if system.parentCapacity}}
+    <div class="form-group">
+      <label>{{localize "CO.ui.parentCapacity"}}</label>
+      <div class="form-group">
+        {{#if (isNotNull system.parentCapacity)}}
+          {{#if locked}}
+            <input type="text" name="system.parentCapacity" value="{{system.parentCapacity}}" readonly />
+          {{else}}
+            <input type="text" name="system.parentCapacity" value="{{system.parentCapacity}}" />
+          {{/if}}
+        {{/if}}
+      </div>
+    </div>
+  {{/if}}
   <div class="form-group">
     <label>{{localize "CO.ui.xpCost"}}</label>
     <div class="form-fields">
@@ -40,20 +75,22 @@
       </label>
     </div>
   </div>
-  <div class="form-group">
-    <label>{{localize "CO.ui.manaCost"}}</label>
-    <div class="form-fields">
-      <label class="field-value">
-        {{#if locked}}
-          {{#if system.hasManaCost}}
-            <input type="text" name="system.manaCost" value="{{system.manaCost}}" readonly />
+  {{#if system.isSpell}}
+    <div class="form-group">
+      <label>{{localize "CO.ui.manaCost"}}</label>
+      <div class="form-fields">
+        <label class="field-value">
+          {{#if locked}}
+            {{#if system.hasManaCost}}
+              <input type="text" name="system.manaCost" value="{{system.manaCost}}" readonly />
+            {{/if}}
+          {{else}}
+            <input type="text" name="system.manaCost" value="{{system.manaCost}}" />
           {{/if}}
-        {{else}}
-          <input type="text" name="system.manaCost" value="{{system.manaCost}}" />
-        {{/if}}
-      </label>
+        </label>
+      </div>
     </div>
-  </div>
+  {{/if}}
   <div class="form-group">
     <label>{{localize "CO.label.long.actionType"}}</label>
     <div class="form-fields">

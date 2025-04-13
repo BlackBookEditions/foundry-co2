@@ -11,7 +11,8 @@
     <ol class="item-list foldable">
         {{#each capacitiesOffPaths as |capacity id|}}
             {{!log "Chroniques Oubliées | capacity" capacity}}
-            {{#if capacity.system.learned}}
+            {{#if capacity.system.learned }}
+            {{#if (isNull capacity.system.parentCapacity)}}
                 <li class="item flexrow" data-item-uuid="{{capacity.uuid}}" data-item-id="{{capacity._id}}" data-item-type="capacity" draggable="true">
                     <div class="item-name flexrow">
                         <a class="item-image item-edit" style="background-image: url('{{capacity.img}}')"></a>
@@ -25,6 +26,7 @@
                         {{/if}}
                     </div>
                 </li>
+                {{/if}}
             {{/if}}
         {{/each}}
     </ol>
