@@ -7,6 +7,7 @@
                 <input class="flex1" name="name" type="text" value="{{item.name}}" placeholder="{{localize 'CO.ui.itemName'}}" spellcheck="false" data-dtype="String">
             </div>
             <div class="flexrow" style="justify-content: space-between; width: 100%;">
+                
                 <div class="adjustment-select flexrow" style="flex: auto; justify-content: flex-end;">
                     <span class="adjustment elite trait">{{localize (concat "CO.itemTypes." item.type )}}</span>
                 </div>
@@ -32,7 +33,13 @@
     </nav>
     {{! log "Chroniques Oubliées | detail" this}}
     <section class="sheet-body">
-        <div class="tab description active" data-group="primary" data-tab="description">            
+        <div class="tab description active" data-group="primary" data-tab="description"> 
+            <div class="form-group" style="font-size: 0.8em;background-color:lightgrey;color:white;padding:0px 5px 0px 5px">
+            <label class="field-value"><b>{{localize 'CO.ui.origin'}}</b> </label>
+                <div class="form-fields">
+                    <input class="flex1" name="origin" type="text" value="{{item.origin}}" placeholder="{{localize 'CO.ui.originDescription'}}" spellcheck="false" data-dtype="String" />
+                </div> 
+            </div>          
             {{editor enrichedDescription target="system.description" button=true owner=owner editable=editable}}           
         </div>
         <div class="tab details" data-group="primary" data-tab="details">
