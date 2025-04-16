@@ -269,13 +269,9 @@
       "current": "Courante",
       "max": "Maximum",
       "destroyIfEmpty": "Détruire si vide",
-<<<<<<< Updated upstream
-      "charges": "Charges",
-=======
-      "charges": "Charges/munitions/projectiles",
+      "charges": "Charges/munitions",
       "origin": "Origine :",
       "originDescription": "Vous pouvez indiquer l'origine de l'objet ici",
->>>>>>> Stashed changes
       "weight": "Poids",
       "unit": "Unité",
       "price": "Prix",
