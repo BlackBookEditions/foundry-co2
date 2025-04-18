@@ -102,6 +102,7 @@ export default class ActorData extends foundry.abstract.TypeDataModel {
    */
   hasBonusDiceForAttack(attackType) {
     if (!attackType) return false
+    console.log(this.bonusDiceModifiers)
     const modifiers = this.bonusDiceModifiers.filter((m) => m.target === attackType)
     return modifiers.length > 0
   }

@@ -98,6 +98,7 @@ export class Resolver extends foundry.abstract.DataModel {
       auto: false,
       type,
       actionName: action.label,
+      actionType: action.type,
       chatFlavor: action.chatFlavor,
       skillFormula: skillFormulaEvaluated,
       damageFormula: damageFormulaEvaluated,
@@ -275,6 +276,10 @@ export class Resolver extends foundry.abstract.DataModel {
   }
 
   async _createCustomEffect(actor, item, action) {
+    if (game.combat.round === null) {
+      ui.notifications.warn(game.i18n.localize("CO.label.long.customEffectInCombat"))
+      return
+    }
     let ce
     // Evaluation de la durée si besoin
     let evaluatedDuration = Utils.evaluateFormulaCustomValues(actor, this.additionalEffect.duration)

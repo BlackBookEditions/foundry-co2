@@ -1419,6 +1419,7 @@ export default class COActor extends Actor {
       type = "attack",
       useComboRolls = game.settings.get("co", "useComboRolls"),
       actionName = "",
+      actionType = SYSTEM.ACTION_TYPES.melee.id,
       chatFlavor = "",
       skillBonus = 0,
       skillMalus = 0,
@@ -1501,11 +1502,22 @@ export default class COActor extends Actor {
     let bonusDices = 0
     let malusDices = 0
 
-    // Gestion du dé bonus : en fonction de la formule, on déduit le type d'attaque et on cherche dans les modifiers
-    if (this.system.hasBonusDiceForAttack(Utils.getAttackTypeFromFormula(skillFormulaTooltip))) bonusDices += 1
+    if (this.type === "character") {
+      // Gestion du dé bonus : en fonction de la formule, on déduit le type d'attaque et on cherche dans les modifiers
+      if (this.system.hasBonusDiceForAttack(Utils.getAttackTypeFromFormula(skillFormulaTooltip))) bonusDices += 1
 
-    // Gestion du dé malus : en fonction de la formule, on déduit le type d'attaque et on cherche dans les modifiers
-    if (this.system.hasMalusDiceForAttack(Utils.getAttackTypeFromFormula(skillFormulaTooltip))) malusDices += 1
+      // Gestion du dé malus : en fonction de la formule, on déduit le type d'attaque et on cherche dans les modifiers
+      if (this.system.hasMalusDiceForAttack(Utils.getAttackTypeFromFormula(skillFormulaTooltip))) malusDices += 1
+    } else if (this.type === "encounter") {
+      // Gestion du dé bonus : en fonction de la formule, on déduit le type d'attaque et on cherche dans les modifiers
+      if (this.system.hasBonusDiceForAttack(actionType)) {
+        console.log("j'ai un bonus dice pour le type d'attaque : ", actionType)
+        bonusDices += 1
+      } else console.log("Je n'ai pas de bonus dice pour le type d'attaque : ", actionType)
+
+      // Gestion du dé malus : en fonction de la formule, on déduit le type d'attaque et on cherche dans les modifiers
+      if (this.system.hasMalusDiceForAttack(actionType)) malusDices += 1
+    }
 
     // Maitrise de l'arme : Si le personnage utilise une arme qu’il ne maîtrise pas, il subit un dé malus au test d’attaque.
     if (item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.subtype === SYSTEM.EQUIPMENT_SUBTYPES.weapon.id) {

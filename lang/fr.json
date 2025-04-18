@@ -82,6 +82,7 @@
         "capacity": "Capacité",
         "capacities": "Capacités",
         "combat": "Combat",
+        "customEffectInCombat": "Les effets périodique ne fonctionnent que lors d'un combat",
         "attacks": "Attaques",
         "attack": "Attaque",
         "damage": "Dommages",
