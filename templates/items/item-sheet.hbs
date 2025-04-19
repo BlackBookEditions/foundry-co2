@@ -34,10 +34,10 @@
     {{! log "Chroniques Oubliées | detail" this}}
     <section class="sheet-body">
         <div class="tab description active" data-group="primary" data-tab="description"> 
-            <div class="form-group" style="font-size: 0.8em;background-color:lightgrey;color:white;padding:0px 5px 0px 5px">
-            <label class="field-value"><b>{{localize 'CO.ui.origin'}}</b> </label>
+            <div class="form-group">
+                <label>{{localize 'CO.ui.origin'}}</label>
                 <div class="form-fields">
-                    <input class="flex1" name="origin" type="text" value="{{item.origin}}" placeholder="{{localize 'CO.ui.originDescription'}}" spellcheck="false" data-dtype="String" />
+                    <input class="field-value" name="system.origin" {{#if locked}}readonly{{/if}} type="text" value="{{system.origin}}" placeholder="{{localize 'CO.ui.originDescription'}}" spellcheck="false" data-dtype="String" />
                 </div> 
             </div>          
             {{editor enrichedDescription target="system.description" button=true owner=owner editable=editable}}           
