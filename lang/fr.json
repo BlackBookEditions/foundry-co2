@@ -209,6 +209,8 @@
     "customStatus": {
       "blind": "Aveuglé",
       "blindDescription": "‑5 en Init., attaque et DEF, ‑10 en attaque à distance. Les attaques magiques nécessitant de voir la cible sont impossibles",
+      "confused": "Confus",
+      "confusedDescription": "Le personnage est confus et fait des actions aléatoires",
       "customEffect": "Effet(s) additionnel(s)",
       "customEffectDescription": "Subit un ou plusieurs effet(s) additionnel(s)",
       "weakened": "Affaibli",

@@ -33,6 +33,12 @@ export const CUSTOM_STATUS_EFFECT = [
     description: "CO.customStatus.deadDescription",
   },
   {
+    id: "confused",
+    name: "CO.customStatus.confused",
+    img: "icons/svg/daze.svg",
+    description: "CO.customStatus.confusedDescription",
+  },
+  {
     id: "immobilized",
     name: "CO.customStatus.immobilized",
     img: "systems/co/ui/effects/immobilized.webp",

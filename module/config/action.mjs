@@ -299,4 +299,8 @@ export const RESOLVER_ADDITIONAL_EFFECT_STATUS = {
     id: "unconscious",
     label: "CO.customStatus.unconscious",
   },
+  confused: {
+    id: "confused",
+    label: "CO.customStatus.confused",
+  },
 }
