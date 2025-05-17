@@ -40,7 +40,7 @@ export class Modifier extends foundry.abstract.DataModel {
    * @returns {int} The result of the evaluation.
    */
   evaluate(actor) {
-    return Utils.evaluateCoModifier(actor, this.value, this.source)
+    return Utils.evaluateModifier(actor, this.value, this.source, this)
   }
 
   /**

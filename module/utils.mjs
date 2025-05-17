@@ -1,4 +1,5 @@
 import { SYSTEM } from "./config/system.mjs"
+import { Modifier } from "./models/schemas/modifier.mjs"
 
 export default class Utils {
   /**
@@ -41,10 +42,23 @@ export default class Utils {
    * @param {Object} actor L'objet acteur contenant les données pertinentes.
    * @param {string} formula La formule à évaluer.
    * @param {Object} source L'objet source pour les valeurs personnalisées.
+   * @param {Modifier} modifier Le modifier à l'origine de l'appel
    * @returns {number} Le résultat de la formule évaluée ou 0 si invalide.
    */
-  static evaluateCoModifier(actor, formula, source) {
-    if (formula === "" || formula.match("\\d+[d|D]\\d+")) return 0
+  static evaluateModifier(actor, formula, source, modifier) {
+    if (formula === "") return 0
+    if (formula.match("\\d+[d|D]\\d+")) {
+    if (
+        modifier.target === SYSTEM.MODIFIERS_TARGET.damMelee.id ||
+        modifier.target === SYSTEM.MODIFIERS_TARGET.damRanged.id ||
+        modifier.target !== SYSTEM.MODIFIERS_TARGET.damMagic.id
+      ) {
+        let newFormula = Utils.evaluateFormulaCustomValues(actor, formula, source)
+        newFormula = Roll.replaceFormulaData(newFormula, actor.getRollData())
+        return newFormula
+      } else return 0
+    }
+    
     // Formule avec des raccourcis
     if (formula.includes("@")) {
       let newFormula = Utils.evaluateFormulaCustomValues(actor, formula, source)
