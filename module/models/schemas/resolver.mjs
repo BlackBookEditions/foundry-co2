@@ -115,18 +115,19 @@ export class Resolver extends foundry.abstract.DataModel {
     if (result === null) return false
 
     // Gestion des effets supplémentaires
-    if (this.additionalEffect.active && Resolver.shouldManageAdditionalEffect(result[0], this.additionalEffect.applyOn)) {
+    if (this.additionalEffect.active && Resolver.shouldManageAdditionalEffect(result[0], this.additionalEffect)) {
       await this._manageAdditionalEffect(actor, item, action)
     }
     return true
   }
 
-  static shouldManageAdditionalEffect(result, applyOn) {
-    if (applyOn === SYSTEM.RESOLVER_RESULT.always.id) return true
-    if (applyOn === SYSTEM.RESOLVER_RESULT.success.id && result.isSuccess) return true
-    if (applyOn === SYSTEM.RESOLVER_RESULT.successTreshold.id && result.isSuccess && results.total >= this.additionalEffect.successThreshold) return true
-    if (applyOn === SYSTEM.RESOLVER_RESULT.critical.id && results.isCritical) return true
-    if (applyOn === SYSTEM.RESOLVER_RESULT.failure.id && results.isFailure) return true
+  static shouldManageAdditionalEffect(result, additionalEffect) {
+    console.log("ShouldManageAdditionalEffect", result, additionalEffect)
+    if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) return true
+    if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.success.id && result.isSuccess) return true
+    if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.successTreshold.id && result.isSuccess && result.total >= additionalEffect.successThreshold) return true
+    if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.critical.id && result.isCritical) return true
+    if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.failure.id && result.isFailure) return true
     return false
   }
 
