@@ -122,7 +122,6 @@ export class Resolver extends foundry.abstract.DataModel {
   }
 
   static shouldManageAdditionalEffect(result, additionalEffect) {
-    console.log("ShouldManageAdditionalEffect", result, additionalEffect)
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) return true
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.success.id && result.isSuccess) return true
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.successTreshold.id && result.isSuccess && result.total >= additionalEffect.successThreshold) return true
