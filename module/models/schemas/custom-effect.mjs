@@ -30,6 +30,24 @@ export class CustomEffectData extends foundry.abstract.DataModel {
     }
   }
 
+  /**
+   * Génère un tooltip à partir d'un customEffect
+   * @returns {string} Renvoi un tooltip à afficher
+   */
+  get tooltip() {
+    let tip = `${game.i18n.localize("CO.ui.duration")} : ${this.duration} ${this.unit}<br />`
+    if (this.formula && this.formula !== "") tip += `${game.i18n.localize("CO.ui.dmg")} : ${this.formula}`
+    if (this.elementType && this.elementType !== "") tip += `${this.elementType}`
+    if (this.formula && this.formula !== "") tip += `<br />`
+    if (this.statuses && this.statuses.length > 0) tip += `${game.i18n.localize("CO.customEffect.status")} :${this.statuses.join(", ")}<br />`
+    if (this.modifiers && this.modifiers.length > 0) {
+      for (let i = 0; i < this.modifiers.length; i++) {
+        tip += ` ${game.i18n.localize(SYSTEM.MODIFIERS_SUBTYPE[this.modifiers[i].subtype].label)} ${game.i18n.localize(SYSTEM.MODIFIERS_TARGET[this.modifiers[i].target].label)} : ${this.modifiers[i].value}<br />`
+      }
+    }
+    return tip
+  }
+
   /** @override */
   prepareBaseData() {
     super.prepareBaseData()

@@ -70,11 +70,11 @@
       <ol class="item-list">
         <!-- Liste des customEffects actuellement actifs -->
         {{#each currentEffects as |effect id|}}
-          {{!log (concat "Chroniques Oubliées | customEffect " id) effect}}
+          {{log (concat "Chroniques Oubliées | customEffect " id) effect}}
           <li class="item flexrow" data-item-uuid="{{effect.source}}" data-item-indice="{{id}}" data-item-type="customEffectData" draggable="false">
             <div class="item-name flexrow">
-              <!-- <a class="item-image item-edit" style="background-image: url('{{{actionImg}}}')"></a> -->
-              <h4>{{effect.name}}</h4>
+              <a class="item-image item-edit" style="background-image: url('icons/svg/aura.svg')"></a>
+              <h4 data-tooltip="{{effect.tooltip}}">{{effect.name}} : {{effect.duration}} {{effect.unit}}</h4>
               {{#if ../unlocked}}
                 <a class="item-control customEffect-delete" data-tooltip={{localize "CO.ui.remove"}} data-ce-Name={{effect.slug}}><i class="fas fa-trash"></i></a>
               {{/if}}
