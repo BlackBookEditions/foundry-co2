@@ -34,6 +34,13 @@
         <span class="failure fumble"><i class="fas fa-skull-crossbones"></i>&nbsp;{{localize "CO.roll.fumble"}}.</span>
       {{/if}}
     {{/if}}
+    {{#if hasLuckyPoints}}
+      <div style="text-align: center;">
+        <a class="lp-button-skill">
+          <img class="" style="height: 27px;" src="icons/magic/control/buff-luck-fortune-green.webp" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" />
+        </a>
+      </div>
+    {{/if}}
   </div>
 
   <footer class="card-footer">

@@ -546,6 +546,7 @@
         "content": "<p>Souhaitez-vous dépenser 1 point de récupération ?",
         "rollTitle": "Point de récupération"
       },
+      "spendLuckyPoint": "Utiliser un point de chance",
       "fastRest": {
         "title": "Récupération rapide",
         "content": "Souhaitez-vous effectuer une récupération rapide ?"

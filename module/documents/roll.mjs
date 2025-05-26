@@ -192,6 +192,7 @@ export class COSkillRoll extends CORoll {
       oppositeRoll: withDialog ? rollContext.difficulty?.includes("@oppose") : dialogContext.oppositeRoll.includes("@oppose"),
       oppositeTarget: dialogContext.targets?.length > 0 ? dialogContext.targets[0].uuid : null,
       oppositeValue: withDialog ? rollContext.difficulty : dialogContext.difficulty,
+      hasLuckyPoints: withDialog ? rollContext.hasLuckyPoints === "true" : dialogContext.hasLuckyPoints,
       useDifficulty: dialogContext.useDifficulty,
       showDifficulty: dialogContext.showDifficulty,
       difficulty: withDialog ? rollContext.difficulty : dialogContext.difficulty,
@@ -219,7 +220,6 @@ export class COSkillRoll extends CORoll {
 
   async _getChatCardData(flavor, isPrivate) {
     const rollResults = CORoll.analyseRollResult(this)
-    console.log("COSkillRoll _getChatCardData options", this.options)
     return {
       actor: this.options.actor,
       speaker: ChatMessage.getSpeaker({ actor: this.options.actor, scene: canvas.scene }),
@@ -232,6 +232,7 @@ export class COSkillRoll extends CORoll {
       isFumble: rollResults.isFumble,
       isSuccess: rollResults.isSuccess,
       isFailure: rollResults.isFailure,
+      hasLuckyPoints: this.options.hasLuckyPoints,
       total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       user: game.user.id,
@@ -393,7 +394,6 @@ export class COAttackRoll extends CORoll {
 
       const roll = new this(formula, dialogContext.actor.getRollData())
       await roll.evaluate()
-
       const tooltip = await roll.getTooltip()
       roll.options = {
         actorId: dialogContext.actor.id,
@@ -410,6 +410,7 @@ export class COAttackRoll extends CORoll {
         oppositeRoll: withDialog ? rollContext.difficulty?.includes("@oppose") : dialogContext.oppositeRoll.includes("@oppose"),
         oppositeTarget: dialogContext.targets?.length > 0 ? dialogContext.targets[0].uuid : null,
         oppositeValue: withDialog ? rollContext.difficulty : dialogContext.difficulty,
+        hasLuckyPoints: dialogContext.hasLuckyPoints,
         useDifficulty: dialogContext.useDifficulty,
         showDifficulty: dialogContext.showDifficulty,
         difficulty: withDialog ? rollContext.difficulty : dialogContext.difficulty,
@@ -486,6 +487,7 @@ export class COAttackRoll extends CORoll {
       oppositeRoll: this.options.oppositeRoll,
       oppositeTarget: this.options.oppositeTarget,
       oppositeValue: this.options.difficulty,
+      hasLuckyPoints: this.options.hasLuckyPoints,
       difficulty: rollResults.difficulty,
       isCritical: rollResults.isCritical,
       isFumble: rollResults.isFumble,

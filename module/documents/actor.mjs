@@ -1502,6 +1502,10 @@ export default class COActor extends Actor {
     const skillBonuses = this.getSkillBonuses(skillId) // Récupère un tableau d'objets avec {name, description, value}
     const hasSkillBonuses = skillBonuses.length > 0
 
+    // Gestion des points de chance
+    let hasLuckyPoints = false
+    if (this.system.resources?.fortune && this.system.resources.fortune.value > 0) hasLuckyPoints = true
+
     const dialogContext = {
       rollMode,
       rollModes: CONFIG.Dice.rollModes,
@@ -1524,6 +1528,7 @@ export default class COActor extends Actor {
       totalSkillBonuses: 0,
       targets,
       hasTargets: targets?.length > 0,
+      hasLuckyPoints,
     }
 
     let roll = await COSkillRoll.prompt(dialogContext, { withDialog: withDialog })
@@ -1704,6 +1709,10 @@ export default class COActor extends Actor {
       }
     }
 
+    // Gestion des points de chance
+    let hasLuckyPoints = false
+    if (this.system.resources?.fortune && this.system.resources.fortune.value > 0) hasLuckyPoints = true
+
     // Construction du message de chat
     if (chatFlavor === "") chatFlavor = `${item.name} ${actionName}`
 
@@ -1738,6 +1747,7 @@ export default class COActor extends Actor {
       tempDamage,
       canBeTempDamage,
       tactical,
+      hasLuckyPoints,
     }
 
     // Rolls contient le jet d'attaque et éventuellement le jet de dommages
@@ -2022,7 +2032,6 @@ export default class COActor extends Actor {
    *
    */
   async applyEffectOverTime() {
-    console.log(`applyEffectOverTime pour ${this.name}`)
     for (const effect of this.system.currentEffects) {
       // TODO Ici on devrait tenir compte du type d'energie (feu/glace etc) et d'eventuelle resistance/vulnerabilite à voir plus tard
       // Dé ou valeur fixe

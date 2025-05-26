@@ -1,4 +1,4 @@
-{{log "Chroniques Oubliées | hbs | attack-roll-card" this}}
+{{!log "Chroniques Oubliées | hbs | attack-roll-card" this}}
 
 <div class="co chat-card roll-card attack-card" data-actor-id="{{speaker.actor}}">
   <header class="card-header flexcol">
@@ -42,6 +42,15 @@
         <span class="failure fumble"><i class="fas fa-skull-crossbones"></i>&nbsp;{{localize "CO.roll.fumble"}}.</span>
       {{/if}}
     {{/if}}
+    {{#if (eq type 'attack')}}
+      {{#if hasLuckyPoints}}
+        <div style="text-align: center;">
+          <a class="lp-button-attack">
+            <img class="" style="height: 27px;" src="icons/magic/control/buff-luck-fortune-green.webp" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" />
+          </a>
+        </div>
+      {{/if}}
+    {{/if}}   
 
     {{#if (eq type 'damage')}}
         <div class="damage-buttons">
