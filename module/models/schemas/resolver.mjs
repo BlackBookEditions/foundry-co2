@@ -124,7 +124,8 @@ export class Resolver extends foundry.abstract.DataModel {
   static shouldManageAdditionalEffect(result, additionalEffect) {
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) return true
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.success.id && result.isSuccess) return true
-    if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.successTreshold.id && result.isSuccess && result.total >= result.difficulty + additionalEffect.successThreshold) return true
+    if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.successTreshold.id && result.isSuccess && result.total >= result.difficulty + additionalEffect.successThreshold)
+      return true
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.critical.id && result.isCritical) return true
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.failure.id && result.isFailure) return true
     return false
@@ -142,16 +143,18 @@ export class Resolver extends foundry.abstract.DataModel {
     damageFormula = Utils.evaluateFormulaCustomValues(actor, damageFormula, item.uuid)
     let damageFormulaEvaluated = Roll.replaceFormulaData(damageFormula, actor.getRollData())
     const damageFormulaTooltip = this.dmg.formula
-    const result = await actor.rollAttack(item, {
-      auto: true,
-      type: "damage",
-      actionName: action.label,
-      damageFormula: damageFormulaEvaluated,
-      damageFormulaTooltip,
-      bonusDice: this.bonusDiceAdd === true ? 1 : 0,
-      malusDice: this.malusDiceAdd === true ? 1 : 0,
-    })
-    if (result === null) return false
+    if (this.dmg.formula && this.dmg.formula !== "" && this.dmg.formula !== "0") {
+      const result = await actor.rollAttack(item, {
+        auto: true,
+        type: "damage",
+        actionName: action.label,
+        damageFormula: damageFormulaEvaluated,
+        damageFormulaTooltip,
+        bonusDice: this.bonusDiceAdd === true ? 1 : 0,
+        malusDice: this.malusDiceAdd === true ? 1 : 0,
+      })
+      if (result === null) return false
+    }
 
     // Gestion des effets supplémentaires
     if (this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) {
