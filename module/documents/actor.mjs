@@ -707,6 +707,10 @@ export default class COActor extends Actor {
         if (item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.subtype === SYSTEM.EQUIPMENT_SUBTYPES.consumable.id) {
           // Diminution de la quantité et destruction si à 0 et destructible
           let quantity = item.system.quantity.current - 1
+          // Message chat
+          const message = game.i18n.format("CO.notif.consume", { actorName: this.name, itemName: item.name })
+          await new CoChat(this).withContent(message).create()
+
           if (quantity === 0 && item.system.quantity.destroyIfEmpty) {
             await this.deleteEmbeddedDocuments("Item", [item.id])
           } else {
