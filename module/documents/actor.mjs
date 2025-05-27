@@ -715,13 +715,11 @@ export default class COActor extends Actor {
         }
       }
     }
-
     // Pas de resolvers ou tous les resolvers ont été résolus avec succès
     if (results.length === 0 || allResolversTrue) {
       // Si c'est un sort et qu'on l'active, il faut consommer les Points de Mana
       if (!item.system.actions[indice].properties.noManaCost && state && item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.isSpell) {
         const spellManaCost = item.system.manaCost + manaCostFromArmor - (manaConcentration ? 2 : 0)
-
         if (spellManaCost > 0) {
           const newMana = Math.max(this.system.resources.mana.value - spellManaCost, 0)
           await this.update({ "system.resources.mana.value": newMana })
@@ -772,12 +770,12 @@ export default class COActor extends Actor {
     if (!path) return
     const currentRank = path.system.rank
 
-    //let newRank
+    let newRank
     // Apprentissage d'une capacité
     if (state) {
       // RULE : Pour obtenir une capacité, il faut avoir un niveau minimal
       // Les capacités de rang 6 à 8 sont réservées aux voies de prestige
-      const newRank = currentRank + 1
+      newRank = currentRank + 1
       if (this.system.attributes.level < SYSTEM.CAPACITY_MINIMUM_LEVEL[newRank]) return ui.notifications.warn(game.i18n.localize("CO.notif.warningLevelTooLow"))
       // RULE : Pour apprendre une capacité, il faut avoir appris les précédentes
       let pos = path.system.getCapacityRank(capacity.uuid)
@@ -796,7 +794,7 @@ export default class COActor extends Actor {
       await path.update({ "system.rank": currentRank + 1 })
 
       // Le rang est le coût en mana de la capacité
-      //await capacity.update({ "system.manaCost": newRank })
+      await capacity.update({ "system.manaCost": newRank })
     } else {
       // Mise à jour du rang de la voie correspondante
       await path.update({ "system.rank": currentRank - 1 })
