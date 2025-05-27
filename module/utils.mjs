@@ -45,20 +45,17 @@ export default class Utils {
    * @param {Modifier} modifier Le modifier à l'origine de l'appel
    * @returns {number} Le résultat de la formule évaluée ou 0 si invalide.
    */
-  static evaluateModifier(actor, formula, source, modifier) {
+
+  static evaluateCoModifier(actor, formula, source, isAttackModifier) {
     if (formula === "") return 0
     if (formula.match("\\d+[d|D]\\d+")) {
-    if (
-        modifier.target === SYSTEM.MODIFIERS_TARGET.damMelee.id ||
-        modifier.target === SYSTEM.MODIFIERS_TARGET.damRanged.id ||
-        modifier.target !== SYSTEM.MODIFIERS_TARGET.damMagic.id
-      ) {
+      if (isAttackModifier) {
         let newFormula = Utils.evaluateFormulaCustomValues(actor, formula, source)
         newFormula = Roll.replaceFormulaData(newFormula, actor.getRollData())
         return newFormula
       } else return 0
     }
-    
+
     // Formule avec des raccourcis
     if (formula.includes("@")) {
       let newFormula = Utils.evaluateFormulaCustomValues(actor, formula, source)

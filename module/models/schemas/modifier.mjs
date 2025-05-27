@@ -40,7 +40,11 @@ export class Modifier extends foundry.abstract.DataModel {
    * @returns {int} The result of the evaluation.
    */
   evaluate(actor) {
-    return Utils.evaluateModifier(actor, this.value, this.source, this)
+    // Cas particulier d'un modificateur d'attaque
+    let isAttackModifier = false
+    if (this.target === SYSTEM.MODIFIERS_TARGET.damMelee.id || this.target === SYSTEM.MODIFIERS_TARGET.damRanged.id || this.target !== SYSTEM.MODIFIERS_TARGET.damMagic.id)
+      isAttackModifier = true
+    return Utils.evaluateCoModifier(actor, this.value, this.source, isAttackModifier)
   }
 
   /**
