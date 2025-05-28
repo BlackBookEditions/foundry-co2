@@ -1187,6 +1187,7 @@ export default class COActor extends Actor {
       const actions = newCapacity[0].toObject().system.actions
       for (const action of actions) {
         action.source = newCapacity[0].uuid
+        if (pathUuid === null) action.properties.enabled = true
         // Update the source of all modifiers if there are some
         if (action.modifiers.length > 0) {
           for (const modifier of action.modifiers) {
@@ -1194,7 +1195,6 @@ export default class COActor extends Actor {
           }
         }
       }
-
       await newCapacity[0].update({ "system.actions": actions })
     }
 
