@@ -60,6 +60,9 @@
                                 {{#if (and (eq ../itemType 'capacity') ../system.isSpell) }}
                                     <label class="checkbox"> <input type="checkbox" name="system.actions.{{idx}}.properties.noManaCost" {{checked action.properties.noManaCost}}> {{localize "CO.properties.noManaCost"}}</label>
                                 {{/if}}
+                                {{#if (and (eq ../itemType 'capacity') ../system.hasCharges) }}
+                                    <label class="checkbox"> <input type="checkbox" name="system.actions.{{idx}}.properties.noChargeCost" {{checked action.properties.noChargeCost}}> {{localize "CO.properties.noChargeCost"}}</label>
+                                {{/if}}
                             </div>
                         </div>
                         <br />

@@ -405,7 +405,8 @@
       "tacticalViolentAttack": "Attaque violente",
       "tacticalViolentAttackTooltip": "Attaque -7, DM +2d4°",
       "tacticalPreciseAttack": "Attaque précise",
-      "tacticalPreciseAttackTooltip": "Attaque -3, DM +1d4°"
+      "tacticalPreciseAttackTooltip": "Attaque -3, DM +1d4°",
+      "conditionLiee": "Indiquez le numéro de l'action liée (dans l'ordre d'apparition) qui doit être activé en commençant par 0,1..."
     },
     "properties": {
       "attack": "Attaque",
@@ -424,7 +425,8 @@
       "visible": "Visible",
       "activable": "Activable",
       "temporary": "Temporaire",
-      "noManaCost": "Sans coût en mana"
+      "noManaCost": "Sans coût en mana",
+      "noChargeCost": "Sans coût de charge"
     },
     "abilities": {
       "long": {

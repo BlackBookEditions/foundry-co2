@@ -41,6 +41,7 @@ export class Action extends foundry.abstract.DataModel {
         enabled: new fields.BooleanField(),
         temporary: new fields.BooleanField(),
         noManaCost: new fields.BooleanField(),
+        noChargeCost: new fields.BooleanField(),
       }),
       conditions: new fields.ArrayField(new fields.EmbeddedDataField(Condition)),
       modifiers: new fields.ArrayField(new fields.EmbeddedDataField(Modifier)),

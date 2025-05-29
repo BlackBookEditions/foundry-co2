@@ -745,7 +745,7 @@ export default class COActor extends Actor {
         }
       }
       // Si c'est une capacité avec une charge il faut la consommer
-      if (item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.hasFrequency && item.system.hasCharges) {
+      if (item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.hasFrequency && item.system.hasCharges && !item.system.actions[indice].properties.noChargeCost) {
         item.system.charges.current = Math.max(item.system.charges.current - 1, 0)
         await item.update({ "system.charges.current": item.system.charges.current })
         if (item.system.charges.current === 0) {
@@ -1163,7 +1163,7 @@ export default class COActor extends Actor {
     }
     // Update the array of capacities of the path with ids of created path
     await newPath[0].update({ "system.capacities": updatedCapacitiesUuids })
-
+    console.log("addPath", updatedCapacitiesUuids)
     return newPath[0].uuid
   }
 

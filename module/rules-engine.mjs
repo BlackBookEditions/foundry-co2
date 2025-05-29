@@ -36,7 +36,10 @@ export default class RulesEngine {
     {
       name: "isLinkedActionActivated",
       parameters: ["object", "item"],
-      expression: (object, item) => item.system.actions[object].properties.enabled,
+      expression: (object, item) => {
+        if (item.system.actions[object]) return item.system.actions[object].properties.enabled
+        else return false
+      },
     },
     {
       name: "isTagged",

@@ -14,7 +14,7 @@
                     </select>
                 </div>
                 {{#if (eq c.predicate "isLinkedActionActivated")}}
-                    <div class="form-fields flex1 center"><input name="system.actions.{{../idx}}.conditions.{{id}}.object" type="text" value="{{c.object}}" data-dtype="String"  /></div>                
+                    <div class="form-fields flex1 center"><input name="system.actions.{{../idx}}.conditions.{{id}}.object" type="text" value="{{c.object}}" data-dtype="String" data-tooltip="{{localize "CO.ui.conditionLiee"}}"  /></div>                
                 {{/if}}
                 <div class="form-fields flex0"><a class="condition-delete"><i class="fas fa-trash"></i></a></div>
             </div>
