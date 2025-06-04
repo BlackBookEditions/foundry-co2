@@ -1,3 +1,5 @@
+export * as components from "./components/_module.mjs";
+
 export { default as AttackSheet } from "./sheets/attack-sheet.mjs"
 export { default as CapacitySheet } from "./sheets/capacity-sheet.mjs"
 export { default as EquipmentSheet } from "./sheets/equipment-sheet.mjs"

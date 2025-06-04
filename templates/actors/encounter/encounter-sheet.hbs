@@ -29,11 +29,6 @@
             <a class="item" data-tab="capacities" data-tooltip="{{ localize 'CO.tabs.capacities' }}">{{ localize "CO.tabs.capacities" }}</a>
             <a class="item" data-tab="effects" data-tooltip="{{ localize 'CO.tabs.effects' }}">{{ localize "CO.tabs.effects" }}</a>
             <a class="item" data-tab="notes" data-tooltip="{{ localize 'CO.tabs.notes' }}">{{ localize 'CO.tabs.notes' }}</a>
-            {{#if unlocked}}
-                <a class="item sheet-change-lock" data-tooltip="{{ localize 'CO.tabs.lock' }}"><i class="fas fa-lock-open"></i></a>
-            {{else}}
-                <a class="item sheet-change-lock" data-tooltip="{{ localize 'CO.tabs.unlock' }}"><i class="fas fa-lock"></i></a>
-            {{/if}}
         </nav>
 
         <section class="sheet-body">

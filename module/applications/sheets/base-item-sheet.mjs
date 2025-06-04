@@ -195,6 +195,10 @@ export default class CoBaseItemSheet extends ItemSheet {
   /** @inheritdoc */
   activateListeners(html) {
     super.activateListeners(html)
+
+    // Set toggle state and add status class to frame
+    this._renderModeToggle(this.element[0])
+
     html.find(".section-toggle").click(this._onSectionToggle.bind(this))
     html.find(".item-delete").click(this._onDeleteItem.bind(this))
     html.find(".item-edit").click(this._onEditItem.bind(this))
@@ -488,6 +492,32 @@ export default class CoBaseItemSheet extends ItemSheet {
     event.preventDefault()
     const modes = this.constructor.SHEET_MODES
     this._sheetMode = this.isEditMode ? modes.PLAY : modes.EDIT
+    await this.submit()
     this.render()
+  }
+  
+  /**
+   * Handle re-rendering the mode toggle on ownership changes.
+   * @param {HTMLElement} element 
+   * @protected
+   */
+  _renderModeToggle(element) {
+    const header = element.querySelector(".window-header");
+    const toggle = header.querySelector(".mode-slider");
+    if (this.isEditable && !toggle) {
+      const toggle = document.createElement("co-toggle-switch");
+      toggle.checked = this._sheetMode === this.constructor.SHEET_MODES.EDIT;
+      toggle.classList.add("mode-slider");
+      ////toggle.dataset.tooltip = "DND5E.SheetModeEdit";
+      ////toggle.setAttribute("aria-label", game.i18n.localize("DND5E.SheetModeEdit"));
+      toggle.addEventListener("change", this._onSheetChangelock.bind(this));
+      toggle.addEventListener("dblclick", event => event.stopPropagation());
+      toggle.addEventListener("pointerdown", event => event.stopPropagation());
+      header.prepend(toggle);
+    } else if (this.isEditable) {
+      toggle.checked = this._sheetMode === this.constructor.SHEET_MODES.EDIT;
+    } else if (!this.isEditable && toggle) {
+      toggle.remove();
+    }
   }
 }
