@@ -774,7 +774,7 @@ export default class COActor extends Actor {
     // Rang actuel de la voie
     let path = fromUuidSync(capacity.system.path)
     if (!path) return
-    const currentRank = path.system.rank
+    let currentRank = path.system.rank
 
     // Apprentissage d'une capacité
     if (state) {

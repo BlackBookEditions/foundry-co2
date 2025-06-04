@@ -375,7 +375,7 @@ export default class CharacterData extends ActorData {
       let currentprestige = this.parent.paths.find((item) => item.system.subtype === SYSTEM.PATH_TYPES.prestige.id)
       let currentprestigePV = 0
       if (currentprestige && currentprestige.system.pvByLevel > 0) {
-        let nombreAppris = currentprestige.system.numberLearnedCapacities()
+        let nombreAppris = currentprestige.system.numberLearnedCapacities
         currentprestigePV = currentprestige.system.pvByLevel * nombreAppris
       }
 

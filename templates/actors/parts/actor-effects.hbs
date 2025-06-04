@@ -70,7 +70,7 @@
       <ol class="item-list">
         <!-- Liste des customEffects actuellement actifs -->
         {{#each currentEffects as |effect id|}}
-          {{log (concat "Chroniques Oubliées | customEffect " id) effect}}
+          {{!log (concat "Chroniques Oubliées | customEffect " id) effect}}
           <li class="item flexrow" data-item-uuid="{{effect.source}}" data-item-indice="{{id}}" data-item-type="customEffectData" draggable="false">
             <div class="item-name flexrow">
               <a class="item-image item-edit" style="background-image: url('icons/svg/aura.svg')"></a>
