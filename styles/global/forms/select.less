@@ -1,0 +1,131 @@
+/*
+ * From <https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Customizable_select>
+ * 
+ * Provide a progressive enhancement on top of existing functionality, falling back to "classic" selects in
+ * non-supporting browsers.
+ *
+ * Possible usage:
+ *   <select id="pet">
+ *    <button><selectedcontent></selectedcontent></button>
+ *    <option value="">Please select a pet:</option>
+ *    <option value="dog">
+ *      <span class="icon" aria-hidden="true">🐶</span>
+ *      <span class="option-label">Dog</span>
+ *    </option>
+ *    <option value="cat">
+ *      <span class="icon" aria-hidden="true">🐱</span>
+ *      <span class="option-label">Cat</span>
+ *    </option>
+ *  </select>
+ * 
+ * Incompatibilities:
+ *  - This will not work with `<select multiple>`, as the `::picker` pseudo-element is not supported
+ *    (but this will be worked on in the future).
+ */
+
+select:not([multiple]),
+::picker(select) {
+    appearance: base-select;
+}
+
+select:not([multiple]) {
+    display: inline-block;
+    padding: 5px 6px;
+    position: relative;
+    text-align: center;
+    -moz-text-align-last: center;
+    text-align-last: center;
+    transition: 0.4s;
+
+    border: 1px solid var(--color-select-border);
+
+    &::picker-icon {
+        content: "▼";
+        color: rgba(127, 127, 127, 0.75);
+        position: absolute;
+        right: 4px;
+        top: calc(50% - 8px);
+        transition: 0.3s rotate;
+    }
+
+    &:open::picker-icon {
+        rotate: -180deg;
+    }
+
+    button,
+    selectedcontent {
+        position: absolute;
+        top: 2px;
+        left: 6px;
+        bottom: 0;
+    }
+
+    option {
+        align-items: baseline;
+        display: flex;
+        justify-content: flex-start;
+        gap: 2px 4px;
+        min-height: 24px;
+        text-align: left;
+
+        background: var(--color-select-background);
+        border-bottom: 1px solid var(--color-select-border);
+        color: var(--color-select-text);
+        padding: 4px 6px;
+        transition: 0.4s;
+
+        &:hover,
+        &:focus {
+            background: var(--color-select-hover);
+        }
+
+        &:first-of-type {
+            border-radius: 2px 2px 0 0;
+        }
+
+        &:last-of-type {
+            border-radius: 0 0 2px 2px;
+            border-bottom: 0;
+        }
+
+        &:checked {
+            font-weight: bold;
+        }
+    }
+}
+
+::picker(select) {
+    border: 1px solid var(--color-select-border);
+    border-radius: 5px;
+    box-shadow: 0 2px 12px var(--color-select-shadow);
+    opacity: 0;
+    scrollbar-width: thin;
+    top: calc(anchor(bottom) + 2px);
+    transition: all 0.4s allow-discrete;
+
+    &:popover-open {
+        opacity: 1;
+    }
+}
+
+@starting-style {
+    ::picker(select):popover-open {
+        opacity: 0;
+    }
+}
+
+:root {
+    --color-select-background: #dcdacf;
+    --color-select-border: #7a7971;
+    --color-select-hover: #cccabf;
+    --color-select-text: #202020;
+    --color-select-shadow: gray;
+}
+
+.theme-dark {
+    --color-select-background: #252526;
+    --color-select-border: #404041;
+    --color-select-hover: #3a3d3f;
+    --color-select-text: #cccccc;
+    --color-select-shadow: gray;
+}

@@ -476,6 +476,7 @@ strong,
 .chat-card {
   font-style: normal;
   font-size: 12px;
+  /* Header */
 }
 .chat-card .card-header {
   padding: 3px 0;
@@ -523,6 +524,9 @@ strong,
   margin: 0;
   font-weight: bold;
 }
+.chat-card .card-content .lp-button {
+  text-align: center;
+}
 .chat-card .card-content > * {
   -webkit-user-select: text;
   -moz-user-select: text;
@@ -544,69 +548,68 @@ strong,
   justify-content: center;
   align-items: center;
 }
-.chat-card .card-buttons {
+.chat-card .card-content .card-buttons {
   margin: 5px 0;
 }
-.chat-card .card-buttons span {
+.chat-card .card-content .card-buttons span {
   display: block;
   line-height: 28px;
   text-align: center;
   border: 1px solid #ccc;
 }
-.chat-card .card-buttons button {
+.chat-card .card-content .card-buttons button {
   font-size: 12px;
   height: 24px;
   line-height: 20px;
   margin: 2px 0;
 }
-.chat-card .card-footer {
+.chat-card .card-content .card-footer {
   padding: 3px 0 0;
   border-top: 2px groove #fff;
 }
-.chat-card .card-footer span {
+.chat-card .card-content .card-footer span {
   border-right: 2px groove #fff;
   padding: 0 3px 0 0;
   font-size: 10px;
 }
-.chat-card .card-footer span:last-child {
+.chat-card .card-content .card-footer span:last-child {
   border-right: none;
   padding-right: 0;
 }
-.dice-roll .dice-total.success {
+.chat-card .dice-roll .dice-total.success {
   color: inherit;
   background: #c7d0c0;
   border: 1px solid #006c00;
 }
-.dice-roll .dice-total.failure {
+.chat-card .dice-roll .dice-total.failure {
   color: inherit;
   background: #ffdddd;
   border: 1px solid #6e0000;
 }
-.dice-roll .dice-total.critical {
+.chat-card .dice-roll .dice-total.critical {
   color: green;
 }
-.dice-roll .dice-total.fumble {
+.chat-card .dice-roll .dice-total.fumble {
   color: red;
 }
-/* Header */
-.message-header {
+.chat-card .message-header {
   margin-bottom: 0.375rem;
   /*.message-delete {
     display: none;
   }*/
 }
-.message-header .message-sender {
+.chat-card .message-header .message-sender {
   display: flex;
   align-items: start;
   gap: 0.75rem;
   white-space: unset;
 }
-.message-header .message-sender .avatar {
+.chat-card .message-header .message-sender .avatar {
   height: 100%;
   display: grid;
   place-content: center;
 }
-.message-header .message-sender img {
+.chat-card .message-header .message-sender img {
   width: 38px;
   height: 38px;
   border-radius: 100%;
@@ -616,7 +619,7 @@ strong,
   border: none;
   flex: none;
 }
-.message-header .name-stacked {
+.chat-card .message-header .name-stacked {
   flex: 1;
   display: flex;
   min-height: 32px;
@@ -633,6 +636,120 @@ strong,
   color: #000;
   text-shadow: 0 0 10px red;
   cursor: pointer;
+}
+/*
+ * From <https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Customizable_select>
+ * 
+ * Provide a progressive enhancement on top of existing functionality, falling back to "classic" selects in
+ * non-supporting browsers.
+ *
+ * Possible usage:
+ *   <select id="pet">
+ *    <button><selectedcontent></selectedcontent></button>
+ *    <option value="">Please select a pet:</option>
+ *    <option value="dog">
+ *      <span class="icon" aria-hidden="true">🐶</span>
+ *      <span class="option-label">Dog</span>
+ *    </option>
+ *    <option value="cat">
+ *      <span class="icon" aria-hidden="true">🐱</span>
+ *      <span class="option-label">Cat</span>
+ *    </option>
+ *  </select>
+ * 
+ * Incompatibilities:
+ *  - This will not work with `<select multiple>`, as the `::picker` pseudo-element is not supported
+ *    (but this will be worked on in the future).
+ */
+select:not([multiple]),
+::picker(select) {
+  appearance: base-select;
+}
+select:not([multiple]) {
+  display: inline-block;
+  padding: 5px 6px;
+  position: relative;
+  text-align: center;
+  -moz-text-align-last: center;
+  text-align-last: center;
+  transition: 0.4s;
+  border: 1px solid var(--color-select-border);
+}
+select:not([multiple])::picker-icon {
+  content: "▼";
+  color: rgba(127, 127, 127, 0.75);
+  position: absolute;
+  right: 4px;
+  top: calc(50% - 8px);
+  transition: 0.3s rotate;
+}
+select:not([multiple]):open::picker-icon {
+  rotate: -180deg;
+}
+select:not([multiple]) button,
+select:not([multiple]) selectedcontent {
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  bottom: 0;
+}
+select:not([multiple]) option {
+  align-items: baseline;
+  display: flex;
+  justify-content: flex-start;
+  gap: 2px 4px;
+  min-height: 24px;
+  text-align: left;
+  background: var(--color-select-background);
+  border-bottom: 1px solid var(--color-select-border);
+  color: var(--color-select-text);
+  padding: 4px 6px;
+  transition: 0.4s;
+}
+select:not([multiple]) option:hover,
+select:not([multiple]) option:focus {
+  background: var(--color-select-hover);
+}
+select:not([multiple]) option:first-of-type {
+  border-radius: 2px 2px 0 0;
+}
+select:not([multiple]) option:last-of-type {
+  border-radius: 0 0 2px 2px;
+  border-bottom: 0;
+}
+select:not([multiple]) option:checked {
+  font-weight: bold;
+}
+::picker(select) {
+  border: 1px solid var(--color-select-border);
+  border-radius: 5px;
+  box-shadow: 0 2px 12px var(--color-select-shadow);
+  opacity: 0;
+  scrollbar-width: thin;
+  top: calc(anchor(bottom) + 2px);
+  transition: all 0.4s allow-discrete;
+}
+::picker(select):popover-open {
+  opacity: 1;
+}
+@starting-style {
+  ::picker(select):popover-open {
+    opacity: 0;
+  }
+}
+:root {
+  --color-select-background: #dcdacf;
+  --color-select-border: #7a7971;
+  --color-select-hover: #cccabf;
+  --color-select-text: #202020;
+  --color-select-shadow: gray;
+}
+.theme-dark {
+  --color-select-background: #252526;
+  --color-select-border: #404041;
+  --color-select-hover: #3a3d3f;
+  --color-select-text: #cccccc;
+  --color-select-shadow: gray;
 }
 .journal-page-content {
   font-size: 1rem;
