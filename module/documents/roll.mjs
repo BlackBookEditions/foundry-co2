@@ -444,7 +444,9 @@ export class COAttackRoll extends CORoll {
         }
       }
     } else if (dialogContext.type === "damage") {
-      const formula = `${rollContext.formulaDamage}`
+      const formula = withDialog
+        ? Utils.evaluateFormulaCustomValues(dialogContext.actor, `${rollContext.formulaDamage}+${rollContext.damageBonus}-${rollContext.damageMalus}`)
+        : Utils.evaluateFormulaCustomValues(dialogContext.actor, `${dialogContext.formulaDamage}+${dialogContext.damageBonus}-${dialogContext.damageMalus}`)
       const roll = new this(formula, dialogContext.actor.getRollData())
       await roll.evaluate()
 
@@ -453,7 +455,8 @@ export class COAttackRoll extends CORoll {
         type: dialogContext.type,
         flavor: dialogContext.flavor,
         actor: dialogContext.actor,
-        tooltip,
+        tooltip: tooltip,
+        formulaDamage: formula,
         tempDamage: rollContext.tempDamage,
         ...options,
       }
