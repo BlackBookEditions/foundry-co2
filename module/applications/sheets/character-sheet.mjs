@@ -92,7 +92,7 @@ export default class COCharacterSheet extends COBaseActorSheet {
     const type = dataset.type
     const source = dataset.source
     const indice = dataset.indice
-
+    console.log("item-control", action, type, source, indice)
     let activation
     if (action === "activate") {
       activation = await this.document.activateAction({ state: true, source, indice, type, shiftKey })
@@ -325,5 +325,4 @@ export default class COCharacterSheet extends COBaseActorSheet {
     }
     return false
   }
-
 }

@@ -295,9 +295,13 @@ co-toggle-switch[checked] thumb {
 }
 .co {
   --color-green: #44a12b;
+  --color-grey: #c2b9b7;
 }
 .co .enabled {
   color: var(--color-green);
+}
+.co .inactivated {
+  color: var(--color-grey);
 }
 .co.application ul,
 .co.application ol,

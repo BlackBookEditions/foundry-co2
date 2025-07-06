@@ -366,7 +366,7 @@ export class Action extends foundry.abstract.DataModel {
         // Action temporaire désactivée -> bouton pour activer
         icons.push({
           icon: this.iconFA,
-          iconClass: "disabled toggle-action",
+          iconClass: "inactivated toggle-action",
           tooltip: "CO.ui.activate",
           actionType: "activate",
         })
