@@ -179,7 +179,7 @@ export default class CharacterData extends ActorData {
       let items = this.parent[source]
       if (items) {
         let allModifiers = items
-          .reduce((mods, item) => mods.concat(item.enabledModifiers), [])
+          .reduce((mods, item) => mods.concat("<br />", item.enabledModifiers), [])
           .filter((m) => m.subtype === subtype && (m.apply === SYSTEM.MODIFIERS_APPLY.self.id || m.apply === SYSTEM.MODIFIERS_APPLY.both.id))
         modifiersArray.push(...allModifiers)
       }
@@ -337,7 +337,17 @@ export default class CharacterData extends ActorData {
       ability.modifiers = abilityModifiers.total
 
       ability.value = ability.base + bonuses + ability.modifiers
-      ability.tooltipValue = Utils.getTooltip(Utils.getAbilityName(key), ability.base).concat(abilityModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
+      //ability.tooltipValue = Utils.getTooltip(Utils.getAbilityName(key), ability.base).concat(abilityModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
+      ability.tooltipValue = ""
+      if (ability.base !== 0) ability.tooltipValue = ability.tooltipValue.concat(Utils.getTooltip(Utils.getAbilityName(key), ability.base))
+      if (abilityModifiers.tooltip !== "") {
+        if (ability.tooltipValue !== "") ability.tooltipValue = ability.tooltipValue.concat("<br />")
+        ability.tooltipValue = ability.tooltipValue.concat(abilityModifiers.tooltip)
+      }
+      if (bonuses !== "") {
+        if (ability.tooltipValue !== "") ability.tooltipValue = ability.tooltipValue.concat("<br />")
+        ability.tooltipValue = ability.tooltipValue.concat(Utils.getTooltip("Bonus", bonuses))
+      }
     }
 
     // Cas particulier de l'agilité : la valeur maximum est définie par l'armure. La formule est : le max est 8 - DEF de l'armure
@@ -352,7 +362,7 @@ export default class CharacterData extends ActorData {
       }
       if (this.abilities.agi.value > maxAgility) {
         this.abilities.agi.value = Math.min(this.abilities.agi.value, maxAgility)
-        this.abilities.agi.tooltipValue = this.abilities.agi.tooltipValue.concat(Utils.getTooltip("Max armure", maxAgility))
+        this.abilities.agi.tooltipValue = this.abilities.agi.tooltipValue.concat("<br />", Utils.getTooltip("Max armure", maxAgility))
       }
     }
   }
@@ -381,8 +391,10 @@ export default class CharacterData extends ActorData {
 
       this.attributes.hp.max = this.attributes.hp.base + constitutionBonus + hpMaxBonuses + hpMaxModifiers.total + currentprestigePV
       this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat(
+        "<br />",
         ` ${Utils.getAbilityName("con")} : `,
         constitutionBonus,
+        "<br />",
         hpMaxModifiers.tooltip,
         Utils.getTooltip("Bonus", hpMaxBonuses),
       )
@@ -392,7 +404,7 @@ export default class CharacterData extends ActorData {
       const tooltipBase = Utils.getTooltip("Base", this.attributes.hp.base)
 
       this.attributes.hp.max = this.attributes.hp.base + hpMaxBonuses + hpMaxModifiers.total
-      this.attributes.hp.tooltip = tooltipBase.concat(hpMaxModifiers.tooltip, Utils.getTooltip("Bonus", hpMaxBonuses))
+      this.attributes.hp.tooltip = tooltipBase.concat("<br />", hpMaxModifiers.tooltip, Utils.getTooltip("Bonus", hpMaxBonuses))
     }
   }
 
@@ -451,10 +463,13 @@ export default class CharacterData extends ActorData {
     const combatModifiers = this.computeTotalModifiersByTarget(this.combatModifiers, key)
 
     skill.base = abilityBonus + levelBonus
-    skill.tooltipBase = Utils.getTooltip(game.i18n.localize("CO.label.long.level"), levelBonus).concat(Utils.getTooltip(Utils.getAbilityName(skill.ability), abilityBonus))
+    skill.tooltipBase = Utils.getTooltip(game.i18n.localize("CO.label.long.level"), levelBonus).concat(
+      "<br />",
+      Utils.getTooltip(Utils.getAbilityName(skill.ability), abilityBonus),
+    )
 
     skill.value = skill.base + bonuses + combatModifiers.total
-    skill.tooltipValue = skill.tooltipBase.concat(combatModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
+    skill.tooltipValue = skill.tooltipBase.concat("<br />", combatModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
   /**
@@ -470,10 +485,10 @@ export default class CharacterData extends ActorData {
     skill.tooltipBase = Utils.getTooltip("Base", skill.base)
 
     skill.base += abilityBonus
-    skill.tooltipBase = skill.tooltipBase.concat(Utils.getTooltip(Utils.getAbilityName(skill.ability), abilityBonus))
+    skill.tooltipBase = skill.tooltipBase.concat("<br />", Utils.getTooltip(Utils.getAbilityName(skill.ability), abilityBonus))
 
     skill.value = skill.base + bonuses + initModifiers.total
-    skill.tooltipValue = skill.tooltipBase.concat(initModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
+    skill.tooltipValue = skill.tooltipBase.concat("<br />", initModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
   /**
@@ -490,7 +505,7 @@ export default class CharacterData extends ActorData {
     skill.tooltipBase = Utils.getTooltip("Base", skill.base)
 
     skill.base += abilityBonus
-    skill.tooltipBase = skill.tooltipBase.concat(Utils.getTooltip(Utils.getAbilityName(skill.ability), abilityBonus))
+    skill.tooltipBase = skill.tooltipBase.concat("<br />", Utils.getTooltip(Utils.getAbilityName(skill.ability), abilityBonus))
 
     skill.value = skill.base
 
@@ -498,18 +513,18 @@ export default class CharacterData extends ActorData {
     const armorDef = this.parent.defenseFromArmor
     if (armorDef > 0) {
       skill.value += armorDef
-      skill.tooltipBase = skill.tooltipBase.concat(Utils.getTooltip("Armure", armorDef))
+      skill.tooltipBase = skill.tooltipBase.concat("<br />", Utils.getTooltip("Armure", armorDef))
     }
 
     // Ajout du bonus du bouclier
     const shieldDef = this.parent.defenseFromShield
     if (shieldDef > 0) {
       skill.value += shieldDef
-      skill.tooltipBase = skill.tooltipBase.concat(Utils.getTooltip("Bouclier", shieldDef))
+      skill.tooltipBase = skill.tooltipBase.concat("<br />", Utils.getTooltip("Bouclier", shieldDef))
     }
 
     skill.value += bonuses + defModifiers.total
-    skill.tooltipValue = skill.tooltipBase.concat(defModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
+    skill.tooltipValue = skill.tooltipBase.concat("<br />", defModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
   /**
@@ -544,7 +559,7 @@ export default class CharacterData extends ActorData {
     // Somme du bonus de la feuille et du bonus des actives effects
     const bonuses = Object.values(this.combat.dr.bonuses).reduce((prev, curr) => prev + curr)
     this.combat.dr.value = this.combat.dr.base + bonuses + drModifiers.total
-    this.combat.dr.tooltipValue = this.combat.dr.tooltipBase.concat(drModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
+    this.combat.dr.tooltipValue = this.combat.dr.tooltipBase.concat("<br />", drModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
   /**
@@ -563,7 +578,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.fp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
-    skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
+    skill.tooltip = skill.tooltipBase.concat("<br />", resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
   /**
@@ -582,8 +597,8 @@ export default class CharacterData extends ActorData {
     const baseFP = DefaultConfiguration.baseFortune()
     const value = baseFP + abilityBonus + this.fpFromFamily
     let tooltip = Utils.getTooltip("Base", baseFP)
-    tooltip = tooltip.concat(Utils.getTooltip(Utils.getAbilityName(this.resources.fortune.ability), this.abilities.cha.value))
-    if (this.fpFromFamily > 0) tooltip = tooltip.concat(Utils.getTooltip("Profil", this.fpFromFamily))
+    tooltip = tooltip.concat("<br />", Utils.getTooltip(Utils.getAbilityName(this.resources.fortune.ability), this.abilities.cha.value))
+    if (this.fpFromFamily > 0) tooltip = tooltip.concat("<br />", Utils.getTooltip("Profil", this.fpFromFamily))
     return { value, tooltip }
   }
 
@@ -603,7 +618,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.mp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
-    skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
+    skill.tooltip = skill.tooltipBase.concat("<br />", resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
   /**
@@ -616,7 +631,7 @@ export default class CharacterData extends ActorData {
     if (!this.hasSpells) return { value, tooltip: "Pas de sorts" }
     const nbSpells = this.nbSpells
     let tooltip = Utils.getTooltip("Nb de sorts", nbSpells)
-    tooltip = tooltip.concat(Utils.getTooltip("Volonté", this.abilities.vol.value))
+    tooltip = tooltip.concat("<br />", Utils.getTooltip("Volonté", this.abilities.vol.value))
     return { value: this.abilities.vol.value + nbSpells, tooltip }
   }
 
@@ -634,7 +649,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.rp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
-    skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
+    skill.tooltip = skill.tooltipBase.concat("<br />", resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
   /**
@@ -651,8 +666,8 @@ export default class CharacterData extends ActorData {
     const baseRP = DefaultConfiguration.baseRecovery()
     const value = baseRP + this.abilities.con.value + this.rpFromFamily
     let tooltip = Utils.getTooltip("Base", baseRP)
-    tooltip = tooltip.concat(Utils.getTooltip("Constitution", this.abilities.con.value))
-    if (this.rpFromFamily > 0) tooltip = tooltip.concat(Utils.getTooltip("Profil", this.rpFromFamily))
+    tooltip = tooltip.concat("<br />", Utils.getTooltip("Constitution", this.abilities.con.value))
+    if (this.rpFromFamily > 0) tooltip = tooltip.concat("<br />", Utils.getTooltip("Profil", this.rpFromFamily))
     return { value, tooltip }
   }
 

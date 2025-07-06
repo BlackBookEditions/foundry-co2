@@ -187,7 +187,7 @@ export default class EncounterData extends ActorData {
       // Somme du bonus de la feuille et du bonus des actives effects
       const bonuses = Object.values(ability.bonuses).reduce((prev, curr) => prev + curr)
       ability.value = ability.base + bonuses
-      ability.tooltipValue = Utils.getTooltip(Utils.getAbilityName(key), ability.base).concat(Utils.getTooltip("Bonus", bonuses))
+      ability.tooltipValue = Utils.getTooltip(Utils.getAbilityName(key), ability.base).concat("<br />", Utils.getTooltip("Bonus", bonuses))
     }
 
     this.magic = this.abilities.vol.value + (this.attributes.nc === 0.5 ? 0 : this.attributes.nc)
@@ -197,7 +197,7 @@ export default class EncounterData extends ActorData {
     const hpMaxBonuses = Object.values(this.attributes.hp.bonuses).reduce((prev, curr) => prev + curr)
     const hpMaxModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "hp")
     this.attributes.hp.max = this.attributes.hp.base + hpMaxBonuses + hpMaxModifiers.total
-    this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat(Utils.getTooltip("Bonus", hpMaxBonuses))
+    this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat("<br />", Utils.getTooltip("Bonus", hpMaxBonuses))
   }
 
   // #region accesseurs
@@ -243,7 +243,7 @@ export default class EncounterData extends ActorData {
   get malusDiceModifiers() {
     const lstCapacities = this.parent.capacities
     if (!lstCapacities) return []
-    let allModifiers = lstCapacities.reduce((mods, item) => mods.concat(item.enabledModifiers), []).filter((m) => m.subtype === SYSTEM.MODIFIERS_SUBTYPE.malusDice.id)
+    let allModifiers = lstCapacities.reduce((mods, item) => mods.concat("<br />", item.enabledModifiers), []).filter((m) => m.subtype === SYSTEM.MODIFIERS_SUBTYPE.malusDice.id)
     return allModifiers
   }
 
