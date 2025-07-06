@@ -132,6 +132,8 @@ export default class CharacterData extends ActorData {
     )
 
     schema.currentEffects = new fields.ArrayField(new fields.EmbeddedDataField(CustomEffectData))
+    // Permet de stocker l'ancienne distance de visibilité avant de passer en vision nocturne ou autre, de façon à revenir dessus si on l'enleve (cf fix#141)
+    schema.oldDistanceView = new fields.NumberField({ required: true, nullable: false, initial: 0, integer: true, min: 0 })
 
     // Points de capacités dépensés ailleurs que dans les capacités : pour apprendre une langue, ou éventuel point orphelin
     schema.otherCapacitiesPointsSpent = new fields.NumberField({ required: true, nullable: false, initial: 0, integer: true, min: 0 })
@@ -411,6 +413,9 @@ export default class CharacterData extends ActorData {
     let modifiersVision = modifiers.find((m) => m.target === "darkvision")
 
     if (modifiersVision && this.parent.prototypeToken.sight.visionMode !== "darkvision") {
+      // On stock l'ancinne valeur de distance (cf fix#141)
+      this.oldDistanceView = this.parent.prototypeToken.sight.range
+      this.parent?.update({ "system.oldDistanceView": this.oldDistanceView })
       const prototypeToken = {}
       Object.assign(prototypeToken, {
         sight: { enabled: true, visionMode: "darkvision", range: modifiersVision.value, saturation: -1 },
@@ -431,7 +436,7 @@ export default class CharacterData extends ActorData {
       // On le retire
       const prototypeToken = {}
       Object.assign(prototypeToken, {
-        sight: { enabled: true, visionMode: "basic", range: 0, saturation: 0 },
+        sight: { enabled: true, visionMode: "basic", range: this.oldDistanceView, saturation: 0 },
         actorLink: true,
         disposition: 1,
       })
@@ -439,7 +444,7 @@ export default class CharacterData extends ActorData {
       let targets = this.parent.getActiveTokens(true, true)
       for (let i = 0; i < targets.length; i++) {
         let sight = {}
-        Object.assign(sight, { enabled: true, visionMode: "basic", range: 0, saturation: 0 })
+        Object.assign(sight, { enabled: true, visionMode: "basic", range: this.oldDistanceView, saturation: 0 })
         targets[i].updateSource({ sight })
       }
     }
