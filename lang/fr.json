@@ -431,7 +431,7 @@
         "family": "Famille",
         "source": "Source",
         "spellcasting": "Modificateur pour Attaque Magique",
-        "tempDm": "DM temporaires",
+        "tempDm": "Dommages temporaires",
         "martialCategory": "Catégorie martiale",
         "martialTraining": "Formation martiale",
         "martialTrainings": "Formations martiales",
