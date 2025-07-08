@@ -2,6 +2,7 @@ import { SYSTEM } from "../../config/system.mjs"
 import Utils from "../../utils.mjs"
 import COActor from "../../documents/actor.mjs"
 import { CustomEffectData } from "./custom-effect.mjs"
+import { CORoll } from "../../documents/roll.mjs"
 
 /**
  * Resolver
@@ -287,6 +288,11 @@ export class Resolver extends foundry.abstract.DataModel {
     // Evaluation de la durée si besoin
     let evaluatedDuration = Utils.evaluateFormulaCustomValues(actor, this.additionalEffect.duration)
     evaluatedDuration = Roll.replaceFormulaData(evaluatedDuration, actor.getRollData())
+    // Si on a un dé il faut l'evaluer
+    if (evaluatedDuration.match("\\d+[d|D]\\d+")) {
+      let roll = new CORoll(evaluatedDuration)
+      evaluatedDuration = (await roll.evaluate()).total
+    }
     // TODO : vérifier si eval est nécessaire ici
     if (/[+\-*/%]/.test(evaluatedDuration)) evaluatedDuration = eval(evaluatedDuration)
     const duration = parseInt(evaluatedDuration)
