@@ -866,7 +866,7 @@ export default class CharacterData extends ActorData {
     newHp.value += roll.total
     newHp.value = Math.min(newHp.value, newHp.max)
 
-    new CoChat(this)
+    new CoChat(this.parent)
       .withTemplate("systems/co/templates/chat/healing-card.hbs")
       .withData({
         actorId: this.id,
