@@ -406,12 +406,43 @@ export class Action extends foundry.abstract.DataModel {
         }
       }
       // Action de soin
-      else if (this.type === "heal") {
+      else if (this.type === SYSTEM.ACTION_TYPES.heal.id) {
+        icons.push({
+          icon: `fa-solid fa-hand-holding-medical`,
+          iconClass: `${this.iconColor} toggle-action`,
+          tooltip: "CO.ui.use",
+          actionType: "activate",
+          type: SYSTEM.RESOLVER_TYPE.heal.id,
+        })
+      }
+      // Action de buff/debuff
+      else if (this.type === SYSTEM.ACTION_TYPES.buff.id) {
+        icons.push({
+          icon: `fa-solid fa-thumbs-up`,
+          iconClass: `${this.iconColor} toggle-action`,
+          tooltip: "CO.ui.use",
+          actionType: "activate",
+          type: SYSTEM.RESOLVER_TYPE.buffDebuff.id,
+        })
+      }
+      // Action de buff/debuff
+      else if (this.type === SYSTEM.ACTION_TYPES.debuff.id) {
+        icons.push({
+          icon: `fa-solid fa-thumbs-down`,
+          iconClass: `${this.iconColor} toggle-action`,
+          tooltip: "CO.ui.use",
+          actionType: "activate",
+          type: SYSTEM.RESOLVER_TYPE.buffDebuff.id,
+        })
+      }
+      // Action de consommable
+      else if (this.type === SYSTEM.ACTION_TYPES.consumable.id) {
         icons.push({
           icon: `fa-solid fa-flask-round-potion`,
           iconClass: `${this.iconColor} toggle-action`,
           tooltip: "CO.ui.use",
           actionType: "activate",
+          type: SYSTEM.RESOLVER_TYPE.consumable.id,
         })
       }
       // Autres types d'action

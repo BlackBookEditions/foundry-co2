@@ -710,7 +710,6 @@ export default class COActor extends Actor {
       let resolvers = Object.values(action.resolvers).map((r) => foundry.utils.deepClone(r))
       // Résolution de tous les resolvers avant de continuer
       results = await Promise.all(resolvers.map((resolver) => resolver.resolve(this, item, action, type)))
-
       // Si tous les resolvers ont réussi
       allResolversTrue = results.length > 0 && results.every((result) => result === true)
 
@@ -731,13 +730,11 @@ export default class COActor extends Actor {
         }
       }
     }
-
     // Pas de resolvers ou tous les resolvers ont été résolus avec succès
     if (results.length === 0 || allResolversTrue) {
       // Si c'est un sort et qu'on l'active, il faut consommer les Points de Mana
       if (!item.system.actions[indice].properties.noManaCost && state && item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.isSpell) {
         const spellManaCost = item.system.getManaCost() + manaCostFromArmor - (manaConcentration ? 2 : 0)
-
         if (spellManaCost > 0) {
           const newMana = Math.max(this.system.resources.mana.value - spellManaCost, 0)
           await this.update({ "system.resources.mana.value": newMana })

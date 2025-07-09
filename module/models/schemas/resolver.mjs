@@ -54,15 +54,15 @@ export class Resolver extends foundry.abstract.DataModel {
 
   async resolve(actor, item, action, type) {
     switch (this.type) {
-      case "attack":
+      case SYSTEM.RESOLVER_TYPE.attack.id:
         return await this.attack(actor, item, action, type)
-      case "auto":
+      case SYSTEM.RESOLVER_TYPE.auto.id:
         return await this.auto(actor, item, action)
-      case "heal":
+      case SYSTEM.RESOLVER_TYPE.heal.id:
         return await this.heal(actor, item, action)
-      case "consumable":
+      case SYSTEM.RESOLVER_TYPE.consumable.id:
         return await this.consume(actor, item, action)
-      case "buffDebuff":
+      case SYSTEM.RESOLVER_TYPE.buffDebuff.id:
         return await this.buffDebuff(actor, item, action)
       default:
         return false
@@ -229,7 +229,7 @@ export class Resolver extends foundry.abstract.DataModel {
    * @param {Actor} actor L'acteur sur lequel l'effet sera appliqué.
    * @param {Item} item L'objet déclenchant l'effet supplémentaire.
    * @param {Object} action L'action contenant les modificateurs et autres données pertinentes.
-   * @returns {Promise<void>} Résout lorsque l'effet a été appliqué avec succès.
+   * @returns {Promise<bool>} Résout lorsque l'effet a été appliqué avec succès.
    *
    *
    * @description
@@ -254,7 +254,7 @@ export class Resolver extends foundry.abstract.DataModel {
     if (!game.combat || !game.combat.started) {
       // FIXME : Debug pour l'instant, à supprimer
       ui.notifications.warn("Pas de combat en cours ou combat non démarré !")
-      return
+      return false
     }
 
     const ce = await this._createCustomEffect(actor, item, action)
@@ -277,6 +277,7 @@ export class Resolver extends foundry.abstract.DataModel {
         })
       }
     }
+    return true
   }
 
   async _createCustomEffect(actor, item, action) {
