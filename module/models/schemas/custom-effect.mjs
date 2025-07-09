@@ -18,8 +18,7 @@ export class CustomEffectData extends foundry.abstract.DataModel {
       source: new fields.DocumentUUIDField(),
       statuses: new fields.ArrayField(new fields.StringField({ required: false })),
       unit: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: "round" }),
-      duration: new fields.StringField({ required: true, initial: 0 }), // On va le déterminer au moment de créer l'effets custom
-      durationString: new fields.StringField({ required: true, initial: 0 }), // C'est ce qu'on va mettre dans la fiche resolver
+      duration: new fields.StringField({ required: true, initial: 0 }),
       startedAt: new fields.NumberField({ ...requiredInteger, initial: 0 }),
       previousRound: new fields.NumberField({ ...requiredInteger, initial: 0 }),
       lastRound: new fields.NumberField({ ...requiredInteger, initial: 0 }), // Au cas ou le mj reviens en arriere il faut verifier qu'on applique pas 2 fois les actions
