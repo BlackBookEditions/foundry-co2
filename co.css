@@ -2768,6 +2768,17 @@ co-toggle-switch[checked] thumb {
 .co.application.sheet.actor.character-mini .window-content .traits {
   display: none;
 }
+.co.application.sheet.actor.character-mini .window-content .tab {
+  padding: 5px 0 0 5px;
+  mask: none;
+}
+.co.application.sheet.actor.character-mini .window-content .tab .section-container {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.co.application.sheet.actor.character-mini .window-content .tab .section-container .actions-container {
+  margin-bottom: 0;
+}
 .co.application.sheet.actor.character-mini .window-content .sheet-header {
   display: flex;
   flex-direction: column;

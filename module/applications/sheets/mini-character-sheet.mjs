@@ -114,7 +114,7 @@ export class COMiniCharacterSheet extends COBaseActorSheet {
     app.style.height = "auto"
     content.style.height = "auto"
 
-    const desired = chrome + content.scrollHeight
+    const desired = chrome + content.scrollHeight + 10
     const max = Math.max(240, window.innerHeight - 24)
     const finalH = Math.min(desired, max)
 
