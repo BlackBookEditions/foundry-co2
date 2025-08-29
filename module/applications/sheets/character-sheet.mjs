@@ -2,10 +2,11 @@ import COBaseActorSheet from "./base-actor-sheet.mjs"
 import { SYSTEM } from "../../config/system.mjs"
 import Utils from "../../utils.mjs"
 import { CoEditAbilitiesDialog } from "../../dialogs/edit-abilities-dialog.mjs"
+import { COMiniCharacterSheet } from "./mini-character-sheet.mjs"
 
 export default class COCharacterSheet extends COBaseActorSheet {
   static DEFAULT_OPTIONS = {
-    classes: ["character"],
+    classes: ["co", "actor", "character"],
     position: {
       width: 840,
       height: 600,
@@ -22,6 +23,7 @@ export default class COCharacterSheet extends COBaseActorSheet {
       damage: COCharacterSheet.#onUseAction,
       inventoryEquip: COCharacterSheet.#onEquippedToggle,
       useRecovery: COCharacterSheet.#onUseRecovery,
+      openMiniSheet: COCharacterSheet.#onOpenMiniSheet,
     },
   }
 
@@ -138,6 +140,17 @@ export default class COCharacterSheet extends COBaseActorSheet {
     } else if (action === "unactivate") {
       activation = await this.document.activateAction({ state: false, source, indice, type })
     }
+  }
+
+  /**
+   * Ouvrir la mini-feuille (header + main/actions) dans une nouvelle fenêtre
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #onOpenMiniSheet(event, target) {
+    event.preventDefault()
+    const win = new COMiniCharacterSheet({ document: this.document })
+    return win.render(true)
   }
 
   /**

@@ -1,13 +1,41 @@
 &:not(.minimized) {
   min-width: 840px;
 }
+&.character-mini:not(.minimized) {
+  min-width: 350px;
+}
 
 .window-content {
   @import "./character-header.less";
   @import "./character-sidebar.less";
 
   .dropzone {
-    margin-left: 70px;
+    margin-left: 53px;
+    .item-list {
+      padding: 0;
+    }
+  }
+  .no-path {
+    .dropzone {
+      margin-left: 28px;
+      .item-list {
+        padding: 0;
+      }
+    }
+  }
+  .btn-mini-sheet {
+    border: none;
+    background: none;
+    color: var(--color-characterSheet);
+    margin-right: 30px;
+    font-size: var(--font-size-20);
+  }
+  .btn-mini-sheet:focus {
+    outline: none;
+    box-shadow: none;
+  }
+  .btn-mini-sheet:hover {
+    color: red;
   }
 }
 

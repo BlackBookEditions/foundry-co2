@@ -1071,6 +1071,7 @@ co-toggle-switch[checked] thumb {
   flex-direction: row;
   gap: 8px;
   margin: 0 8px;
+  align-items: center;
 }
 .co.application.sheet .items-container,
 .co.application.sheet .item-list {
@@ -1270,7 +1271,7 @@ co-toggle-switch[checked] thumb {
   flex: 0 0 100px;
 }
 .co.application.sheet .items-container .item-detail.rank {
-  flex: 0 40px;
+  flex: 0 25px;
   font-size: 22px;
 }
 .co.application.sheet .items-container .item-controls,
@@ -2549,6 +2550,9 @@ co-toggle-switch[checked] thumb {
 .co.application.sheet.actor.character:not(.minimized) {
   min-width: 840px;
 }
+.co.application.sheet.actor.character.character-mini:not(.minimized) {
+  min-width: 350px;
+}
 .co.application.sheet.actor.character .window-content .sheet-header {
   /*.profiles {
     margin-left: 16px;
@@ -2608,7 +2612,30 @@ co-toggle-switch[checked] thumb {
   color: var(--color-background-grey);
 }
 .co.application.sheet.actor.character .window-content .dropzone {
-  margin-left: 70px;
+  margin-left: 53px;
+}
+.co.application.sheet.actor.character .window-content .dropzone .item-list {
+  padding: 0;
+}
+.co.application.sheet.actor.character .window-content .no-path .dropzone {
+  margin-left: 28px;
+}
+.co.application.sheet.actor.character .window-content .no-path .dropzone .item-list {
+  padding: 0;
+}
+.co.application.sheet.actor.character .window-content .btn-mini-sheet {
+  border: none;
+  background: none;
+  color: var(--color-characterSheet);
+  margin-right: 30px;
+  font-size: var(--font-size-20);
+}
+.co.application.sheet.actor.character .window-content .btn-mini-sheet:focus {
+  outline: none;
+  box-shadow: none;
+}
+.co.application.sheet.actor.character .window-content .btn-mini-sheet:hover {
+  color: red;
 }
 .co.application.sheet.actor.character .features-container .item-list {
   display: grid;
@@ -2714,6 +2741,70 @@ co-toggle-switch[checked] thumb {
   border: none;
   box-shadow: 2px 2px var(--color-abilities);
   height: 25px;
+}
+.co.application.sheet.actor.character-mini:not(.minimized) {
+  min-width: 350px;
+  min-height: 250px;
+  height: fit-content;
+  max-height: 900px;
+}
+.co.application.sheet.actor.character-mini.minimized {
+  max-width: var(--minimized-width);
+  max-height: var(--header-height);
+}
+.co.application.sheet.actor.character-mini .window-header .mode-slider {
+  display: none;
+}
+.co.application.sheet.actor.character-mini .window-content {
+  gap: 0;
+  display: flex;
+  flex-direction: column;
+}
+.co.application.sheet.actor.character-mini .window-content .image-container,
+.co.application.sheet.actor.character-mini .window-content .level,
+.co.application.sheet.actor.character-mini .window-content .traits {
+  display: none;
+}
+.co.application.sheet.actor.character-mini .window-content .sheet-header {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  gap: 0;
+}
+.co.application.sheet.actor.character-mini .window-content .abilities {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-size: 17px;
+}
+.co.application.sheet.actor.character-mini .window-content .abilities-edit {
+  display: none;
+}
+.co.application.sheet.actor.character-mini .window-content .btn-mini-sheet {
+  display: none;
+}
+.co.application.sheet.actor.character-mini .window-content .name {
+  font-size: 25px;
+  display: flex;
+  height: 30px;
+  font-weight: bold;
+  justify-content: center;
+  margin: 5px 0px;
+}
+.co.application.sheet.actor.character-mini .window-content .name::before,
+.co.application.sheet.actor.character-mini .window-content .name::after {
+  content: "\f005";
+  /* code de l’icône 'star' */
+  font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", "Font Awesome 6 Pro", "Font Awesome 5 Pro";
+  font-weight: 900;
+  /* 'solid' */
+  margin: 0 0.5rem;
+  line-height: 1;
+  vertical-align: middle;
+  pointer-events: none;
+  color: red;
+  font-size: large;
+  align-self: center;
 }
 #interface #ui-left {
   padding: 0;

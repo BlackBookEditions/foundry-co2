@@ -8,7 +8,7 @@
             <a class="item-control" data-action="createItem" data-type="capacity" data-tooltip="{{localize 'CO.label.long.add'}}"><i class="fas fa-plus"></i></a>
         </div>
     </li>
-    <ol class="item-list foldable {{#if capacitiesOffPathsExpanded}}expanded{{else}}folded{{/if}}">
+    <ol class="item-list foldable no-path {{#if capacitiesOffPathsExpanded}}expanded{{else}}folded{{/if}}">
         {{#each capacitiesOffPaths as |capacity id|}}
             {{!log "Chroniques Oubliées | capacity offPath" capacity}}
             {{#if capacity.system.learned }}

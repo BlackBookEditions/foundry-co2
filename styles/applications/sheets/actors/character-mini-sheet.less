@@ -1,0 +1,70 @@
+&.character-mini:not(.minimized) {
+  min-width: 350px;
+  min-height: 250px;
+  height: fit-content;
+  max-height: 900px;
+}
+
+&.character-mini {
+  &.minimized {
+    max-width: var(--minimized-width);
+    max-height: var(--header-height);
+  }
+
+  .window-header {
+    .mode-slider {
+      display: none;
+    }
+  }
+
+  .window-content {
+    gap: 0;
+    display: flex;
+    flex-direction: column;
+
+    .image-container,
+    .level,
+    .traits {
+      display: none;
+    }
+    .sheet-header {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      margin: 0;
+      gap: 0;
+    }
+    .abilities {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      font-size: 17px;
+    }
+    .abilities-edit {
+      display: none;
+    }
+    .btn-mini-sheet {
+      display: none;
+    }
+    .name {
+      font-size: 25px;
+      display: flex;
+      height: 30px;
+      font-weight: bold;
+      justify-content: center;
+      margin: 5px 0px;
+    }
+    .name::before,
+    .name::after {
+      content: "\f005"; /* code de l’icône 'star' */
+      font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", "Font Awesome 6 Pro", "Font Awesome 5 Pro";
+      font-weight: 900; /* 'solid' */
+      margin: 0 0.5rem;
+      line-height: 1;
+      vertical-align: middle;
+      pointer-events: none;
+      color: red;
+      font-size: large;
+      align-self: center;
+    }
+  }
+}
