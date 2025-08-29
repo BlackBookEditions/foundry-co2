@@ -4,6 +4,32 @@
     <div class="section-container actions">
         <div class="section-header">
             <h4>{{localize "CO.ui.actions"}}</h4>
+
+            <!-- BOUTONS POUR TRIER LES ACTIONS -->
+            <div class="actions-sortbar">
+                <button type="button" data-action="sortActions" data-tooltip="{{localize 'CO.sortActions.sortTime'}}" data-tooltip-direction="UP" data-sort-key="time" {{#if (eq sortState.key "time")}}class="{{sortState.dir}}"{{/if}}>
+                    Durée
+                    {{#if (and (eq sortState.key "time") (eq sortState.dir "asc"))}}<i class="fa-solid fa-arrow-up-wide-short"></i>{{/if}}
+                    {{#if (and (eq sortState.key "time") (eq sortState.dir "desc"))}}<i class="fa-solid fa-arrow-down-short-wide"></i>{{/if}}
+                </button>
+
+                <button type="button" data-action="sortActions" data-tooltip="{{localize 'CO.sortActions.sortType'}}" data-tooltip-direction="UP" data-sort-key="type" {{#if (eq sortState.key "type")}}class="{{sortState.dir}}"{{/if}}>
+                    Type
+                    {{#if (and (eq sortState.key "type") (eq sortState.dir "asc"))}}<i class="fa-solid fa-arrow-up-wide-short"></i>{{/if}}
+                    {{#if (and (eq sortState.key "type") (eq sortState.dir "desc"))}}<i class="fa-solid fa-arrow-down-short-wide"></i>{{/if}}
+                </button>
+
+                <button type="button" data-action="sortActions" data-tooltip="{{localize 'CO.sortActions.sortName'}}" data-tooltip-direction="UP" data-sort-key="name" {{#if (eq sortState.key "name")}}class="{{sortState.dir}}"{{/if}}>
+                    Nom
+                    {{#if (and (eq sortState.key "name") (eq sortState.dir "asc"))}}<i class="fa-solid fa-arrow-down-a-z"></i>{{/if}}
+                    {{#if (and (eq sortState.key "name") (eq sortState.dir "desc"))}}<i class="fa-solid fa-arrow-up-z-a"></i>{{/if}}
+                </button>
+
+                <button type="button" data-action="sortActions" data-tooltip="{{localize 'CO.sortActions.sortNone'}}" data-tooltip-direction="UP" data-sort-key="none" {{#if (eq sortState.key "none")}}class="none"{{/if}}>
+                    <i class="fa-solid fa-filter-slash"></i>
+                </button>
+            </div>
+            
             <div class="actions-controls controls">
                 <div class="sheet-controls">
                     <button type="button" class="btn-mini-sheet" data-action="openMiniSheet" title="Vue actions rapide">

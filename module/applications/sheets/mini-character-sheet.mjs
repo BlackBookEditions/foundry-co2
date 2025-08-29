@@ -11,6 +11,7 @@ export class COMiniCharacterSheet extends COBaseActorSheet {
     actions: {
       roll: COMiniCharacterSheet.#onRoll,
       useRecovery: COMiniCharacterSheet.#onUseRecovery,
+      sortActions: COMiniCharacterSheet.#onSortActions,
     },
   }
 
@@ -41,6 +42,95 @@ export class COMiniCharacterSheet extends COBaseActorSheet {
     // Gestion des défenses
     context.partialDef = this.document.hasEffect("partialDef")
     context.fullDef = this.document.hasEffect("fullDef")
+
+    // État De Tri (Null = Pas De Tri → Ordre D’origine)
+    const sortState = this._sortState ?? null
+    context.sortState = sortState ?? { key: "none", dir: "asc" }
+
+    // Source Utilisée Par Le Template (visibleActivableActions)
+    const listSource = context.visibleActivableActions ?? []
+    const list = Array.from(listSource)
+
+    // Si Aucun Tri Demandé → Conserver L’ordre Initial
+    if (!sortState) {
+      context.visibleActivableActions = list
+    } else {
+      // Collator FR Pour Le Tri Alpha
+      const collator = new Intl.Collator("fr", { sensitivity: "base", numeric: true, ignorePunctuation: true })
+
+      // Poids Pour Temps (Ordre L < A < M < G), None En Dernier
+      const TIME_WEIGHT = { l: 1, a: 2, m: 3, f: 4, none: 999 }
+
+      // Ordre “Métier” Pour Les Types (Ajuste Si Besoin)
+      const TYPE_ORDER = ["spell", "magical", "melee", "ranged", "heal", "buff", "debuff", "consumable"]
+      const TYPE_INDEX = new Map(TYPE_ORDER.map((t, i) => [t, i]))
+
+      // Métadonnées Sans Muter Les Instances (Tri Stable)
+      const meta = new WeakMap()
+      list.forEach((a, i) => {
+        // Temps: Même Priorité Que Le Template → D’abord action, sinon parent, puis fallback sur lettre courte
+        let timeKey = ""
+        if (a.hasActionType) {
+          const ownCode = a.actionType ?? ""
+          timeKey = String(ownCode).trim().toLowerCase()
+        } else if (a.parent?.hasActionType) {
+          const parentCode = a.parent.actionType ?? ""
+          timeKey = String(parentCode).trim().toLowerCase()
+        }
+        if (!timeKey) {
+          const shortRaw = a.hasActionType ? a.actionTypeShort : a.parent?.actionTypeShort
+          const m = String(shortRaw ?? "").match(/[lamg]/i)
+          if (m) {
+            const letter = m[0].toLowerCase()
+            timeKey = letter === "g" ? "f" : letter // G affiché ↦ code interne f (gratuite)
+          } else {
+            timeKey = "none"
+          }
+        }
+        const timeWeight = TIME_WEIGHT[timeKey] ?? 998
+
+        // Type
+        const typeRaw = a.type ?? ""
+        const typeKey = String(typeRaw).toLowerCase()
+        const typeIdx = TYPE_INDEX.has(typeKey) ? TYPE_INDEX.get(typeKey) : 999
+
+        // Nom
+        const nameRaw = a.itemName ?? a.name ?? ""
+        const nameKey = String(nameRaw)
+
+        meta.set(a, { index: i, timeWeight, typeIdx, nameKey })
+      })
+
+      // Comparateurs
+      const cmp = {
+        time: (a, b) => {
+          const A = meta.get(a)
+          const B = meta.get(b)
+          return A.timeWeight - B.timeWeight || collator.compare(A.nameKey, B.nameKey) || A.index - B.index
+        },
+        type: (a, b) => {
+          const A = meta.get(a)
+          const B = meta.get(b)
+          return A.typeIdx - B.typeIdx || collator.compare(A.nameKey, B.nameKey) || A.index - B.index
+        },
+        name: (a, b) => {
+          const A = meta.get(a)
+          const B = meta.get(b)
+          return collator.compare(A.nameKey, B.nameKey) || A.index - B.index
+        },
+      }
+
+      const sortKey = sortState.key
+      const sortDir = sortState.dir === "desc" ? -1 : 1
+
+      // Tri Sans Perdre Les Instances
+      const sorted = list.slice().sort((a, b) => {
+        const fn = cmp[sortKey] || cmp.name
+        return sortDir * fn(a, b)
+      })
+
+      context.visibleActivableActions = sorted
+    }
 
     return context
   }
@@ -140,5 +230,29 @@ export class COMiniCharacterSheet extends COBaseActorSheet {
       if (typeof this.setPosition === "function") this.setPosition({ top: newTop })
       else app.style.top = `${newTop}px`
     }
+  }
+
+  /**
+   * Trier Les Actions Ou Réinitialiser
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static #onSortActions(event, target) {
+    event?.preventDefault?.()
+
+    const key = target?.dataset?.sortKey || "name"
+
+    // Reset → efface l’état et rerender sans tri
+    if (key === "none") {
+      delete this._sortState
+      this.render()
+      return
+    }
+
+    // Toggle Asc/Desc
+    const prev = this._sortState || { key: "name", dir: "asc" }
+    const dir = prev.key === key ? (prev.dir === "asc" ? "desc" : "asc") : "asc"
+    this._sortState = { key, dir }
+    this.render()
   }
 }

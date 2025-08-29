@@ -39,6 +39,28 @@
   }
 }
 
+.actions-sortbar {
+  display: flex;
+  button {
+    color: var(--color-background-grey);
+    border: none;
+    background: none;
+  }
+  button:hover {
+    text-shadow: 0 0 6px darkred;
+  }
+  .asc,
+  .none {
+    color: var(--color-green);
+    text-shadow: 0 0 4px black;
+    box-shadow: inset 0 0 6px 0px var(--color-level-info-border);
+  }
+  .desc {
+    color: var(--color-level-warning);
+    text-shadow: 0 0 4px black;
+    box-shadow: inset 0 0 6px 0px var(--color-level-info-border);
+  }
+}
 .features-container {
   .item-list {
     display: grid;

@@ -909,6 +909,12 @@
       },
       "restHpRecovered": "Vous avez récupéré {hp} points de vigueur"
     },
+    "sortActions": {
+      "sortTime": "Trier les actions par durée (L, A, M, G)",
+      "sortType": "Trier les actions par type",
+      "sortName": "Trier les actions par ordre alphabétique",
+      "sortNone": "Réinitialiser le trie des actions"
+    },
     "roll": {
       "skillcheck": "Test de compétence",
       "attackcheck": "Jet d'Attaque",

@@ -2640,6 +2640,28 @@ co-toggle-switch[checked] thumb {
 .co.application.sheet.actor.character .window-content .btn-mini-sheet:hover {
   color: red;
 }
+.co.application.sheet.actor.character .actions-sortbar {
+  display: flex;
+}
+.co.application.sheet.actor.character .actions-sortbar button {
+  color: var(--color-background-grey);
+  border: none;
+  background: none;
+}
+.co.application.sheet.actor.character .actions-sortbar button:hover {
+  text-shadow: 0 0 6px darkred;
+}
+.co.application.sheet.actor.character .actions-sortbar .asc,
+.co.application.sheet.actor.character .actions-sortbar .none {
+  color: var(--color-green);
+  text-shadow: 0 0 4px black;
+  box-shadow: inset 0 0 6px 0px var(--color-level-info-border);
+}
+.co.application.sheet.actor.character .actions-sortbar .desc {
+  color: var(--color-level-warning);
+  text-shadow: 0 0 4px black;
+  box-shadow: inset 0 0 6px 0px var(--color-level-info-border);
+}
 .co.application.sheet.actor.character .features-container .item-list {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -2826,6 +2848,9 @@ co-toggle-switch[checked] thumb {
   color: red;
   font-size: large;
   align-self: center;
+}
+.co.application.sheet.actor.character-mini .window-content .actions-sortbar button {
+  font-size: 10px;
 }
 .co.application.sheet.actor.character-mini .window-content .mini-sidebar {
   display: grid;
