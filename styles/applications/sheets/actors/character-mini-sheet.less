@@ -78,7 +78,7 @@
       display: grid;
       gap: 0;
       margin: 0;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
       grid-template-rows: 1fr 1fr;
       padding: 5px 0;
       overflow: visible;
@@ -175,6 +175,16 @@
         .field,
         .labelled-field {
           font-weight: normal;
+        }
+      }
+      .armor-section,
+      .dr-section {
+        background-color: var(--color-defense);
+        padding: 5px;
+
+        .field,
+        .labelled-field {
+          color: var(--color-defense);
         }
       }
       .health-section {

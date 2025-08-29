@@ -2820,7 +2820,7 @@ co-toggle-switch[checked] thumb {
   display: grid;
   gap: 0;
   margin: 0;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   padding: 5px 0;
   overflow: visible;
@@ -2912,6 +2912,17 @@ co-toggle-switch[checked] thumb {
 .co.application.sheet.actor.character-mini .window-content .mini-sidebar .sidebar-section-content .field,
 .co.application.sheet.actor.character-mini .window-content .mini-sidebar .sidebar-section-content .labelled-field {
   font-weight: normal;
+}
+.co.application.sheet.actor.character-mini .window-content .mini-sidebar .armor-section,
+.co.application.sheet.actor.character-mini .window-content .mini-sidebar .dr-section {
+  background-color: var(--color-defense);
+  padding: 5px;
+}
+.co.application.sheet.actor.character-mini .window-content .mini-sidebar .armor-section .field,
+.co.application.sheet.actor.character-mini .window-content .mini-sidebar .dr-section .field,
+.co.application.sheet.actor.character-mini .window-content .mini-sidebar .armor-section .labelled-field,
+.co.application.sheet.actor.character-mini .window-content .mini-sidebar .dr-section .labelled-field {
+  color: var(--color-defense);
 }
 .co.application.sheet.actor.character-mini .window-content .mini-sidebar .health-section {
   grid-column: auto;

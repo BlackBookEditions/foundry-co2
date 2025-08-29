@@ -23,6 +23,16 @@
     </div>
   </div>
 
+  <!-- DEF -->
+  <div class="sidebar-section armor-section">
+    <div class="sidebar-section-header">
+      <div class="armor-base labelled-field" data-tooltip="{{combat.def.tooltipValue}}">
+        <i class="fas fa-fw fa-shield-alt"></i>
+        {{combat.def.value}}
+      </div>
+    </div>
+  </div>
+
   <!-- FP -->
   <div class="sidebar-section resource-section mini-section">
     <div class="sidebar-section-header">
@@ -55,6 +65,16 @@
         <input class="current" name="system.resources.mana.value" value="{{resources.mana.value}}" type="number" data-dtype="Number" placeholder="0" />
         <span class="slash">/</span>
         <span class="max" data-tooltip="{{resources.mana.tooltip}}">{{resources.mana.max}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DR -->
+  <div class="sidebar-section dr-section">
+    <div class="sidebar-section-header">
+      <div class="dr-base labelled-field" data-tooltip="{{combat.dr.tooltipValue}}">
+        <i class="fas fa-fw fa-universal-access"></i>
+        {{combat.dr.value}}
       </div>
     </div>
   </div>
