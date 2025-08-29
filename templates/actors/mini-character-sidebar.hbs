@@ -1,0 +1,62 @@
+{{!log "Chroniques Oubliées | Character sidebar" this}}
+<div class="sheet-sidebar mini-sidebar">
+
+  <!-- HP -->
+  <div class="sidebar-section health-section hp-section">
+    <div class="sidebar-section-header">
+      <div class="hit-points labelled-field">
+        <i class="fas fa-fw fa-heart"></i>
+        <input class="current" name="system.attributes.hp.value" value="{{attributes.hp.value}}" type="number" data-dtype="Number" />
+        <span class="slash">/</span>
+        <span class="max" data-tooltip="{{attributes.hp.tooltip}}">{{attributes.hp.max}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Temp HP -->
+  <div class="sidebar-section health-section">
+    <div class="sidebar-section-header">
+      <div class="hit-points labelled-field">
+        <i class="fas fa-fw fa-heart-broken"></i>
+        <input class="temp-dm" name="system.attributes.tempDm" value="{{attributes.tempDm}}" type="number" data-dtype="Number" />
+      </div>
+    </div>
+  </div>
+
+  <!-- FP -->
+  <div class="sidebar-section resource-section mini-section">
+    <div class="sidebar-section-header">
+      <div class="resource-points labelled-field">
+        <i class="fas fa-fw fa-clover"></i>
+        <input class="current" name="system.resources.fortune.value" value="{{resources.fortune.value}}" type="number" data-dtype="Number" placeholder="0" />
+        <span class="slash">/</span>
+        <span class="max" data-tooltip="{{resources.fortune.tooltip}}">{{resources.fortune.max}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RP -->
+  <div class="sidebar-section resource-section mini-section">
+    <div class="sidebar-section-header">
+      <div class="resource-points labelled-field">
+        <i class="fas fa-fw fa-heart-pulse use-recovery"></i>
+        <input class="current" name="system.resources.recovery.value" value="{{resources.recovery.value}}" type="number" data-dtype="Number" placeholder="0" />
+        <span class="slash">/</span>
+        <span class="max" data-tooltip="{{resources.recovery.tooltip}}">{{resources.recovery.max}}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MP -->
+  <div class="sidebar-section resource-section mini-section">
+    <div class="sidebar-section-header">
+      <div class="resource-points labelled-field">
+        <i class="fas fa-fw fa-bolt"></i>
+        <input class="current" name="system.resources.mana.value" value="{{resources.mana.value}}" type="number" data-dtype="Number" placeholder="0" />
+        <span class="slash">/</span>
+        <span class="max" data-tooltip="{{resources.mana.tooltip}}">{{resources.mana.max}}</span>
+      </div>
+    </div>
+  </div>
+
+</div>
