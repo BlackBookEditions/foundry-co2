@@ -9,12 +9,13 @@
     <span class="name">{{actor.name}}</span>
   {{/if}}
   <div class="level">
-    <label class="level-label">{{localize "CO.label.short.level"}}</label>
+    <div><label class="level-label">{{localize "CO.label.short.level"}}</label>
     {{#if unlocked}}
       <input class="adjustable" type="text" name="system.attributes.level" value="{{attributes.level}}" data-dtype="Number" />
     {{else}}
       <span>{{attributes.level}}</span>
-    {{/if}}
+    {{/if}}</div>
+    <i class="fa-solid fa-badge-check" data-action="openLevelUp" data-tooltip="{{localize 'CO.dialogs.levelupButton'}}" data-tooltip-direction="UP"></i>
   </div>
   <div class="traits">
     <div class="species">

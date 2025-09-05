@@ -20,7 +20,7 @@
         {{#each pathGroups as |pg id|}}
             {{!log 'pathGroup' this}}
             {{#if (or @root.unlocked pg.path.system.displayPath)}}                
-                <ol class="paths items-container" data-tab="features">
+                <ol class="paths items-container {{#if (eq pg.path.system.subtype 'prestige')}}prestige-path{{/if}}{{#if (eq pg.path.system.subtype 'people')}}people-path{{/if}}" data-tab="features">
                     <li class="items-container-header flexrow">
                         <h4 class="item-name flexrow">
                             <a data-action="toggleSection" data-toggle-type="paths" data-slug="{{pg.path.system.slug}}">{{pg.path.name}} ({{pg.path.system.rank}})</a>
@@ -36,7 +36,7 @@
                         {{#each pg.items as |capacity id|}}
                             {{!log "Chroniques Oubliées | capacity" capacity}}
                             {{#if capacity.system.learned}}
-                                {{log "Chroniques Oubliées | capacity learned" capacity}}
+                                {{!log "Chroniques Oubliées | capacity learned" capacity}}
                                 <li class="item flexrow" data-item-uuid="{{capacity.uuid}}" data-item-id="{{capacity._id}}" data-item-type="capacity">
                                     <div class="item-detail rank">{{capacity.system.rank}}</div>
                                     <div class="item-name flexrow">

@@ -3,6 +3,7 @@ import { SYSTEM } from "../../config/system.mjs"
 import Utils from "../../utils.mjs"
 import { CoEditAbilitiesDialog } from "../../dialogs/edit-abilities-dialog.mjs"
 import { COMiniCharacterSheet } from "./mini-character-sheet.mjs"
+import { COLevelUpDialog } from "../../dialogs/levelup-dialog.mjs"
 
 export default class COCharacterSheet extends COBaseActorSheet {
   static DEFAULT_OPTIONS = {
@@ -25,6 +26,7 @@ export default class COCharacterSheet extends COBaseActorSheet {
       useRecovery: COCharacterSheet.#onUseRecovery,
       openMiniSheet: COCharacterSheet.#onOpenMiniSheet,
       sortActions: COCharacterSheet.#onSortActions,
+      openLevelUp: COCharacterSheet.#onOpenLevelUp,
     },
   }
 
@@ -265,6 +267,16 @@ export default class COCharacterSheet extends COBaseActorSheet {
     const dir = prev.key === key ? (prev.dir === "asc" ? "desc" : "asc") : "asc"
     this._sortState = { key, dir }
     this.render()
+  }
+
+  /**
+   * Ouvrir La Fenêtre De Passage De Niveau
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #onOpenLevelUp(event, target) {
+    event.preventDefault()
+    return COLevelUpDialog.show(this.document)
   }
 
   /**

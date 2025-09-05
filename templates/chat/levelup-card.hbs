@@ -1,0 +1,73 @@
+{{!log "Chroniques Oubliées | hbs | levelup-card" this}}
+<div class="co chat-card levelup-card" data-actor-id="{{speaker.actor}}">
+  <header class="card-header flexcol">
+
+  </header>
+  <div class="summary-section">
+  <h4>{{localize "CO.dialogs.recapLevelup"}} : {{localize "CO.dialogs.levelup"}} {{nextLevel}}</h4>
+
+    <div class="summary-block summary-bonus">
+      <h4>{{localize "CO.dialogs.recapBonus"}}</h4>
+      {{#if (lte nextLevel 10)}}<p><span class="summary-text row1">{{localize "CO.dialogs.recapBonusAttack"}}</span></p>{{/if}}
+      <p><span class="summary-text row1">{{localize "CO.dialogs.recapBonusHP"}}</span></p>
+      <p><span class="summary-text row1">{{localize "CO.dialogs.recapBonusEvoDice"}}{{#if (lte nextLevel 5)}}D4{{else}}{{#if (lte nextLevel 8)}}D6{{else}}{{#if (lte nextLevel 11)}}D8{{else}}{{#if (lte nextLevel 14)}}D10{{else}}D12{{/if}}{{/if}}{{/if}}{{/if}}</span></p>
+    </div>
+
+  {{#if summary.forgets.length}}
+    <div class="summary-block summary-forgets">
+      <h4>{{localize "CO.dialogs.RecapCapacityForget"}}</h4>
+      <ul class="summary-list">
+        {{#each summary.forgets as |cap|}}
+          <li class="summary-line">
+            <img class="summary-img" src="{{cap.img}}" data-tooltip-direction="UP" data-tooltip="{{cap.desc}}" />
+            <p><span class="summary-text row1">R{{cap.rank}}. {{cap.name}}</span><br>({{cap.pathName}})</p>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+  {{/if}}
+  
+  {{#if summary.addedProfile}}
+    <div class="summary-block summary-profile">
+      <h4>{{localize "CO.dialogs.RecapNewProfil"}}</h4>
+      <div class="summary-line">
+        <img class="summary-img" src="{{summary.addedProfile.img}}" />
+        <span class="summary-text">{{summary.addedProfile.name}}</span>
+      </div>
+    </div>
+  {{/if}}
+
+  {{#if summary.addedPrestige}}
+    <div class="summary-block summary-prestige">
+      <h4>{{localize "CO.dialogs.RecapNewPrestige"}}</h4>
+      <div class="summary-line">
+        <img class="summary-img" src="{{summary.addedPrestige.img}}" />
+        <span class="summary-text">{{summary.addedPrestige.name}}</span>
+      </div>
+    </div>
+  {{/if}}
+
+  {{#if summary.picks.length}}
+    <div class="summary-block summary-picks">
+      <h4>{{localize "CO.dialogs.RecapCapacitySelect"}}</h4>
+      <ul class="summary-list">
+        {{#each summary.picks as |cap|}}
+          <li class="summary-line">
+            <img class="summary-img" src="{{cap.img}}" data-tooltip-direction="UP" data-tooltip="{{cap.desc}}" />
+            <p><span class="summary-text row1">R{{cap.rank}}. {{cap.name}}</span><br>({{cap.pathName}})</p>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+  {{/if}}
+
+  {{#if summary.orphan.choice}}
+  <div class="summary-block summary-orphan">
+    <h4>{{localize "CO.dialogs.recapOrphanPoint"}}</h4>
+    <div class="summary-line">
+      <i class="{{summary.orphan.icon}}"></i>
+      <span class="summary-text"> = {{summary.orphan.label}}</span>
+    </div>
+  </div>
+{{/if}}
+</div>

@@ -1012,6 +1012,398 @@ co-toggle-switch[checked] thumb {
   color: #b3b4b5;
   text-align: left;
 }
+.co.application.dialog.levelup-dialog {
+  min-width: 900px;
+  min-height: 300px;
+}
+.theme-dark .co.application.dialog.levelup-dialog {
+  background-color: #000;
+}
+.co.application.dialog.levelup-dialog .window-content {
+  overflow-y: scroll;
+  padding: 10px;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container,
+.co.application.dialog.levelup-dialog .window-content .item-list {
+  border: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .bloc-path,
+.co.application.dialog.levelup-dialog .window-content .item-list .bloc-path {
+  margin: 0 5px 5px 5px;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container.foldable .items-container-header h4,
+.co.application.dialog.levelup-dialog .window-content .item-list.foldable .items-container-header h4 {
+  cursor: pointer;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container.foldable .items-container-header h4:before,
+.co.application.dialog.levelup-dialog .window-content .item-list.foldable .items-container-header h4:before {
+  content: "▼\202F";
+}
+.co.application.dialog.levelup-dialog .window-content .items-container.folded,
+.co.application.dialog.levelup-dialog .window-content .item-list.folded {
+  display: none;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container.folded .items-container-header h4:before,
+.co.application.dialog.levelup-dialog .window-content .item-list.folded .items-container-header h4:before {
+  content: "▶\202F";
+}
+.co.application.dialog.levelup-dialog .window-content .path-people,
+.co.application.dialog.levelup-dialog .window-content .path-prestige,
+.co.application.dialog.levelup-dialog .window-content .path-profil {
+  margin: 0 3px;
+}
+.co.application.dialog.levelup-dialog .window-content .path-profil .capacities {
+  border: 2px solid var(--color-abilities);
+  border-top: none;
+}
+.co.application.dialog.levelup-dialog .window-content .path-people .capacities {
+  border: 2px solid var(--color-characterSheet);
+  border-top: none;
+}
+.co.application.dialog.levelup-dialog .window-content .path-prestige {
+  --prestige-accent: #4c008b;
+}
+.co.application.dialog.levelup-dialog .window-content .path-prestige .capacities {
+  border: 2px solid var(--prestige-accent);
+  border-top: none;
+}
+.co.application.dialog.levelup-dialog .window-content .path-grid {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 5px;
+}
+.co.application.dialog.levelup-dialog .window-content .main-profil-paths .paths {
+  --profile-accent: #952626;
+  border: 3px solid var(--profile-accent);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 1fr 1fr;
+  padding: 4px 0 0px 4px;
+  border-radius: 10px 10px 0 0;
+  box-shadow: inset 0px 0px 6px 0px var(--profile-accent);
+}
+.co.application.dialog.levelup-dialog .window-content .main-profil-paths .paths .profil-path-header {
+  background-color: var(--profile-accent);
+}
+.co.application.dialog.levelup-dialog .window-content .main-profil-paths .paths .profil-header {
+  background-color: var(--profile-accent);
+  border-radius: 30px;
+  padding: 0;
+  margin: 0 10px 10px 0;
+  height: auto;
+}
+.co.application.dialog.levelup-dialog .window-content .main-profil-paths .paths .profil-header .profil-name {
+  display: grid;
+  grid-template-columns: 120px auto;
+  margin: 0 0 0 20px;
+}
+.co.application.dialog.levelup-dialog .window-content .main-profil-paths .paths .profil-header .profil-name .path-title {
+  font-size: var(--font-size-28);
+}
+.co.application.dialog.levelup-dialog .window-content .main-profil-paths .paths .path-header {
+  background-color: var(--profile-accent);
+}
+.co.application.dialog.levelup-dialog .window-content .main-profil-paths .paths .capacities {
+  border: 2px solid var(--profile-accent);
+}
+.co.application.dialog.levelup-dialog .window-content .main-profil-paths .paths:first-of-type {
+  --profile-accent: var(--color-abilities);
+}
+.co.application.dialog.levelup-dialog .window-content .can-learn,
+.co.application.dialog.levelup-dialog .window-content .label-can-learn {
+  color: green;
+}
+.co.application.dialog.levelup-dialog .window-content .can-learn i {
+  font-weight: 400;
+}
+.co.application.dialog.levelup-dialog .window-content .selected,
+.co.application.dialog.levelup-dialog .window-content .picking {
+  color: purple;
+  box-shadow: 0px 0px 8px 2px purple;
+  background-color: #f3b1e6;
+}
+.co.application.dialog.levelup-dialog .window-content .selected i,
+.co.application.dialog.levelup-dialog .window-content .picking i {
+  font-weight: 900;
+}
+.theme-dark .co.application.dialog.levelup-dialog .window-content .selected,
+.theme-dark .co.application.dialog.levelup-dialog .window-content .picking {
+  background-color: #99007a;
+  color: var(--color-background-grey);
+}
+.co.application.dialog.levelup-dialog .window-content .locked {
+  opacity: 50%;
+}
+.co.application.dialog.levelup-dialog .window-content .forgetting {
+  color: darkred;
+}
+.co.application.dialog.levelup-dialog .window-content .can-forget {
+  color: red;
+}
+.co.application.dialog.levelup-dialog .window-content .can-learn.forgetting,
+.co.application.dialog.levelup-dialog .window-content .label-can-learn.label-forgetting {
+  color: green;
+}
+.co.application.dialog.levelup-dialog .window-content .learned,
+.co.application.dialog.levelup-dialog .window-content .can-forget {
+  background-color: #5d5d5d63;
+}
+.co.application.dialog.levelup-dialog .window-content .fa-square-check {
+  font-size: var(--font-size-20);
+  vertical-align: middle;
+}
+.co.application.dialog.levelup-dialog .window-content .people-prestige-paths {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.co.application.dialog.levelup-dialog .window-content .initial-bloc {
+  font-size: var(--font-size-18);
+  font-weight: bold;
+}
+.co.application.dialog.levelup-dialog .window-content .initial-bloc h2 {
+  font-size: var(--font-size-20);
+  margin: 0;
+  text-align: center;
+}
+.theme-dark .co.application.dialog.levelup-dialog .window-content .initial-bloc h2 {
+  color: #e1a934;
+}
+.theme-light .co.application.dialog.levelup-dialog .window-content .initial-bloc h2 {
+  color: var(--color-characterSheet);
+}
+.co.application.dialog.levelup-dialog .window-content .initial-bloc h4 {
+  margin: 0;
+  text-align: center;
+  font-size: var(--font-size-18);
+  text-decoration: underline;
+}
+.co.application.dialog.levelup-dialog .window-content .initial-bloc li {
+  margin: 0 0 0 15px;
+  padding: 0;
+}
+.co.application.dialog.levelup-dialog .window-content .initial-bloc li::marker {
+  content: "\00AF";
+  font-family: "Wingdings 2";
+  font-size: 1rem;
+  color: #ba9442;
+  font-weight: bold;
+}
+.co.application.dialog.levelup-dialog .window-content .initial-bloc p {
+  font-size: var(--font-size-14);
+  margin: 0;
+  padding: 0 0 0 5px;
+}
+.co.application.dialog.levelup-dialog .window-content .initial-bloc .hint {
+  font-size: var(--font-size-12);
+  font-style: italic;
+}
+.co.application.dialog.levelup-dialog .window-content .features {
+  display: none;
+}
+.co.application.dialog.levelup-dialog .window-content .choices {
+  display: flex;
+  justify-content: space-evenly;
+}
+.co.application.dialog.levelup-dialog .window-content .choices button {
+  min-height: 0;
+  height: fit-content;
+  font-size: 12px;
+}
+.co.application.dialog.levelup-dialog .window-content .choices button.active {
+  color: var(--color-background-grey);
+  background-color: var(--button-focus-outline-color);
+}
+.co.application.dialog.levelup-dialog .window-content .items-container {
+  margin-bottom: 5px;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .items-container-header,
+.co.application.dialog.levelup-dialog .window-content .items-container .item {
+  display: flex;
+  align-items: stretch;
+  flex-direction: row;
+  height: 23px;
+  line-height: 23px;
+  flex-wrap: nowrap;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .items-container-header {
+  font-weight: bold;
+  color: var(--color-background-grey);
+  background-color: var(--color-abilities);
+  padding: 0 10px;
+  border-radius: 10px 10px 0 0;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .items-container-header h4 {
+  border: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+  padding: 2px 8px;
+  text-transform: uppercase;
+  color: var(--color-background-grey);
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .items-container-header .item-name {
+  flex: 1;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .items-container-header .item-img {
+  background-size: 20px;
+  cursor: default;
+  display: block;
+  flex: 0 0 20px;
+  height: 20px;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .people-header {
+  background-color: var(--color-characterSheet);
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .prestige-header {
+  background-color: var(--prestige-accent, #4c008b);
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .item .item-img {
+  background-size: 23px;
+  cursor: help;
+  display: block;
+  flex: 0 0 23px;
+  height: 23px;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .item:hover {
+  background: #55555594;
+}
+.theme-dark .co.application.dialog.levelup-dialog .window-content .items-container .item:hover {
+  background: #73737366;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .item .item-name {
+  display: flex;
+  flex: 3;
+  flex-direction: row;
+  width: 150px;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .item .item-name h4 {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 0 0 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .item .item-name .icon-effet {
+  font-size: 0.8rem;
+  margin-left: 5px;
+  color: #4c008b;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .item-detail {
+  border-right: 1px solid var(--color-blue);
+  flex: 0 70px;
+  font-size: 16px;
+  text-align: center;
+  white-space: nowrap;
+  word-break: break-word;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .item-detail:last-child {
+  border-right: none;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .item-detail.item-action {
+  flex: 0 0 100px;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .item-detail.rank {
+  flex: 0 35px;
+  font-size: 16px;
+  min-width: 35px;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .item-controls {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+}
+.co.application.dialog.levelup-dialog .window-content .items-container .item-controls .tag {
+  font-size: var(--font-size-12);
+  margin-right: 5px;
+}
+.theme-dark .co.application.dialog.levelup-dialog .window-content .items-container .item-controls .tag {
+  color: inherit;
+}
+.co.application.dialog.levelup-dialog .window-content .drop-target {
+  background-color: #8080807d;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  align-content: center;
+  justify-items: center;
+  font-size: var(--font-size-18);
+  font-style: italic;
+  height: auto;
+  border: 3px solid #4c008b;
+}
+.co.application.dialog.levelup-dialog .window-content .levelup-summary {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+.co.application.dialog.levelup-dialog .window-content .path-profile {
+  grid-column: 2;
+  height: 100px;
+  border: 3px solid #952626;
+  margin: 0;
+}
+.co.application.dialog.levelup-dialog .window-content .summary-section {
+  grid-column: 1;
+  grid-row: 1;
+  border: 5px solid var(--color-characterSheet);
+  border-radius: 10px;
+  margin: 0 8px 0 0;
+  padding: 5px;
+}
+.co.application.dialog.levelup-dialog .window-content .summary-section h2 {
+  font-size: 25px;
+  color: var(--color-characterSheet);
+  margin: 0;
+  text-align: center;
+}
+.theme-dark .co.application.dialog.levelup-dialog .window-content .summary-section h2 {
+  color: #e1a934;
+}
+.co.application.dialog.levelup-dialog .window-content .summary-section h4 {
+  margin: 0 0 5px 0;
+  text-align: center;
+  font-size: var(--font-size-20);
+  text-decoration: underline;
+}
+.co.application.dialog.levelup-dialog .window-content .summary-img {
+  height: 20px;
+  width: 20px;
+  margin-right: 5px;
+  cursor: help;
+}
+.co.application.dialog.levelup-dialog .window-content .summary-block {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+  border-bottom: 1px solid var(--color-characterSheet);
+  align-items: center;
+  padding: 3px 0;
+}
+.co.application.dialog.levelup-dialog .window-content .summary-block h4 {
+  font-size: var(--font-size-18);
+  margin: 3px 0;
+  text-decoration: none;
+  text-align: left;
+}
+.co.application.dialog.levelup-dialog .window-content .summary-block .summary-block:last-of-type {
+  border: none;
+}
+.co.application.dialog.levelup-dialog .window-content .summary-block .summary-line {
+  display: flex;
+}
+.co.application.dialog.levelup-dialog .window-content .summary-block .theme-dark .items-container {
+  color: #ccc;
+}
+.co.application.dialog.levelup-dialog .window-content .summary-block .theme-dark .item:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+.co.application.dialog.levelup-dialog .window-content .levelup-actions {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 10px;
+}
 .co.application.sheet {
   --color-primary: var(--color-text-selection-bg);
 }
@@ -1189,6 +1581,15 @@ co-toggle-switch[checked] thumb {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 5px;
+}
+.co.application.sheet .path-grid .people-path .items-container-header {
+  background-color: var(--color-characterSheet);
+}
+.co.application.sheet .path-grid .prestige-path .items-container-header {
+  background-color: #4c008b;
+}
+.co.application.sheet .path-grid .features.items-container .items-container-header {
+  background-color: #4b4b4b;
 }
 .co.application.sheet .items-container {
   margin-bottom: 8px;
@@ -2571,6 +2972,16 @@ co-toggle-switch[checked] thumb {
 .co.application.sheet.actor.character .window-content .sheet-header .profiles a {
   margin-right: 4px;
 }
+.co.application.sheet.actor.character .window-content .sheet-header .fa-badge-check {
+  font-size: 1.2rem;
+  position: absolute;
+  right: 14px;
+  top: 86px;
+  cursor: pointer;
+}
+.co.application.sheet.actor.character .window-content .sheet-header .fa-badge-check:hover {
+  text-shadow: 0px 0px 5px var(--color-abilities);
+}
 .co.application.sheet.actor.character .window-content .sheet-sidebar {
   background-color: var(--color-characterSheet);
 }
@@ -3436,4 +3847,92 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .chat-message .message-content .dice-roll {
   margin-top: 8px;
   font-weight: bold;
+}
+#interface #sidebar .chat-message .message-content .levelup-card .summary-section,
+#interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-section {
+  grid-column: 1;
+  grid-row: 1;
+  border: 5px solid var(--color-characterSheet);
+  border-radius: 10px;
+  margin: 0 8px 0 0;
+  padding: 5px;
+}
+#interface #sidebar .chat-message .message-content .levelup-card .summary-section h4,
+#interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-section h4 {
+  margin: 0 0 5px 0;
+  font-size: var(--font-size-16);
+  border-bottom: 2px solid #5d142b;
+  color: #5d142b;
+}
+.theme-dark #interface #sidebar .chat-message .message-content .levelup-card .summary-section h4,
+.theme-dark #interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-section h4 {
+  color: #f75c5c;
+  border-bottom: 2px solid #f75c5c;
+}
+#interface #sidebar .chat-message .message-content .levelup-card .summary-img,
+#interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-img {
+  height: 30px;
+  width: 30px;
+  margin-right: 8px;
+  cursor: help;
+}
+#interface #sidebar .chat-message .message-content .levelup-card .summary-block,
+#interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-block {
+  border-bottom: 1px solid #222;
+  align-items: center;
+  padding: 3px 0;
+}
+#interface #sidebar .chat-message .message-content .levelup-card .summary-block p,
+#interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-block p {
+  margin: 0;
+  font-weight: bold;
+  font-style: italic;
+  font-size: var(--font-size-12);
+}
+#interface #sidebar .chat-message .message-content .levelup-card .summary-block h4,
+#interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-block h4 {
+  border: none;
+  font-size: var(--font-size-14);
+  margin: 3px 0;
+  text-decoration: none;
+  text-align: left;
+  color: #222;
+  text-shadow: 2px 2px 4px var(--color-blind-border);
+}
+.theme-dark #interface #sidebar .chat-message .message-content .levelup-card .summary-block h4,
+.theme-dark #interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-block h4 {
+  color: var(--color-background-grey);
+  text-shadow: 2px 2px 4px #f75c5c8c;
+  border: none;
+}
+.theme-dark #interface #sidebar .chat-message .message-content .levelup-card .summary-block,
+.theme-dark #interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-block {
+  border-bottom: 1px solid #f75c5c;
+}
+#interface #sidebar .chat-message .message-content .levelup-card .summary-block:last-of-type,
+#interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-block:last-of-type {
+  border: none;
+}
+#interface #sidebar .chat-message .message-content .levelup-card .summary-list,
+#interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-list {
+  margin: 0;
+  padding: 0;
+}
+#interface #sidebar .chat-message .message-content .levelup-card .summary-line,
+#interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-line {
+  display: flex;
+  margin: 5px 0 0 0;
+  align-items: center;
+}
+#interface #sidebar .chat-message .message-content .levelup-card .summary-line p,
+#interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-line p {
+  margin: 0;
+}
+#interface #sidebar .chat-message .message-content .levelup-card .summary-line .row1,
+#interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-line .row1 {
+  font-weight: bold;
+}
+#interface #sidebar .chat-message .message-content .levelup-card .summary-line i,
+#interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-line i {
+  padding-right: 3px;
 }

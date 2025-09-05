@@ -1,5 +1,390 @@
 <form class="{{cssClass}}" autocomplete="off" onsubmit="event.preventDefault();">
-    {{!log "Chroniques Oubliées | levelup" this}}
-    <header class="sheet-header"></header>
-    <section class="sheet-body"></section>
+
+  <header class="sheet-header">
+    
+  </header>
+
+  <!-- Voies & Capacités-->
+  <section class="path-grid">
+    <div class="people-prestige-paths">
+      <div class="initial-bloc">
+        <h2>{{actor.name}}</h2> 
+        <h4>{{localize "CO.dialogs.levelup"}} {{nextLevel}}</h4>
+        <!-- Budget de capacités et oubli -->
+        <ul>
+          <li><p>{{localize "CO.dialogs.capacityPointSpent"}} : {{capacityBudgetSpent}} / {{capacityBudgetTotal}}</p></li>
+          <li><p>{{localize "CO.dialogs.numberForget"}} {{forgetCount}} / {{forgetQuota}}</p></li>
+          <li><p>{{localize "CO.dialogs.restPath"}} {{openSlotsLeft}}</p></li>
+          <li><p>{{localize "CO.dialogs.orphanPoint"}}</p>
+            <div class="choices {{#if orphanEnabled}}enabled{{else}}locked{{/if}}">
+              <button type="button" data-action="toggleOrphan" data-choice="fortune" data-tooltip="{{localize "CO.dialogs.orphanPointPC"}}" data-tooltip-direction="UP"
+                      class="{{#if (eq orphanChoice 'fortune')}}active{{/if}}"
+                      {{#unless orphanEnabled}}disabled{{/unless}}>  {{localize "CO.dialogs.orphanPointShortPC"}}
+              </button>
+              <button type="button" data-action="toggleOrphan" data-choice="recovery" data-tooltip="{{localize "CO.dialogs.orphanPointDR"}}" data-tooltip-direction="UP"
+                      class="{{#if (eq orphanChoice 'recovery')}}active{{/if}}"
+                      {{#unless orphanEnabled}}disabled{{/unless}}>  {{localize "CO.dialogs.orphanPointShortDR"}}
+              </button>
+              <button type="button" data-action="toggleOrphan" data-choice="hp" data-tooltip="{{localize "CO.dialogs.orphanPointPV"}}" data-tooltip-direction="UP"
+                      class="{{#if (eq orphanChoice 'hp')}}active{{/if}}"
+                      {{#unless orphanEnabled}}disabled{{/unless}}>  {{localize "CO.dialogs.orphanPointShortPV"}}
+              </button>
+              <button type="button" data-action="toggleOrphan" data-choice="mp" data-tooltip="{{localize "CO.dialogs.orphanPointPM"}}" data-tooltip-direction="UP"
+                      class="{{#if (eq orphanChoice 'mp')}}active{{/if}}"
+                      {{#unless orphanEnabled}}disabled{{/unless}}>  {{localize "CO.dialogs.orphanPointShortPM"}}
+              </button>
+            </div>      
+            {{#if orphanChoice}}
+              <div class="hint">{{localize "CO.dialogs.orphanPointResult"}}</div>
+            {{/if}}
+          </li>
+        </ul>
+      </div>
+    
+
+      {{!-- 1) Voie de Peuple --}}
+      {{#if peoplePath}}
+      <div class="path-people">
+        <ul class="items-container paths">
+          <li class="items-container-header people-header" data-action="toggleSection" data-toggle-type="paths" data-slug="{{peoplePath.system.slug}}">
+            <div class="item-name flexrow">
+              <a class="item-img" style="background-image:url('{{peoplePath.img}}')" data-tooltip-direction="UP"></a>
+              <h4 class="path-title">{{peoplePath.name}}</h4>
+            </div>
+          </li>
+          <div class="foldable">
+            <ol class="item-list capacities">
+              {{#each (lookup capsByPath peoplePath.id) as |cap|}}
+              <li class="item flexrow {{#if cap.effectiveLearned}}{{#if cap.forgettable}} can-forget{{else}} learned{{/if}}{{else}}{{#if cap.canLearn}} can-learn{{else}} locked{{#if cap.reason}} reason-{{cap.reason}}{{/if}}{{/if}}{{/if}}{{#if cap.forgetting}} forgetting{{/if}}{{#if cap.selected}} picking{{/if}}" data-item-id="{{cap.id}}">
+                <div class="item-detail rank">
+                  {{#if cap.effectiveLearned}}
+                    {{#if cap.forgettable}}
+                      <i class="fa-solid fa-skull" data-action="toggleForget" data-id="{{cap.id}}"></i>
+                    {{else}}
+                      <i class="fa-solid fa-check"></i>
+                    {{/if}}
+                  {{else}}
+                    {{#if cap.forgetting}}
+                      {{!-- Oubli sélectionné--}}
+                      <i class="fa-regular fa-skull" data-action="toggleForget" data-id="{{cap.id}}"></i>
+                    {{else}}
+                      {{#if cap.canLearn}}
+                        <i class="fa-solid fa-square-check" data-action="togglePick" data-id="{{cap.id}}"></i>
+                      {{else}}
+                        <i class="fa-solid fa-xmark"></i>
+                      {{/if}}
+                    {{/if}}
+                  {{/if}}
+                  {{cap.rank}}
+                </div>
+
+                <div class="item-name flexrow">
+                  <a class="item-img" style="background-image:url('{{cap.img}}')" data-tooltip-direction="UP" data-tooltip="{{cap.desc}}"></a>
+                  <h4 class="item-title">{{cap.name}}</h4>
+                </div>
+
+                <div class="item-controls">
+                  {{#if cap.effectiveLearned}}
+                    {{#if cap.forgettable}}
+                      <span class="tag label-can-forget">{{localize "CO.ui.can-forget"}}</span>
+                    {{else}}
+                      <span class="tag label-learned">{{localize "CO.ui.learned"}}</span>
+                    {{/if}}
+                  {{else}}
+                    {{#if cap.forgetting}}
+                      <span class="tag label-forgetting">{{localize "CO.ui.forgetting"}}</span>
+                      {{#if cap.canLearn}}
+                        <span class="tag label-available"> {{localize "CO.ui.available"}}</span>
+                        {{/if}}
+                    {{else}}
+                      {{#if cap.canLearn}}
+                        {{#if cap.selected}}
+                          <span class="tag label-selected">{{localize "CO.ui.selected"}}</span>
+                        {{else}}
+                          <span class="tag label-available">{{localize "CO.ui.available"}}</span>
+                        {{/if}}
+                      {{else}}
+                        <span class="tag label-not-learned">{{localize "CO.ui.notLearned"}}</span>
+                      {{/if}}
+                    {{/if}}
+                  {{/if}}
+                </div>
+              </li>
+              {{/each}}
+            </ol>
+          </div>
+        </ul>
+      </div>
+      {{/if}}
+
+      {{!-- Zone de drop pour voie de prestige si aucune n’est présente --}}
+      {{#if canDropPrestige}}
+        <div class="path-prestige drop-target" data-drop="prestige">
+          <div class="drop-hint">
+            <i class="fa-solid fa-bolt"></i>
+            {{localize "CO.dialogs.dropZone"}} <br> {{localize "CO.dialogs.dropPrestige"}}
+          </div>
+        </div>
+      {{/if}}
+      {{!-- 2) Voie de Prestige (si présente) --}}
+      {{#if prestigePath}}
+      <div class="path-prestige">
+        <ul class="items-container paths">
+          <li class="items-container-header prestige-header" data-action="toggleSection" data-toggle-type="paths" data-slug="{{prestigePath.system.slug}}">
+            <div class="item-name flexrow">
+              <a class="item-img" style="background-image:url('{{prestigePath.img}}')"></a>
+              <h4 class="path-title">{{prestigePath.name}}</h4>
+            </div>
+          </li>
+          <div class="foldable">
+            <ol class="item-list capacities">
+              {{#each (lookup capsByPath prestigePath.id) as |cap|}}
+              <li class="item flexrow {{#if cap.effectiveLearned}}{{#if cap.forgettable}} can-forget{{else}} learned{{/if}}{{else}}{{#if cap.canLearn}} can-learn{{else}} locked{{#if cap.reason}} reason-{{cap.reason}}{{/if}}{{/if}}{{/if}}{{#if cap.forgetting}} forgetting{{/if}}{{#if cap.selected}} picking{{/if}}" data-item-id="{{cap.id}}">
+                <div class="item-detail rank">
+                  {{#if cap.effectiveLearned}}
+                    {{#if cap.forgettable}}
+                      <i class="fa-solid fa-skull" data-action="toggleForget" data-id="{{cap.id}}"></i>
+                    {{else}}
+                      <i class="fa-solid fa-check"></i>
+                    {{/if}}
+                  {{else}}
+                    {{#if cap.forgetting}}
+                      {{!-- Oubli sélectionné--}}
+                      <i class="fa-regular fa-skull" data-action="toggleForget" data-id="{{cap.id}}"></i>
+                    {{else}}
+                      {{#if cap.canLearn}}
+                        <i class="fa-solid fa-square-check" data-action="togglePick" data-id="{{cap.id}}"></i>
+                      {{else}}
+                        <i class="fa-solid fa-xmark"></i>
+                      {{/if}}
+                    {{/if}}
+                  {{/if}}
+                  {{cap.rank}}
+                </div>
+
+                <div class="item-name flexrow">
+                  <a class="item-img" style="background-image:url('{{cap.img}}')" data-tooltip-direction="UP" data-tooltip="{{cap.desc}}"></a>
+                  <h4 class="item-title">{{cap.name}}</h4>
+                </div>
+
+                <div class="item-controls">
+                  {{#if cap.effectiveLearned}}
+                      {{#if cap.forgettable}}
+                        <span class="tag label-can-forget">{{localize "CO.ui.can-forget"}}</span>
+                      {{else}}
+                        <span class="tag label-learned">{{localize "CO.ui.learned"}}</span>
+                      {{/if}}
+                    {{else}}
+                      {{#if cap.forgetting}}
+                        <span class="tag label-forgetting">{{localize "CO.ui.forgetting"}}</span>
+                        {{#if cap.canLearn}}
+                        <span class="tag label-available"> {{localize "CO.ui.available"}}</span>
+                        {{/if}}
+                      {{else}}
+                        {{#if cap.canLearn}}
+                          {{#if cap.selected}}
+                            <span class="tag label-selected">{{localize "CO.ui.selected"}}</span>
+                          {{else}}
+                            <span class="tag label-available">{{localize "CO.ui.available"}}</span>
+                          {{/if}}
+                        {{else}}
+                          <span class="tag label-not-learned">{{localize "CO.ui.notLearned"}}</span>
+                        {{/if}}
+                      {{/if}}
+                    {{/if}}
+                </div>
+              </li>
+              {{/each}}
+            </ol>
+          </div>
+        </ul>
+      </div>
+      {{/if}}
+    </div>
+  
+    
+
+    {{!-- 3) Voies par Profil principal --}}
+    <div class="main-profil-paths">
+      {{#each profileGroups as |grp|}}
+      <ul class="items-container paths">
+        <li class="items-container-header profil-header" data-action="toggleSection" data-toggle-type="paths" data-slug="{{grp.profile.slug}}">
+          <div class="item-name profil-name flexrow">
+             <img src="{{grp.profile.img}}" />
+            <h4 class="path-title">{{grp.profile.name}}</h4>
+          </div>
+        </li>
+
+          {{#each grp.paths as |path|}}
+        <div class="path-profil">
+          <ol class="items-container path">
+            <li class="items-container-header profil-path-header" data-action="toggleSection" data-toggle-type="paths" data-slug="{{path.system.slug}}">
+              <div class="item-name flexrow">
+                <a class="item-img" style="background-image:url('{{path.img}}')"></a>
+                <h4 class="path-title">{{path.name}}</h4>
+              </div>
+            </li>
+            <div class="foldable">
+              <ol class="item-list capacities">
+                {{#each (lookup ../../capsByPath path.id) as |cap|}}
+              <li class="item flexrow {{#if cap.effectiveLearned}}{{#if cap.forgettable}} can-forget{{else}} learned{{/if}}{{else}}{{#if cap.canLearn}} can-learn{{else}} locked{{#if cap.reason}} reason-{{cap.reason}}{{/if}}{{/if}}{{/if}}{{#if cap.forgetting}} forgetting{{/if}}{{#if cap.selected}} picking{{/if}}" data-item-id="{{cap.id}}">
+                  <div class="item-detail rank">
+                    {{#if cap.effectiveLearned}}
+                      {{#if cap.forgettable}}
+                        <i class="fa-solid fa-skull" data-action="toggleForget" data-id="{{cap.id}}"></i>
+                      {{else}}
+                        <i class="fa-solid fa-check"></i>
+                      {{/if}}
+                    {{else}}
+                      {{#if cap.forgetting}}
+                        {{!-- Oubli sélectionné--}}
+                        <i class="fa-regular fa-skull" data-action="toggleForget" data-id="{{cap.id}}"></i>
+                      {{else}}
+                        {{#if cap.canLearn}}
+                          <i class="fa-solid fa-square-check" data-action="togglePick" data-id="{{cap.id}}"></i>
+                        {{else}}
+                          <i class="fa-solid fa-xmark"></i>
+                        {{/if}}
+                      {{/if}}
+                    {{/if}}
+                    {{cap.rank}}
+                  </div>
+
+                  <div class="item-name flexrow">
+                    <a class="item-img" style="background-image:url('{{cap.img}}')" data-tooltip-direction="UP" data-tooltip="{{cap.desc}}"></a>
+                    <h4 class="item-title">{{cap.name}}</h4>
+                  </div>
+
+                  <div class="item-controls">
+                    {{#if cap.effectiveLearned}}
+                      {{#if cap.forgettable}}
+                        <span class="tag label-can-forget">{{localize "CO.ui.can-forget"}}</span>
+                      {{else}}
+                        <span class="tag label-learned">{{localize "CO.ui.learned"}}</span>
+                      {{/if}}
+                    {{else}}
+                      {{#if cap.forgetting}}
+                        <span class="tag label-forgetting"> {{localize "CO.ui.forgetting"}}</span>
+                        {{#if cap.canLearn}}
+                        <span class="tag label-available">{{localize "CO.ui.available"}}</span>
+                        {{/if}}
+                      {{else}}
+                        {{#if cap.canLearn}}
+                          {{#if cap.selected}}
+                            <span class="tag label-selected">{{localize "CO.ui.selected"}}</span>
+                          {{else}}
+                            <span class="tag label-available">{{localize "CO.ui.available"}}</span>
+                          {{/if}}
+                        {{else}}
+                          <span class="tag label-not-learned">{{localize "CO.ui.notLearned"}}</span>
+                        {{/if}}
+                      {{/if}}
+                    {{/if}}
+                  </div>
+                </li>
+                {{/each}}
+              </ol>
+            </div>
+          </ol>
+        </div>
+          {{/each}}
+
+      </ul>
+      {{/each}}
+    </div>
+
+      
+
+  </section>
+
+{{!-- ———————————————————————————————————————————————
+     Récapitulatif (s’affiche par sections si non vides)
+     ——————————————————————————————————————————————— --}}
+<section class="levelup-summary">
+
+      {{!-- Zone de drop pour un deuxième profil si le PJ n’en a qu’un --}}
+      {{#if showProfileDrop}}
+        <div class="path-profile drop-target" data-drop="profile">
+          <div class="drop-hint">
+            <i class="fa-solid fa-user-plus"></i>
+            {{localize "CO.dialogs.dropZone"}} <br> {{localize "CO.dialogs.dropProfil"}}
+          </div>
+        </div>
+      {{/if}}
+
+<div class="summary-section">
+  <h2>{{localize "CO.dialogs.recapLevelup"}}</h2>
+  <h4>{{actor.name}} - {{localize "CO.dialogs.levelup"}} {{nextLevel}}</h4>
+
+  {{#if summary.forgets.length}}
+    <div class="summary-block summary-forgets">
+      <h4>{{localize "CO.dialogs.RecapCapacityForget"}}</h4>
+      <ul class="summary-list">
+        {{#each summary.forgets as |cap|}}
+          <li class="summary-line">
+            <img class="summary-img" src="{{cap.img}}" data-tooltip-direction="UP" data-tooltip="{{cap.desc}}" />
+            <span class="summary-text">
+              {{cap.pathName}} — {{localize "CO.label.long.rank"}} {{cap.rank}} — {{cap.name}}
+            </span>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+  {{/if}}
+  
+  {{#if summary.addedProfile}}
+    <div class="summary-block summary-profile">
+      <h4>{{localize "CO.dialogs.RecapNewProfil"}}</h4>
+      <div class="summary-line">
+        <img class="summary-img" src="{{summary.addedProfile.img}}" />
+        <span class="summary-text">{{summary.addedProfile.name}}</span>
+      </div>
+    </div>
+  {{/if}}
+
+  {{#if summary.addedPrestige}}
+    <div class="summary-block summary-prestige">
+      <h4>{{localize "CO.dialogs.RecapNewPrestige"}}</h4>
+      <div class="summary-line">
+        <img class="summary-img" src="{{summary.addedPrestige.img}}" />
+        <span class="summary-text">{{summary.addedPrestige.name}}</span>
+      </div>
+    </div>
+  {{/if}}
+
+  {{#if summary.picks.length}}
+    <div class="summary-block summary-picks">
+      <h4>{{localize "CO.dialogs.RecapCapacitySelect"}}</h4>
+      <ul class="summary-list">
+        {{#each summary.picks as |cap|}}
+          <li class="summary-line">
+            <img class="summary-img" src="{{cap.img}}" data-tooltip-direction="UP" data-tooltip="{{cap.desc}}" />
+            <span class="summary-text">
+              {{cap.pathName}} — {{localize "CO.label.long.rank"}} {{cap.rank}} — {{cap.name}}
+            </span>
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+  {{/if}}
+
+  {{#if summary.orphan.choice}}
+  <div class="summary-block summary-orphan">
+    <h4>{{localize "CO.dialogs.recapOrphanPoint"}}</h4>
+    <div class="summary-line">
+      <i class="{{summary.orphan.icon}}"></i>
+      <span class="summary-text"> - {{summary.orphan.label}}</span>
+    </div>
+  </div>
+{{/if}}
+</div>
+</section>
+
+<section class="levelup-actions">
+  <button type="button" data-action="cancel" data-tooltip="{{localize "CO.dialogs.cancelLong"}}" data-tooltip-direction="UP">{{localize "CO.ui.cancel"}}</button>
+  <button type="button" data-action="reset" data-tooltip="{{localize "CO.dialogs.resetLong"}}" data-tooltip-direction="UP">{{localize "CO.dialogs.reset"}}</button>
+  <button type="button" data-action="confirm" class="primary" data-tooltip="{{localize "CO.dialogs.validateLong"}}" data-tooltip-direction="UP">{{localize "CO.dialogs.validate"}}</button>
+</section>
+
+
 </form>

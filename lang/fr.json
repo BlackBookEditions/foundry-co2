@@ -482,7 +482,8 @@
         "tempHP": "DM temporaires",
         "diceType": "Type de jet",
         "tactical": "Option tactique",
-        "special": "Spécial"
+        "special": "Spécial",
+        "capacityPoints": "Points de Capacité"
       },
       "short": {
         "label": "Label",
@@ -754,7 +755,13 @@
       "rechargeable": "Charges et Munitions",
       "PoidsValeur": "Poids et Valeur",
       "equip": "Équipé ?",
-      "noneModif": "Aucun modificateur"
+      "noneModif": "Aucun modificateur",
+      "close": "Fermer",
+      "can-forget": "Oubliable",
+      "forgetting": "Oubliée",
+      "selected": "Sélectionnée",
+      "available": "Dispo",
+      "notLearned": "Bloquée"
     },
     "properties": {
       "attack": "Attaque",
@@ -907,7 +914,40 @@
         "manaContent": "Récupérez-vous le maximum de points de mana ?",
         "manaTitle": "Récupération de mana"
       },
-      "restHpRecovered": "Vous avez récupéré {hp} points de vigueur"
+      "restHpRecovered": "Vous avez récupéré {hp} points de vigueur",
+      "levelup": "Passage au niveau",
+      "capacityPointSpent": "Points de Capacités Dépensés :",
+      "numberForget": "Nombre de capacités oubliables :",
+      "restPath": "Voies de profil restantes :",
+      "orphanPoint": "Point de capacité orphelin :",
+      "orphanPointPC": "gain de 1 Point de Chance",
+      "orphanPointDR": "gain de 1 Dé de Récupération",
+      "orphanPointPM": "gain de 2 Points de Mana",
+      "orphanPointPV": "gain de 2 Points de Vigueur",
+      "orphanPointShortPC": "+1 PC",
+      "orphanPointShortDR": "+1 DR",
+      "orphanPointShortPM": "+2 PM",
+      "orphanPointShortPV": "+2 PV",
+      "orphanPointResult": "1 PC dépensé, cliquer à nouveau pour annuler",
+      "dropZone": "Glisser-déposer ici",
+      "dropPrestige": "une voie de prestige",
+      "dropProfil": "un deuxième Profil",
+      "recapLevelup": "Récapitulatif",
+      "RecapCapacityForget": "Capacité(s) Oubliée(s)",
+      "RecapCapacitySelect": "Capacité(s) Sélectionnée(s)",
+      "RecapNewProfil": "Second Profil sélectionné",
+      "RecapNewPrestige": "Voie de Prestige choisie",
+      "recapOrphanPoint": "Gain du PC Orphelin",
+      "levelupButton": "Passez au niveau supérieur !",
+      "reset": "réinitialiser",
+      "validate": "valider",
+      "cancelLong": "Annuler le passage de niveau / fermer la fenêtre",
+      "resetLong": "réinitialiser les changements de la fenêtre",
+      "validateLong": "Valider le passage de niveau",
+      "recapBonus": "Évolutions de base",
+      "recapBonusAttack": "· Att. Contact, Distance et Magique: +1",
+      "recapBonusHP": "· Gain de Points de Vigueur: DR + CON",
+      "recapBonusEvoDice": "· Valeur du dé évolutif: "
     },
     "sortActions": {
       "sortTime": "Trier les actions par durée (L, A, M, G)",
