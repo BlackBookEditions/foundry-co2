@@ -70,6 +70,23 @@
           <span class="failure fumble"><i class="fas fa-skull-crossbones"></i>&nbsp;{{localize "CO.roll.fumble"}}&nbsp;<i class="fas fa-skull-crossbones"></i></span>
         {{/if}}
       {{/if}}
+      {{#if selectedSkillBonuses.length}}
+        <section class="applied-skill-bonuses">
+          <div class="form-group">
+            <div class="skill-bonuses-label"><label>Bonus appliqués</label></div>
+            <div class="skill-bonuses-list">
+              {{#each selectedSkillBonuses as |b|}}
+                <div class="bonus-line">
+                  <span class="b-value">{{numberFormat b.value decimals=0 sign=true}}</span>
+                  <span class="b-name">{{b.name}}</span>
+                  {{#if b.additionalInfos}}<span class="b-info"> — {{b.additionalInfos}}</span>{{/if}}
+                </div>
+              {{/each}}
+            </div>
+          </div>
+        </section>
+      {{/if}}
+
     </section>
 
     

@@ -62,6 +62,7 @@
     <label class="textCenter">{{localize "CO.ui.totalBonus"}}</label>
     <div class="form-fields">
       <input class="field-value textCenter" id="totalSkillBonuses" name="totalSkillBonuses" type="text" value="{{numberFormat totalSkillBonuses sign=true}}" data-dtype="Number" />
+      <input type="hidden" id="selectedSkillBonuses" name="selectedSkillBonuses" value="[]">
     </div>
   </div>
   <div class="form-group">
@@ -78,10 +79,14 @@
             <div class="flex1 skill-bonuses" id="skill-bonuses">
             {{#each skillBonuses as |bonus id|}}
                 {{!log 'skillBonuses' bonus id}}
-                <div class="bonus-item flexrow" data-value="{{bonus.value}}">
+                <div class="bonus-item flexrow"
+                    data-value="{{bonus.value}}"
+                    data-name="{{bonus.name}}"
+                    data-path="{{bonus.pathType}}"
+                    data-info="{{bonus.additionalInfos}}">
                   <span class="bonus-value flex0">{{numberFormat bonus.value decimals=0 sign=true}}</span>
                   <div class="bonus-description">
-                    <span class="bonus-name flex1">{{bonus.name}} ({{bonus.pathType}}) </span>
+                    <span class="bonus-name flex1">{{bonus.name}} ({{bonus.pathType}})</span>
                     <span class="bonus-name flex2">{{bonus.additionalInfos}}</span>
                   </div>
                 </div>

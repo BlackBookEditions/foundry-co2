@@ -350,5 +350,49 @@
       margin-top: 8px;
       font-weight: bold;
     }
+    .applied-skill-bonuses {
+      margin-top: 10px;
+      .theme-dark & {
+        border-top: 2px solid darkred;
+      }
+      .theme-light & {
+        border-top: 2px solid #084f7b;
+      }
+
+      label {
+        font-size: 16px;
+      }
+      .skill-bonuses-list {
+        text-align: left;
+        .skill-bonuses-label {
+          margin-bottom: 10px;
+        }
+        .bonus-line {
+          overflow: hidden;
+          text-align: left;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          span {
+            font-size: var(--font-size-14);
+            font-weight: 500;
+            padding: 0;
+            .theme-dark & {
+              color: #e7d1b1;
+            }
+            .theme-light & {
+              color: #222;
+            }
+          }
+          .b-value,
+          .b-name {
+            font-size: var(--font-size-16);
+            font-weight: 900;
+          }
+          .b-info {
+            font-style: italic;
+          }
+        }
+      }
+    }
   }
 }

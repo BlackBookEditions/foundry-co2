@@ -197,6 +197,8 @@ export class COSkillRoll extends CORoll {
       showDifficulty: dialogContext.showDifficulty,
       difficulty: withDialog ? rollContext.difficulty : dialogContext.difficulty,
       toolTip,
+      actor: dialogContext.actor,
+      selectedSkillBonuses: withDialog ? JSON.parse(rollContext.selectedSkillBonuses || "[]") : (dialogContext.selectedSkillBonuses ?? []),
       ...options,
     }
 
@@ -205,10 +207,29 @@ export class COSkillRoll extends CORoll {
   }
 
   static _onToggleCheckSkillBonus(event) {
-    let item = event.currentTarget.closest(".bonus-item")
+    const item = event.currentTarget.closest(".bonus-item")
     item.classList.toggle("checked")
-    let total = this._calculateTotalSkillBonus(event)
-    document.querySelector("#totalSkillBonuses").value = `+${total}`
+
+    // Contexte local (évite document.querySelector global)
+    const form = event.currentTarget.closest("form") || document
+
+    // Total des bonus cochés
+    const total = this._calculateTotalSkillBonus(event)
+    const totalInput = form.querySelector("#totalSkillBonuses")
+    if (totalInput) totalInput.value = `+${total}`
+
+    // Sérialisation de la liste cochée pour submit
+    const parent = event.currentTarget.closest(".skill-bonuses")
+    const checked = Array.from(parent.querySelectorAll(".bonus-item.checked"))
+    const selected = checked.map((el) => ({
+      name: el.dataset.name,
+      pathType: el.dataset.path,
+      additionalInfos: el.dataset.info,
+      value: parseInt(el.dataset.value) || 0,
+    }))
+
+    const hidden = form.querySelector("#selectedSkillBonuses")
+    if (hidden) hidden.value = JSON.stringify(selected)
   }
 
   static _calculateTotalSkillBonus(event) {
@@ -236,6 +257,7 @@ export class COSkillRoll extends CORoll {
       total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       user: game.user.id,
+      selectedSkillBonuses: this.options.selectedSkillBonuses ?? [],
     }
   }
 }
@@ -417,6 +439,7 @@ export class COAttackRoll extends CORoll {
         tooltip,
         tempDamage: withDialog ? rollContext.tempDamage : dialogContext.tempDamage,
         tactical: withDialog ? rollContext.tactical : dialogContext.tactical,
+        selectedSkillBonuses: withDialog ? JSON.parse(rollContext.selectedSkillBonuses || "[]") : [],
         ...options,
       }
 

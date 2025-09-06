@@ -3848,6 +3848,62 @@ co-toggle-switch[checked] thumb {
   margin-top: 8px;
   font-weight: bold;
 }
+#interface #sidebar .chat-message .message-content .applied-skill-bonuses,
+#interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses {
+  margin-top: 10px;
+}
+.theme-dark #interface #sidebar .chat-message .message-content .applied-skill-bonuses,
+.theme-dark #interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses {
+  border-top: 2px solid darkred;
+}
+.theme-light #interface #sidebar .chat-message .message-content .applied-skill-bonuses,
+.theme-light #interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses {
+  border-top: 2px solid #084f7b;
+}
+#interface #sidebar .chat-message .message-content .applied-skill-bonuses label,
+#interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses label {
+  font-size: 16px;
+}
+#interface #sidebar .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list,
+#interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list {
+  text-align: left;
+}
+#interface #sidebar .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .skill-bonuses-label,
+#interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .skill-bonuses-label {
+  margin-bottom: 10px;
+}
+#interface #sidebar .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line,
+#interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line {
+  overflow: hidden;
+  text-align: left;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#interface #sidebar .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line span,
+#interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line span {
+  font-size: var(--font-size-14);
+  font-weight: 500;
+  padding: 0;
+}
+.theme-dark #interface #sidebar .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line span,
+.theme-dark #interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line span {
+  color: #e7d1b1;
+}
+.theme-light #interface #sidebar .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line span,
+.theme-light #interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line span {
+  color: #222;
+}
+#interface #sidebar .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line .b-value,
+#interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line .b-value,
+#interface #sidebar .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line .b-name,
+#interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line .b-name {
+  font-size: var(--font-size-16);
+  font-weight: 900;
+}
+#interface #sidebar .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line .b-info,
+#interface #ui-right-column-1 .chat-message .message-content .applied-skill-bonuses .skill-bonuses-list .bonus-line .b-info {
+  font-style: italic;
+}
 #interface #sidebar .chat-message .message-content .levelup-card .summary-section,
 #interface #ui-right-column-1 .chat-message .message-content .levelup-card .summary-section {
   grid-column: 1;
