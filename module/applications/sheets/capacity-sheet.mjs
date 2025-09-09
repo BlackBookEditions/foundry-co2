@@ -10,6 +10,8 @@ export default class CoCapacitySheet extends CoBaseItemSheet {
     },
   }
 
+  #actionTabSelected = null
+
   /** @override */
   static PARTS = {
     header: { template: "systems/co/templates/items/shared/header.hbs" },
@@ -29,6 +31,8 @@ export default class CoCapacitySheet extends CoBaseItemSheet {
     },
   }
 
+  static originalActionLabel = null
+
   /** @override */
   static TABS = {
     primary: {
@@ -38,13 +42,29 @@ export default class CoCapacitySheet extends CoBaseItemSheet {
     },
   }
 
-  #actionTabSelected = null
-
-  /** @override */
   async _prepareContext() {
     const context = await super._prepareContext()
 
     context.resolverSystemFields = this.document.system.schema.fields.actions.element.fields.resolvers.element.fields
+    context.actionsCount = Array.isArray(this.item.system.actions) ? this.item.system.actions.length : 0
+
+    const baseKey = "CO.sheet.tabs.capacity.actions"
+
+    // Enregistrer la valeur originale une seule fois
+    if (!this.constructor.originalActionLabel) {
+      this.constructor.originalActionLabel = game.i18n.translations?.CO?.sheet?.tabs?.capacity?.actions ?? game.i18n.localize(baseKey)
+    }
+
+    const baseLabel = this.constructor.originalActionLabel
+    const label = context.actionsCount > 0 ? `${baseLabel} (${context.actionsCount})` : baseLabel
+
+    // Écrase proprement la traduction active à chaque affichage
+    game.i18n.translations.CO ??= {}
+    game.i18n.translations.CO.sheet ??= {}
+    game.i18n.translations.CO.sheet.tabs ??= {}
+    game.i18n.translations.CO.sheet.tabs.capacity ??= {}
+    game.i18n.translations.CO.sheet.tabs.capacity.actions = label
+
     return context
   }
 

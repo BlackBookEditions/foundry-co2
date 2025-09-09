@@ -10,6 +10,8 @@ export default class CoEquipmentSheet extends CoBaseItemSheet {
     },
   }
 
+  static originalActionLabel = null
+
   /** @override */
   static PARTS = {
     header: { template: "systems/co/templates/items/shared/header.hbs" },
@@ -40,13 +42,27 @@ export default class CoEquipmentSheet extends CoBaseItemSheet {
 
   #actionTabSelected = null
 
-  /** @override */
   async _prepareContext() {
     const context = await super._prepareContext()
 
     context.resolverSystemFields = this.document.system.schema.fields.actions.element.fields.resolvers.element.fields
+    context.actionsCount = Array.isArray(this.item.system.actions) ? this.item.system.actions.length : 0
 
-    console.log(`CoEquipmentSheet - context`, context)
+    const baseKey = "CO.sheet.tabs.equipment.actions"
+
+    if (!this.constructor.originalActionLabel) {
+      this.constructor.originalActionLabel = game.i18n.translations?.CO?.sheet?.tabs?.equipment?.actions ?? game.i18n.localize(baseKey)
+    }
+
+    const baseLabel = this.constructor.originalActionLabel
+    const label = context.actionsCount > 0 ? `${baseLabel} (${context.actionsCount})` : baseLabel
+
+    game.i18n.translations.CO ??= {}
+    game.i18n.translations.CO.sheet ??= {}
+    game.i18n.translations.CO.sheet.tabs ??= {}
+    game.i18n.translations.CO.sheet.tabs.equipment ??= {}
+    game.i18n.translations.CO.sheet.tabs.equipment.actions = label
+
     return context
   }
 
