@@ -796,7 +796,7 @@ export default class CharacterData extends ActorData {
       const formula = `${hd} + ${level}`
       const labelTooltip = game.i18n.format("CO.ui.fastRestLabelTooltip", { formula: formula })
 
-      await this._applyRecovery(rp, hp, formula, game.i18n.localize("CO.dialogs.fastRest.title"), labelTooltip)
+      await this._applyRecovery(rp, hp, formula, game.i18n.localize("CO.dialogs.fastRest.title"), labelTooltip, false)
 
       // Récupération des charges des capacités
       await this.recoverCapacityCharges(isFullRest)
@@ -841,7 +841,7 @@ export default class CharacterData extends ActorData {
         }
 
         const labelTooltip = game.i18n.format("CO.ui.fullRestLabelTooltip", { formula: formula })
-        await this._applyRecovery(rp, hp, formula, game.i18n.localize("CO.dialogs.fullRest.title"), labelTooltip)
+        await this._applyRecovery(rp, hp, formula, game.i18n.localize("CO.dialogs.fullRest.title"), labelTooltip, true)
       }
 
       // Récupération des charges des capacités
@@ -885,16 +885,20 @@ export default class CharacterData extends ActorData {
    * @param {string} formula Formule de dés à lancer pour la récupération de PV.
    * @param {string} title Clé de localisation pour le titre de la carte de chat.
    * @param {string} labelTooltip Texte à afficher dans l'infobulle du label de la carte de chat.
+   * @param {boolean} isFullRest Indique si on est sur une récupération complète ou pas
    * @returns {Promise<void>} Résout lorsque la récupération est appliquée et le message de chat créé.
    */
-  async _applyRecovery(rp, hp, formula, title, labelTooltip) {
+  async _applyRecovery(rp, hp, formula, title, labelTooltip, isFullRest = false) {
     const roll = await new Roll(formula).roll()
     const toolTip = new Handlebars.SafeString(await roll.getTooltip())
 
     const newRp = foundry.utils.duplicate(rp)
     const newHp = foundry.utils.duplicate(hp)
 
-    newRp.value -= 1
+    // On diminue de1 les DR sauf si c'est un report complet et que l'on est déjà au max Fix #312
+    if ((isFullRest && rp.value != rp.max) || !isFullRest) {
+      newRp.value -= 1
+    }
     newHp.value += roll.total
     newHp.value = Math.min(newHp.value, newHp.max)
 
