@@ -37,10 +37,10 @@ export class Modifier extends foundry.abstract.DataModel {
    * Evalue la formule de modificateur pour un acteur en utilisant la source et la valeur specifiée. La valeur est une formule.
    *
    * @param {Object} actor The actor to be evaluated.
-   * @returns {int} The result of the evaluation.
+   * @returns {int|string} The result of the evaluation.
    */
   evaluate(actor) {
-    return Utils.evaluateCoModifier(actor, this.value, this.source)
+    return Utils.evaluateCoModifier(actor, this.value, this.source, this.target)
   }
 
   /**
