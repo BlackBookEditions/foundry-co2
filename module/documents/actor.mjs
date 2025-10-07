@@ -1853,7 +1853,8 @@ export default class COActor extends Actor {
         break
     }
     if (target) {
-      const damModifiers = this.system.computeTotalModifiersByTarget(this.system.combatModifiers, target)
+      let withDice = this.system.combatModifiers.some((m) => m.target === target && m.value.match("[dD]\\d"))
+      const damModifiers = this.system.computeTotalModifiersByTarget(this.system.combatModifiers, target, withDice)
       if (damModifiers) {
         if (damModifiers.total !== 0) damageFormula = `${damageFormula} + ${damModifiers.total}`
         if (damModifiers.total !== 0) damageFormulaTooltip = damageFormulaTooltip.concat(" +", damModifiers.tooltip)

@@ -251,8 +251,9 @@ export default class CharacterData extends ActorData {
    * Return the total modifier and the tooltip for the given target and an array of modifiers.
    * @param {Array} modifiers An array of modifier objects.
    * @param {SYSTEM.MODIFIERS.MODIFIER_TARGET} target The target for which the modifiers are filtered.
+   * @param {boolean} withDice Raw dice value can't be reduce, use a different methode
    **/
-  computeTotalModifiersByTarget(modifiers, target) {
+  computeTotalModifiersByTarget(modifiers, target, withDice = false) {
     if (!modifiers) return { total: 0, tooltip: "" }
     let modifiersByTarget = modifiers.filter((m) => m.target === target)
 
@@ -269,11 +270,14 @@ export default class CharacterData extends ActorData {
     ]
     if (liste.includes(target)) modifiersByTarget.push(...modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.all.id && m.subtype !== SYSTEM.MODIFIERS_SUBTYPE.skill.id))
     let total = 0
-    if (modifiersByTarget && modifiersByTarget.length > 0) total = modifiersByTarget.map((m) => m.evaluate(this.parent)).reduce((acc, curr) => acc + curr, 0)
+    if (modifiersByTarget && modifiersByTarget.length > 0) {
+      let evaluatedModifiers = modifiersByTarget.map((m) => m.evaluate(this.parent, withDice))
+      total = withDice ? evaluatedModifiers.join(" ") : evaluatedModifiers.reduce((acc, curr) => acc + curr, 0)
+    }
 
     let tooltip = ""
     for (const modifier of modifiersByTarget) {
-      let partialTooltip = modifier.getTooltip(this.parent)
+      let partialTooltip = modifier.getTooltip(this.parent, withDice)
       if (partialTooltip !== null) tooltip += partialTooltip
     }
 

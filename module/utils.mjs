@@ -35,7 +35,9 @@ export default class Utils {
     return game.i18n.localize(`CO.abilities.long.${ability}`)
   }
 
-  static damageType = [ SYSTEM.MODIFIERS_TARGET.damMelee.id, SYSTEM.MODIFIERS_TARGET.damRanged.id, SYSTEM.MODIFIERS_TARGET.damMagic.id ]
+  static isDamageType(target){
+    return [SYSTEM.MODIFIERS_TARGET.damMelee.id, SYSTEM.MODIFIERS_TARGET.damRanged.id, SYSTEM.MODIFIERS_TARGET.damMagic.id].includes(target)
+  }
 
   /**
    * Évalue un modificateur basé sur la formule fournie.
@@ -43,11 +45,10 @@ export default class Utils {
    * @param {Object} actor L'objet acteur contenant les données pertinentes.
    * @param {string} formula La formule à évaluer.
    * @param {Object} source L'objet source pour les valeurs personnalisées.
-   * @param {string} target Le type cible à évaluer.
-   * @returns {number|string} Le résultat de la formule évaluée ou 0 si invalide.
+   * @returns {number} Le résultat de la formule évaluée ou 0 si invalide.
    */
-  static evaluateCoModifier(actor, formula, source, target) {
-    if (formula === "") return 0
+  static evaluateCoModifier(actor, formula, source) {
+    if (formula === "" || formula.match("\\d+[d|D]\\d+")) return 0
 
     let newFormula = formula
     // Formule avec des raccourcis
@@ -56,20 +57,38 @@ export default class Utils {
       newFormula = Roll.replaceFormulaData(newFormula, actor.getRollData())
     }
 
-    // Permet d'afficher proprement les formules d'actions qui contiennent des dés,
-    if (this.damageType.includes(target) && (newFormula.includes("d") || newFormula.includes("D"))) {
-      // Remplacement des dés évolutifs (si présent)
-      if (formula.includes("°")) {
-        newFormula = Utils._replaceEvolvingDice(actor, newFormula)
-      }
-      return newFormula
-        .replaceAll("-", " - ")
-        .replaceAll("+", " + ")
-    } else {
-      // Evalue le résultat final : la formule évaluée peut être "1" ou "--1+2"
-      const resultat = new Roll(newFormula).evaluateSync().total
-      return resultat ?? 0
+    // Evalue le résultat final : la formule évaluée peut être "1" ou "--1+2"
+    const resultat = new Roll(newFormula).evaluateSync().total
+    return resultat ?? 0
+  }
+
+  /**
+   * Évalue un modificateur basé sur la formule fournie.
+   *
+   * @param {Object} actor L'objet acteur contenant les données pertinentes.
+   * @param {string} formula La formule à évaluer.
+   * @param {Object} source L'objet source pour les valeurs personnalisées.
+   * @param {boolean} withDiceValue Le type cible à évaluer.
+   * @returns {string} Le résultat de la formule évaluée.
+   */
+  static evaluateCoModifierWithDiceValue(actor, formula, source) {
+    if (formula === "") return "0"
+
+    let newFormula = formula
+    // Formule avec des raccourcis
+    if (formula.includes("@")) {
+      newFormula = Utils.evaluateFormulaCustomValues(actor, formula, source)
+      newFormula = Roll.replaceFormulaData(newFormula, actor.getRollData())
     }
+    if (newFormula.includes("°")) {
+      newFormula = Utils._replaceEvolvingDice(actor, newFormula)
+    }
+    return newFormula
+      .replaceAll(/(?<!\d)([dD])/g, "1$1")
+      .replaceAll(/\+-/g, " - ")
+      .replaceAll(/\+\+/g, " + ")
+      .replaceAll(/([+-])/g, " $1 ")
+      .trim()
   }
 
   /**

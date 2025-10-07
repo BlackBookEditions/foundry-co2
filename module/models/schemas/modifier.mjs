@@ -37,25 +37,28 @@ export class Modifier extends foundry.abstract.DataModel {
    * Evalue la formule de modificateur pour un acteur en utilisant la source et la valeur specifiée. La valeur est une formule.
    *
    * @param {Object} actor The actor to be evaluated.
+   * @param {boolean} withDiceValue optional boolean to evaluate if dice have to be compute
    * @returns {int|string} The result of the evaluation.
    */
-  evaluate(actor) {
-    return Utils.evaluateCoModifier(actor, this.value, this.source, this.target)
+  evaluate(actor, withDiceValue = false) {
+    console.log("evaluate dice ? ", withDiceValue)
+    return withDiceValue ? Utils.evaluateCoModifierWithDiceValue(actor, this.value, this.source) : Utils.evaluateCoModifier(actor, this.value, this.source)
   }
 
   /**
    * Generates a tooltip for the given actor based on the item's name and evaluated value.
    *
    * @param {Actor} actor The actor for which the tooltip is generated.
+   * @param {boolean} withDiceValue define if the formula contain dice value (false by default)
    * @returns {string|undefined} The generated tooltip string or undefined if the item is not found.
    */
-  getTooltip(actor) {
+  getTooltip(actor, withDiceValue = false) {
     const id = foundry.utils.parseUuid(this.source)?.id
     if (!id) return
     let item = actor.items.get(id)
     if (!item) return
     let name = item.name
-    let value = this.evaluate(actor)
+    let value = this.evaluate(actor, withDiceValue)
     return Utils.getTooltip(name, value)
   }
 

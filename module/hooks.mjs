@@ -295,4 +295,17 @@ export default function registerHooks() {
       if (game.user.isGM) document.system.updateAllActionsUuid()
     }
   })
+
+  Hooks.on("renderCoEquipmentSheet", (document, html, data) => {
+    const element = html instanceof HTMLElement ? html : html[0]
+    if (!element) return // exit if no element found
+    const inputFields = element.querySelectorAll("input[data-filter-type]")
+    const filterFunction = document._applyInputFilter
+    inputFields.forEach((input) => {
+      // unbind previous listener to not duplicate it
+      input.removeEventListener("input", filterFunction)
+      // Attach new listener
+      input.addEventListener("input", filterFunction)
+    })
+  })
 }
