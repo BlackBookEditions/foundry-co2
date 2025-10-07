@@ -783,29 +783,41 @@ export default class CharacterData extends ActorData {
     let rp = this.resources.recovery
     let mp = this.resources.mana
     const hd = this.hd
+    const newRp = foundry.utils.duplicate(rp)
+
+    // Récupération des charges des capacités
+    await this.recoverCapacityCharges(isFullRest)
+
+    // Dans les deux cas je remet les points de vies temporaires à 0
+    await this.parent.update({ "system.attributes.tempDm": 0 })
 
     // Récupération rapide
     if (!isFullRest) {
       if (rp.value <= 0) return ui.notifications.warn(game.i18n.localize("CO.notif.warningNoMoreRecoveryPoints"))
+        // On propose d'utiliser un point de DR
       const proceedFastRest = await foundry.applications.api.DialogV2.confirm({
         window: { title: game.i18n.localize("CO.dialogs.fastRest.title") },
         content: game.i18n.localize("CO.dialogs.fastRest.content"),
         rejectClose: false,
         modal: true,
       })
+      // Si on refuse, on sort
       if (!proceedFastRest) return
 
-      // Dépense d'un DR et récupération de PV
+      // Si on accepte on dépense d'un DR et récupération de PV
       const level = Math.round(this.attributes.level / 2) // +1/2 niveau
       const formula = `${hd} + ${level}`
       const labelTooltip = game.i18n.format("CO.ui.fastRestLabelTooltip", { formula: formula })
 
-      await this._applyRecovery(rp, hp, formula, game.i18n.localize("CO.dialogs.fastRest.title"), labelTooltip)
+      await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fastRest.title"), labelTooltip)
 
       // Récupération des charges des capacités
       await this.recoverCapacityCharges(isFullRest)
-    }
 
+      //Dépense du DR
+      newRp.value = rp.value - 1
+      await this.parent.update({ "system.resources.recovery": newRp })      
+    }
     // Récupération complète
     else {
       // Récupération du mana
@@ -821,12 +833,7 @@ export default class CharacterData extends ActorData {
         }
       }
 
-      // Récupération d'un DR
-      if (rp.value < rp.max) {
-        const newValue = rp.value + 1
-        await this.parent.update({ "system.resources.recovery.value": newValue })
-      }
-
+     
       const proceedFullRestRollDice = await foundry.applications.api.DialogV2.confirm({
         window: { title: game.i18n.localize("CO.dialogs.spendRecoveryPoint.title") },
         content: game.i18n.localize("CO.dialogs.spendRecoveryPoint.content"),
@@ -838,22 +845,24 @@ export default class CharacterData extends ActorData {
         // Cas particulier : plus de DR avant la récupération
         const level = Math.round(this.attributes.level / 2) // +1/2 niveau
         let formula
-        if (rp.value === 1) {
-          formula = `${hd} + ${level}`
+        if (rp.max === 0) {
+          formula = `${hd} + ${level}` 
         } else {
-          formula = `${this.hd.replace("d", "")}+${level}`
+          formula = `${this.hd.replace("d", "")} + ${level}`                   
         }
 
         const labelTooltip = game.i18n.format("CO.ui.fullRestLabelTooltip", { formula: formula })
-        await this._applyRecovery(rp, hp, formula, game.i18n.localize("CO.dialogs.fullRest.title"), labelTooltip)
-      }
+        await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fullRest.title"), labelTooltip)
 
-      // Récupération des charges des capacités
-      await this.recoverCapacityCharges(isFullRest)
+        // On aurait dû gagner 1 DR mais si on l'utilise pour la récup on va pas faire +1 et -1.
+      } else {
+         // Récupération d'un DR puisqu'on en dépense pas
+        if (rp.value < rp.max) {
+          newRp.value = rp.value + 1
+          await this.parent.update({ "system.resources.recovery.value": newRp.value })
+        }
+      }      
     }
-
-    // Dans les deux cas je remet les points de vies temporaires à 0
-    await this.parent.update({ "system.attributes.tempDm": 0 })
   }
 
   /**
@@ -884,21 +893,17 @@ export default class CharacterData extends ActorData {
    * Lance le jet de dés pour la récupération de PV, et affiche un message de chat avec le résultat.
    *
    * @async
-   * @param {Object} rp Objet représentant les points de récupération actuels.
    * @param {Object} hp Objet représentant les points de vie actuels.
    * @param {string} formula Formule de dés à lancer pour la récupération de PV.
    * @param {string} title Clé de localisation pour le titre de la carte de chat.
    * @param {string} labelTooltip Texte à afficher dans l'infobulle du label de la carte de chat.
    * @returns {Promise<void>} Résout lorsque la récupération est appliquée et le message de chat créé.
    */
-  async _applyRecovery(rp, hp, formula, title, labelTooltip) {
+  async _applyRecovery(hp, formula, title, labelTooltip) {
     const roll = await new Roll(formula).roll()
     const toolTip = new Handlebars.SafeString(await roll.getTooltip())
 
-    const newRp = foundry.utils.duplicate(rp)
     const newHp = foundry.utils.duplicate(hp)
-
-    newRp.value -= 1
     newHp.value += roll.total
     newHp.value = Math.min(newHp.value, newHp.max)
 
@@ -919,7 +924,7 @@ export default class CharacterData extends ActorData {
       .withRoll(roll)
       .create()
 
-    this.parent.update({ "system.resources.recovery": newRp, "system.attributes.hp": newHp })
+    this.parent.update({ "system.attributes.hp": newHp })
   }
 
   /**

@@ -46,6 +46,8 @@ export class CORoll extends Roll {
           isFailure = roll.total < difficulty
         }
       }
+      if (isCritical) isSuccess = true
+      if (isFumble) isFailure = true
       result = { diceResult, total, isCritical, isFumble, difficulty, isSuccess, isFailure }
     }
     return result

@@ -449,6 +449,52 @@ export default class COActor extends Actor {
   }
 
   /**
+   * Retourne une Map des actions visibles groupées par type d'action
+   * @returns {Promise<Map<string, Array>>} Map avec les id des types d'actions comme clés et les tableaux d'actions comme valeurs
+   */
+  async getVisibleActivableActionsByActionType() {
+    const allActions = await this.getVisibleActivableActions()
+    const actionsByType = new Map()
+
+    // Initialiser la map avec tous les types d'actions possibles
+    for (const actionType of Object.values(SYSTEM.ACTION_TYPES)) {
+      actionsByType.set(actionType.id, [])
+    }
+
+    // Grouper les actions par type
+    for (const action of allActions) {
+      if (actionsByType.has(action.type)) {
+        actionsByType.get(action.type).push(action)
+      }
+    }
+
+    return actionsByType
+  }
+
+  /**
+   * Retourne une Map des actions visibles groupées par type d'action de la capacité
+   * @returns {Promise<Map<string, Array>>} Map avec les id des types d'actions comme clés et les tableaux d'actions comme valeurs
+   */
+  async getVisibleActivableActionsBCapacityActionType() {
+    const allActions = await this.getVisibleActivableActions()
+    const actionsByCapacityType = new Map()
+
+    // Initialiser la map avec tous les types d'actions de capacité possibles
+    for (const type of Object.values(SYSTEM.CAPACITY_ACTION_TYPE)) {
+      actionsByCapacityType.set(type.id, [])
+    }
+
+    // Grouper les actions par type
+    for (const action of allActions) {
+      if (actionsByCapacityType.has(action.type)) {
+        actionsByCapacityType.get(action.type).push(action)
+      }
+    }
+
+    return actionsByCapacityType
+  }
+
+  /**
    * Retourne Toutes les actions visibles et activables des capacités et des équipements
    */
   async getVisibleActivableActions() {
