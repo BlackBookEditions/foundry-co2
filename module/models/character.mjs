@@ -841,10 +841,10 @@ export default class CharacterData extends ActorData {
         // Cas particulier : plus de DR avant la récupération
         const level = Math.round(this.attributes.level / 2) // +1/2 niveau
         let formula
-        if (rp.value === 1) {
-          formula = `${hd} + ${level}`
+        if (rp.max === 0) {
+          formula = `${hd} + ${level}` 
         } else {
-          formula = `${this.hd.replace("d", "")}+${level}`
+          formula = `${this.hd.replace("d", "")} + ${level}`                   
         }
 
         const labelTooltip = game.i18n.format("CO.ui.fullRestLabelTooltip", { formula: formula })
