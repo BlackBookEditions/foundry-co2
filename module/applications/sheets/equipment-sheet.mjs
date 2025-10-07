@@ -131,4 +131,26 @@ export default class CoEquipmentSheet extends CoBaseItemSheet {
   #onChangeActionTab(tab) {
     this.#actionTabSelected = tab
   }
+
+  /**
+   * Filter dice value on equipment input (trigger by a hook)
+   * @param event the triggered event
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _applyInputFilter(event) {
+    // The existing filter (no filter apply on damage input but filterType exist (dice-formula)
+    const FILTER_RULES = {
+      "no-dice-formula": /([+-]?\s*\d*\s*[dD]\s*\d+\s*°)/g,
+    }
+    const inputField = event.currentTarget || event.target
+    const filterType = inputField.dataset.filterType
+    const regex = FILTER_RULES[filterType] // Check if filter type exist in list
+
+    if (regex) {
+      let currentValue = inputField.value
+      // Apply filter and remove value
+      inputField.value = currentValue.replaceAll(regex, "")
+    }
+  }
 }

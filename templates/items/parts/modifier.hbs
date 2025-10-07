@@ -41,7 +41,7 @@
   </div>
   <div class="form-group">
 
-    <input name="system.actions.{{idx}}.modifiers.{{id}}.value" type="text" value="{{m.value}}" data-dtype="String" />
+    <input name="system.actions.{{idx}}.modifiers.{{id}}.value" data-filter-type="{{#if (or (eq m.target "damMelee") (eq m.target "damRanged") (eq m.target "damMagic"))}}dice-formula{{else}}no-dice-formula{{/if}}" type="text" value="{{m.value}}" data-dtype="String" />
   </div>
   <div class="form-group">
     <label>{{localize "CO.ui.target"}}</label>
