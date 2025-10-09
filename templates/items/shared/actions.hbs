@@ -28,7 +28,7 @@
                                         <input class="field-value" name="system.actions.{{idx}}.label" type="text"
                                             value="{{action.label}}" placeholder="{{localize 'CO.ui.actionName'}}"
                                             data-dtype="String" {{#if @root.locked}}readonly{{/if}}/>
-                                        <button type="button" class="icon fa-solid fa-trash" data-action="deleteAction" data-tooltip="CO.ui.removeAction" {{#if @root.locked}}disabled{{/if}}></button>
+                                        <button type="button" class="icon fa-solid fa-trash" data-action="deleteAction" data-tooltip="{{localize 'CO.ui.removeAction'}}" {{#if @root.locked}}disabled{{/if}}></button>
                                     </div>
                                 </div>                            
                                 {{formGroup action.schema.fields.chatFlavor value=action.chatFlavor name=(concat "system.actions." idx ".chatFlavor") readonly=@root.locked}}                            

@@ -124,14 +124,16 @@
     </fieldset>
     {{/if}} 
     <fieldset class="targetsBox">
-        <legend>{{localize "CO.ui.attackTarget"}}</legend>
-        <div class="targets center">
-            {{#each targets as |target id|}}
-            <div class="target">
-                <img class="actor-image" src="{{token.document.texture.src}}" data-tooltip="{{target.name}}" height="50px" width="50px" data-id="{{actor.id}}" data-uuid="{{uuid}}"/>
-            </div> 
-            {{/each}}
-        </div>
+        {{#if targets}}
+            <legend>{{localize "CO.ui.attackTarget"}}</legend>
+            <div class="targets center">
+                {{#each targets as |target id|}}
+                <div class="target">
+                    <img class="actor-image" src="{{target.token.document.texture.src}}" data-tooltip="{{target.name}}" height="50px" width="50px" data-id="{{target.actor.id}}" data-uuid="{{target.uuid}}"/>
+                </div> 
+                {{/each}}
+            </div>
+        {{/if}}
     </section>
         
 {{else}}
