@@ -22,7 +22,7 @@
             
             <fieldset class="learn">
                 <legend>{{localize "CO.ui.learn"}}</legend>
-                {{formGroup systemFields.learned value=systemSource.learned localize=true disabled=locked}}
+              {{formGroup systemFields.learned value=systemSource.learned localize=true disabled=cannotBeLearned}}
             </fieldset>
         </section>
 
