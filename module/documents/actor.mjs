@@ -145,7 +145,7 @@ export default class COActor extends Actor {
   }
 
   /**
-   * Retourne  un tableau d'objets comprenant les voies et les capacités associées
+   * Retourne un tableau d'objets comprenant les voies et les capacités associées
    */
   async getPathGroups() {
     let pathGroups = []
@@ -826,13 +826,7 @@ export default class COActor extends Actor {
     // Mise à jour de la capacité et de ses actions
     await this._toggleItemFieldAndActions(capacity, "learned", state)
 
-    // Mise à jour du rang de la voie correspondante
-    if (state) {
-      await path.update({ "system.rank": currentRank + 1 })
-    } else {
-      // Mise à jour du rang de la voie correspondante
-      await path.update({ "system.rank": currentRank - 1 })
-    }
+    await path.update({ "system.rank": path.system.numberLearnedCapacities })
 
     // Gestion d'une éventuelle capacité liée
     if (capacity.system.allowLinkedCapacity && capacity.system.linkedCapacity) {
@@ -843,7 +837,15 @@ export default class COActor extends Actor {
     }
   }
 
-  canLearnCapacity(capacity, path) {
+  // Il faudra ajouter des filtres lors de l'integration des systèmes de magie alternatif (Atlas Osgild)
+  /**
+   * Permet de déterminer si une capacité peut etre apprise en suivant les règles standard
+   * @param {CapacityData} capacity la capacité à apprendre
+   * @param {PathData} path la voie de la capacité
+   * @param {boolean} notify active / désactive les notification utilisateur
+   * @returns {boolean} true si la capacité peut être apprise
+   */
+  canLearnCapacity(capacity, path, notify = true) {
     // RULE : Pour obtenir une capacité, il faut avoir un niveau minimal
     // Les capacités de rang 6 à 8 sont réservées aux voies de prestige
     const requiredLevel = SYSTEM.CAPACITY_MINIMUM_LEVEL[capacity.system.rank]
@@ -854,7 +856,7 @@ export default class COActor extends Actor {
     }
 
     if (this.system.attributes.level < requiredLevel) {
-      ui.notifications.warn(game.i18n.localize("CO.notif.warningLevelTooLow"))
+      if (notify) ui.notifications.warn(game.i18n.localize("CO.notif.warningLevelTooLow"))
       return false
     }
 
@@ -865,7 +867,7 @@ export default class COActor extends Actor {
       const { id } = foundry.utils.parseUuid(c)
       const current = this.items.get(id)
       if (!current.system.learned) {
-        ui.notifications.warn(game.i18n.localize("CO.notif.warningNeedLearnedCapacities"))
+        if (notify) ui.notifications.warn(game.i18n.localize("CO.notif.warningNeedLearnedCapacities"))
         return false
       }
     }

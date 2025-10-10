@@ -138,8 +138,8 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     context.details = this.document.system.details
     context.paths = this.document.paths
     context.pathGroups = await this.document.getPathGroups()
-    context.capacities = this.document.capacities
-    context.learnedCapacities = this.document.learnedCapacities
+    context.capacity = this.document.capacity
+    context.learnedCapacities = await this.#evaluateCapacitiesLearn(this.document.learnedCapacities)
 
     const capacitiesOffPaths = this.document.capacitiesOffPaths
 
@@ -205,6 +205,22 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
 
     if (CONFIG.debug.co?.sheets) console.debug(Utils.log(`CoBaseActorSheet - context`), context)
     return context
+  }
+
+  /**
+   * Permet de controler si les capacités apprisent respectent les regle de base du system
+   * @param {CapacityData[]} learnedCapacities la liste des capacités maitrisé avant vérification
+   * @returns {CapacityData[]} la liste filtrer des capacités apprisent
+   */
+  async #evaluateCapacitiesLearn(learnedCapacities) {
+    return learnedCapacities
+      .map(async (c) => {
+        const path = this.document.items.get(c.system.path.split(".")[3])
+        const canLearned = this.document.canLearnCapacity(c, path, false)
+        await this.actor.toggleCapacityLearned(c._id, canLearned)
+        return c
+      })
+      .filter(async (c) => await c.system.learned)
   }
 
   // #region Actions

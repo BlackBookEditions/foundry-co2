@@ -43,9 +43,21 @@ export default class CoCapacitySheet extends CoBaseItemSheet {
   /** @override */
   async _prepareContext() {
     const context = await super._prepareContext()
-
+    // Permet de controler plus finement la checkbox en fonction du respects des règles de base du system
+    context.cannotBeLearned = !this.canBeLearned(context)
     context.resolverSystemFields = this.document.system.schema.fields.actions.element.fields.resolvers.element.fields
     return context
+  }
+
+  /**
+   * Verifie si la capacité peut être apprise afin de dégriser la checkbox si la capacité est lié à un acteur
+   * @param context
+   * @returns {boolean}
+   */
+  canBeLearned(context) {
+    if (context.item.parent.type !== "character") return context.unlocked
+    const path = this.actor.items.get(context.item.system.path.split(".")[3])
+    return context.unlocked && (context?.item?.parent?.canLearnCapacity(context.item, path, false) ?? false)
   }
 
   /** @inheritDoc */
