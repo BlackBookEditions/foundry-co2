@@ -53,4 +53,47 @@ export default class CoProfileSheet extends CoBaseItemSheet {
     console.log(`CoProfileSheet - context`, context)
     return context
   }
+
+  /** @override */
+  _configureRenderParts(options) {
+    const parts = super._configureRenderParts(options)
+
+    // Limité exactement (pas Observateur / Propriétaire)
+    const isLimitedOnly = this.document.testUserPermission(game.user, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED, { exact: true })
+
+    if (isLimitedOnly) {
+      const filtered = {}
+      if (parts.header) filtered.header = parts.header
+      if (parts.sidebar) filtered.sidebar = parts.sidebar
+      if (parts.description) filtered.description = parts.description
+      return filtered
+    }
+
+    return parts
+  }
+
+  /** @override */
+  _configureRenderOptions(options) {
+    super._configureRenderOptions(options)
+
+    const isLimitedOnly = this.document.testUserPermission(game.user, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED, { exact: true })
+
+    if (isLimitedOnly) {
+      delete options.tabs
+    }
+  }
+
+  /** @override */
+  async _onRender(context, options) {
+    await super._onRender(context, options)
+
+    const isLimitedOnly = this.document.testUserPermission(game.user, foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED, { exact: true })
+    if (!isLimitedOnly) return
+
+    const descTab = this.element?.querySelector('.tab[data-tab="description"]')
+    if (descTab) descTab.classList.add("active")
+
+    const descPart = this.element?.querySelector('[data-application-part="description"]')
+    if (descPart) descPart.style.removeProperty("display")
+  }
 }

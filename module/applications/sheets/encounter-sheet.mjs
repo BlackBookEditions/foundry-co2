@@ -82,7 +82,15 @@ export default class COEncounterSheet extends COBaseActorSheet {
   /** @override */
   async _onRender(context, options) {
     await super._onRender(context, options)
-    // Additional encounter-specific render logic can go here
+
+    const isLimitedView = this.isVisible && !this.isObserver && !this.isEditable
+    if (!isLimitedView) return
+
+    const notesTab = this.element?.querySelector('.tab[data-tab="notes"]')
+    if (notesTab) notesTab.classList.add("active")
+
+    const notesPart = this.element?.querySelector('[data-application-part="notes"]')
+    if (notesPart) notesPart.style.removeProperty("display")
   }
 
   /**
@@ -203,6 +211,33 @@ export default class COEncounterSheet extends COBaseActorSheet {
         return await this.document.addCapacity(item, null)
       default:
         return await Item.implementation.create(item.toObject(), { parent: this.actor })
+    }
+  }
+
+  /** @override */
+  _configureRenderParts(options) {
+    const parts = super._configureRenderParts(options)
+
+    const isLimitedView = this.isVisible && !this.isObserver && !this.isEditable
+
+    if (isLimitedView) {
+      const filtered = {}
+      if (parts.header) filtered.header = parts.header
+      if (parts.sidebar) filtered.sidebar = parts.sidebar
+      if (parts.notes) filtered.notes = parts.notes
+      return filtered
+    }
+
+    return parts
+  }
+
+  /** @override */
+  _configureRenderOptions(options) {
+    super._configureRenderOptions(options)
+
+    const isLimitedView = this.isVisible && !this.isObserver && !this.isEditable
+    if (isLimitedView) {
+      delete options.tabs
     }
   }
 }

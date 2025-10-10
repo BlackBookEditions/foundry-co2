@@ -1,7 +1,8 @@
 {{!-- Character Biography Tab Template --}}
 {{!log "Chroniques Oubliées | biography" this}}
 <section class="tab standard-form biography{{#if tabs.biography.active}} active{{/if}}" data-group="primary" data-tab="biography">
-
+    
+    {{#unless viewLimited}} 
     <div class="features section-container">
         <div class="section-header">
             <h4>{{localize "CO.label.long.profile"}} &amp; {{localize "CO.ui.features"}}</h4>
@@ -40,7 +41,17 @@
             </ol>
         </div>
     </div>
-
+    {{/unless}}
+    {{#if viewLimited}}
+        <div class="form-group">
+            <label>{{localize "CO.ui.size"}}</label>
+            <div class="form-fields">
+                <select data-action="sizeChange" name="system.details.size" data-type="String" {{#unless unlocked}}disabled{{/unless}} style="width:100%" >
+                    {{selectOptions choiceSize selected=details.size localize=true}}
+                </select>
+            </div>
+        </div>    
+    {{else}}
     <h4 class="form-header"><a data-action="toggleSection" data-toggle-type="biography-misc">{{localize "CO.ui.misc"}}</a></h4>
     <div class="misc foldable {{ifThen biographyMiscExpanded 'expanded' 'folded'}}">
         <div class="form-group">
@@ -67,6 +78,7 @@
             </div>
         </div>
     </div>
+    {{/if}}
 
     <h4 class="form-header"><a data-action="toggleSection" data-toggle-type="biography-bio">{{localize "CO.ui.biography"}}</a></h4>
     <div class="bio notes foldable {{ifThen biographyBioExpanded 'expanded' 'folded'}}">
@@ -76,12 +88,14 @@
                 {{formInput systemFields.details.fields.biography.fields.public enriched=enrichedBiographyPublic value=system.details.biography.public name="system.details.biography.public" toggled=true}}
             </div>
         </div>
+        {{#unless viewLimited}}
         <div class="notes-section">
             <label class="details-label">{{localize "CO.ui.private"}}</label>
             <div class="notes-text">
                 {{formInput systemFields.details.fields.biography.fields.private enriched=enrichedBiographyPrivate value=system.details.biography.private name="system.details.biography.private" toggled=true}}
             </div>
         </div>
+        {{/unless}}
     </div>
 
     <h4 class="form-header"><a data-action="toggleSection" data-toggle-type="biography-appearance">{{localize "CO.ui.appearance"}}</a></h4>
@@ -92,11 +106,13 @@
                  {{formInput systemFields.details.fields.appearance.fields.public enriched=enrichedAppearancePublic value=system.details.appearance.public name="system.details.appearance.public" toggled=true}}
             </div>
         </div>
+        {{#unless viewLimited}} 
         <div class="notes-section">
             <label class="details-label">{{localize "CO.ui.private"}}</label>
             <div class="notes-text">
                 {{formInput systemFields.details.fields.appearance.fields.private enriched=enrichedAppearancePrivate value=system.details.appearance.private name="system.details.appearance.private" toggled=true}}
             </div>
         </div>
+        {{/unless}}
     </div>
 </section>

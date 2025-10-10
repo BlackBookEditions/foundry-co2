@@ -123,7 +123,15 @@ export default class COCharacterSheet extends COBaseActorSheet {
   /** @override */
   async _onRender(context, options) {
     await super._onRender(context, options)
-    // Additional character-specific render logic can go here
+
+    const isLimitedView = this.isVisible && !this.isObserver && !this.isEditable
+    if (!isLimitedView) return
+
+    const bioTab = this.element?.querySelector('.tab[data-tab="biography"]')
+    if (bioTab) bioTab.classList.add("active")
+
+    const bioPart = this.element?.querySelector('[data-application-part="biography"]')
+    if (bioPart) bioPart.style.removeProperty("display")
   }
 
   /**
@@ -476,5 +484,31 @@ export default class COCharacterSheet extends COBaseActorSheet {
   static async #onRollFortune(event, target) {
     event.preventDefault()
     await this.actor.system.rollFortune()
+  }
+
+  /** @override */
+  _configureRenderParts(options) {
+    const parts = super._configureRenderParts(options)
+    const isLimitedView = this.isVisible && !this.isObserver && !this.isEditable
+
+    if (isLimitedView) {
+      const filtered = {}
+      if (parts.header) filtered.header = parts.header
+      if (parts.sidebar) filtered.sidebar = parts.sidebar
+      if (parts.biography) filtered.biography = parts.biography
+      return filtered
+    }
+
+    return parts
+  }
+
+  /** @override */
+  _configureRenderOptions(options) {
+    super._configureRenderOptions(options)
+
+    const isLimitedView = this.isVisible && !this.isObserver && !this.isEditable
+    if (isLimitedView) {
+      delete options.tabs
+    }
   }
 }
