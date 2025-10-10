@@ -7,10 +7,18 @@
         <div class="sidebar-label melee-label">
           <h4>{{localize "CO.label.short.melee"}}</h4>
         </div>
-        <div class="melee-value labelled-field" data-tooltip="{{combat.melee.tooltipValue}}">
-          <i class="fas fa-fw fa-sword"></i>
-          {{numberFormat combat.melee.value decimals=0 sign=true}}
-        </div>
+
+        {{#if viewLimited}}
+          <div class="melee-value labelled-field">
+            <i class="fas fa-fw fa-sword"></i>??
+          </div>
+        {{else}}
+          <div class="melee-value labelled-field" data-tooltip="{{combat.melee.tooltipValue}}">
+            <i class="fas fa-fw fa-sword"></i>
+            {{numberFormat combat.melee.value decimals=0 sign=true}}
+          </div>
+        {{/if}}
+
       </div>
       {{#if unlocked}}
         <div class="sidebar-section-content">
@@ -57,10 +65,16 @@
           <!--                <a class="roll-icon roll-ranged"><i class="fas fa-dice-d20"></i><i class="fas fa-fw fa-plus"></i><div>{{!combat.ranged.value}}</div></a>-->
           <!--                <a class="roll-icon roll-ranged"><i class="fas fa-dice-d20"></i><i class="fas fa-fw fa-plus"></i><div>{{!combat.ranged.value}}</div></a>-->
         </div>
-        <div class="ranged-value labelled-field" data-tooltip="{{combat.ranged.tooltipValue}}">
-          <i class="fas fa-fw fa-bow-arrow"></i>
-          {{numberFormat combat.ranged.value decimals=0 sign=true}}
-        </div>
+        {{#if viewLimited}}
+          <div class="ranged-value labelled-field">
+            <i class="fas fa-fw fa-bow-arrow"></i>??
+          </div>
+        {{else}}
+          <div class="ranged-value labelled-field" data-tooltip="{{combat.ranged.tooltipValue}}">
+            <i class="fas fa-fw fa-bow-arrow"></i>
+            {{numberFormat combat.ranged.value decimals=0 sign=true}}
+          </div>
+        {{/if}}
       </div>
       {{#if unlocked}}
         <div class="sidebar-section-content">
@@ -104,10 +118,16 @@
           <!--                <a class="roll-icon roll-magic"><i class="fas fa-dice-d20"></i><i class="fas fa-fw fa-plus"></i><div>{{!combat.magic.value}}</div></a>-->
           <!--                <a class="roll-icon roll-magic"><i class="fas fa-dice-d20"></i><i class="fas fa-fw fa-plus"></i><div>{{!combat.magic.value}}</div></a>-->
         </div>
-        <div class="magic-value labelled-field" data-tooltip="{{combat.magic.tooltipValue}}">
-          <i class="fas fa-fw fa-wand-magic-sparkles"></i>
-          {{numberFormat combat.magic.value decimals=0 sign=true}}
-        </div>
+        {{#if viewLimited}}
+          <div class="magic-value labelled-field">
+            <i class="fas fa-fw fa-wand-magic-sparkles"></i>??
+          </div>
+        {{else}}
+          <div class="magic-value labelled-field" data-tooltip="{{combat.magic.tooltipValue}}">
+            <i class="fas fa-fw fa-wand-magic-sparkles"></i>
+            {{numberFormat combat.magic.value decimals=0 sign=true}}
+          </div>
+        {{/if}}
       </div>
       {{#if unlocked}}
         <div class="sidebar-section-content">
@@ -151,10 +171,16 @@
           <!--                <a class="roll-icon roll-init"><i class="fas fa-dice-d20"></i><i class="fas fa-fw fa-plus"></i><div>{{!combat.init.value}}</div></a>-->
           <!--                <a class="roll-icon roll-init"><i class="fas fa-dice-d20"></i><i class="fas fa-fw fa-plus"></i><div>{{!combat.init.value}}</div></a>-->
         </div>
-        <div class="init-value labelled-field" data-tooltip="{{combat.init.tooltipValue}}">
-          <i class="fas fa-solid fa-swords fa-fw"></i>
-          {{combat.init.value}}
-        </div>
+        {{#if viewLimited}}
+          <div class="init-value labelled-field">
+            <i class="fas fa-solid fa-swords fa-fw"></i>??
+          </div>
+        {{else}}
+          <div class="init-value labelled-field" data-tooltip="{{combat.init.tooltipValue}}">
+            <i class="fas fa-solid fa-swords fa-fw"></i>
+            {{combat.init.value}}
+          </div>
+        {{/if}}
       </div>
       {{#if unlocked}}
         <div class="sidebar-section-content">
@@ -194,12 +220,20 @@
     <div class="sidebar-section armor-section">
       <div class="sidebar-section-header">
         <div class="sidebar-label armor-label">
+          {{#if viewLimited}}
+          <h4>{{localize "CO.label.long.def"}}</h4>
+        </div>
+        <div class="armor-base labelled-field">
+          <i class="fas fa-fw fa-shield-alt"></i>??
+        </div>
+        {{else}}
           <h4 data-tooltip="Malus d'encombrement : {{overloadMalus}}">{{localize "CO.label.long.def"}}</h4>
         </div>
         <div class="armor-base labelled-field" data-tooltip="{{combat.def.tooltipValue}}">
           <i class="fas fa-fw fa-shield-alt"></i>
           {{combat.def.value}}
         </div>
+        {{/if}}
       </div>
       {{#if unlocked}}
         <div class="sidebar-section-content">
@@ -241,10 +275,16 @@
         <div class="sidebar-label dr-label">
           <h4>{{localize "CO.ui.dr"}}</h4>
         </div>
-        <div class="dr-base labelled-field" data-tooltip="{{combat.dr.tooltipValue}}">
+        {{#if viewLimited}}
+          <div class="dr-base labelled-field">
+          <i class="fas fa-fw fa-universal-access"></i>??
+        </div>
+        {{else}}
+          <div class="dr-base labelled-field" data-tooltip="{{combat.dr.tooltipValue}}">
           <i class="fas fa-fw fa-universal-access"></i>
           {{combat.dr.value}}
         </div>
+        {{/if}}
       </div>
       {{#if unlocked}}
         <div class="sidebar-section-content">
@@ -280,11 +320,16 @@
           <h4 data-tooltip="{{localize 'CO.label.long.hp'}}">{{localize "CO.label.short.hp"}}</h4>
         </div>
         <div class="hit-points labelled-field">
+        {{#if viewLimited}}
+          <i class="fas fa-fw fa-heart"></i>??
+        </div>
+        {{else}}
           <i class="fas fa-fw fa-heart"></i>
           <input class="current" name="system.attributes.hp.value" value="{{attributes.hp.value}}" type="number" data-dtype="Number" />
           <span class="slash">/</span>
           <span class="max" data-tooltip="{{attributes.hp.tooltip}}">{{attributes.hp.max}}</span>
         </div>
+        {{/if}}
       </div>
       {{#if unlocked}}
         <div class="sidebar-section-content">
@@ -319,7 +364,11 @@
         </div>
         <div class="hit-points labelled-field">
           <i class="fas fa-fw fa-heart-broken"></i>
-          <input class="temp-dm" name="system.attributes.tempDm" value="{{attributes.tempDm}}" type="number" data-dtype="Number" />
+          {{#if viewLimited}}
+            ??
+          {{else}}
+            <input class="temp-dm" name="system.attributes.tempDm" value="{{attributes.tempDm}}" type="number" data-dtype="Number" />
+          {{/if}}
         </div>
       </div>
     </div>
@@ -330,10 +379,14 @@
           <h4 data-tooltip="{{localize 'CO.resources.long.fortune'}}">{{localize "CO.resources.medium.fortune"}}</h4>
         </div>
         <div class="resource-points labelled-field">
-          <i class="fas fa-fw fa-clover" data-action="rollFortune" data-tooltip="Jet de chance"></i>
-          <input class="current" name="system.resources.fortune.value" value="{{resources.fortune.value}}" type="number" data-dtype="Number" placeholder="0" />
-          <span class="slash">/</span>
-          <span class="max" data-tooltip="{{resources.fortune.tooltip}}">{{resources.fortune.max}}</span>
+          {{#if viewLimited}}
+            <i class="fas fa-fw fa-clover"></i>??
+          {{else}}
+            <i class="fas fa-fw fa-clover" data-action="rollFortune" data-tooltip="Jet de chance"></i>
+            <input class="current" name="system.resources.fortune.value" value="{{resources.fortune.value}}" type="number" data-dtype="Number" placeholder="0" />
+            <span class="slash">/</span>
+            <span class="max" data-tooltip="{{resources.fortune.tooltip}}">{{resources.fortune.max}}</span>
+          {{/if}}
         </div>
       </div>
       {{#if unlocked}}
@@ -378,10 +431,14 @@
           <h4 data-tooltip="{{localize 'CO.resources.long.recovery'}}">{{localize "CO.resources.medium.recovery"}}</h4>
         </div>
         <div class="resource-points labelled-field">
-          <i class="fas fa-fw fa-heart-pulse use-recovery"></i>
-          <input class="current" name="system.resources.recovery.value" value="{{resources.recovery.value}}" type="number" data-dtype="Number" placeholder="0" />
-          <span class="slash">/</span>
-          <span class="max" data-tooltip="{{resources.recovery.tooltip}}">{{resources.recovery.max}}</span>
+          {{#if viewLimited}}
+            <i class="fas fa-fw fa-heart-pulse use-recovery"></i>??
+          {{else}}
+            <i class="fas fa-fw fa-heart-pulse use-recovery"></i>
+            <input class="current" name="system.resources.recovery.value" value="{{resources.recovery.value}}" type="number" data-dtype="Number" placeholder="0" />
+            <span class="slash">/</span>
+            <span class="max" data-tooltip="{{resources.recovery.tooltip}}">{{resources.recovery.max}}</span>
+          {{/if}}
         </div>
       </div>
       {{#if unlocked}}
@@ -426,10 +483,14 @@
           <h4>{{localize "CO.resources.medium.mana"}}</h4>
         </div>
         <div class="resource-points labelled-field">
-          <i class="fas fa-fw fa-bolt"></i>
-          <input class="current" name="system.resources.mana.value" value="{{resources.mana.value}}" type="number" data-dtype="Number" placeholder="0" />
-          <span class="slash">/</span>
-          <span class="max" data-tooltip="{{resources.mana.tooltip}}">{{resources.mana.max}}</span>
+          {{#if viewLimited}}
+            <i class="fas fa-fw fa-bolt"></i>??
+          {{else}}
+            <i class="fas fa-fw fa-bolt"></i>
+            <input class="current" name="system.resources.mana.value" value="{{resources.mana.value}}" type="number" data-dtype="Number" placeholder="0" />
+            <span class="slash">/</span>
+            <span class="max" data-tooltip="{{resources.mana.tooltip}}">{{resources.mana.max}}</span>
+          {{/if}}
         </div>
       </div>
       {{#if unlocked}}
@@ -475,7 +536,11 @@
           <h4>{{localize "CO.label.long.movement"}}</h4>
         </div>
         <div class="mvt-base labelled-field">
-          {{attributes.movement.value}}&nbsp;{{attributes.movement.unit}}
+          {{#if viewLimited}}
+            ??
+          {{else}}
+            {{attributes.movement.value}}&nbsp;{{attributes.movement.unit}}
+          {{/if}}
         </div>
       </div>
       {{#if unlocked}}
@@ -506,6 +571,7 @@
         </div>
       {{/if}}
     </div>
+    {{#unless viewLimited}}
     <!-- STATE MODIFIERS -->
     <div class="sidebar-section speed-section">
       <div class="sidebar-section-header">
@@ -534,5 +600,6 @@
         </ul>
       </div>
     </div>
+    {{/unless}}
   </div>
 </div>

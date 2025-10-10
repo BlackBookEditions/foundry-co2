@@ -7,10 +7,16 @@
         <div class="sidebar-label init-label">
           <h4>{{localize "CO.label.long.init"}}</h4>
         </div>
-        <div class="init-value labelled-field" data-tooltip="{{combat.init.tooltipValue}}">
-          <i class="fas fa-solid fa-swords fa-fw"></i>
-          {{combat.init.value}}
-        </div>
+        {{#if viewLimited}}
+          <div class="init-value labelled-field">
+            <i class="fas fa-solid fa-swords fa-fw"></i>??
+          </div>
+        {{else}}
+          <div class="init-value labelled-field" data-tooltip="{{combat.init.tooltipValue}}">
+            <i class="fas fa-solid fa-swords fa-fw"></i>
+            {{combat.init.value}}
+          </div>
+        {{/if}}
       </div>
       {{#if unlocked}}
         <div class="sidebar-section-content">
@@ -39,10 +45,16 @@
         <div class="sidebar-label armor-label">
           <h4>{{localize "CO.label.long.def"}}</h4>
         </div>
-        <div class="armor-base labelled-field" data-tooltip="{{combat.def.tooltipValue}}">
-          <i class="fas fa-fw fa-shield-alt"></i>
-          {{combat.def.value}}
-        </div>
+        {{#if viewLimited}}
+          <div class="armor-base labelled-field">
+            <i class="fas fa-fw fa-shield-alt"></i>??
+          </div>
+        {{else}}
+          <div class="armor-base labelled-field" data-tooltip="{{combat.def.tooltipValue}}">
+            <i class="fas fa-fw fa-shield-alt"></i>
+            {{combat.def.value}}
+          </div>
+        {{/if}}
       </div>
       {{#if unlocked}}
         <div class="sidebar-section-content">
@@ -79,10 +91,16 @@
         <div class="sidebar-label dr-label">
           <h4>{{localize "CO.ui.dr"}}</h4>
         </div>
-        <div class="dr-base labelled-field" data-tooltip="{{combat.dr.tooltipValue}}">
-          <i class="fas fa-fw fa-universal-access"></i>
-          {{combat.dr.value}}
-        </div>
+        {{#if viewLimited}}
+          <div class="dr-base labelled-field">
+            <i class="fas fa-fw fa-universal-access"></i>??
+          </div>
+        {{else}}
+          <div class="dr-base labelled-field" data-tooltip="{{combat.dr.tooltipValue}}">
+            <i class="fas fa-fw fa-universal-access"></i>
+            {{combat.dr.value}}
+          </div>
+        {{/if}}
       </div>
       {{#if unlocked}}
         <div class="sidebar-section-content">
@@ -118,12 +136,19 @@
         <div class="sidebar-label">
           <h4 data-tooltip="{{localize 'CO.label.long.hp'}}">{{localize "CO.label.short.hp"}}</h4>
         </div>
-        <div class="hit-points labelled-field">
-          <i class="fas fa-fw fa-heart"></i>
-          <input class="current" name="system.attributes.hp.value" value="{{attributes.hp.value}}" type="number" data-dtype="Number" />
-          <span class="slash">/</span>
-          <span class="max" data-tooltip="{{attributes.hp.tooltip}}">{{attributes.hp.max}}</span>
-        </div>
+        {{#if viewLimited}}
+          <div class="hit-points labelled-field">
+            <i class="fas fa-fw fa-heart"></i>??
+          </div>
+        {{else}}
+          <div class="hit-points labelled-field">
+            <i class="fas fa-fw fa-heart"></i>
+            <input class="current" name="system.attributes.hp.value" value="{{attributes.hp.value}}" type="number" data-dtype="Number" />
+            <span class="slash">/</span>
+            <span class="max" data-tooltip="{{attributes.hp.tooltip}}">{{attributes.hp.max}}</span>
+          </div>
+        {{/if}}
+
       </div>
       {{#if unlocked}}
         <div class="sidebar-section-content">
@@ -158,8 +183,12 @@
           <h4 data-tooltip="{{localize 'CO.label.long.tempDm'}}">{{localize "CO.label.short.tempDm"}}</h4>
         </div>
         <div class="hit-points labelled-field">
-          <i class="fas fa-fw fa-heart-broken"></i>
-          <input class="temp-dm" name="system.attributes.tempDm" value="{{attributes.tempDm}}" type="number" data-dtype="Number" />
+          {{#if viewLimited}}
+            <i class="fas fa-fw fa-heart-broken"></i>??
+          {{else}}
+            <i class="fas fa-fw fa-heart-broken"></i>
+            <input class="temp-dm" name="system.attributes.tempDm" value="{{attributes.tempDm}}" type="number" data-dtype="Number" />
+          {{/if}}
         </div>
       </div>
     </div>
@@ -172,7 +201,11 @@
           <h4>{{localize "CO.label.long.movement"}}</h4>
         </div>
         <div class="mvt-base labelled-field">
-          {{attributes.movement.value}}&nbsp;{{attributes.movement.unit}}
+          {{#if viewLimited}}
+            ??
+          {{else}}
+            {{attributes.movement.value}}&nbsp;{{attributes.movement.unit}}
+          {{/if}}
         </div>
       </div>
       {{#if unlocked}}
@@ -203,23 +236,25 @@
         </div>
       {{/if}}
     </div>
-    <!-- STATE MODIFIERS -->
-    <div class="sidebar-section speed-section">
-      <div class="sidebar-section-header">
-        <div class="sidebar-label">
-          <h4>{{localize "CO.label.long.states"}}</h4>
+    {{#unless viewLimited}}
+      <!-- STATE MODIFIERS -->
+      <div class="sidebar-section speed-section">
+        <div class="sidebar-section-header">
+          <div class="sidebar-label">
+            <h4>{{localize "CO.label.long.states"}}</h4>
+          </div>
+        </div>
+        <div class="sidebar-section-content">
+          <ul class="state-modifier">
+            {{#each stateModifiers as |state|}}
+              <li class="state-name">
+                {{!log "state" state}}
+                {{localize (concat "CO.label.long." state.target)}}
+              </li>
+            {{/each}}
+          </ul>
         </div>
       </div>
-      <div class="sidebar-section-content">
-        <ul class="state-modifier">
-          {{#each stateModifiers as |state|}}
-            <li class="state-name">
-              {{!log "state" state}}
-              {{localize (concat "CO.label.long." state.target)}}
-            </li>
-          {{/each}}
-        </ul>
-      </div>
-    </div>
+    {{/unless}}
   </div>
 </div>

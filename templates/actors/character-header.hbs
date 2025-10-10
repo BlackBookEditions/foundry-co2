@@ -13,7 +13,11 @@
     {{#if unlocked}}
       <input class="adjustable" type="text" name="system.attributes.level" value="{{attributes.level}}" data-dtype="Number" />
     {{else}}
-      <span>{{attributes.level}}</span>
+      {{#if viewLimited}}
+        <span>??</span>
+      {{else}}
+        <span>{{attributes.level}}</span>
+      {{/if}}
     {{/if}}
   </div>
   <div class="traits">
@@ -23,6 +27,7 @@
         <span>{{features.[0].name}}</span>
       {{/if}}
     </div>
+    {{#unless viewLimited}} 
     <div class="profiles">
       {{#if (gt profiles.length 0)}}
         <a class="item-img" style="background-image: url('{{profiles.[0].img}}')"></a>
@@ -34,17 +39,28 @@
         <span>{{profiles.[1].name}}</span>
       {{/if}}
     </div>
+    {{/unless}}
   </div>
   <ol class="abilities">
     {{#each abilities as |ability id|}}
       <li class="ability" data-ability="{{id}}">
         <div class="ability-id draggable" data-roll-target="{{id}}" data-tooltip="{{localize (concat 'CO.abilities.long.' id)}}" data-tooltip-direction="UP">
           {{localize (concat "CO.abilities.short." id)}}
+          {{#unless ../viewLimited}} 
           {{#if ability.superior}}<i class="fas fa-asterisk"></i>{{/if}}
-        </div>
-        <a class="ability-mod" data-action="roll" data-roll-type="skillcheck" data-roll-target="{{id}}" data-tooltip="{{ability.tooltipValue}}">
-          {{numberFormat ability.value decimals=0 sign=true}}
-        </a>
+          {{/unless}}
+        </div>        
+        {{#if ../viewLimited}}
+          <div class="ability-mod">??</div>
+        {{else}}
+          {{#if ../viewObserver}}
+            <div class="ability-mod">{{numberFormat ability.value decimals=0 sign=true}}</div>
+          {{else}}
+            <a class="ability-mod" data-action="roll" data-roll-type="skillcheck" data-roll-target="{{id}}" data-tooltip="{{ability.tooltipValue}}">
+              {{numberFormat ability.value decimals=0 sign=true}}
+            </a>
+          {{/if}}
+        {{/if}}        
       </li>
     {{/each}}
     <li class="abilities-controls controls">

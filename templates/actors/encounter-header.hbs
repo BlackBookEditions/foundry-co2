@@ -13,9 +13,14 @@
     {{#if unlocked}}
       <input class="adjustable" type="text" name="system.attributes.nc" value="{{attributes.nc}}" data-dtype="Number" />
     {{else}}
-      <span>{{attributes.nc}}</span>
+      {{#if viewLimited}}
+        <span>??</span>
+      {{else}}
+        <span>{{attributes.nc}}</span>
+      {{/if}}
     {{/if}}
   </div>
+  {{#unless viewLimited}} 
   <div class="traits">
     {{#if unlocked}}
       <select class="trait category traits-list-item" name="system.details.category" data-type="String">
@@ -30,6 +35,7 @@
       <span class="trait size">{{localize (concat 'CO.size.' system.details.size)}}</span>
     {{/if}}
   </div>
+  {{/unless}}
   <ol class="abilities">
     {{#each abilities as |ability id|}}
       <li class="ability" data-ability="{{id}}">
@@ -38,15 +44,25 @@
           {{#if ../unlocked}}
             <input type="checkbox" name="system.abilities.{{id}}.superior" {{checked ability.superior}} data-tooltip="{{localize 'CO.ui.checkForSuperiorAbility'}}" >
           {{else}}
-            {{#if ability.superior}}<i class="fas fa-asterisk"></i>{{/if}}
+            {{#unless ../viewLimited}} 
+              {{#if ability.superior}}<i class="fas fa-asterisk"></i>{{/if}}
+            {{/unless}}
           {{/if}}
         </div>
         {{#if ../unlocked}}
           <input class="ability-mod" type="text" name="system.abilities.{{id}}.base" value="{{numberFormat ability.base sign=true}}" data-dtype="Number" placeholder="+0">
         {{else}}
-        <a class="ability-mod" data-action="roll" data-roll-type="skillcheck" data-roll-target="{{id}}" data-tooltip="{{ability.tooltipValue}}">
-          {{numberFormat ability.value decimals=0 sign=true}}
-        </a>
+          {{#if ../viewLimited}}
+            <div class="ability-mod">??</div>
+          {{else}}
+            {{#if ../viewObserver}}
+              <div class="ability-mod">{{numberFormat ability.value decimals=0 sign=true}}</div>
+            {{else}}
+              <a class="ability-mod" data-action="roll" data-roll-type="skillcheck" data-roll-target="{{id}}" data-tooltip="{{ability.tooltipValue}}">
+                {{numberFormat ability.value decimals=0 sign=true}}
+              </a>
+            {{/if}}
+          {{/if}}  
         {{/if}}
       </li>
     {{/each}}
