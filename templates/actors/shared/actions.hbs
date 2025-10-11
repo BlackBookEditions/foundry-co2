@@ -22,7 +22,8 @@
                                         {{/each}}</h4></div>
                                     </div>
                                         
-                                </div>                            
+                                </div>
+                                {{#unless ../viewObserver}}                            
                                 <div class="item-controls-3">
                                     {{#each action.getActionIcons as |icon|}}
                                         <a class="item-control">
@@ -39,6 +40,7 @@
                                     {{/each}}
                                     <a class="chat" data-action="sendToChat" data-chat-type="action" data-indice="{{action.indice}}" data-source="{{action.source}}" data-tooltip="{{localize 'CO.label.long.sendToChat'}}"><i class="fas fa-fw fa-comment-alt"></i></a>
                                 </div>
+                                {{/unless}}
                             </li>
                     {{/each}}
                 </ol>

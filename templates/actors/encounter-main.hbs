@@ -6,6 +6,7 @@
         <div class="section-header">
             <h4>{{localize "CO.label.long.attacks"}}</h4>
             <div class="actions-controls controls" style="margin-right:5px">
+                {{#unless viewObserver}}
                   <a class="item-control"
                     data-tooltip-direction="UP" 
                     data-tooltip="{{#if partialDef}}{{localize 'CO.customStatus.partialDefDeactivate'}}{{else}}{{localize 'CO.customStatus.partialDefActivate'}}{{/if}}" 
@@ -20,6 +21,7 @@
                     data-effect="fullDef">
                     <i class="fa-solid fa-shield {{#if fullDef}}enabled{{else}}disabled{{/if}} toggle-effect"></i>
                 </a>
+                {{/unless}}
             </div>
             {{#if unlocked}}
                 <div class="attacks-controls controls">
@@ -45,16 +47,19 @@
                                 {{attack.system.displayValues.attack}} <strong>  DM </strong>{{attack.system.displayValues.damage}}
                             </h4>
                             <div class="attack-controls controls">
+                                {{#unless ../viewObserver}}
                                 <a class="chat" data-action="sendToChat" data-chat-type="item" data-tooltip="{{localize 'CO.label.long.sendToChat'}}"
                                     ><i class="fas fa-fw fa-comment-alt"></i></a>
                                 {{#if ../unlocked}}
                                 <a class="edit" data-action="editItem" data-tooltip="{{localize 'CO.label.long.edit'}}"><i class="fas fa-fw fa-edit"></i></a>
                                 <a class="delete" data-action="deleteItem" data-tooltip="{{localize 'CO.label.long.delete'}}"><i class="fas fa-fw fa-trash"></i></a>
                                 {{/if}}
+                                {{/unless}}
                             </div>
                         </div>
                         <div class="attack-body">
                             <div class="flexrow">
+                                {{#unless ../viewObserver}}
                                 <div class="attacks sub-section">
                                     <button type="button" class="btn attack-button toggle-action"
                                         data-action="toggleAction" data-action-type="activate" data-type="attack" data-source="{{attack.uuid}}"
@@ -67,6 +72,7 @@
                                         data-indice="0">{{localize "CO.label.long.damage"}}
                                         {{attack.system.displayValues.damage}}</button>
                                 </div>
+                                {{/unless}}
                             </div>
                             <div class="attack-detail sub-section expandable expanded">
                                 <div class="attack-description">{{{attack.system.description}}}</span></div>
