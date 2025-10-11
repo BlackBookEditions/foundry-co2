@@ -76,12 +76,14 @@
                 {{formInput systemFields.details.fields.biography.fields.public enriched=enrichedBiographyPublic value=system.details.biography.public name="system.details.biography.public" toggled=true}}
             </div>
         </div>
+        {{#unless (or viewLimited viewObserver)}}
         <div class="notes-section">
             <label class="details-label">{{localize "CO.ui.private"}}</label>
             <div class="notes-text">
                 {{formInput systemFields.details.fields.biography.fields.private enriched=enrichedBiographyPrivate value=system.details.biography.private name="system.details.biography.private" toggled=true}}
             </div>
         </div>
+        {{/unless}}
     </div>
 
     <h4 class="form-header"><a data-action="toggleSection" data-toggle-type="biography-appearance">{{localize "CO.ui.appearance"}}</a></h4>
@@ -92,11 +94,13 @@
                  {{formInput systemFields.details.fields.appearance.fields.public enriched=enrichedAppearancePublic value=system.details.appearance.public name="system.details.appearance.public" toggled=true}}
             </div>
         </div>
+        {{#unless (or viewLimited viewObserver)}} 
         <div class="notes-section">
             <label class="details-label">{{localize "CO.ui.private"}}</label>
             <div class="notes-text">
                 {{formInput systemFields.details.fields.appearance.fields.private enriched=enrichedAppearancePrivate value=system.details.appearance.private name="system.details.appearance.private" toggled=true}}
             </div>
         </div>
+        {{/unless}}
     </div>
 </section>

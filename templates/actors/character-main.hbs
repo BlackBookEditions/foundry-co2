@@ -5,6 +5,7 @@
         <div class="section-header">
             <h4>{{localize "CO.ui.actions"}}</h4>
             <div class="actions-controls controls">
+                {{#unless viewObserver}} 
                 <div class="sheet-controls">
                     <button type="button" class="btn-mini-sheet" data-action="openMiniSheet" data-tooltip="Vue actions">
                         <i class="fa-solid fa-star"></i>
@@ -30,6 +31,7 @@
                     data-effect="fullDef">
                         <i class="fa-solid fa-shield {{#if fullDef}}enabled{{else}}disabled{{/if}} toggle-effect"></i>
                 </a>
+                {{/unless}}
             </div>
         </div>
         <!-- ACTIONS -->
