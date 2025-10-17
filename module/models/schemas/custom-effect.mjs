@@ -21,7 +21,7 @@ export class CustomEffectData extends foundry.abstract.DataModel {
       duration: new fields.StringField({ required: true, initial: 0 }),
       startedAt: new fields.NumberField({ ...requiredInteger, initial: 0 }),
       previousRound: new fields.NumberField({ ...requiredInteger, initial: 0 }),
-      lastRound: new fields.NumberField({ ...requiredInteger, initial: 0 }), // Au cas ou le mj reviens en arriere il faut verifier qu'on applique pas 2 fois les actions
+      remainingTurn: new fields.NumberField({ ...requiredInteger, initial: 0 }), // Au cas ou le mj reviens en arriere il faut verifier qu'on applique pas 2 fois les actions
       modifiers: new fields.ArrayField(new fields.EmbeddedDataField(Modifier)),
       formulaType: new fields.StringField({ required: true, choices: SYSTEM.RESOLVER_FORMULA_TYPE, initial: "damage" }),
       formula: new fields.StringField({ required: false }),
@@ -35,7 +35,7 @@ export class CustomEffectData extends foundry.abstract.DataModel {
    * @returns {string} Renvoi un tooltip à afficher
    */
   get tooltip() {
-    let tip = `${game.i18n.localize("CO.ui.duration")} : ${this.duration} ${this.unit}<br />`
+    let tip = `${game.i18n.localize("CO.ui.duration")} : ${this.duration} ${this.unit}<br /> ${game.i18n.localize("CO.ui.remainingRound")} : ${this.remainingTurn}<br />`
     if (this.formula && this.formula !== "") tip += `${game.i18n.localize("CO.ui.dmg")} : ${this.formula}`
     if (this.elementType && this.elementType !== "") tip += `${this.elementType}`
     if (this.formula && this.formula !== "") tip += `<br />`
@@ -102,7 +102,7 @@ export class CustomEffectData extends foundry.abstract.DataModel {
    * @param {number} ce.duration The duration of the custom effect.
    * @param {Date} ce.startedAt The start time of the custom effect.
    * @param {number} ce.previousRound The previous round number when the effect was active.
-   * @param {number} ce.lastRound The last round number when the effect was active.
+   * @param {number} ce.remainingTurn Le nombre de tour restant à maintenir l'effet.
    * @param {string} ce.formula The formula associated with the custom effect.
    * @param {string} ce.elementType The element type of the custom effect.
    * @param {string} ce.slug A unique identifier (slug) for the custom effect.
@@ -118,7 +118,7 @@ export class CustomEffectData extends foundry.abstract.DataModel {
       duration: ce.duration,
       startedAt: ce.startedAt,
       previousRound: ce.previousRound,
-      lastRound: ce.lastRound,
+      remainingTurn: ce.remainingTurn,
       formula: ce.formula,
       elementType: ce.elementType,
       slug: ce.slug,

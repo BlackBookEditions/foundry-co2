@@ -299,11 +299,11 @@ export class Resolver extends foundry.abstract.DataModel {
     const duration = parseInt(evaluatedDuration)
 
     // Calcul du round de fin
-    let lastRound
+    let remainingTurn
     if (this.additionalEffect.unit === SYSTEM.COMBAT_UNITE.round) {
-      lastRound = game.combat.round + duration
+      remainingTurn = duration
     } else {
-      lastRound = game.combat.round + Math.round(duration / CONFIG.time.roundTime)
+      remainingTurn = Math.round(duration / CONFIG.time.roundTime)
     }
 
     // Evaluation de la formule à partir de l'acteur à l'origine de l'effet
@@ -325,7 +325,7 @@ export class Resolver extends foundry.abstract.DataModel {
       unit: this.additionalEffect.unit,
       duration,
       startedAt: game.combat.round,
-      lastRound,
+      remainingTurn,
       modifiers,
       formula: evaluatedFormula,
       formulaType: this.additionalEffect.formulaType,

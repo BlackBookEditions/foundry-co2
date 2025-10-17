@@ -37,13 +37,16 @@ export default class CombatCO extends Combat {
   async _onStartTurn(combatant) {
     console.log(`Début du tour de ${combatant.actor?.name} !`)
     await super._onStartTurn(combatant)
+     //On diminue de 1 le nombre de round restant
+     if (combatant.actor?.system.currentEffects.length > 0) await combatant.actor.decreaseEffectsDuration()
     if (combatant.actor?.system.currentEffects.length > 0) await combatant.actor.applyEffectOverTime()
+    
   }
 
   /** @inheritDoc */
   async _onEndTurn(combatant) {
     await super._onEndTurn(combatant)
-    // Retire les custom Effect qui se terminent à la fin du tour
+     // Retire les custom Effect qui se terminent ce tour-ci. #Fix 320 supprime l'effet avant que le nouveau tour commence
     if (combatant.actor?.system.currentEffects.length > 0) await combatant.actor.expireEffects()
     console.log(`Fin du tour de ${combatant.actor?.name} !`)
   }

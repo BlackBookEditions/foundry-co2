@@ -2233,10 +2233,10 @@ export default class COActor extends Actor {
     let existingEffectIndex = this.system.currentEffects.findIndex((e) => e.slug === effect.slug)
     const newCurrentEffects = this.system.toObject().currentEffects
 
-    // CustomEffect déjà présent : on modifie startedAt et lastRound
+    // CustomEffect déjà présent : on modifie startedAt et remainingTurn
     if (existingEffectIndex !== -1) {
       newCurrentEffects[existingEffectIndex].startedAt = effect.startedAt
-      newCurrentEffects[existingEffectIndex].lastRound = effect.lastRound
+      newCurrentEffects[existingEffectIndex].remainingTurn = effect.remainingTurn
     } else newCurrentEffects.push(effect)
 
     // Affichage de l'icône
@@ -2260,34 +2260,54 @@ export default class COActor extends Actor {
   async applyEffectOverTime() {
     for (const effect of this.system.currentEffects) {
       // TODO Ici on devrait tenir compte du type d'energie (feu/glace etc) et d'eventuelle resistance/vulnerabilite à voir plus tard
-      // Dé ou valeur fixe
-      const diceInclude = effect.formula.match("d[0-9]{1,}") || effect.formula.match("D[0-9]{1,}")
-      let formulaResult = effect.formula
-      if (diceInclude) {
-        const roll = new Roll(effect.formula)
-        await roll.evaluate()
-        formulaResult = roll.total
-      } else {
-        const roll = new Roll(effect.formula)
-        formulaResult = roll.evaluateSync().total
+      // Dé ou valeur fixe ou valeur vide (cas de l'action soutenir)
+      if (effect.formula !== "") {
+        const diceInclude = effect.formula.match("d[0-9]{1,}") || effect.formula.match("D[0-9]{1,}")
+        let formulaResult = effect.formula
+        if (diceInclude) {
+          const roll = new Roll(effect.formula)
+          await roll.evaluate()
+          formulaResult = roll.total
+        } else {
+          const roll = new Roll(effect.formula)
+          formulaResult = roll.evaluateSync().total
+        }
+        if (effect.formulaType === "damage") await this.applyDamage(formulaResult)
+        if (effect.formulaType === "heal") await this.applyHeal(formulaResult)
       }
-      if (effect.formulaType === "damage") await this.applyDamage(formulaResult)
-      if (effect.formulaType === "heal") await this.applyHeal(formulaResult)
     }
   }
 
   /**
    * Asynchronously expires effects from the current system's effects list.
    * Iterates through all current effects and deletes any custom effect
-   * whose `lastRound` matches the current combat round.
+   * whose `remainingTurn` matches the current combat round.
    *
    * @async
    * @returns {Promise<void>} Resolves when all applicable effects have been processed.
    */
   async expireEffects() {
     for (const effect of this.system.currentEffects) {
-      if (effect.lastRound === game.combat.round) await this.deleteCustomEffect(effect)
+      if (effect.remainingTurn <= 0) await this.deleteCustomEffect(effect)
     }
+  }
+
+  /**
+   * Diminue la durée des effets de manière asynchrone pour chaqu eeffets dans la liste.   * 
+   *
+   * @async
+   * @returns {Promise<void>} Se termine lorsque tous le seffets ont été traité
+   */
+  async decreaseEffectsDuration() {
+    const updatedEffects = this.system.currentEffects.map(effet => {
+      const newEffet = foundry.utils.duplicate(effet);
+      if ("remainingTurn" in newEffet) {
+        newEffet.remainingTurn = Math.max(0, newEffet.remainingTurn - 1);
+      }
+      return newEffet;
+    });
+
+    await this.update({"system.currentEffects": updatedEffects});
   }
 
   /**

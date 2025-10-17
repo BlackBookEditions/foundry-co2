@@ -608,6 +608,7 @@
       "description": "Description",
       "inGame": "Usage en jeu",
       "duration": "Durée",
+      "remainingRound": "Rounds restants",
       "action": "Action",
       "actionName": "Nom de l'action",
       "actionNamePlaceholder": "Indiquer le nom de l'action",
