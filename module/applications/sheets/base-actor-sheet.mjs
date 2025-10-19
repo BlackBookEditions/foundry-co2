@@ -155,8 +155,8 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     context.details = this.document.system.details
     context.paths = this.document.paths
     context.pathGroups = await this.document.getPathGroups()
-    context.capacity = this.document.capacity
-    context.learnedCapacities = await this.#evaluateCapacitiesLearn(this.document.learnedCapacities)
+    context.capacities = this.document.capacities
+    context.learnedCapacities = this.#evaluateCapacitiesLearn(this.document.learnedCapacities)
 
     const capacitiesOffPaths = this.document.capacitiesOffPaths
 
@@ -230,14 +230,16 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
    * @returns {CapacityData[]} la liste filtrer des capacités apprisent
    */
   async #evaluateCapacitiesLearn(learnedCapacities) {
-    return learnedCapacities
-      .map(async (c) => {
-        const path = this.document.items.get(c.system.path.split(".")[3])
-        const canLearned = this.document.canLearnCapacity(c, path, false)
-        await this.actor.toggleCapacityLearned(c._id, canLearned)
-        return c
-      })
-      .filter((c) => c.system?.learned)
+    const filteredCapacities = []
+    for (const c of learnedCapacities) {
+      const path = this.document.items.get(c.system?.path.split(".")[3]) //récupèrer l'id d'item
+      const canLearned = this.document.canLearnCapacity(c, path, false)
+      await this.actor.toggleCapacityLearned(c._id, canLearned)
+      if (c.system?.learned) {
+        filteredCapacities.push(c)
+      }
+    }
+    return filteredCapacities
   }
 
   // #region Actions
