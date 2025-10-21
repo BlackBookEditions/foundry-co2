@@ -300,7 +300,7 @@ export class Resolver extends foundry.abstract.DataModel {
     let remainingTurn
     if (this.additionalEffect.unit === SYSTEM.COMBAT_UNITE.round) {
       remainingTurn = duration
-    } else {
+    } else if (this.additionalEffect.unit === SYSTEM.COMBAT_UNITE.second) {
       remainingTurn = Math.round(duration / CONFIG.time.roundTime)
     }
 

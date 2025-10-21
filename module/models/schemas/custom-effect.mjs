@@ -35,7 +35,8 @@ export class CustomEffectData extends foundry.abstract.DataModel {
    * @returns {string} Renvoi un tooltip à afficher
    */
   get tooltip() {
-    let tip = `${game.i18n.localize("CO.ui.duration")} : ${this.duration} ${this.unit}<br /> ${game.i18n.localize("CO.ui.remainingRound")} : ${this.remainingTurn}<br />`
+    let tip = `${game.i18n.localize("CO.ui.duration")} : ${this.duration} ${this.unit}<br />`
+    if (this.unit !== SYSTEM.COMBAT_UNITE.combat) tip += `${game.i18n.localize("CO.ui.remainingRound")} : ${this.remainingTurn}<br />`
     if (this.formula && this.formula !== "") tip += `${game.i18n.localize("CO.ui.dmg")} : ${this.formula}`
     if (this.elementType && this.elementType !== "") tip += `${this.elementType}`
     if (this.formula && this.formula !== "") tip += `<br />`

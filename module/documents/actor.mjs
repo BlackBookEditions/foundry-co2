@@ -2282,13 +2282,13 @@ export default class COActor extends Actor {
    * Asynchronously expires effects from the current system's effects list.
    * Iterates through all current effects and deletes any custom effect
    * whose `remainingTurn` matches the current combat round.
-   *
+   * @param {Boolean} endCombat True si le combat se termine, false dans le cas contraire
    * @async
    * @returns {Promise<void>} Resolves when all applicable effects have been processed.
    */
-  async expireEffects() {
+  async expireEffects(endCombat) {
     for (const effect of this.system.currentEffects) {
-      if (effect.remainingTurn <= 0) await this.deleteCustomEffect(effect)
+      if (effect.remainingTurn <= 0 && effect.unit !== SYSTEM.COMBAT_UNITE.combat ) await this.deleteCustomEffect(effect)
     }
   }
 

@@ -1,6 +1,7 @@
 # 1.1.2
 ## Améliorations
 - Capacité et Equipement : pour le modifier d'une action, la saisie d'un dé (dx ou Dx) n'est possible que pour les dommages
+- Durée des effets supplémentaires : Ajout d'une option 'cobmat' qui fait durer l'effet tout le long du combat. Les effets sont dorénavant automatiquement supprimés lorsque le combat est terminé par le MJ.
 
 # 1.1.1
 ## Améliorations

@@ -75,7 +75,7 @@
                 <li class="item flexrow" data-item-uuid="{{effect.source}}" data-item-indice="{{id}}" data-item-type="customEffectData" draggable="false">
                     <div class="item-name flexrow">
                         <a class="item-img" data-action="editItem" style="background-image: url('icons/svg/aura.svg')"></a>
-                        <h4 data-tooltip="{{effect.tooltip}}">{{effect.name}} : {{effect.remainingTurn}} rounds restants</h4>
+                        <h4 data-tooltip="{{effect.tooltip}}">{{effect.name}} : {{#if (isEqual effect.unit "combat") }} {{effect.duration}} {{effect.unit}} {{else}} {{effect.remainingTurn}} {{localize "CO.ui.remainingRound"}} {{/if}}</h4>
                         {{#if @root/unlocked}}<a class="item-control" data-action="deleteCustomEffect" data-ce-Name={{effect.slug}} data-tooltip={{localize "CO.ui.remove"}}><i class="fas fa-trash"></i></a>{{/if}}
                     </div>
                     <div class="item-controls-2"></div>
