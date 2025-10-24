@@ -811,7 +811,8 @@ export default class COActor extends Actor {
     let capacity = this.items.get(capacityId)
     if (!capacity) return
 
-    const { id } = foundry.utils.parseUuid(capacity.system.path)
+    if (capacity.system.path === null) return
+    const { id } = foundry.utils.parseUuid(capacity.system?.path)
     if (!id) return
     let path = this.items.get(id)
     if (!path) return

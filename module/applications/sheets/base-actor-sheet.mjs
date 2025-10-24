@@ -232,9 +232,11 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
   async #evaluateCapacitiesLearn(learnedCapacities) {
     const filteredCapacities = []
     for (const c of learnedCapacities) {
-      const path = this.document.items.get(c.system?.path.split(".")[3]) //récupèrer l'id d'item
-      const canLearned = this.document.canLearnCapacity(c, path, false)
-      await this.actor.toggleCapacityLearned(c._id, canLearned)
+      const path = this.document.items.get(foundry.utils.parseUuid(c.system?.path)?.id) //récupèrer l'id d'item
+      if (path) { // Les capacité hors voie n'ont pas de path et sont ignorée ici
+        const canLearned = this.document.canLearnCapacity(c, path, false)
+        await this.actor.toggleCapacityLearned(c._id, canLearned)
+      }
       if (c.system?.learned) {
         filteredCapacities.push(c)
       }
