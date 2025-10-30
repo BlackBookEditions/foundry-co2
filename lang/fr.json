@@ -329,6 +329,9 @@
           },
           "noManaCost": {
             "label": "Sans coût en mana"
+          },
+          "noChargesUsed": {
+            "label": "Ne consomme pas de charges"
           }
         }
       }

@@ -42,6 +42,7 @@ export class Action extends foundry.abstract.DataModel {
         enabled: new fields.BooleanField(),
         temporary: new fields.BooleanField(),
         noManaCost: new fields.BooleanField(),
+        noChargesUsed: new fields.BooleanField(),
       }),
       conditions: new fields.ArrayField(new fields.EmbeddedDataField(Condition)),
       modifiers: new fields.ArrayField(new fields.EmbeddedDataField(Modifier)),
@@ -213,6 +214,12 @@ export class Action extends foundry.abstract.DataModel {
   get charges() {
     if (this.hasCharges) return this.parent.charges.current
     return undefined
+  }
+
+  get chargesUsed() {
+    if (this.properties.noChargesUsed) return 0
+    if (this.parent.parent.type === SYSTEM.ITEM_TYPE.capacity.id) return 1
+    return 0
   }
 
   get manaCost() {

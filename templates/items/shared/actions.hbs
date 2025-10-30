@@ -75,6 +75,10 @@
                                             <input type="checkbox" name="{{concat 'system.actions.' idx '.properties.temporary'}}" {{checked action.properties.temporary}} {{#if @root.locked}}class="disabled"{{/if}} />
                                             {{action.schema.fields.properties.fields.temporary.label}}
                                         </label>
+                                        <label>
+                                            <input type="checkbox" name="{{concat 'system.actions.' idx '.properties.noChargesUsed'}}" {{checked action.properties.noChargesUsed}} {{#if @root.locked}}class="disabled"{{/if}} />
+                                            {{action.schema.fields.properties.fields.noChargesUsed.label}}
+                                        </label>
                                         {{#if (and (eq ../itemType 'capacity') ../system.isSpell) }}
                                             <label>
                                                 <input type="checkbox" name="{{concat 'system.actions.' idx '.properties.noManaCost'}}" {{checked action.properties.noManaCost}} {{#if @root.locked}}class="disabled"{{/if}} />

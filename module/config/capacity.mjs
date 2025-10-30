@@ -23,8 +23,8 @@ export const CAPACITY_ACTION_TYPE = {
 /**
  * Fréquence d'utilisation d'une capacité
  * none : pas de limite
- * daily : 1 fois par jour, nécessite une récupération complète pour être réutilisée
- * combat: une fois par combat, nécessite une récupération rapide pour être réutilisée
+ * daily : par jour, nécessite une récupération complète pour être réutilisée
+ * combat: par combat, nécessite une récupération rapide pour être réutilisée
  **/
 
 export const CAPACITY_FREQUENCY = {

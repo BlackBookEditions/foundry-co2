@@ -689,14 +689,15 @@ export default class COActor extends Actor {
 
     if (CONFIG.debug.co?.actions) console.debug(Utils.log(`COActor - activateAction`), state, source, indice, type, item)
 
-    // Si l'arme a la propriété "reloadable", on vérifie si l'arme assez de munitions
-    if (item.system.properties.reloadable && item.system.charges.current <= 0) {
+    // Si l'arme a la propriété "reloadable", on vérifie si l'arme a encore des munitions
+    if (state && item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.properties.reloadable && !item.system.hasCharges) {
       return ui.notifications.warn(game.i18n.localize("CO.notif.warningNoAmmo"))
     }
 
-    // Si la capacité a des charges est ce qu'il lui en reste pour l'activer ?
-    if (state && item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.hasFrequency && !item.system.hasCharges)
+    // Si la capacité a une fréquence d'utilisation, on vérifie si la capacité a encore des charges
+    if (state && item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.hasFrequency && !item.system.hasCharges) {
       return ui.notifications.warn(game.i18n.localize("CO.notif.warningNoCharge"))
+    }
 
     // TODO Incantation
     // Magie profane (famille des mages) : En revanche, il n’est pas possible d’utiliser un bouclier et une arme ou une arme dans chaque main tout en lançant des sorts de magie profane.
@@ -736,13 +737,14 @@ export default class COActor extends Actor {
 
     let results = []
     let allResolversTrue
+
+    const action = foundry.utils.deepClone(item.system.actions[indice])
     // Action avec une durée : changement de l'état de l'action
-    if (item.system.actions[indice].properties.temporary) {
+    if (action.properties.temporary) {
       if (CONFIG.debug.co?.actions) console.debug(Utils.log(`COActor - activateAction - Action avec une durée`), state, source, indice, type, shiftKey, item)
 
       // L'activation de l'action déclenche tous les resolvers
       if (state) {
-        const action = foundry.utils.deepClone(item.system.actions[indice])
         // Recherche des resolvers de l'action
         let resolvers = Object.values(action.resolvers).map((r) => foundry.utils.deepClone(r))
         // Résolution de tous les resolvers avant de continuer
@@ -757,7 +759,7 @@ export default class COActor extends Actor {
     // Action instantanée
     else {
       if (CONFIG.debug.co?.actions) console.debug(Utils.log(`COActor - activateAction - Action instantanée`), state, source, indice, type, shiftKey, item)
-      const action = foundry.utils.deepClone(item.system.actions[indice])
+
       // Recherche des resolvers de l'action
       let resolvers = Object.values(action.resolvers).map((r) => foundry.utils.deepClone(r))
       // Résolution de tous les resolvers avant de continuer
@@ -767,13 +769,13 @@ export default class COActor extends Actor {
     }
     // Pas de resolvers ou tous les resolvers ont été résolus avec succès
     if (results.length === 0 || allResolversTrue) {
-      // Si c'est une capacité avec une charge qui est activée, il faut la consommer une charge
-      if (item.type === SYSTEM.ITEM_TYPE.capacity.id && state && item.system.hasFrequency && item.system.hasCharges) {
-        item.system.charges.current = Math.max(item.system.charges.current - 1, 0)
+      // Si c'est une capacité avec une fréquence d'utilisation qui est activée et que l'action en cours consomme des charges, il faut réduire le nombre de charges
+      if (action.chargesUsed > 0 && state && item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.hasFrequency && item.system.hasCharges) {
+        item.system.charges.current = Math.max(item.system.charges.current - action.chargesUsed, 0)
         await item.update({ "system.charges.current": item.system.charges.current })
       }
       // Si c'est une capacité qui est un sort avec un coût en mana et qu'on l'active, il faut consommer les Points de Mana
-      if (item.type === SYSTEM.ITEM_TYPE.capacity.id && state && item.system.isSpell && !item.system.actions[indice].properties.noManaCost) {
+      if (state && item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.isSpell && !item.system.actions[indice].properties.noManaCost) {
         const spellManaCost = item.system.getManaCost() + manaCostFromArmor - (manaConcentration ? 2 : 0)
         if (spellManaCost > 0) {
           const newMana = Math.max(this.system.resources.mana.value - spellManaCost, 0)
