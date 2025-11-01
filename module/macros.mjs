@@ -68,6 +68,7 @@ export default class Macros {
           .withTemplate("systems/co2/templates/chat/item-card.hbs")
           .withData({
             actorId: actor.id,
+            actorUuid: actor.uuid,
             id: itemChatData.id,
             uuid: itemChatData.uuid,
             name: itemChatData.name,
@@ -86,6 +87,7 @@ export default class Macros {
           .withTemplate("systems/co2/templates/chat/item-card.hbs")
           .withData({
             actorId: actor.id,
+            actorUuid: actor.uuid,
             id: itemChatData.id,
             uuid: itemChatData.uuid,
             name: itemChatData.name,
