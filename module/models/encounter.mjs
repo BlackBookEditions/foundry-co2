@@ -109,7 +109,7 @@ export default class EncounterData extends ActorData {
     const updates = {
       prototypeToken: {
         sight: {
-          enabled: true,
+          enabled: false,
           visionMode: "basic",
         },
       },
