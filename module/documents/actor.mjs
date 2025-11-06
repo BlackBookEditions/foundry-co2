@@ -1899,7 +1899,11 @@ export default class COActor extends Actor {
       critical = this.system.combat.crit.value
     } else {
       // Sinon on prend la valeur définie dans l'attaque et on applique le bonus éventuel de l'acteur
+      try{
       critical = Math.max(16, parseInt(critical) - (SYSTEM.BASE_CRITICAL - this.system.combat.crit.value))
+      }catch(e){
+          throw new Co2Error("Erreur en voulant parser du texte en entier sur rollAttack du actor.mjs", e, event )      
+          } 
     }
 
     // Récupération du tooltip du critique

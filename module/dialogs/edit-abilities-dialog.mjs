@@ -123,9 +123,13 @@ export class CoEditAbilitiesDialog extends foundry.applications.api.DialogV2 {
   async _onChangeAbilityBonus(event) {
     const ability = event.currentTarget.dataset.ability
     const raw = event.currentTarget.value
+    try{
     const value = raw === "" ? null : parseInt(raw)
     const { actor } = this
     await actor.update({ [`system.abilities.${ability}.bonuses.sheet`]: value })
+    }catch(e){
+          throw new Co2Error("Erreur en voulant parser du texte en entier sur le hook _onChangeAbilityBonus du edit-abilities-dialog.mjs", e, event )      
+          } 
     this.render(true, { focus: true })
   }
 

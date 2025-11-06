@@ -1,10 +1,16 @@
 export class Co2Error extends Error {
-  constructor(message, err) {
-    super(message)
+    static objToString (obj) {
+    return Object.entries(obj).reduce((str, [p, val]) => {
+        return `${str}${p}::${val}\n`;
+    }, '');
+    }
+  constructor(message, err, objet) {  
+    let text = message + '\nObjet suspecté :\n' + Co2Error.objToString(objet)   
+    super(text)
     this.name = "Co2Error"
-    this.message = message  
-    this.stack = err.stack
+    this.stack = err.stack    
   }
+   
 }
 
  
