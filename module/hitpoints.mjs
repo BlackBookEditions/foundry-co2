@@ -83,7 +83,11 @@ export class Hitpoints {
   static onClickChatMessageApplyButton(event, html, data) {
     const dataset = event.currentTarget.dataset
     const type = dataset.apply
-    const dmg = parseInt(dataset.total)
+    try{
+      const dmg = parseInt(dataset.total)
+    }catch(e){
+          throw new Co2Error("Erreur en voulant parser du texte en entier sur la fonction onClickChatMessageApplyButton() du hitpoints.mjs", e, event )      
+          } 
     const tempDamage = html.querySelector("#tempDm").checked
     const drChecked = html.querySelector("#dr").checked
 

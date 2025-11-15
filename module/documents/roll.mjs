@@ -46,7 +46,11 @@ export class CORoll extends Roll {
         if (!roll.options.oppositeRoll) {
           if (typeof difficulty === "string") {
             // On doit pouvoir avoir une formule dans la difficulté : ex : 10 + @cible.con
+            try{
             difficulty = parseInt(eval(difficulty))
+            }catch(e){
+            throw new Co2Error("Erreur en voulant parser du texte en entier sur analyseRollResult du hitpoints.mjs", e, event )      
+          } 
           }
           isSuccess = roll.total >= difficulty
           isFailure = roll.total < difficulty
@@ -116,10 +120,14 @@ export class COSkillRoll extends CORoll {
               // Récupère tous les éléments bonus-item checked pour l'afficher en chat message apres
               const checkedBonuses = dialog.element.querySelectorAll(".bonus-item.checked")
               const skillUsed = Array.from(checkedBonuses).map((item) => {
-                return {
-                  name: item.querySelector(".bonus-name").textContent.trim(),
-                  value: parseInt(item.dataset.value),
-                }
+                try{
+                  return {
+                    name: item.querySelector(".bonus-name").textContent.trim(),
+                    value: parseInt(item.dataset.value),
+                  }
+                } catch(e){
+                  throw new Co2Error("Erreur en voulant parser du texte en entier sur ok button du roll.mjs", e, item )      
+                  } 
               })
               dialogContext.skillUsed = skillUsed
               /* 
@@ -179,10 +187,14 @@ export class COSkillRoll extends CORoll {
       if (CONFIG.debug.co2?.rolls) console.debug(Utils.log(`COSkillRoll - rollContext`), rollContext)
 
       formula = `${rollContext.formula}`
+      try{
       if (parseInt(rollContext.bonus) > 0) formula += `+${parseInt(rollContext.bonus)}`
       if (parseInt(rollContext.malus) !== 0) formula += `-${parseInt(Math.abs(rollContext.malus))}`
       const totalSkillBonuses = parseInt(rollContext.totalSkillBonuses)
       if (totalSkillBonuses) formula += `${totalSkillBonuses > 0 ? "+" : ""}${totalSkillBonuses}`
+      } catch(e){
+          throw new Co2Error("Erreur en voulant parser du texte en entier sur le render du roll.mjs", e, rollContext )      
+        } 
     }
     // Pas de prompt
     else {
@@ -190,11 +202,15 @@ export class COSkillRoll extends CORoll {
       let diceFormula = "1d20"
       if (dice === "bonus") diceFormula = "2d20kh"
       else if (dice === "malus") diceFormula = "2d20kl"
+      try{
       formula = `${diceFormula}+${parseInt(dialogContext.skillValue)}`
       if (parseInt(dialogContext.bonus) !== 0) formula += `+${parseInt(dialogContext.bonus)}`
       if (parseInt(dialogContext.malus) !== 0) formula += `-${parseInt(Math.abs(dialogContext.malus))}`
       const totalSkillBonuses = parseInt(dialogContext.totalSkillBonuses)
       if (totalSkillBonuses) formula += `${totalSkillBonuses > 0 ? "+" : ""}${totalSkillBonuses}`
+      } catch(e){
+          throw new Co2Error("Erreur en voulant parser du texte en entier sur le render du roll.mjs", e, dialogContext )      
+        } 
     }
 
     formula = Utils.evaluateFormulaCustomValues(dialogContext.actor, formula)
@@ -236,7 +252,13 @@ export class COSkillRoll extends CORoll {
   static _calculateTotalSkillBonus(event) {
     let parent = event.currentTarget.closest(".skill-bonuses")
     const skillBonuses = Array.from(parent.querySelectorAll(".bonus-item.checked"))
-    let total = skillBonuses.reduce((acc, curr) => acc + parseInt(curr.dataset.value), 0)
+    
+    let total = 0
+    try{
+      total = skillBonuses.reduce((acc, curr) => acc + parseInt(curr.dataset.value), 0)
+    } catch(e){
+          throw new Co2Error("Erreur en voulant parser du texte en entier sur _calculateTotalSkillBonus du roll.mjs", e, skillBonuses )      
+        } 
     return total
   }
 

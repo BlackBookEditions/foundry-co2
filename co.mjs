@@ -12,6 +12,7 @@ import registerSystemSettings from "./module/settings.mjs"
 import registerHooks from "./module/hooks.mjs"
 import Macros from "./module/macros.mjs"
 import Utils from "./module/utils.mjs"
+import { Co2Error } from "./module/co2Error.mjs"
 import { handleSocketEvent } from "./module/socket.mjs"
 
 export * as elements from "./module/elements/_module.mjs"
@@ -194,11 +195,10 @@ Hooks.once("ready", async function () {
         actions: false,
         chat: false,
         combat: false,
-      }
+      }      
   }
 
   // Statistics
-  registerWorldCount("co2")
-
+  registerWorldCount("co2")   
   console.info(Utils.log(game.i18n.localize("CO.notif.ready")))
 })

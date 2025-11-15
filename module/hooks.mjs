@@ -85,9 +85,14 @@ export default function registerHooks() {
         const message = game.messages.get(messageId)
 
         let rolls = message.rolls
+        try{
         rolls[0].options.bonus = String(parseInt(rolls[0].options.bonus) + 10)
         rolls[0].options.hasLuckyPoints = false
         rolls[0]._total = parseInt(rolls[0].total) + 10
+        }catch(e){
+          throw new Co2Error("Erreur en voulant parser du texte en entier sur le hook .lp-button-skill du hooks.mjs", e, message )      
+          } 
+
 
         let newResult = CORoll.analyseRollResult(rolls[0])
         // L'acteur consomme son point de chance
@@ -123,9 +128,13 @@ export default function registerHooks() {
         const message = game.messages.get(messageId)
 
         let rolls = message.rolls
+        try{
         rolls[0].options.bonus = String(parseInt(rolls[0].options.bonus) + 10)
         rolls[0].options.hasLuckyPoints = false
         rolls[0]._total = parseInt(rolls[0].total) + 10
+        }catch(e){
+          throw new Co2Error("Erreur en voulant parser du texte en entier sur le hook .lp-button-attack du hooks.mjs", e, message )      
+          } 
 
         let newResult = CORoll.analyseRollResult(rolls[0])
         // L'acteur consomme son point de chance

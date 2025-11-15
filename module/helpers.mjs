@@ -1,10 +1,16 @@
 import { SYSTEM } from "./config/system.mjs"
+import { Co2Error } from "./co2Error.mjs"
+
 /**
  * Register Handlebars helpers
  */
 export default function registerHandlebarsHelpers() {
   Handlebars.registerHelper("add", function (a, b) {
-    return parseInt(a) + parseInt(b)
+    try{
+      return parseInt(a) + parseInt(b)
+    }catch(e){
+      throw new Co2Error("Erreur en voulant parser du texte en entier sur les variables : " + a + " et " + b + "sur la fonction add() du handlebarHelper", e)      
+      }    
   })
   Handlebars.registerHelper("isPathprestigious", function (value) {
     return value === SYSTEM.PATH_TYPES.prestige.id

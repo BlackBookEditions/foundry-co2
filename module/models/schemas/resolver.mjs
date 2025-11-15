@@ -294,8 +294,11 @@ export class Resolver extends foundry.abstract.DataModel {
     }
     // TODO : vérifier si eval est nécessaire ici
     if (/[+\-*/%]/.test(evaluatedDuration)) evaluatedDuration = eval(evaluatedDuration)
+    try{
     const duration = parseInt(evaluatedDuration)
-
+    } catch(e){
+          throw new Co2Error("Erreur en voulant parser du texte en entier sur _createCustomEffect du resolver.mjs", e, evaluatedDuration )      
+      } 
     // Calcul du round de fin
     let remainingTurn
     if (this.additionalEffect.unit === SYSTEM.COMBAT_UNITE.round) {
