@@ -4,12 +4,12 @@
     <div class="type-card"><label><i class="fa-solid fa-swords"></i>{{#if (eq type "attack")}} {{localize "CO.label.long.attack"}} {{/if}} {{#if (eq type "damage")}} {{localize "CO.label.long.damage"}} {{/if}}</label></div>
     <div class="action-name"><strong>{{flavor}}</strong></div>
     {{#if (eq type "attack")}}
-    {{#if hasDice}}
-      <label class="display-dice-type">{{localize "CO.label.long.diceType"}} : <strong class="display-dice-type">{{diceType}}</strong></label>
-    {{/if}}
-    {{#if hasTactical}}
-      <label class="display-tactical">{{localize "CO.label.long.tactical"}} : <strong class="display-tactical">{{tactical}}</strong></label>
-    {{/if}}
+      {{#if hasDice}}
+        <label class="display-dice-type">{{localize "CO.label.long.diceType"}} : <strong class="display-dice-type">{{diceType}}</strong></label>
+      {{/if}}
+      {{#if hasTactical}}
+        <label class="display-tactical">{{localize "CO.label.long.tactical"}} : <strong class="display-tactical">{{tactical}}</strong></label>
+      {{/if}}
     {{/if}}    
   </header>
 
@@ -18,7 +18,7 @@
       <div class="form-group total-result">
           <div class="dice-total"><label>{{localize "CO.ui.total"}}</label></div>
           <div>{{total}}</div>
-        </div>
+      </div>
       {{#if isFailure}}
         {{#if hasLuckyPoints}}
           <div class="lucky-points">
@@ -112,7 +112,7 @@
   <footer class="card-footer">
     <div class="dice-roll" data-action="expandRoll">
       <div class="dice-result">
-        <div class="dice-formula" style>{{localize "CO.ui.formula"}} : {{formula}}</div>
+        <div class="dice-formula">{{localize "CO.ui.formula"}} : {{formula}}</div>
         {{{tooltip}}}
       </div>
     </div>

@@ -1905,7 +1905,7 @@ export default class COActor extends Actor {
           difficulty = null
         }
         if (targets.length > 0) {
-          // Enlève le target. de la difficulté
+          // Enlève le cible. de la difficulté
           difficulty = difficulty.replace(/@.*\./, "@")
           difficulty = CORoll.replaceFormulaData(difficulty, targets[0].actor.getRollData())
         }

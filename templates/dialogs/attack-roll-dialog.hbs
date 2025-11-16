@@ -1,32 +1,34 @@
-{{!log "Chroniques Oubliées | dialog attack-roll" this}}
+{{log "Chroniques Oubliées | dialog attack-roll" this}}
 {{#if (eq type 'attack')}}
     <section class="attack-roll-1">
         <div class="icone"><i class="fa-solid fa-dice"></i></div>
         <div class="form-group">
-        <div class="form-fields-radio">
-            <div class="radio-row">
-                <input type="radio" name="dice" id="diceMalus" value="malus" {{#if (eq dice "malus")}}checked{{/if}} />
-                <label for="dice">{{localize 'CO.ui.rollMalus'}}</label>
-            </div>
-            <div class="radio-row">
-                <input type="radio" name="dice" id="diceStandard" value="standard" {{#if (eq dice "standard")}}checked{{/if}}/>
-                <label for="dice">{{localize 'CO.ui.rollStandard'}}</label>
-            </div>
-            <div class="radio-row">
-                <input type="radio" name="dice" id="diceBonus" value="bonus" {{#if (eq dice "bonus")}}checked{{/if}}/>
-                <label for="dice">{{localize 'CO.ui.rollBonus'}}</label>
-            </div>
-        </div>
-        </div> 
-        {{#if showDifficulty}}
-            <div class="icone"><i class="fas fa-fw fa-shield-alt"></i></div>
-            <div class="form-group diffGroup">
-                <label class="textCenter near">{{localize 'CO.label.long.difficulty'}}</label> 
-                <div class="form-fields" style="{{#if showDifficulty}}visibility:visible;{{else}}visibility:collapse;{{/if}}" >                                               
-                    <input class="field-value textCenter" id="difficulty" name="difficulty" type="text" value="{{difficulty}}" data-dtype="String" data-tooltip="{{difficultyTooltip}}" {{#if auto}}readonly{{/if}}/>
+            <div class="form-fields-radio">
+                <div class="radio-row">
+                    <input type="radio" name="dice" id="diceMalus" value="malus" {{#if (eq dice "malus")}}checked{{/if}} />
+                    <label for="dice">{{localize 'CO.ui.rollMalus'}}</label>
+                </div>
+                <div class="radio-row">
+                    <input type="radio" name="dice" id="diceStandard" value="standard" {{#if (eq dice "standard")}}checked{{/if}}/>
+                    <label for="dice">{{localize 'CO.ui.rollStandard'}}</label>
+                </div>
+                <div class="radio-row">
+                    <input type="radio" name="dice" id="diceBonus" value="bonus" {{#if (eq dice "bonus")}}checked{{/if}}/>
+                    <label for="dice">{{localize 'CO.ui.rollBonus'}}</label>
                 </div>
             </div>
-        {{/if}}
+        </div>         
+        <div class="icone"><i class="fas fa-fw fa-shield-alt"></i></div>
+        <div class="form-group diffGroup">
+            <label class="textCenter near">{{localize 'CO.label.long.difficulty'}}</label> 
+            <div class="form-fields" style="{{#if showDifficulty}}visibility:visible;{{else}}visibility:collapse;{{/if}}" >                                               
+                {{#if showDifficulty}}
+                    <input class="field-value textCenter" id="difficulty" name="difficulty" type="text" value="{{difficulty}}" data-dtype="String" data-tooltip="{{difficultyTooltip}}" {{#if auto}}readonly{{/if}}/>
+                {{else}}
+                    <input class="field-value textCenter" id="difficulty" name="difficulty" type="hidden" value="{{difficulty}}" data-dtype="String"/>
+                {{/if}}
+            </div>
+        </div>        
         <div class="icone"><i class="fa-solid fa-user-secret"></i></div>  
         <div class="form-group rollMode">
             <label class="near" for="rollMode">{{localize 'CHAT.RollDefault'}}</label>

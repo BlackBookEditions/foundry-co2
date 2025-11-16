@@ -494,9 +494,9 @@ export class COAttackRoll extends CORoll {
     const rollResults = CORoll.analyseRollResult(this)
     if (CONFIG.debug.co2?.chat) console.debug(Utils.log(`COAttackRoll - _getChatCardData options`), this.options)
 
-    // Type de jet
+    // Gestion des dés bonus/malus
     const hasDice = this.options.dice === "bonus" || this.options.dice === "malus"
-    // Libellé du type de jet
+    // Libellé du dé
     let diceType = ""
     if (hasDice) {
       switch (this.options.dice) {
@@ -527,6 +527,11 @@ export class COAttackRoll extends CORoll {
       }
     }
 
+    // Affichage de la difficulté
+    const displayDifficulty = game.settings.get("co2", "displayDifficulty")
+    const isAttackRoll = this.options.type === "attack"
+    const showDifficuly = isAttackRoll && (displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM))
+
     return {
       type: this.options.type,
       actor: this.options.actor,
@@ -536,7 +541,7 @@ export class COAttackRoll extends CORoll {
       diceType,
       formula: isPrivate ? "???" : this.formula,
       useDifficulty: this.options.useDifficulty,
-      showDifficulty: this.options.showDifficulty,
+      showDifficulty: showDifficuly,
       oppositeRoll: this.options.oppositeRoll,
       oppositeTarget: this.options.oppositeTarget,
       oppositeValue: this.options.difficulty,

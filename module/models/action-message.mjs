@@ -71,141 +71,155 @@ export default class ActionMessageData extends BaseMessageData {
   }
 
   async addListeners(html) {
+    // Click sur les boutons d'application des dommages
     if (game.settings.get("co2", "displayChatDamageButtonsToAll")) {
-      html.querySelectorAll(".apply-dmg").forEach((btn) => {
-        btn.addEventListener("click", (ev) => Hitpoints.onClickChatMessageApplyButton(ev, html, context))
-      })
+      const damageButtons = html.querySelectorAll(".apply-dmg")
+      if (damageButtons) {
+        damageButtons.forEach((btn) => {
+          btn.addEventListener("click", (ev) => Hitpoints.onClickChatMessageApplyButton(ev, html, context))
+        })
+      }
     } else {
       if (game.user.isGM) {
-        html.querySelectorAll(".apply-dmg").forEach((btn) => {
-          btn.addEventListener("click", (ev) => Hitpoints.onClickChatMessageApplyButton(ev, html, context))
+        const damageButtons = html.querySelectorAll(".apply-dmg")
+        if (damageButtons) {
+          damageButtons.forEach((btn) => {
+            btn.addEventListener("click", (ev) => Hitpoints.onClickChatMessageApplyButton(ev, html, context))
+          })
+        }
+      }
+    }
+
+    // Click sur le bouton de chance si c'est un jet d'attaque raté
+    if (this.isFailure) {
+      const luckyButton = html.querySelector(".lp-button-attack")
+
+      if (luckyButton) {
+        luckyButton.addEventListener("click", async (event) => {
+          event.preventDefault()
+          event.stopPropagation()
+          const messageId = event.currentTarget.closest(".message").dataset.messageId
+          if (!messageId) return
+          const message = game.messages.get(messageId)
+
+          let rolls = this.parent.rolls
+          rolls[0].options.bonus = String(parseInt(rolls[0].options.bonus) + 10)
+          rolls[0].options.hasLuckyPoints = false
+          rolls[0]._total = parseInt(rolls[0].total) + 10
+
+          let newResult = CORoll.analyseRollResult(rolls[0])
+
+          // L'acteur consomme son point de chance
+          const actorId = rolls[0].options.actorId
+          const actor = game.actors.get(actorId)
+          if (actor.system.resources.fortune.value > 0) {
+            actor.system.resources.fortune.value -= 1
+            await actor.update({ "system.resources.fortune.value": actor.system.resources.fortune.value })
+          }
+
+          // Si on a un succes et qu'en plus on est en option ou on jette automatiquement les dommages
+          if (newResult.isSuccess && game.settings.get("co2", "useComboRolls")) {
+            const damageRoll = Roll.fromData(message.system.linkedRoll)
+            await damageRoll.toMessage(
+              { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },
+              { rollMode: rolls[0].options.rollMode },
+            )
+          }
+
+          // Gestion des custom effects
+          const customEffect = message.system.customEffect
+          const additionalEffect = message.system.additionalEffect
+          if (customEffect && additionalEffect && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
+            const target = message.system.targets.length > 0 ? message.system.targets[0] : null
+            if (target) {
+              const targetActor = await fromUuid(target)
+              if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
+              else {
+                await game.users.activeGM.query("co2.applyCustomEffect", { ce: customEffect, targets: [targetActor.uuid] })
+              }
+            }
+          }
+
+          // Mise à jour du message de chat
+          // Le MJ peut mettre à jour le message de chat
+          if (game.user.isGM) {
+            await message.update({ rolls: rolls, "system.result": newResult })
+          }
+          // Sinon on émet un message pour mettre à jour le message de chat
+          else {
+            await game.users.activeGM.query("co2.updateMessageAfterLuck", { existingMessageId: message.id, rolls: rolls, result: newResult })
+          }
         })
       }
     }
 
-    // Si c'est un jet d'attaque raté, affichage du bouton de chance
-    if (this.isFailure) {
-      html.querySelector(".lp-button-attack").addEventListener("click", async (event) => {
-        event.preventDefault()
-        event.stopPropagation()
-        const messageId = event.currentTarget.closest(".message").dataset.messageId
-        if (!messageId) return
-        const message = game.messages.get(messageId)
+    // Click sur le bouton de jet opposé
+    const oppositeRollButtons = html.querySelectorAll(".opposite-roll")
+    if (oppositeRollButtons) {
+      oppositeRollButtons.forEach((btn) => {
+        btn.addEventListener("click", async (event) => {
+          const dataset = event.currentTarget.dataset
+          const oppositeValue = dataset.oppositeValue
+          const oppositeTarget = dataset.oppositeTarget
 
-        let rolls = this.parent.rolls
-        rolls[0].options.bonus = String(parseInt(rolls[0].options.bonus) + 10)
-        rolls[0].options.hasLuckyPoints = false
-        rolls[0]._total = parseInt(rolls[0].total) + 10
+          const messageId = event.currentTarget.closest(".message").dataset.messageId
 
-        let newResult = CORoll.analyseRollResult(rolls[0])
+          const targetActor = await fromUuid(oppositeTarget)
+          const value = Utils.evaluateOppositeFormula(oppositeValue, targetActor)
 
-        // L'acteur consomme son point de chance
-        const actorId = rolls[0].options.actorId
-        const actor = game.actors.get(actorId)
-        if (actor.system.resources.fortune.value > 0) {
-          actor.system.resources.fortune.value -= 1
-          await actor.update({ "system.resources.fortune.value": actor.system.resources.fortune.value })
-        }
+          const formula = value ? `1d20 + ${value}` : `1d20`
+          const roll = await new Roll(formula).roll()
+          const difficulty = roll.total
+          const message = game.messages.get(messageId)
 
-        // Si on a un succes et qu'en plus on est en option ou on jette automatiquement les dommages
-        if (newResult.isSuccess && game.settings.get("co2", "useComboRolls")) {
-          const damageRoll = Roll.fromData(message.system.linkedRoll)
-          await damageRoll.toMessage(
-            { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },
-            { rollMode: rolls[0].options.rollMode },
-          )
-        }
+          let rolls = message.rolls
+          rolls[0].options.oppositeRoll = false
+          rolls[0].options.difficulty = difficulty
 
-        // Gestion des custom effects
-        const customEffect = message.system.customEffect
-        const additionalEffect = message.system.additionalEffect
-        if (customEffect && additionalEffect && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
-          const target = message.system.targets.length > 0 ? message.system.targets[0] : null
-          if (target) {
-            const targetActor = await fromUuid(target)
+          let newResult = CORoll.analyseRollResult(rolls[0])
+          if (newResult.isSuccess) {
+            const damageRoll = Roll.fromData(message.system.linkedRoll)
+            await damageRoll.toMessage(
+              { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },
+              { rollMode: rolls[0].options.rollMode },
+            )
+          }
+
+          // Gestion des custom effects
+          const customEffect = message.system.customEffect
+          const additionalEffect = message.system.additionalEffect
+          if (customEffect && additionalEffect && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
             if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
             else {
-              await game.users.activeGM.query("co2.applyCustomEffect", { ce: customEffect, targets: [targetActor.uuid] })
+              game.socket.emit(`system.${SYSTEM.ID}`, {
+                action: "customEffect",
+                data: {
+                  userId: game.user.id,
+                  ce: customEffect,
+                  targets: [targetActor.uuid],
+                },
+              })
             }
           }
-        }
 
-        // Mise à jour du message de chat
-        // Le MJ peut mettre à jour le message de chat
-        if (game.user.isGM) {
-          await message.update({ rolls: rolls, "system.result": newResult })
-        }
-        // Sinon on émet un message pour mettre à jour le message de chat
-        else {
-          await game.users.activeGM.query("co2.updateMessageAfterLuck", { existingMessageId: message.id, rolls: rolls, result: newResult })
-        }
-      })
-    }
-
-    // Clic sur le bouton de jet opposé
-    html.querySelectorAll(".opposite-roll").forEach((btn) => {
-      btn.addEventListener("click", async (event) => {
-        const dataset = event.currentTarget.dataset
-        const oppositeValue = dataset.oppositeValue
-        const oppositeTarget = dataset.oppositeTarget
-
-        const messageId = event.currentTarget.closest(".message").dataset.messageId
-
-        const targetActor = await fromUuid(oppositeTarget)
-        const value = Utils.evaluateOppositeFormula(oppositeValue, targetActor)
-
-        const formula = value ? `1d20 + ${value}` : `1d20`
-        const roll = await new Roll(formula).roll()
-        const difficulty = roll.total
-        const message = game.messages.get(messageId)
-
-        let rolls = message.rolls
-        rolls[0].options.oppositeRoll = false
-        rolls[0].options.difficulty = difficulty
-
-        let newResult = CORoll.analyseRollResult(rolls[0])
-        if (newResult.isSuccess) {
-          const damageRoll = Roll.fromData(message.system.linkedRoll)
-          await damageRoll.toMessage(
-            { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },
-            { rollMode: rolls[0].options.rollMode },
-          )
-        }
-
-        // Gestion des custom effects
-        const customEffect = message.system.customEffect
-        const additionalEffect = message.system.additionalEffect
-        if (customEffect && additionalEffect && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
-          if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
+          // Le MJ peut mettre à jour le message de chat
+          if (game.user.isGM) {
+            await message.update({ rolls: rolls, "system.result": newResult })
+          }
+          // Sinon on émet un message pour mettre à jour le message de chat
           else {
             game.socket.emit(`system.${SYSTEM.ID}`, {
-              action: "customEffect",
+              action: "oppositeRoll",
               data: {
                 userId: game.user.id,
-                ce: customEffect,
-                targets: [targetActor.uuid],
+                messageId: message.id,
+                rolls: rolls,
+                result: newResult,
               },
             })
           }
-        }
-
-        // Le MJ peut mettre à jour le message de chat
-        if (game.user.isGM) {
-          await message.update({ rolls: rolls, "system.result": newResult })
-        }
-        // Sinon on émet un message pour mettre à jour le message de chat
-        else {
-          game.socket.emit(`system.${SYSTEM.ID}`, {
-            action: "oppositeRoll",
-            data: {
-              userId: game.user.id,
-              messageId: message.id,
-              rolls: rolls,
-              result: newResult,
-            },
-          })
-        }
+        })
       })
-    })
+    }
   }
 }
