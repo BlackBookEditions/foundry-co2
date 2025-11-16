@@ -1,7 +1,8 @@
 import BaseMessageData from "./base-message.mjs"
-import { CustomEffectData } from "./schemas/custom-effect.mjs"
+import CustomEffectData from "./schemas/custom-effect.mjs"
 import { CORoll } from "../documents/roll.mjs"
 import Hitpoints from "../helpers/hitpoints.mjs"
+import { Resolver } from "./schemas/resolver.mjs"
 
 export default class ActionMessageData extends BaseMessageData {
   static defineSchema() {
@@ -51,23 +52,13 @@ export default class ActionMessageData extends BaseMessageData {
    */
   async alterMessageHTML(message, html) {
     // Affiche ou non les boutons d'application des dommages
-    if (game.settings.get("co2", "displayChatDamageButtonsToAll")) {
+    if (!game.settings.get("co2", "displayChatDamageButtonsToAll") && !game.user.isGM) {
       html.querySelectorAll(".apply-dmg").forEach((btn) => {
-        btn.addEventListener("click", (ev) => Hitpoints.onClickChatMessageApplyButton(ev, html, context))
+        btn.style.display = "none"
       })
-    } else {
-      if (game.user.isGM) {
-        html.querySelectorAll(".apply-dmg").forEach((btn) => {
-          btn.addEventListener("click", (ev) => Hitpoints.onClickChatMessageApplyButton(ev, html, context))
-        })
-      } else {
-        html.querySelectorAll(".apply-dmg").forEach((btn) => {
-          btn.style.display = "none"
-        })
-        html.querySelectorAll(".dr-checkbox").forEach((btn) => {
-          btn.style.display = "none"
-        })
-      }
+      html.querySelectorAll(".dr-checkbox").forEach((btn) => {
+        btn.style.display = "none"
+      })
     }
 
     // Affiche ou non la difficulté
@@ -80,6 +71,18 @@ export default class ActionMessageData extends BaseMessageData {
   }
 
   async addListeners(html) {
+    if (game.settings.get("co2", "displayChatDamageButtonsToAll")) {
+      html.querySelectorAll(".apply-dmg").forEach((btn) => {
+        btn.addEventListener("click", (ev) => Hitpoints.onClickChatMessageApplyButton(ev, html, context))
+      })
+    } else {
+      if (game.user.isGM) {
+        html.querySelectorAll(".apply-dmg").forEach((btn) => {
+          btn.addEventListener("click", (ev) => Hitpoints.onClickChatMessageApplyButton(ev, html, context))
+        })
+      }
+    }
+
     // Si c'est un jet d'attaque raté, affichage du bouton de chance
     if (this.isFailure) {
       html.querySelector(".lp-button-attack").addEventListener("click", async (event) => {
@@ -113,8 +116,8 @@ export default class ActionMessageData extends BaseMessageData {
           )
         }
 
-        // TODO Gestion des custom effects
-        /*const customEffect = message.system.customEffect
+        // Gestion des custom effects
+        const customEffect = message.system.customEffect
         const additionalEffect = message.system.additionalEffect
         if (customEffect && additionalEffect && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
           const target = message.system.targets.length > 0 ? message.system.targets[0] : null
@@ -122,18 +125,10 @@ export default class ActionMessageData extends BaseMessageData {
             const targetActor = await fromUuid(target)
             if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
             else {
-              game.socket.emit(`system.${SYSTEM.ID}`, {
-                action: "customEffect",
-                data: {
-                  userId: game.user.id,
-                  ce: customEffect,
-                  targets: [targetActor.uuid],
-                },
-              })
+              await game.users.activeGM.query("co2.applyCustomEffect", { ce: customEffect, targets: [targetActor.uuid] })
             }
           }
         }
-        */
 
         // Mise à jour du message de chat
         // Le MJ peut mettre à jour le message de chat

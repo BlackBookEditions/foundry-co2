@@ -9,7 +9,7 @@ import { Modifier } from "./modifier.mjs"
  * modifiers : Liste des modifiers à appliquer sur l'acteur (buff/debuff)
  * Formula: Formule de calcul des dommages ou du soin
  */
-export class CustomEffectData extends foundry.abstract.DataModel {
+export default class CustomEffectData extends foundry.abstract.DataModel {
   static defineSchema() {
     const fields = foundry.data.fields
     const requiredInteger = { required: true, nullable: false, integer: true }
@@ -92,6 +92,25 @@ export class CustomEffectData extends foundry.abstract.DataModel {
         const actor = fromUuidSync(target)
         await actor.applyCustomEffect(ce)
       }
+    }
+  }
+
+  /**
+   * Handles the application of a custom effect to multiple target actors.
+   *
+   * @param {Object} options The options object.
+   * @param {Object} options.ce The custom effect configuration object to be applied.
+   * @param {string[]} options.targets An array of UUID strings representing the target actors.
+   * @returns {Promise<void>} A promise that resolves when all custom effects have been applied to the targets.
+   * @private
+   * @static
+   * @async
+   */
+  static async _handleQueryApplyCustomEffect({ ce, targets } = {}) {
+    const customEffect = CustomEffectData.createFromCE(ce)
+    for (const target of targets) {
+      const actor = fromUuidSync(target)
+      await actor.applyCustomEffect(customEffect)
     }
   }
 

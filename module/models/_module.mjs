@@ -12,3 +12,5 @@ export { default as BaseMessageData } from "./base-message.mjs"
 export { default as ActionMessageData } from "./action-message.mjs"
 export { default as ItemMessageData } from "./item-message.mjs"
 export { default as SkillMessageData } from "./skill-message.mjs"
+
+export { default as CustomEffectData } from "./schemas/custom-effect.mjs"

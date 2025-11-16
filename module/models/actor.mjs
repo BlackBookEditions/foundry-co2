@@ -1,5 +1,5 @@
 import { AbilityValue } from "./schemas/ability-value.mjs"
-import { CustomEffectData } from "./schemas/custom-effect.mjs"
+import CustomEffectData from "./schemas/custom-effect.mjs"
 
 export default class ActorData extends foundry.abstract.TypeDataModel {
   static defineSchema() {

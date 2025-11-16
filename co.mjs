@@ -80,6 +80,7 @@ Hooks.once("init", async function () {
   // Queries
   CONFIG.queries["co2.characterSpendLuck"] = documents.COActor._handleQuerySpendLuck
   CONFIG.queries["co2.updateMessageAfterLuck"] = documents.COChatMessage._handleQueryUpdateMessageAfterLuck
+  CONFIG.queries["co2.applyCustomEffect"] = models.CustomEffectData._handleQueryApplyCustomEffect
 
   // Activate socket handler
   game.socket.on(`system.${SYSTEM.ID}`, handleSocketEvent)
