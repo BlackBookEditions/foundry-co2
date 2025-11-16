@@ -1,5 +1,6 @@
 import { SYSTEM } from "../config/system.mjs"
 import BaseMessageData from "./base-message.mjs"
+import { CORoll } from "../documents/roll.mjs"
 
 export default class SkillMessageData extends BaseMessageData {
   static defineSchema() {
@@ -9,10 +10,20 @@ export default class SkillMessageData extends BaseMessageData {
     })
   }
 
+  /**
+   * Ajoute les listeners du message
+   * @async
+   * @param {HTMLElement} html Élément HTML représentant le message à modifier.
+   */
   async addListeners(html) {
-    // Clic sur le bouton de chance sur un skill
-    html.querySelectorAll(".lp-button-skill").forEach((btn) => {
-      btn.addEventListener("click", async (event) => {
+    const luckyButton = html.querySelector(".lp-button-skill")
+    const displayButton = game.user.isGM || this.parent.isAuthor
+
+    // Click sur le bouton de chance sur un skill
+    if (luckyButton && displayButton) {
+      luckyButton.addEventListener("click", async (event) => {
+        event.preventDefault()
+        event.stopPropagation()
         const messageId = event.currentTarget.closest(".message").dataset.messageId
         const message = game.messages.get(messageId)
 
@@ -23,32 +34,26 @@ export default class SkillMessageData extends BaseMessageData {
 
         let newResult = CORoll.analyseRollResult(rolls[0])
         // L'acteur consomme son point de chance
-        const actor = game.actors.get(rolls[0].options.actorId)
+        const actorId = rolls[0].options.actorId
+        const actor = game.actors.get(actorId)
         if (actor.system.resources.fortune.value > 0) {
           actor.system.resources.fortune.value -= 1
           await actor.update({ "system.resources.fortune.value": actor.system.resources.fortune.value })
         }
 
+        // Mise à jour du message de chat
         // Le MJ peut mettre à jour le message de chat
         if (game.user.isGM) {
           await message.update({ rolls: rolls, "system.result": newResult })
         }
         // Sinon on émet un message pour mettre à jour le message de chat
         else {
-          game.socket.emit(`system.${SYSTEM.ID}`, {
-            action: "_luckyRoll",
-            data: {
-              userId: game.user.id,
-              messageId: message.id,
-              rolls: rolls,
-              result: newResult,
-            },
-          })
+          await game.users.activeGM.query("co2.updateMessageAfterLuck", { existingMessageId: message.id, rolls: rolls, result: newResult })
         }
       })
-    })
+    }
 
-    // Clic sur le bouton de jet opposé
+    // Click sur le bouton de jet opposé
     html.querySelectorAll(".opposite-roll").forEach((btn) => {
       btn.addEventListener("click", async (event) => {
         const dataset = event.currentTarget.dataset

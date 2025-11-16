@@ -35,40 +35,4 @@ export function registerHooks() {
     }
   })
 
-  Hooks.on("updateActor", (document, changed, options, userId) => {
-    if (document.type === "character" && changed?.system?.attributes?.hp?.value === 0 && !document.statuses.has("unconscious")) {
-      // Si déjà affaibli le statut est supprimé
-      if (document.statuses.has("weakened")) {
-        document.toggleStatusEffect("weakened", { active: false })
-        document.unsetFlag("co2", "statuses.weakenedFromOneHP")
-      }
-      document.toggleStatusEffect("unconscious", { active: true })
-      document.setFlag("co2", "statuses.unconsciousFromZeroHP", true)
-      document.system.spendDR(1)
-    }
-
-    // Une rencontre est morte à 0 PV
-    if (document.type === "encounter" && changed?.system?.attributes?.hp?.value === 0 && !document.statuses.has("dead")) {
-      document.toggleStatusEffect("dead", { active: true })
-    }
-  })
-
-  // A la fin d'un combat on supprime les Active Effects
-  Hooks.on("deleteCombat", (combat, options, userId) => {
-    if (game.user.isGM) {
-      combat.combatants.forEach((combatant) => {
-        const actor = combatant.actor
-        if (actor) {
-          actor.deleteEffects()
-        }
-      })
-    }
-  })
-
-  Hooks.on("createActor", (document, options, userId) => {
-    // Uniquement pour une création depuis un compendium ou un acteur existant
-    if (options?.fromCompendium || (!options?.strict && !options?.renderSheet)) {
-      if (game.user.isGM) document.system.updateAllActionsUuid()
-    }
-  })
 }
