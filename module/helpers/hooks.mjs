@@ -27,7 +27,7 @@ import Utils from "./utils.mjs"
  * @param {number} slot The slot number where the data is being dropped.
  */
 export function registerHooks() {
-  Hooks.on("renderChatMessageHTML", (message, html, context) => {
+  /*Hooks.on("renderChatMessageHTML", (message, html, context) => {
     // Affiche ou non les boutons d'application des dommages
     if (game.settings.get("co2", "displayChatDamageButtonsToAll")) {
       html.querySelectorAll(".apply-dmg").forEach((btn) => {
@@ -248,7 +248,7 @@ export function registerHooks() {
         }
       })
     })
-  })
+  })*/
 
   Hooks.on("hotbarDrop", (bar, data, slot) => {
     if (["Item", "co.action", "co.ability"].includes(data.type)) {

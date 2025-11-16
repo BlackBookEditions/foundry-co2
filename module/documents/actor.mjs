@@ -1133,6 +1133,19 @@ export default class COActor extends Actor {
   getItemWithKey(slug) {
     return this.items.find((item) => item.system.slug === slug)
   }
+
+  /**
+   * Spends a specified amount of lucky points from the actor's fortune resources.
+   * Reduces the current lucky points by the given amount, ensuring the value doesn't go below zero.
+   *
+   * @param {number} amount The amount of lucky points to spend
+   * @returns {Promise} A promise that resolves when the actor's fortune value has been updated
+   */
+  spendLuckyPoints(amount) {
+    const currentLuckyPoints = this.system.resources.fortune.value
+    const newLuckyPoints = Math.max(0, currentLuckyPoints - amount)
+    return this.update({ "system.resources.fortune.value": newLuckyPoints })
+  }
   // #endregion
 
   // #region Méthode d'ajout et suppression des différents types d'item
@@ -2415,4 +2428,17 @@ export default class COActor extends Actor {
 
   // #endregion
 
+  /**
+   * Handles a query to spend luck points for an actor.
+   * Retrieves the actor by ID and spends the specified number of lucky points.
+   *
+   * @param {string} actorId The ID of the actor to spend luck points for
+   * @param {number} nb The number of luck points to spend
+   * @returns {Promise<void>} A promise that resolves when the luck points have been spent
+   */
+  static async _handleQuerySpendLuck(actorId, nb) {
+    const actor = game.actors.get(actorId)
+    if (!actor) return
+    await actor.spendLuckyPoints(nb)
+  }
 }

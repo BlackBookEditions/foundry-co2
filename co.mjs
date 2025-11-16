@@ -78,7 +78,8 @@ Hooks.once("init", async function () {
   CONFIG.Dice.rolls.push(documents.CORoll, documents.COSkillRoll, documents.COAttackRoll)
 
   // Queries
-  //CONFIG.queries[""].
+  CONFIG.queries["co2.characterSpendLuck"] = documents.COActor._handleQuerySpendLuck
+  CONFIG.queries["co2.updateMessageAfterLuck"] = documents.COChatMessage._handleQueryUpdateMessageAfterLuck
 
   // Activate socket handler
   game.socket.on(`system.${SYSTEM.ID}`, handleSocketEvent)
@@ -139,7 +140,7 @@ Hooks.once("i18nInit", function () {
   CONFIG.statusEffects = customeffects
 })
 
-//Hooks.on("renderChatMessageHTML", applications.hooks.renderChatMessageHTML)
+Hooks.on("renderChatMessageHTML", applications.hooks.renderChatMessageHTML)
 
 /**
  * Register world usage statistics

@@ -50,4 +50,22 @@ export default class COChatMessage extends ChatMessage {
     sender?.replaceChildren(avatar, name)
     // Html.querySelector(".whisper-to")?.remove()
   }
+
+  /**
+   * Met à jour le message après l'utilisation d'un point de chance
+   *
+   * @param {Object} options The options object
+   * @param {string} options.existingMessageId The ID of the existing message to update
+   * @param {Array} options.rolls The array of roll objects to add to the message
+   * @param {*} options.result The result value to store in the message's system data
+   * @returns {Promise<void>} A promise that resolves when the message update is complete
+   * @private
+   * @static
+   * @async
+   */
+  static async _handleQueryUpdateMessageAfterLuck({ existingMessageId, rolls, result } = {}) {
+    const message = game.messages.get(existingMessageId)
+    if (!message) return
+    await message.update({ rolls: rolls, "system.result": result })
+  }
 }
