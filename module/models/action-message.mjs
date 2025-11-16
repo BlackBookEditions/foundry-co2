@@ -70,6 +70,11 @@ export default class ActionMessageData extends BaseMessageData {
     }
   }
 
+  /**
+   * Ajoute les listeners du message
+   * @async
+   * @param {HTMLElement} html Élément HTML représentant le message à modifier.
+   */
   async addListeners(html) {
     // Click sur les boutons d'application des dommages
     if (game.settings.get("co2", "displayChatDamageButtonsToAll")) {
@@ -93,8 +98,9 @@ export default class ActionMessageData extends BaseMessageData {
     // Click sur le bouton de chance si c'est un jet d'attaque raté
     if (this.isFailure) {
       const luckyButton = html.querySelector(".lp-button-attack")
+      const displayButton = game.user.isGM || this.parent.isAuthor
 
-      if (luckyButton) {
+      if (luckyButton && displayButton) {
         luckyButton.addEventListener("click", async (event) => {
           event.preventDefault()
           event.stopPropagation()

@@ -265,14 +265,7 @@ export class Resolver extends foundry.abstract.DataModel {
       const uuidList = targets.map((t) => t.uuid)
       if (game.user.isGM) await Promise.all(targets.map((target) => target.actor.applyCustomEffect(ce)))
       else {
-        game.socket.emit(`system.${SYSTEM.ID}`, {
-          action: "customEffect",
-          data: {
-            userId: game.user.id,
-            ce,
-            targets: uuidList,
-          },
-        })
+        await game.users.activeGM.query("co2.applyCustomEffect", { ce: ce, targets: uuidList })
       }
     }
     return true
