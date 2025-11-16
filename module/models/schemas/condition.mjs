@@ -1,5 +1,5 @@
 import { SYSTEM } from "../../config/system.mjs"
-import RulesEngine from "../../rules-engine.mjs"
+import RulesEngine from "../../helpers/rules-engine.mjs"
 
 /**
  * La classe Condition représente un contrôle de condition qui peut être évalué pour un élément donné.

@@ -3,7 +3,7 @@ const { HandlebarsApplicationMixin } = foundry.applications.api
 const { DragDrop } = foundry.applications.ux
 
 import { SYSTEM } from "../../config/system.mjs"
-import Utils from "../../utils.mjs"
+import Utils from "../../helpers/utils.mjs"
 import slideToggle from "../../elements/slide-toggle.mjs"
 
 export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.ActorSheetV2) {

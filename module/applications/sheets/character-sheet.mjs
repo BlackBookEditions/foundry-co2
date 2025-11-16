@@ -1,6 +1,6 @@
 import COBaseActorSheet from "./base-actor-sheet.mjs"
 import { SYSTEM } from "../../config/system.mjs"
-import Utils from "../../utils.mjs"
+import Utils from "../../helpers/utils.mjs"
 import { CoEditAbilitiesDialog } from "../../dialogs/edit-abilities-dialog.mjs"
 import { COMiniCharacterSheet } from "./mini-character-sheet.mjs"
 

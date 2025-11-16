@@ -1,4 +1,4 @@
-export class Hitpoints {
+export default class Hitpoints {
   static async applyToTargets(type, amount, drChecked, tempDamage) {
     // On prend les cibles s'il y en a, sinon on prend les tokens actifs.
     // notation [...] transforme un Set en Array

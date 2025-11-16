@@ -3,7 +3,7 @@ const { HandlebarsApplicationMixin } = foundry.applications.api
 const { DragDrop } = foundry.applications.ux
 
 import { SYSTEM } from "../../config/system.mjs"
-import Utils from "../../utils.mjs"
+import Utils from "../../helpers/utils.mjs"
 import { Action } from "../../models/schemas/action.mjs"
 import { Condition } from "../../models/schemas/condition.mjs"
 import { Modifier } from "../../models/schemas/modifier.mjs"

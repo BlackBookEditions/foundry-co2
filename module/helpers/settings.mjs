@@ -1,7 +1,7 @@
 /**
  * Enregistre les paramètres du système
  */
-export default function registerSystemSettings() {
+export function registerSystemSettings() {
   /**
    * Mode DEBUG
    */

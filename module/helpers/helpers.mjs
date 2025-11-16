@@ -1,8 +1,8 @@
-import { SYSTEM } from "./config/system.mjs"
+import { SYSTEM } from "../config/system.mjs"
 /**
  * Register Handlebars helpers
  */
-export default function registerHandlebarsHelpers() {
+export function registerHandlebarsHelpers() {
   Handlebars.registerHelper("add", function (a, b) {
     return parseInt(a) + parseInt(b)
   })

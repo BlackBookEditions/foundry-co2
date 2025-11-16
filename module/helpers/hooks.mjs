@@ -1,8 +1,8 @@
-import { SYSTEM } from "./config/system.mjs"
-import { CORoll } from "./documents/roll.mjs"
-import { Hitpoints } from "./hitpoints.mjs"
-import { createCOMacro } from "./macros.mjs"
-import { Resolver } from "./models/schemas/resolver.mjs"
+import { SYSTEM } from "../config/system.mjs"
+import { CORoll } from "../documents/roll.mjs"
+import Hitpoints from "./hitpoints.mjs"
+import Macros from "./macros.mjs"
+import { Resolver } from "../models/schemas/resolver.mjs"
 import Utils from "./utils.mjs"
 
 /**
@@ -26,7 +26,7 @@ import Utils from "./utils.mjs"
  * @param {Object} data The data being dropped onto the hotbar.
  * @param {number} slot The slot number where the data is being dropped.
  */
-export default function registerHooks() {
+export function registerHooks() {
   Hooks.on("renderChatMessageHTML", (message, html, context) => {
     // Affiche ou non les boutons d'application des dommages
     if (game.settings.get("co2", "displayChatDamageButtonsToAll")) {
@@ -253,7 +253,7 @@ export default function registerHooks() {
   Hooks.on("hotbarDrop", (bar, data, slot) => {
     if (["Item", "co.action", "co.ability"].includes(data.type)) {
       if (CONFIG.debug.co2?.hooks) console.debug(Utils.log(`HotbarDrop`), bar, data, slot)
-      createCOMacro(data, slot)
+      Macros.createCOMacro(data, slot)
       return false
     }
   })

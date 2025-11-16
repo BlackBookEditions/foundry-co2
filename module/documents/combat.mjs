@@ -1,4 +1,4 @@
-import Utils from "../utils.mjs"
+import Utils from "../helpers/utils.mjs"
 /**
  * Propriétés de baseCombat
  * _id: new fields.DocumentIdField(),

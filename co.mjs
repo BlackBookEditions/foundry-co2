@@ -1,26 +1,21 @@
 // Configuration
 import { SYSTEM } from "./module/config/system.mjs"
+globalThis.SYSTEM = SYSTEM
+
+export * as elements from "./module/elements/_module.mjs"
 
 // Import modules
 import * as models from "./module/models/_module.mjs"
 import * as documents from "./module/documents/_module.mjs"
 import * as applications from "./module/applications/_module.mjs"
+import * as helpers from "./module/helpers/_module.mjs"
 
 // Helpers
-import registerHandlebarsHelpers from "./module/helpers.mjs"
-import registerSystemSettings from "./module/settings.mjs"
-import registerHooks from "./module/hooks.mjs"
-import Macros from "./module/macros.mjs"
-import Utils from "./module/utils.mjs"
 import { handleSocketEvent } from "./module/socket.mjs"
-
-export * as elements from "./module/elements/_module.mjs"
-
-globalThis.SYSTEM = SYSTEM
 
 Hooks.once("init", async function () {
   console.info(SYSTEM.ASCII)
-  console.info(Utils.log("Initializing..."))
+  console.info(helpers.Utils.log("Initializing..."))
 
   globalThis.cof = game.system
   game.system.CONST = SYSTEM
@@ -30,7 +25,8 @@ Hooks.once("init", async function () {
     applications,
     models,
     documents,
-    macros: Macros,
+    helpers,
+    macros: helpers.Macros,
   }
 
   // Actor
@@ -81,12 +77,15 @@ Hooks.once("init", async function () {
   // Dice system configuration
   CONFIG.Dice.rolls.push(documents.CORoll, documents.COSkillRoll, documents.COAttackRoll)
 
+  // Queries
+  //CONFIG.queries[""].
+
   // Activate socket handler
   game.socket.on(`system.${SYSTEM.ID}`, handleSocketEvent)
 
-  registerHandlebarsHelpers()
-  registerSystemSettings()
-  registerHooks()
+  helpers.registerHandlebarsHelpers()
+  helpers.registerSystemSettings()
+  helpers.registerHooks()
 
   // Load Martial Training
   if (!game.system.CONST.martialTrainingsWeapons) {
@@ -123,7 +122,7 @@ Hooks.once("init", async function () {
   }
   CONFIG.ui.co = applications.COSidebarMenu
 
-  console.info(Utils.log("Initialized"))
+  console.info(helpers.Utils.log("Initialized"))
 })
 
 Hooks.once("i18nInit", function () {
@@ -139,6 +138,8 @@ Hooks.once("i18nInit", function () {
   customeffects.sort((a, b) => a.name.localeCompare(b.name))
   CONFIG.statusEffects = customeffects
 })
+
+//Hooks.on("renderChatMessageHTML", applications.hooks.renderChatMessageHTML)
 
 /**
  * Register world usage statistics
@@ -200,5 +201,5 @@ Hooks.once("ready", async function () {
   // Statistics
   registerWorldCount("co2")
 
-  console.info(Utils.log(game.i18n.localize("CO.notif.ready")))
+  console.info(helpers.Utils.log(game.i18n.localize("CO.notif.ready")))
 })

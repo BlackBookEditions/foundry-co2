@@ -1,4 +1,4 @@
-import Utils from "../utils.mjs"
+import Utils from "../helpers/utils.mjs"
 export class CORoll extends Roll {
   static ROLL_TYPE = "standard"
 

@@ -1,5 +1,4 @@
 import { CustomEffectData } from "./models/schemas/custom-effect.mjs"
-import { Modifier } from "./models/schemas/modifier.mjs"
 
 /**
  * Prise en charge des evènements transmis par le socket selon le type d'action transmis.

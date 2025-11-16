@@ -3,7 +3,7 @@ import { Modifier } from "../models/schemas/modifier.mjs"
 import { CustomEffectData } from "../models/schemas/custom-effect.mjs"
 import { CORoll, COSkillRoll, COAttackRoll } from "./roll.mjs"
 import CoChat from "../chat.mjs"
-import Utils from "../utils.mjs"
+import Utils from "../helpers/utils.mjs"
 
 /**
  * @class COActor

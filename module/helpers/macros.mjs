@@ -1,54 +1,52 @@
-import COItem from "./documents/item.mjs"
-import CoChat from "./chat.mjs"
-import { SYSTEM } from "./config/system.mjs"
-
-/**
- * Attempt to create a macro from the dropped data. Will use an existing macro if one exists.
- * @param {object} dropData     The dropped data
- * @param {number} slot         The hotbar slot to use
- */
-export async function createCOMacro(dropData, slot) {
-  const macroData = { type: "script", scope: "actor" }
-  switch (dropData.type) {
-    case "Item":
-      const itemData = await Item.implementation.fromDropData(dropData)
-      if (!itemData) return ui.notifications.warn(game.i18n.localize("CO.macro.unownedWarn"))
-      foundry.utils.mergeObject(macroData, {
-        name: itemData.name,
-        img: itemData.img,
-        command: `if (event.ctrlKey) {game.system.api.macros.openSheet("${itemData.uuid}","${itemData.name}")} else { game.system.api.macros.sendToChat("${itemData.uuid}","${itemData.name}", null) }`,
-        flags: { "co.itemMacro": true },
-      })
-      break
-    case "co.action":
-      foundry.utils.mergeObject(macroData, {
-        name: `${dropData.name} - ${dropData.actionName}`,
-        img: dropData.img,
-        command: `if (event.ctrlKey) {game.system.api.macros.openSheet("${dropData.source}")} else { game.system.api.macros.sendToChat("${dropData.source}","${dropData.name}","${dropData.indice}") }`,
-        flags: { "co.actionMacro": true },
-      })
-      break
-    case "co.ability":
-      foundry.utils.mergeObject(macroData, {
-        name: `Jet de caractéristique (${game.i18n.localize(`CO.abilities.long.${dropData.rollTarget}`)})`,
-        img: "icons/svg/dice-target.svg",
-        command: `game.system.api.macros.rollSkill("${dropData.rollTarget}", {})`,
-        flags: { "co.abilityMacro": true },
-      })
-      break
-    default:
-      return
-  }
-
-  // Assign the macro to the hotbar
-  let macro = game.macros.find((m) => m.name === macroData.name && m.command === macroData.command && m.author.isSelf)
-  if (!macro) {
-    macro = await Macro.create(macroData)
-    game.user.assignHotbarMacro(macro, slot)
-  }
-}
+import COItem from "../documents/item.mjs"
 
 export default class Macros {
+  /**
+   * Attempt to create a macro from the dropped data. Will use an existing macro if one exists.
+   * @param {object} dropData     The dropped data
+   * @param {number} slot         The hotbar slot to use
+   */
+  static async createCOMacro(dropData, slot) {
+    const macroData = { type: "script", scope: "actor" }
+    switch (dropData.type) {
+      case "Item":
+        const itemData = await Item.implementation.fromDropData(dropData)
+        if (!itemData) return ui.notifications.warn(game.i18n.localize("CO.macro.unownedWarn"))
+        foundry.utils.mergeObject(macroData, {
+          name: itemData.name,
+          img: itemData.img,
+          command: `if (event.ctrlKey) {game.system.api.macros.openSheet("${itemData.uuid}","${itemData.name}")} else { game.system.api.macros.sendToChat("${itemData.uuid}","${itemData.name}", null) }`,
+          flags: { "co.itemMacro": true },
+        })
+        break
+      case "co.action":
+        foundry.utils.mergeObject(macroData, {
+          name: `${dropData.name} - ${dropData.actionName}`,
+          img: dropData.img,
+          command: `if (event.ctrlKey) {game.system.api.macros.openSheet("${dropData.source}")} else { game.system.api.macros.sendToChat("${dropData.source}","${dropData.name}","${dropData.indice}") }`,
+          flags: { "co.actionMacro": true },
+        })
+        break
+      case "co.ability":
+        foundry.utils.mergeObject(macroData, {
+          name: `Jet de caractéristique (${game.i18n.localize(`CO.abilities.long.${dropData.rollTarget}`)})`,
+          img: "icons/svg/dice-target.svg",
+          command: `game.system.api.macros.rollSkill("${dropData.rollTarget}", {})`,
+          flags: { "co.abilityMacro": true },
+        })
+        break
+      default:
+        return
+    }
+
+    // Assign the macro to the hotbar
+    let macro = game.macros.find((m) => m.name === macroData.name && m.command === macroData.command && m.author.isSelf)
+    if (!macro) {
+      macro = await Macro.create(macroData)
+      game.user.assignHotbarMacro(macro, slot)
+    }
+  }
+
   /**
    * Send to Chat an Item or an action
    * @param {string} itemUuid        Uuid of the item on the selected actor to trigger.
