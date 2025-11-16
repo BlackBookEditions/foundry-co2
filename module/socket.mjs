@@ -29,7 +29,7 @@ export function handleSocketEvent({ action = null, data = {} } = {}) {
  * @param {*} targets : Liste d'uuid d'acteur cible
  * @param {int} healAmount : Quantité de PV restaurés
  * @param {string} fromUserId : Id de l'acteur à l'origine du soin
- */
+ 
 export async function _heal({ targets, healAmount, fromUserId }) {
   if (game.user.isGM) {
     for (const target of targets) {
@@ -38,6 +38,7 @@ export async function _heal({ targets, healAmount, fromUserId }) {
     }
   }
 }
+*/
 
 /**
  * Handles the "_oppositeRoll" socket event, updating the message with new roll data and result.
@@ -71,10 +72,12 @@ export async function _oppositeRoll({ userId, messageId, rolls, result } = {}) {
  * @param {Array} params.rolls The array of roll data to update the message with.
  * @param {any} params.result The result to update in the message's system data.
  * @returns {Promise<void>} Resolves when the message is successfully updated.
- */
+
 export async function _luckyRoll({ userId, messageId, rolls, result } = {}) {
   if (game.user.isGM) {
     const message = game.messages.get(messageId)
     await message.update({ rolls: rolls, "system.result": result })
   }
+     
 }
+*/

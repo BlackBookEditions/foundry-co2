@@ -2135,23 +2135,22 @@ export default class COActor extends Actor {
     let roll = new Roll(healFormula)
     await roll.roll()
     const healAmount = roll.total
+
+    let source = item.name
+    if (actionName && actionName !== "") {
+      source = `${item.name} - ${actionName}`
+    }
+
     if (targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id) {
-      this.applyHeal(healAmount)
+      this.applyHeal({ heal: healAmount, source: source })
     } else if (targetType === SYSTEM.RESOLVER_TARGET.single.id || targetType === SYSTEM.RESOLVER_TARGET.multiple.id) {
       if (game.user.isGM) {
         for (const target of targets) {
-          target.actor.applyHeal(healAmount)
+          target.actor.applyHeal({ heal: healAmount, source: source })
         }
       } else {
         const uuidList = targets.map((obj) => obj.uuid)
-        game.socket.emit(`system.${SYSTEM.ID}`, {
-          action: "heal",
-          data: {
-            targets: uuidList,
-            healAmount,
-            fromUserId: this.uuid,
-          },
-        })
+        await game.users.activeGM.query("co2.characterHeal", { fromActor: this.uuid, targets: uuidList, healAmount: healAmount })
       }
     }
   }
@@ -2217,13 +2216,15 @@ export default class COActor extends Actor {
    * @param {number} heal La quantité de soin à appliquer aux PV de l'acteur.
    * @returns {Promise<void>} Résout lorsque les PV de l'acteur ont été mis à jour.
    */
-  async applyHeal(heal) {
+  async applyHeal({ heal = 0, source = null } = {}) {
     let hp = this.system.attributes.hp
     if (hp === hp.max) return
     hp.value = Math.min(hp.max, hp.value + heal)
     await this.update({ "system.attributes.hp": hp })
-    const message = game.i18n.format("CO.notif.healed", { actorName: this.name, amount: heal })
-    await new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
+    let message
+    if (!source) message = game.i18n.format("CO.notif.healed", { actorName: this.name, amount: heal })
+    else message = game.i18n.format("CO.notif.healedBy", { actorName: this.name, amount: heal, source: source })
+    new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
   }
   // #endregion
 
@@ -2428,6 +2429,8 @@ export default class COActor extends Actor {
 
   // #endregion
 
+  // #region Queries handlers
+
   /**
    * Handles a query to spend luck points for an actor.
    * Retrieves the actor by ID and spends the specified number of lucky points.
@@ -2435,10 +2438,31 @@ export default class COActor extends Actor {
    * @param {string} actorId The ID of the actor to spend luck points for
    * @param {number} nb The number of luck points to spend
    * @returns {Promise<void>} A promise that resolves when the luck points have been spent
-   */
+   NOT USED
   static async _handleQuerySpendLuck(actorId, nb) {
     const actor = game.actors.get(actorId)
     if (!actor) return
     await actor.spendLuckyPoints(nb)
+  }*/
+
+  /**
+   * Handles healing query for multiple targets.
+   * Validates the targets array and applies healing amount to each target actor.
+   *
+   * @param {Object} options - The options object
+   * @param {string} [options.fromActor] The uuid of the actor initiating the heal
+   * @param {string[]} [options.targets] Array of actor UUIDs to be healed
+   * @param {number} [options.healAmount] The amount of healing to apply
+   * @returns {Promise<void>}
+   */
+  static async _handleQueryHeal({ fromActor, targets, healAmount } = {}) {
+    const sourceActor = fromUuidSync(fromActor)
+    const source = sourceActor ? sourceActor.name : null
+    for (const target of targets) {
+      const actor = fromUuidSync(target)
+      await actor.applyHeal({ heal: healAmount, source: source })
+    }
   }
+
+  // #endregion
 }

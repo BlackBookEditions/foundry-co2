@@ -78,9 +78,10 @@ Hooks.once("init", async function () {
   CONFIG.Dice.rolls.push(documents.CORoll, documents.COSkillRoll, documents.COAttackRoll)
 
   // Queries
-  CONFIG.queries["co2.characterSpendLuck"] = documents.COActor._handleQuerySpendLuck
+  // Pas utilisé finalement CONFIG.queries["co2.characterSpendLuck"] = documents.COActor._handleQuerySpendLuck
   CONFIG.queries["co2.updateMessageAfterLuck"] = documents.COChatMessage._handleQueryUpdateMessageAfterLuck
   CONFIG.queries["co2.applyCustomEffect"] = models.CustomEffectData._handleQueryApplyCustomEffect
+  CONFIG.queries["co2.characterHeal"] = documents.COActor._handleQueryHeal
 
   // Activate socket handler
   game.socket.on(`system.${SYSTEM.ID}`, handleSocketEvent)

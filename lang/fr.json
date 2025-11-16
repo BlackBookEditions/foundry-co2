@@ -381,6 +381,7 @@
       "warningNoCharge": "Votre nombre d'utilisations restantes est insuffisant",
       "cantUseAllDef": "Vous ne pouvez pas utiliser les deux types de défense simultanément",
       "healed": "{actorName} a été soigné de {amount} point(s) de vigueur",
+      "healedBy": "{actorName} a été soigné de {amount} point(s) de vigueur par {source}",
       "damaged": "{actorName} perd {amount} point(s) de vigueur",
       "manaBurn": "{actorName} brûle {amount} point(s) de vigueur pour accomplir son sort {capacityName}",
       "warningNeedLearnedCapacities": "Vous devez apprendre les capacités des rangs précédents avant d'apprendre celle-ci",
