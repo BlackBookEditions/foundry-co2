@@ -63,10 +63,12 @@ export function registerHandlebarsHelpers() {
   Handlebars.registerHelper("manaCostFromArmor", function (capacity, actor) {
     return capacity.system.getManaCostFromArmor(actor)
   })
-
   Handlebars.registerHelper("isActionSubtabActive", function (subtabs, tabId) {
     const id = `action-${tabId}`
     if (!subtabs || !subtabs[id]) return false
     return subtabs[id] && subtabs[id].active
+  })
+  Handlebars.registerHelper("getAbilityLabel", function (ability) {
+    return game.i18n.localize(`CO.abilities.long.${ability}`)
   })
 }

@@ -38,6 +38,30 @@
       </div>
     </div>
   {{/if}}
+  {{#if (eq r.type @root.choiceResolverTypes.save.id) }}            
+            <div class="form-group save">
+              {{! Liste des abilités possible}}
+              <div class="form-fields">
+                <select name="system.actions.{{idx}}.resolvers.{{id}}.saveAbility" data-type="String" {{#if @root.locked}}class="disabled"{{/if}}>
+                  {{selectOptions @root.choiceModifierSkillTargetsWithoutAll selected=r.saveAbility localize=true}}
+                </select>
+              </div>
+              {{! seuil de difficulté}}
+              <div class="form-fields">
+              <label>{{localize "CO.ui.saveDifficulty"}}
+                <input
+                  class="field-value"
+                  name="system.actions.{{idx}}.resolvers.{{id}}.saveDifficulty"
+                  type="text"
+                  value="{{r.saveDifficulty}}"
+                  data-dtype="String"
+                  {{#if @root.locked}}readonly{{/if}}
+                />  
+              </label>
+              </div>
+            </div>  
+          {{/if}}
+
   {{#if (eq r.type @root.choiceResolverTypes.auto.id)}}
     {{! Damages }}
     <div class="form-group-stacked damages">
@@ -88,6 +112,8 @@
           <select name="system.actions.{{idx}}.resolvers.{{id}}.additionalEffect.applyOn" data-type="String" {{#if @root.locked}}class="disabled"{{/if}}>
             {{#if (eq r.type @root.choiceResolverTypes.attack.id)}}
               {{selectOptions @root.choiceResolverApplyOn selected=r.additionalEffect.applyOn localize=true}}
+            {{else if (eq r.type @root.choiceResolverTypes.save.id)}}
+              {{selectOptions @root.choiceResolverApplyOnSave selected=r.additionalEffect.applyOn localize=true}}
             {{else}}
               {{selectOptions @root.choiceResolverApplyOnAlways selected=r.additionalEffect.applyOn localize=true}}
             {{/if}}

@@ -30,11 +30,9 @@
           <div class="vs"><label>VS</label></div>
           <div class="form-group diff-result">
             <div class="display-difficulty"><label>{{localize "CO.label.long.difficulty"}}</label></div>
-
             {{#if oppositeRoll}}
               <button class="opposite-roll" data-opposite-value="{{difficulty}}" data-opposite-target="{{oppositeTarget}}">{{localize "CO.ui.oppositeRoll"}}</button>
             {{else}}
-              <!--<label class="difficultyChat"></label>-->
               <div><strong class="display-difficulty"></strong>{{difficulty}}</div>
             {{/if}}
             </strong>

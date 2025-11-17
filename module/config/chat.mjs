@@ -5,4 +5,5 @@ export const CHAT_MESSAGE_TYPES = {
   DAMAGE: "damage",
   HEAL: "heal",
   ITEM: "item",
+  SAVE: "save",
 }

@@ -1,0 +1,52 @@
+{{log "Chroniques Oubliées | save card" this}}
+<div class="co chat-card roll-card save-card" data-actor-id="{{actorId}}">
+  <header class="message-header flexrow">
+    <span class="target-title"><strong>{{localize "CO.ui.target"}} : </strong></span>
+    <h4 class="message-sender">
+      <a class="avatar"><img src="{{targetImg}}" class="actor-img" data-tooltip="{{targetName}}" /></a>
+      <span class="name-stacked"><span class="title"></span><strong>{{targetName}}</strong></span></span>
+    </h4>    
+    <div class="type-card"><label><i class="fa-solid fa-user-shield"></i> {{localize "CO.ui.saves"}}</label></div>
+    <div class="action-name"><strong>{{actionName}}</strong></div>
+  </header>
+
+  <div class="card-content">
+    <section class="result">
+      <div class="form-group total-result">
+           <div><button class="save-roll" data-save-target="{{targetUuid}}" data-save-ability="{{ability}}" data-save-difficulty="{{difficulty}}">{{localize "CO.ui.saves"}} {{getAbilityLabel ability}}</button></div>
+          {{#if this.rolls}}
+            <div class="dice-total"><label>{{localize "CO.ui.total"}}</label></div>
+          {{/if}}
+      </div>
+      {{#if isFailure}}
+        {{#if hasLuckyPoints}}
+          <div class="lucky-points">
+            <a class="lp-button-attack">
+              <img class="imgLucky" src="icons/magic/control/buff-luck-fortune-green.webp" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" />
+            </a>
+          </div>
+        {{/if}}
+      {{/if}}
+
+      {{#if (eq difficulty "")}}
+      {{else}}
+        <div class="vs"><label>VS</label></div>
+        <div class="form-group diff-result">
+          <div class="display-difficulty">
+            <label>
+              {{localize "CO.label.long.difficulty"}}{{difficulty}}
+            </label>
+          </div>
+        </div>
+      {{/if}}      
+    </section>
+  </div>
+  <footer class="card-footer">
+    <div class="dice-roll" data-action="expandRoll">
+      <div class="dice-result">
+        <div class="dice-formula" style>{{localize "CO.ui.formula"}} : {{this.system.linkedRoll.formula}}</div>
+        {{{tooltip}}}
+      </div>
+    </div>
+  </footer>
+</div>

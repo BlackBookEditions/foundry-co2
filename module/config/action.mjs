@@ -163,6 +163,10 @@ export const RESOLVER_TYPE = Object.freeze({
     id: "consumable",
     label: "CO.action.types.consumable",
   },
+  save: {
+    id: "save",
+    label: "CO.action.types.save",
+  },
 })
 
 export const RESOLVER_TARGET = Object.freeze({
@@ -219,6 +223,14 @@ export const RESOLVER_RESULT = Object.freeze({
   failure: {
     id: "failure",
     label: "CO.resolver.additionalEffect.onFailure",
+  },
+  saveFailure: {
+    id: "saveFailure",
+    label: "CO.resolver.additionalEffect.onSaveFailure",
+  },
+  saveSuccess: {
+    id: "saveSuccess",
+    label: "CO.resolver.additionalEffect.onSaveSuccess",
   },
 })
 

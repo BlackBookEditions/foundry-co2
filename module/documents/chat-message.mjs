@@ -19,6 +19,15 @@ export default class COChatMessage extends ChatMessage {
     return game.actors.get(this.speaker.actor)
   }
 
+  /**
+   * Enriches the chat card HTML by adding avatar and name elements.
+   * Creates and appends an avatar image and stacked name display to the message sender element.
+   * The displayed content depends on whether the message content is visible to the current user.
+   *
+   * @param {HTMLElement} html The HTML element of the chat card to be enriched.
+   * @private
+   * @returns {void}
+   */
   _enrichChatCard(html) {
     const actor = this.getAssociatedActor()
 
@@ -85,5 +94,23 @@ export default class COChatMessage extends ChatMessage {
     const message = game.messages.get(existingMessageId)
     if (!message) return
     await message.update({ rolls: rolls, "system.result": result })
+  }
+
+  /**
+   * Met à jour le message après un jet opposé
+   *
+   * @param {Object} options The options object
+   * @param {string} options.existingMessageId The ID of the existing message to update
+   * @param {Array} options.rolls The array of roll objects to add to the message
+   * @param {*} options.result The result value to store in the message's system data
+   * @returns {Promise<void>} A promise that resolves when the message update is complete
+   * @private
+   * @static
+   * @async
+   */
+  static async _handleQueryUpdateMessageAfterSavedRoll({ existingMessageId, rolls, result } = {}) {
+    const message = game.messages.get(existingMessageId)
+    if (!message) return
+    await message.update({ rolls: rolls, "system.result": result, "system.showButton": false })
   }
 }

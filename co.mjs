@@ -67,6 +67,7 @@ Hooks.once("init", async function () {
     item: models.ItemMessageData,
     heal: models.HealMessageData,
     skill: models.SkillMessageData,
+    save: models.SaveMessageData,
   }
 
   // Status Effects
@@ -79,6 +80,7 @@ Hooks.once("init", async function () {
   // Pas utilisé finalement CONFIG.queries["co2.characterSpendLuck"] = documents.COActor._handleQuerySpendLuck
   CONFIG.queries["co2.updateMessageAfterLuck"] = documents.COChatMessage._handleQueryUpdateMessageAfterLuck
   CONFIG.queries["co2.updateMessageAfterOpposedRoll"] = documents.COChatMessage._handleQueryUpdateMessageAfterOpposedRoll
+  CONFIG.queries["co2.updateMessageAfterSavedRoll"] = documents.COChatMessage._handleQueryUpdateMessageAfterSavedRoll
   CONFIG.queries["co2.applyCustomEffect"] = models.CustomEffectData._handleQueryApplyCustomEffect
   CONFIG.queries["co2.characterHeal"] = documents.COActor._handleQueryHeal
 
