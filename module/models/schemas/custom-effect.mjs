@@ -35,21 +35,52 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
    * @returns {string} Renvoi un tooltip à afficher
    */
   get tooltip() {
+    const source = this.source ? fromUuidSync(this.source) : null
     let tip = `${game.i18n.localize("CO.ui.duration")} : ${this.duration} ${this.unit}<br />`
     if (this.unit !== SYSTEM.COMBAT_UNITE.combat) tip += `${game.i18n.localize("CO.ui.remainingRound")} : ${this.remainingTurn}<br />`
     if (this.formula && this.formula !== "") {
       if (this.formulaType === "damage") tip += `${game.i18n.localize("CO.customEffect.damage")} : ${this.formula}`
       else if (this.formulaType === "heal") tip += `${game.i18n.localize("CO.customEffect.heal")} : ${this.formula}`
     }
-    if (this.elementType && this.elementType !== "") tip += `${this.elementType}`
+    if (this.elementType && this.elementType !== "") tip += ` ${game.i18n.localize(`CO.customEffect.${this.elementType}`)} `
     if (this.formula && this.formula !== "") tip += `<br />`
-    if (this.statuses && this.statuses.length > 0) tip += `${game.i18n.localize("CO.customEffect.status")} :${this.statuses.join(", ")}<br />`
+    if (this.statuses && this.statuses.length > 0) {
+      tip += "Statuts : "
+      for (let i = 0; i < this.statuses.length; i++) {
+        tip += `${game.i18n.localize(`CO.customStatus.${this.statuses[i]}`)} `
+      }
+    }
     if (this.modifiers && this.modifiers.length > 0) {
       for (let i = 0; i < this.modifiers.length; i++) {
         tip += ` ${game.i18n.localize(SYSTEM.MODIFIERS_SUBTYPE[this.modifiers[i].subtype].label)} ${game.i18n.localize(SYSTEM.MODIFIERS_TARGET[this.modifiers[i].target].label)} : ${this.modifiers[i].value}<br />`
       }
     }
+    tip += "<br />"
+    const sourceParts = this.sourceParts
+    if (sourceParts.item) {
+      tip += `par ${sourceParts.item.name} `
+    }
+    if (sourceParts.actor) {
+      tip += `de ${sourceParts.actor.name}`
+    }
     return tip
+  }
+
+  get sourceParts() {
+    let actor
+    let item
+    const { primaryType, primaryId, id } = foundry.utils.parseUuid(this.source)
+    // Acteur du monde
+    if (primaryType === "Actor") {
+      actor = game.actors.get(primaryId)
+    }
+    // Acteur d'un token
+    if (primaryType === "Scene") {
+      const tokenId = parts[3]
+      actor = fromUuidSync(`Scene.${primaryId}.Token.${tokenId}`).actor
+    }
+    item = actor.items.get(id)
+    return { actor, item }
   }
 
   /** @override */

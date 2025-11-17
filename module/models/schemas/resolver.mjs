@@ -310,9 +310,15 @@ export class Resolver extends foundry.abstract.DataModel {
       modifiers = action.modifiers.filter((m) => m.apply === SYSTEM.MODIFIERS_APPLY.others.id || m.apply === SYSTEM.MODIFIERS_APPLY.both.id)
     }
 
+    // Le nom de l'effet est actorId.actionName
+    // avec actorIf : l'id de l'acteur qui applique l'effet
+    // et actionName : le nom de l'action qui génère l'effet (libellé de l'action, ou nom de l'item)
+
+    const effectName = `${actor.id}.${action.actionName}`
+
     // Création de l'effet
     ce = new CustomEffectData({
-      name: item.name,
+      name: action.actionName,
       source: item.uuid,
       statuses: this.additionalEffect.statuses,
       unit: this.additionalEffect.unit,
@@ -323,7 +329,7 @@ export class Resolver extends foundry.abstract.DataModel {
       formula: evaluatedFormula,
       formulaType: this.additionalEffect.formulaType,
       elementType: this.additionalEffect.elementType,
-      slug: item.name.slugify(),
+      slug: effectName.slugify(),
     })
 
     return ce
