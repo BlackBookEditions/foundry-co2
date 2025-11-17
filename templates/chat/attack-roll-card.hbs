@@ -1,16 +1,14 @@
 {{!log "Chroniques Oubliées | hbs | attack-roll-card" this}}
 <div class="co chat-card roll-card attack-card" data-actor-id="{{speaker.actor}}">
   <header class="card-header flexcol">
-    <div class="type-card"><label><i class="fa-solid fa-swords"></i>{{#if (eq type "attack")}} {{localize "CO.label.long.attack"}} {{/if}} {{#if (eq type "damage")}} {{localize "CO.label.long.damage"}} {{/if}}</label></div>
+    <div class="type-card"><label><i class="fa-solid fa-swords"></i>{{localize "CO.label.long.attack"}}</label></div>
     <div class="action-name"><strong>{{flavor}}</strong></div>
-    {{#if (eq type "attack")}}
-      {{#if hasDice}}
-        <label class="display-dice-type">{{localize "CO.label.long.diceType"}} : <strong class="display-dice-type">{{diceType}}</strong></label>
-      {{/if}}
-      {{#if hasTactical}}
-        <label class="display-tactical">{{localize "CO.label.long.tactical"}} : <strong class="display-tactical">{{tactical}}</strong></label>
-      {{/if}}
-    {{/if}}    
+    {{#if hasDice}}
+      <label class="display-dice-type">{{localize "CO.label.long.diceType"}} : <strong class="display-dice-type">{{diceType}}</strong></label>
+    {{/if}}
+    {{#if hasTactical}}
+      <label class="display-tactical">{{localize "CO.label.long.tactical"}} : <strong class="display-tactical">{{tactical}}</strong></label>
+    {{/if}}   
   </header>
 
   <div class="card-content">   
@@ -28,42 +26,7 @@
           </div>
         {{/if}}
       {{/if}}
-      
-      {{#if (eq type 'damage')}}
-        <div class="damage-part">
-            <div class="damage-buttons">
-              <div class="temp-dm">
-                  <label for="tempDm" class="temp-dm-checkbox">Temp.</label>
-                  <input type="checkbox" id="tempDm" name="tempDm" class="temp-dm-checkbox" {{checked tempDamage}}>
-              </div> 
-              <div class="dr">
-                    <label for="dr" class="dr-checkbox">{{localize "CO.ui.dr"}}</label>
-                    <input type="checkbox" id="dr" name="dr" class="dr-checkbox" checked >
-              </div> 
-              <div>           
-                  <a class="btn apply-dmg" data-apply="full" data-total="{{total}}" data-tempdamage={{tempDamage}}>
-                      <i class="fas fa-user-minus" data-tooltip="{{localize 'CO.ui.applyDamage'}}" data-tooltip-direction="UP"></i>
-                  </a>
-              </div>
-              <div>    
-                  <a class="btn apply-dmg" data-apply="half" data-total="{{total}}" data-tempdamage={{tempDamage}}>
-                      <i class="fas fa-user-shield" data-tooltip="{{localize 'CO.ui.applyHalfDamage'}}" data-tooltip-direction="UP"></i>
-                  </a>
-              </div>
-              <div>    
-                  <a class="btn apply-dmg" data-apply="double" data-total="{{total}}" data-tempdamage={{tempDamage}}>
-                      <i class="fas fa-user-injured" data-tooltip="{{localize 'CO.ui.applyDoubleDamage'}}" data-tooltip-direction="UP"></i>
-                  </a>
-              </div>
-              <div>    
-                <a class="btn apply-dmg" data-apply="heal" data-total="{{total}}">
-                    <i class="fas fa-user-plus" data-tooltip="{{localize 'CO.ui.applyHealing'}}" data-tooltip-direction="UP"></i>
-                </a>
-              </div>    
-            </div>
-        </div>
-      {{/if}}
-            
+                  
       {{#if showDifficulty}}
         {{#if (eq difficulty "")}}
         {{else}}
@@ -78,35 +41,32 @@
           </div>
         {{/if}}      
       {{/if}}
-    </section>
-      
-    {{#if (eq type "attack")}}
-      <section class="result-sentence">
-        {{#if showDifficulty}}
-            {{#if isSuccess}}
-              {{#if isCritical}}
-                <span class="success critical"><i class="fas fa-check-double"></i>&nbsp;{{localize "CO.roll.critical"}}&nbsp;<i class="fas fa-check-double"></i></span>
-              {{else}}
-                <span class="success"><i class="fas fa-check"></i>&nbsp;{{localize "CO.roll.success"}}&nbsp;<i class="fas fa-check"></i></span>
-              {{/if}}
-            {{/if}}
-            {{#if isFailure}}
-              {{#if isFumble}}
-                <span class="failure fumble"><i class="fas fa-skull-crossbones"></i>&nbsp;{{localize "CO.roll.fumble"}}&nbsp;<i class="fas fa-skull-crossbones"></i></span>
-              {{else}}
-                <span class="failure"><i class="fas fa-times"></i>&nbsp;{{localize "CO.roll.failure"}}&nbsp;<i class="fas fa-times"></i></span>
-              {{/if}}
-            {{/if}}
-          {{else}}
+    </section>      
+    <section class="result-sentence">
+      {{#if showDifficulty}}
+          {{#if isSuccess}}
             {{#if isCritical}}
-              <span class="standard critical"><i class="fas fa-check-double"></i>&nbsp;{{localize "CO.roll.critical"}}&nbsp;<i class="fas fa-check-double"></i></span>
+              <span class="success critical"><i class="fas fa-check-double"></i>&nbsp;{{localize "CO.roll.critical"}}&nbsp;<i class="fas fa-check-double"></i></span>
+            {{else}}
+              <span class="success"><i class="fas fa-check"></i>&nbsp;{{localize "CO.roll.success"}}&nbsp;<i class="fas fa-check"></i></span>
             {{/if}}
+          {{/if}}
+          {{#if isFailure}}
             {{#if isFumble}}
               <span class="failure fumble"><i class="fas fa-skull-crossbones"></i>&nbsp;{{localize "CO.roll.fumble"}}&nbsp;<i class="fas fa-skull-crossbones"></i></span>
+            {{else}}
+              <span class="failure"><i class="fas fa-times"></i>&nbsp;{{localize "CO.roll.failure"}}&nbsp;<i class="fas fa-times"></i></span>
             {{/if}}
-          {{/if}}      
-        {{/if}}   
-      </section>
+          {{/if}}
+      {{else}}
+          {{#if isCritical}}
+            <span class="standard critical"><i class="fas fa-check-double"></i>&nbsp;{{localize "CO.roll.critical"}}&nbsp;<i class="fas fa-check-double"></i></span>
+          {{/if}}
+          {{#if isFumble}}
+            <span class="failure fumble"><i class="fas fa-skull-crossbones"></i>&nbsp;{{localize "CO.roll.fumble"}}&nbsp;<i class="fas fa-skull-crossbones"></i></span>
+          {{/if}}
+      {{/if}}      
+    </section>
   </div>
 
   <footer class="card-footer">

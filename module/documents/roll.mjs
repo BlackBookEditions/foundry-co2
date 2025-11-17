@@ -268,9 +268,33 @@ export class COAttackRoll extends CORoll {
 
   static DIALOG_TEMPLATE = "systems/co2/templates/dialogs/attack-roll-dialog.hbs"
 
-  static CHAT_TEMPLATE = "systems/co2/templates/chat/attack-roll-card.hbs"
+  static ATTACK_CHAT_TEMPLATE = "systems/co2/templates/chat/attack-roll-card.hbs"
+
+  static DAMAGE_CHAT_TEMPLATE = "systems/co2/templates/chat/damage-roll-card.hbs"
 
   static ROLL_CSS = ["co", "attack-roll"]
+
+  get isAttack() {
+    return this.options.type === "attack"
+  }
+
+  get isDamage() {
+    return this.options.type === "damage"
+  }
+
+  /** @override  */
+  async render({ flavor, template = this.constructor.CHAT_TEMPLATE, isPrivate = false } = {}) {
+    if (!this._evaluated) await this.evaluate({ allowInteractive: !isPrivate })
+    let chatData
+    if (this.isAttack) {
+      chatData = await this._getAttackChatCardData(flavor, isPrivate)
+      template = this.constructor.ATTACK_CHAT_TEMPLATE
+    } else {
+      chatData = await this._getDamageChatCardData(flavor, isPrivate)
+      template = this.constructor.DAMAGE_CHAT_TEMPLATE
+    }
+    return foundry.applications.handlebars.renderTemplate(template, chatData)
+  }
 
   static async prompt(dialogContext, options = {}) {
     const withDialog = options.withDialog ?? true
@@ -490,9 +514,9 @@ export class COAttackRoll extends CORoll {
     return rolls
   }
 
-  async _getChatCardData(flavor, isPrivate) {
+  async _getAttackChatCardData(flavor, isPrivate) {
     const rollResults = CORoll.analyseRollResult(this)
-    if (CONFIG.debug.co2?.chat) console.debug(Utils.log(`COAttackRoll - _getChatCardData options`), this.options)
+    if (CONFIG.debug.co2?.chat) console.debug(Utils.log(`COAttackRoll - _getAttackChatCardData options`), this.options)
 
     // Gestion des dés bonus/malus
     const hasDice = this.options.dice === "bonus" || this.options.dice === "malus"
@@ -529,8 +553,7 @@ export class COAttackRoll extends CORoll {
 
     // Affichage de la difficulté
     const displayDifficulty = game.settings.get("co2", "displayDifficulty")
-    const isAttackRoll = this.options.type === "attack"
-    const showDifficuly = isAttackRoll && (displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM))
+    const showDifficuly = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
 
     return {
       type: this.options.type,
@@ -557,6 +580,23 @@ export class COAttackRoll extends CORoll {
       tempDamage: this.options.tempDamage,
       hasTactical,
       tactical,
+    }
+  }
+
+  async _getDamageChatCardData(flavor, isPrivate) {
+    const rollResults = CORoll.analyseRollResult(this)
+    if (CONFIG.debug.co2?.chat) console.debug(Utils.log(`COAttackRoll - _getDamageChatCardData options`), this.options)
+
+    return {
+      type: this.options.type,
+      actor: this.options.actor,
+      speaker: ChatMessage.getSpeaker({ actor: this.options.actor, scene: canvas.scene }),
+      flavor: `${this.options.flavor}`,
+      formula: isPrivate ? "???" : this.formula,
+      total: isPrivate ? "?" : Math.ceil(this.total),
+      tooltip: isPrivate ? "" : this.options.tooltip,
+      user: game.user.id,
+      tempDamage: this.options.tempDamage,
     }
   }
 
