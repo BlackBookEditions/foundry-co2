@@ -10,6 +10,21 @@ export default class SkillMessageData extends BaseMessageData {
     })
   }
 
+  // Est-ce que l'actor du user courant est ciblé par le message
+  get isActorTargeted() {
+    // Si c'est un MJ, on considère que tous les acteurs sont ciblés
+    if (game.user.isGM) return true
+    const actor = game.user.character
+    if (!actor) return false
+    const { id } = foundry.utils.parseUuid(actor.uuid)
+    // Extrare tous les ids des cibles
+    const targets = this.targets.map((target) => {
+      const { id } = foundry.utils.parseUuid(target)
+      return id
+    })
+    return targets.includes(id)
+  }
+
   /**
    * Ajoute les listeners du message
    * @async
@@ -54,21 +69,28 @@ export default class SkillMessageData extends BaseMessageData {
     }
 
     // Click sur le bouton de jet opposé
-    html.querySelectorAll(".opposite-roll").forEach((btn) => {
-      btn.addEventListener("click", async (event) => {
+    const oppositeButton = html.querySelector(".opposite-roll")
+    const displayOppositeButton = game.user.isGM || this.isActorTargeted
+
+    if (oppositeButton && displayOppositeButton) {
+      oppositeButton.addEventListener("click", async (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        const messageId = event.currentTarget.closest(".message").dataset.messageId
+        if (!messageId) return
+        const message = game.messages.get(messageId)
+
         const dataset = event.currentTarget.dataset
         const oppositeValue = dataset.oppositeValue
         const oppositeTarget = dataset.oppositeTarget
 
-        const messageId = event.currentTarget.closest(".message").dataset.messageId
-
-        const targetActor = await fromUuid(oppositeTarget)
+        const targetActor = fromUuidSync(oppositeTarget)
+        if (!targetActor) return
         const value = Utils.evaluateOppositeFormula(oppositeValue, targetActor)
 
         const formula = value ? `1d20 + ${value}` : `1d20`
         const roll = await new Roll(formula).roll()
         const difficulty = roll.total
-        const message = game.messages.get(messageId)
 
         let rolls = message.rolls
         rolls[0].options.oppositeRoll = false
@@ -89,34 +111,20 @@ export default class SkillMessageData extends BaseMessageData {
         if (customEffect && additionalEffect && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
           if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
           else {
-            game.socket.emit(`system.${SYSTEM.ID}`, {
-              action: "customEffect",
-              data: {
-                userId: game.user.id,
-                ce: customEffect,
-                targets: [targetActor.uuid],
-              },
-            })
+            await game.users.activeGM.query("co2.applyCustomEffect", { ce: customEffect, targets: [targetActor.uuid] })
           }
         }
 
+        // Mise à jour du message de chat
         // Le MJ peut mettre à jour le message de chat
         if (game.user.isGM) {
           await message.update({ rolls: rolls, "system.result": newResult })
         }
         // Sinon on émet un message pour mettre à jour le message de chat
         else {
-          game.socket.emit(`system.${SYSTEM.ID}`, {
-            action: "oppositeRoll",
-            data: {
-              userId: game.user.id,
-              messageId: message.id,
-              rolls: rolls,
-              result: newResult,
-            },
-          })
+          await game.users.activeGM.query("co2.updateMessageAfterOpposedRoll", { existingMessageId: message.id, rolls: rolls, result: newResult })
         }
       })
-    })
+    }
   }
 }

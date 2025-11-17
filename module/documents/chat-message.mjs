@@ -68,4 +68,22 @@ export default class COChatMessage extends ChatMessage {
     if (!message) return
     await message.update({ rolls: rolls, "system.result": result })
   }
+
+  /**
+   * Met à jour le message après un jet opposé
+   *
+   * @param {Object} options The options object
+   * @param {string} options.existingMessageId The ID of the existing message to update
+   * @param {Array} options.rolls The array of roll objects to add to the message
+   * @param {*} options.result The result value to store in the message's system data
+   * @returns {Promise<void>} A promise that resolves when the message update is complete
+   * @private
+   * @static
+   * @async
+   */
+  static async _handleQueryUpdateMessageAfterOpposedRoll({ existingMessageId, rolls, result } = {}) {
+    const message = game.messages.get(existingMessageId)
+    if (!message) return
+    await message.update({ rolls: rolls, "system.result": result })
+  }
 }

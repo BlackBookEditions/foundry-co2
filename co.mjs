@@ -10,9 +10,6 @@ import * as documents from "./module/documents/_module.mjs"
 import * as applications from "./module/applications/_module.mjs"
 import * as helpers from "./module/helpers/_module.mjs"
 
-// Helpers
-import { handleSocketEvent } from "./module/socket.mjs"
-
 Hooks.once("init", async function () {
   console.info(SYSTEM.ASCII)
   console.info(helpers.Utils.log("Initializing..."))
@@ -80,15 +77,12 @@ Hooks.once("init", async function () {
   // Queries
   // Pas utilisé finalement CONFIG.queries["co2.characterSpendLuck"] = documents.COActor._handleQuerySpendLuck
   CONFIG.queries["co2.updateMessageAfterLuck"] = documents.COChatMessage._handleQueryUpdateMessageAfterLuck
+  CONFIG.queries["co2.updateMessageAfterOpposedRoll"] = documents.COChatMessage._handleQueryUpdateMessageAfterOpposedRoll
   CONFIG.queries["co2.applyCustomEffect"] = models.CustomEffectData._handleQueryApplyCustomEffect
   CONFIG.queries["co2.characterHeal"] = documents.COActor._handleQueryHeal
 
-  // Activate socket handler
-  game.socket.on(`system.${SYSTEM.ID}`, handleSocketEvent)
-
   helpers.registerHandlebarsHelpers()
   helpers.registerSystemSettings()
-  helpers.registerHooks()
 
   // Load Martial Training
   if (!game.system.CONST.martialTrainingsWeapons) {
