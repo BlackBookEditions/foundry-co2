@@ -3063,6 +3063,52 @@ co-toggle-switch[checked] thumb {
   background-color: #847e87;
   cursor: not-allowed;
 }
+#interface {
+  /*#sidebar {
+  #sidebar-content {
+    margin-left: -8px;
+  }
+
+  .tabs {
+    margin-right: 8px;
+    padding: 0;
+  }
+
+  .tab {
+    border-radius: 0;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+
+    &#chat {
+      padding: 0;
+    }
+  }
+
+  .chat-message {
+    margin-right: 0;
+  }
+
+  .chat-form {
+    gap: 2px;
+    padding-right: 0;
+
+    .chat-controls {
+      .control-buttons {
+        gap: 2px;
+      }
+    }
+  }
+}
+ 
+
+#chat-message {
+  border-width: 1px;
+}
+
+#ui-right-column-1 {
+  padding-bottom: 0;
+}
+   */
+}
 #interface #ui-left {
   padding: 0;
 }
@@ -3072,36 +3118,6 @@ co-toggle-switch[checked] thumb {
 #interface #ui-left button.ui-control.active,
 #interface #ui-left button.ui-control:hover {
   z-index: 2;
-}
-#interface #sidebar #sidebar-content {
-  margin-left: -8px;
-}
-#interface #sidebar .tabs {
-  margin-right: 8px;
-  padding: 0;
-}
-#interface #sidebar .tab {
-  border-radius: 0;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
-}
-#interface #sidebar .tab#chat {
-  padding: 0;
-}
-#interface #sidebar .chat-message {
-  margin-right: 0;
-}
-#interface #sidebar .chat-form {
-  gap: 2px;
-  padding-right: 0;
-}
-#interface #sidebar .chat-form .chat-controls .control-buttons {
-  gap: 2px;
-}
-#interface #chat-message {
-  border-width: 1px;
-}
-#interface #ui-right-column-1 {
-  padding-bottom: 0;
 }
 #interface #hotbar {
   margin-bottom: 0;
