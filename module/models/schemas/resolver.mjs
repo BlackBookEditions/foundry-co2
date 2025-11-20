@@ -310,8 +310,19 @@ export class Resolver extends foundry.abstract.DataModel {
 
     // Les modifiers qui s'appliquent (avec apply égal à others ou both)
     let modifiers = []
-    if (action.modifiers?.length) {
+    if (action.modifiers?.length > 0) {
       modifiers = action.modifiers.filter((m) => m.apply === SYSTEM.MODIFIERS_APPLY.others.id || m.apply === SYSTEM.MODIFIERS_APPLY.both.id)
+    }
+
+    if (modifiers.length > 0) {
+      // Calcul de la valeur des modifiers
+      for (let i = 0; i < modifiers.length; i++) {
+        let modValue = modifiers[i].evaluate(actor, true)
+        modifiers[i] = {
+          ...modifiers[i],
+          value: modValue.toString(),
+        }
+      }
     }
 
     // Le nom de l'effet est actorId.actionName
@@ -336,6 +347,7 @@ export class Resolver extends foundry.abstract.DataModel {
       slug: effectName.slugify(),
     })
 
+    console.log("Created custom effect :", ce)
     return ce
   }
 
