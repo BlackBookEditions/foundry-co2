@@ -151,7 +151,7 @@ export default class ActionMessageData extends BaseMessageData {
           // Gestion des custom effects
           const customEffect = message.system.customEffect
           const additionalEffect = message.system.additionalEffect
-          if (customEffect && additionalEffect && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
+          if (customEffect && additionalEffect && additionalEffect.active && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
             const target = message.system.targets.length > 0 ? message.system.targets[0] : null
             if (target) {
               const targetActor = fromUuidSync(target)
