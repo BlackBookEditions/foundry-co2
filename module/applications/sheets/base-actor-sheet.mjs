@@ -579,9 +579,9 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     // Vérification du droit Owner
     if (!this.isEditable) return
     event.preventDefault()
-    let effectname = target.dataset.ceName
+    let effectSlug = target.dataset.ceSlug
 
-    const ce = this.actor.system.currentEffects.find((ce) => ce.slug === effectname)
+    const ce = this.actor.system.currentEffects.find((ce) => ce.slug === effectSlug)
     if (ce) {
       await this.actor.deleteCustomEffect(ce)
     }

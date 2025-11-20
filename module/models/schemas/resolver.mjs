@@ -258,10 +258,13 @@ export class Resolver extends foundry.abstract.DataModel {
     const ce = await this._createCustomEffect(actor, item, action)
 
     // Application de l'effet en fonction de la gestion des cibles
-    // Aucune cible ou soi-même : le MJ ou un joueur peut appliquer l'effet
-    if (this.target.type === SYSTEM.RESOLVER_TARGET.none.id || this.target.type === SYSTEM.RESOLVER_TARGET.self.id) await actor.applyCustomEffect(ce)
+    // Soi-même : le MJ ou un joueur peut appliquer l'effet
+    if (this.target.type === SYSTEM.RESOLVER_TARGET.self.id) await actor.applyCustomEffect(ce)
     else {
-      const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.name)
+      // Aucune cible est considérée comme Unique cible
+      let targetType = this.target.type
+      if (this.target.type === SYSTEM.RESOLVER_TARGET.none.id) targetType = SYSTEM.RESOLVER_TARGET.single.id
+      const targets = actor.acquireTargets(targetType, this.target.scope, this.target.number, action.name)
       const uuidList = targets.map((t) => t.uuid)
       if (game.user.isGM) await Promise.all(targets.map((target) => target.actor.applyCustomEffect(ce)))
       else {
@@ -287,7 +290,8 @@ export class Resolver extends foundry.abstract.DataModel {
     }
     // TODO : vérifier si eval est nécessaire ici
     if (/[+\-*/%]/.test(evaluatedDuration)) evaluatedDuration = eval(evaluatedDuration)
-    const duration = parseInt(evaluatedDuration)
+    let duration = parseInt(evaluatedDuration)
+    if (duration < 1) duration = 1
 
     // Calcul du round de fin
     let remainingTurn
@@ -311,7 +315,7 @@ export class Resolver extends foundry.abstract.DataModel {
     }
 
     // Le nom de l'effet est actorId.actionName
-    // avec actorIf : l'id de l'acteur qui applique l'effet
+    // avec actorId : l'id de l'acteur qui applique l'effet
     // et actionName : le nom de l'action qui génère l'effet (libellé de l'action, ou nom de l'item)
 
     const effectName = `${actor.id}.${action.actionName}`
