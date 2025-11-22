@@ -1,0 +1,28 @@
+{{log "Chroniques Oubliées | hbs | heal-roll-card" this}}
+<div class="co chat-card roll-card heal-card" data-actor-id="{{speaker.actor}}">
+  <header class="card-header flexcol">
+     <div class="type-card"><label><i class="fas fa-first-aid"></i> {{localize "CO.label.long.heal"}}</label></div>
+     <div class="action-name"><strong>{{flavor}}</strong></div>
+  </header>
+   
+  <div class="card-content">
+    <section class="result">
+      <div class="form-group total-result">
+        <div class="dice-total"><label>{{localize "CO.ui.total"}}</label></div>
+        <div>{{total}}</div>
+      </div>
+    </section>
+    <section class="result-sentence">
+        
+    </section>
+  </div>
+
+  <footer class="card-footer">
+    <div class="dice-roll" data-action="expandRoll">
+      <div class="dice-result">
+        <div class="dice-formula">{{localize "CO.ui.formula"}} : {{formula}}</div>
+        {{{tooltip}}}
+      </div>
+    </div>
+  </footer>
+</div>

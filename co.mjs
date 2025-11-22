@@ -65,6 +65,7 @@ Hooks.once("init", async function () {
     base: models.BaseMessageData,
     action: models.ActionMessageData,
     item: models.ItemMessageData,
+    heal: models.HealMessageData,
     skill: models.SkillMessageData,
   }
 
@@ -72,7 +73,7 @@ Hooks.once("init", async function () {
   CONFIG.statusEffects = SYSTEM.STATUS_EFFECT
 
   // Dice system configuration
-  CONFIG.Dice.rolls.push(documents.CORoll, documents.COSkillRoll, documents.COAttackRoll)
+  CONFIG.Dice.rolls.push(documents.CORoll, documents.COSkillRoll, documents.COAttackRoll, documents.COHealRoll)
 
   // Queries
   // Pas utilisé finalement CONFIG.queries["co2.characterSpendLuck"] = documents.COActor._handleQuerySpendLuck

@@ -1,5 +1,5 @@
 export { default as COActor } from "./actor.mjs"
 export { default as COItem } from "./item.mjs"
-export { CORoll, COSkillRoll, COAttackRoll } from "./roll.mjs"
+export { CORoll, COSkillRoll, COAttackRoll, COHealRoll } from "./roll.mjs"
 export { default as COChatMessage } from "./chat-message.mjs"
 export { default as CombatCO } from "./combat.mjs"

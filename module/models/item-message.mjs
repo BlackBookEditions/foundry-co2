@@ -8,6 +8,11 @@ export default class ItemMessageData extends BaseMessageData {
     })
   }
 
+  /**
+   * Ajoute les listeners du message
+   * @async
+   * @param {HTMLElement} html Élément HTML représentant le message à modifier.
+   */
   async addListeners(html) {
     // Clic sur les boutons d'action
     html.querySelectorAll(".toggle-action").forEach((btn) => {
