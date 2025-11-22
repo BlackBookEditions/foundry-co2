@@ -1,4 +1,3 @@
-import { SYSTEM } from "../config/system.mjs"
 import BaseMessageData from "./base-message.mjs"
 import { CORoll } from "../documents/roll.mjs"
 

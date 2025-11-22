@@ -487,7 +487,8 @@
         "tempHP": "DM temporaires",
         "diceType": "Type de jet",
         "tactical": "Option tactique",
-        "special": "Spécial"
+        "special": "Spécial",
+        "heal": "Soins"
       },
       "short": {
         "label": "Label",

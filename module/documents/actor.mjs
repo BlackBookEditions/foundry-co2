@@ -1,7 +1,7 @@
 import { SYSTEM } from "../config/system.mjs"
 import { Modifier } from "../models/schemas/modifier.mjs"
 import CustomEffectData from "../models/schemas/custom-effect.mjs"
-import { CORoll, COSkillRoll, COAttackRoll } from "./roll.mjs"
+import { CORoll, COSkillRoll, COAttackRoll, COHealRoll } from "./roll.mjs"
 import CoChat from "../chat.mjs"
 import Utils from "../helpers/utils.mjs"
 
@@ -1768,7 +1768,18 @@ export default class COActor extends Actor {
 
     let targetsUuid = targets?.map((target) => target.uuid)
 
-    await roll.toMessage({ style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "skill", system: { targets: targetsUuid, result: result }, speaker }, { rollMode: roll.options.rollMode })
+    await roll.toMessage(
+      {
+        speaker,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        type: "skill",
+        system: {
+          result: result,
+          targets: targetsUuid,
+        },
+      },
+      { rollMode: roll.options.rollMode },
+    )
   }
 
   /**
@@ -2132,21 +2143,50 @@ export default class COActor extends Actor {
    * @param {Array<COActor>} options.targets : une liste d'acteurs ciblés
    */
   async rollHeal(item, { actionName = "", healFormula = undefined, targetType = SYSTEM.RESOLVER_TARGET.none.id, targets = [] } = {}) {
-    let roll = new Roll(healFormula)
-    await roll.roll()
+    const roll = new COHealRoll(healFormula)
+    await roll.evaluate()
     const healAmount = roll.total
 
-    let source = item.name
+    const baseLabel = item?.name ?? ""
+    let flavor = baseLabel
     if (actionName && actionName !== "") {
-      source = `${item.name} - ${actionName}`
+      flavor = baseLabel ? `${baseLabel} - ${actionName}` : actionName
     }
+    if (!flavor) {
+      flavor = game.i18n.localize("CO.ui.heal")
+    }
+
+    const speaker = ChatMessage.getSpeaker({ actor: this, scene: canvas.scene })
+    const targetUuids =
+      targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id
+        ? [this.uuid]
+        : targets.map((obj) => obj.actor?.uuid ?? obj.uuid).filter((uuid) => typeof uuid === "string")
+    const rollMode = roll.options.rollMode ?? game.settings.get("core", "rollMode")
+
+    await roll.toMessage(
+      {
+        speaker,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        type: "heal",
+        system: {
+          healer: this.uuid,
+          item: item?.uuid ?? null,
+          formula: roll.formula,
+          total: healAmount,
+          label: flavor,
+          targetType,
+          targets: targetUuids,
+        },
+      },
+      { rollMode },
+    )
 
     if (targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id) {
       this.applyHeal({ heal: healAmount, source: source })
     } else if (targetType === SYSTEM.RESOLVER_TARGET.single.id || targetType === SYSTEM.RESOLVER_TARGET.multiple.id) {
       if (game.user.isGM) {
         for (const target of targets) {
-          target.actor.applyHeal({ heal: healAmount, source: source })
+          target.actor.applyHeal({ heal: healAmount, source: flavor })
         }
       } else {
         const uuidList = targets.map((obj) => obj.uuid)
@@ -2155,12 +2195,13 @@ export default class COActor extends Actor {
     }
   }
 
+  // FIXE ME Supprimer applyHealAndDamage
   /**
    * Applique les soins sur soi meme
    * Positif les degats péridiques sont traités comme des dégats et devrait être réduit ou amplifié en fonction de résistance/vulnérabilité (voir plus tard).
    * Negatif les degats péridiques sont traités comme des soins et ne devrait pas être affecté par des résistance ou vulnérabilité.
    * @param {integer} healValue heal or damageValue (heal < 0 and damage > 0)
-   */
+   
   async applyHealAndDamage(healValue) {
     let hp = this.system.attributes.hp
     if (healValue > 0) {
@@ -2184,6 +2225,7 @@ export default class COActor extends Actor {
     }
     await new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
   }
+*/
 
   /**
    * Applique des dégâts à l'acteur, réduisant ses points de vie (PV) en conséquence.
@@ -2449,7 +2491,7 @@ export default class COActor extends Actor {
    * Handles healing query for multiple targets.
    * Validates the targets array and applies healing amount to each target actor.
    *
-   * @param {Object} options - The options object
+   * @param {Object} options The options object
    * @param {string} [options.fromActor] The uuid of the actor initiating the heal
    * @param {string[]} [options.targets] Array of actor UUIDs to be healed
    * @param {number} [options.healAmount] The amount of healing to apply

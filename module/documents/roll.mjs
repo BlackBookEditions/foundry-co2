@@ -2,23 +2,6 @@ import Utils from "../helpers/utils.mjs"
 export class CORoll extends Roll {
   static ROLL_TYPE = "standard"
 
-  /** @override  */
-  async render({ flavor, template = this.constructor.CHAT_TEMPLATE, isPrivate = false } = {}) {
-    if (!this._evaluated) await this.evaluate({ allowInteractive: !isPrivate })
-    const chatData = await this._getChatCardData(flavor, isPrivate)
-    return foundry.applications.handlebars.renderTemplate(template, chatData)
-  }
-
-  async _getChatCardData(flavor, isPrivate) {
-    return {
-      formula: isPrivate ? "???" : this.formula,
-      flavor: isPrivate ? null : (flavor ?? this.options.flavor),
-      user: game.user.id,
-      tooltip: isPrivate ? "" : await this.getTooltip(),
-      total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
-    }
-  }
-
   /**
    * Fonction qui va analyser les valeurs du jet de dé et indiquer s'il s'agit d'un succes ou non ainsi que les infos
    * @param {*} roll
@@ -240,13 +223,16 @@ export class COSkillRoll extends CORoll {
     return total
   }
 
-  async _getChatCardData(flavor, isPrivate) {
+  async _prepareChatRenderContext({ flavor, isPrivate = false, ...options } = {}) {
     const rollResults = CORoll.analyseRollResult(this)
     return {
+      formula: isPrivate ? "???" : this.formula,
+      flavor: this.options.flavor,
+      user: game.user.id,
+      tooltip: isPrivate ? "" : await this.getTooltip(),
+      total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
       actor: this.options.actor,
       speaker: ChatMessage.getSpeaker({ actor: this.options.actor, scene: canvas.scene }),
-      flavor: this.options.flavor,
-      formula: isPrivate ? "???" : this.formula,
       useDifficulty: this.options.useDifficulty,
       showDifficulty: this.options.showDifficulty,
       difficulty: rollResults.difficulty,
@@ -255,10 +241,7 @@ export class COSkillRoll extends CORoll {
       isSuccess: rollResults.isSuccess,
       isFailure: rollResults.isFailure,
       hasLuckyPoints: this.options.hasLuckyPoints,
-      total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
-      tooltip: isPrivate ? "" : await this.getTooltip(),
       skillUsed: this.options.skillUsed,
-      user: game.user.id,
     }
   }
 }
@@ -284,16 +267,17 @@ export class COAttackRoll extends CORoll {
 
   /** @override  */
   async render({ flavor, template = this.constructor.CHAT_TEMPLATE, isPrivate = false } = {}) {
-    if (!this._evaluated) await this.evaluate({ allowInteractive: !isPrivate })
-    let chatData
     if (this.isAttack) {
-      chatData = await this._getAttackChatCardData(flavor, isPrivate)
-      template = this.constructor.ATTACK_CHAT_TEMPLATE
-    } else {
-      chatData = await this._getDamageChatCardData(flavor, isPrivate)
-      template = this.constructor.DAMAGE_CHAT_TEMPLATE
+      return await super.render({ flavor, template: COAttackRoll.ATTACK_CHAT_TEMPLATE, isPrivate })
+    } else if (this.isDamage) return await super.render({ flavor, template: COAttackRoll.DAMAGE_CHAT_TEMPLATE, isPrivate })
+  }
+
+  async _prepareChatRenderContext({ flavor, isPrivate = false, ...options } = {}) {
+    if (this.isAttack) {
+      return this._getAttackChatCardData(flavor, isPrivate)
+    } else if (this.isDamage) {
+      return this._getDamageChatCardData(flavor, isPrivate)
     }
-    return foundry.applications.handlebars.renderTemplate(template, chatData)
   }
 
   static async prompt(dialogContext, options = {}) {
@@ -514,7 +498,7 @@ export class COAttackRoll extends CORoll {
     return rolls
   }
 
-  async _getAttackChatCardData(flavor, isPrivate) {
+  _getAttackChatCardData(flavor, isPrivate) {
     const rollResults = CORoll.analyseRollResult(this)
     if (CONFIG.debug.co2?.chat) console.debug(Utils.log(`COAttackRoll - _getAttackChatCardData options`), this.options)
 
@@ -556,13 +540,16 @@ export class COAttackRoll extends CORoll {
     const showDifficuly = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
 
     return {
+      formula: isPrivate ? "???" : this.formula,
+      flavor: `${this.options.flavor}`,
+      user: game.user.id,
+      tooltip: isPrivate ? "" : this.options.tooltip,
+      total: isPrivate ? "?" : Math.ceil(this.total),
       type: this.options.type,
       actor: this.options.actor,
       speaker: ChatMessage.getSpeaker({ actor: this.options.actor, scene: canvas.scene }),
-      flavor: `${this.options.flavor}`,
       hasDice,
       diceType,
-      formula: isPrivate ? "???" : this.formula,
       useDifficulty: this.options.useDifficulty,
       showDifficulty: showDifficuly,
       oppositeRoll: this.options.oppositeRoll,
@@ -574,28 +561,25 @@ export class COAttackRoll extends CORoll {
       isFumble: rollResults.isFumble,
       isSuccess: rollResults.isSuccess,
       isFailure: rollResults.isFailure,
-      total: isPrivate ? "?" : Math.ceil(this.total),
-      tooltip: isPrivate ? "" : this.options.tooltip,
-      user: game.user.id,
       tempDamage: this.options.tempDamage,
       hasTactical,
       tactical,
     }
   }
 
-  async _getDamageChatCardData(flavor, isPrivate) {
+  _getDamageChatCardData(flavor, isPrivate) {
     const rollResults = CORoll.analyseRollResult(this)
     if (CONFIG.debug.co2?.chat) console.debug(Utils.log(`COAttackRoll - _getDamageChatCardData options`), this.options)
 
     return {
+      formula: isPrivate ? "???" : this.formula,
+      flavor: `${this.options.flavor}`,
+      user: game.user.id,
+      tooltip: isPrivate ? "" : this.options.tooltip,
+      total: isPrivate ? "?" : Math.ceil(this.total),
       type: this.options.type,
       actor: this.options.actor,
       speaker: ChatMessage.getSpeaker({ actor: this.options.actor, scene: canvas.scene }),
-      flavor: `${this.options.flavor}`,
-      formula: isPrivate ? "???" : this.formula,
-      total: isPrivate ? "?" : Math.ceil(this.total),
-      tooltip: isPrivate ? "" : this.options.tooltip,
-      user: game.user.id,
       tempDamage: this.options.tempDamage,
     }
   }
@@ -621,6 +605,27 @@ export class COAttackRoll extends CORoll {
       })
 
       radio.dispatchEvent(changeEvent)
+    }
+  }
+}
+
+export class COHealRoll extends CORoll {
+  static ROLL_TYPE = "heal"
+
+  static CHAT_TEMPLATE = "systems/co2/templates/chat/heal-card.hbs"
+
+  static ROLL_CSS = ["co", "heal-roll"]
+
+  // TODO Vérifier pourquoi flavor est dans options.message.flavor
+  async _prepareChatRenderContext({ flavor, isPrivate = false, ...options } = {}) {
+    return {
+      actor: this.options.actor,
+      speaker: ChatMessage.getSpeaker({ actor: this.options.actor, scene: canvas.scene }),
+      formula: isPrivate ? "???" : this.formula,
+      flavor: options.message.flavor,
+      user: game.user.id,
+      tooltip: isPrivate ? "" : await this.getTooltip(),
+      total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
     }
   }
 }
