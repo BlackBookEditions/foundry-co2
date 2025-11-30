@@ -6,6 +6,9 @@
 - Un équipement de sous-type Divers a maintenant la propriété Rechargeable
 - Inventaire : Le bouton Augmenter la quantité n'est proposé que si l'équipement est empilable
 
+## Corrections
+- Personnage et adversaire : lors de la création par import de données, la source des actions est mise à jour
+
 # 1.3.0
 ## Améliorations
 - Ajout d'une infobulle précisant le calcul du critique dans la fenêtre d'attaque (issue [#222](https://github.com/BlackBookEditions/foundry-co2/issues/222))

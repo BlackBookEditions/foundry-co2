@@ -1013,6 +1013,21 @@ export default class COActor extends Actor {
 
   // #endregion
 
+
+  /**
+   * Update this Document using a provided JSON string.
+   * @param {string} json                 Raw JSON data to import
+   * Only world Documents may be imported.
+   * @this {ClientDocument}
+   * @returns {Promise<ClientDocument>}   The updated Document instance
+   */
+  /* override */
+  async importFromJSON(json) {
+    const actor = await super.importFromJSON(json)
+    await actor.system.updateAllActionsUuid()
+    return actor
+  }
+
   // #region méthodes privées
 
   /**
@@ -2399,4 +2414,5 @@ export default class COActor extends Actor {
   }
 
   // #endregion
+
 }
