@@ -610,7 +610,7 @@ export default class CharacterData extends ActorData {
 
     // Somme des bonus des modifiers
     const drModifiers = this.computeTotalModifiersByTarget(this.combatModifiers, SYSTEM.COMBAT.dr.id)
-
+    
     // Somme du bonus de la feuille et du bonus des actives effects
     const bonuses = Object.values(this.combat.dr.bonuses).reduce((prev, curr) => prev + curr)
     this.combat.dr.value = this.combat.dr.base + bonuses + drModifiers.total
