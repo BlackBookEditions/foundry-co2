@@ -35,34 +35,41 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
    * @returns {string} Renvoi un tooltip à afficher
    */
   get tooltip() {
-    const source = this.source ? fromUuidSync(this.source) : null
-    let tip = `${game.i18n.localize("CO.ui.duration")} : ${this.duration} ${this.unit}<br />`
-    if (this.unit !== SYSTEM.COMBAT_UNITE.combat) tip += `${game.i18n.localize("CO.ui.remainingRound")} : ${this.remainingTurn}<br />`
-    if (this.formula && this.formula !== "") {
-      if (this.formulaType === "damage") tip += `${game.i18n.localize("CO.customEffect.damage")} : ${this.formula}`
-      else if (this.formulaType === "heal") tip += `${game.i18n.localize("CO.customEffect.heal")} : ${this.formula}`
-    }
-    if (this.elementType && this.elementType !== "") tip += ` ${game.i18n.localize(`CO.customEffect.${this.elementType}`)} `
-    if (this.formula && this.formula !== "") tip += `<br />`
-    if (this.statuses && this.statuses.length > 0) {
-      tip += "Statuts : "
-      for (let i = 0; i < this.statuses.length; i++) {
-        tip += `${game.i18n.localize(`CO.customStatus.${this.statuses[i]}`)} `
+    console.log("CustomEffectData - tooltip", this)
+    try {
+      const source = this.source ? fromUuidSync(this.source) : null
+      let tip = `${game.i18n.localize("CO.ui.duration")} : ${this.duration} ${this.unit}<br />`
+      if (this.unit !== SYSTEM.COMBAT_UNITE.combat && this.unit !== SYSTEM.COMBAT_UNITE.unlimited)
+        tip += `${game.i18n.localize("CO.ui.remainingRound")} : ${this.remainingTurn}<br />`
+      if (this.formula && this.formula !== "") {
+        if (this.formulaType === "damage") tip += `${game.i18n.localize("CO.customEffect.damage")} : ${this.formula}`
+        else if (this.formulaType === "heal") tip += `${game.i18n.localize("CO.customEffect.heal")} : ${this.formula}`
       }
-    }
-    if (this.modifiers && this.modifiers.length > 0) {
-      for (let i = 0; i < this.modifiers.length; i++) {
-        tip += ` ${game.i18n.localize(SYSTEM.MODIFIERS_SUBTYPE[this.modifiers[i].subtype].label)} ${game.i18n.localize(SYSTEM.MODIFIERS_TARGET[this.modifiers[i].target].label)} : ${this.modifiers[i].value}<br />`
+      if (this.elementType && this.elementType !== "") tip += ` ${game.i18n.localize(`CO.customEffect.${this.elementType}`)} `
+      if (this.formula && this.formula !== "") tip += `<br />`
+      if (this.statuses && this.statuses.length > 0) {
+        tip += "Statuts : "
+        for (let i = 0; i < this.statuses.length; i++) {
+          tip += `${game.i18n.localize(`CO.customStatus.${this.statuses[i]}`)} `
+        }
       }
+      if (this.modifiers && this.modifiers.length > 0) {
+        for (let i = 0; i < this.modifiers.length; i++) {
+          tip += ` ${game.i18n.localize(SYSTEM.MODIFIERS_SUBTYPE[this.modifiers[i].subtype].label)} ${game.i18n.localize(SYSTEM.MODIFIERS_TARGET[this.modifiers[i].target].label)} : ${this.modifiers[i].value}<br />`
+        }
+      }
+      tip += "<br />"
+      const sourceParts = this.sourceParts
+      if (sourceParts.item) {
+        tip += `par ${sourceParts.item.name} `
+      }
+      if (sourceParts.actor) {
+        tip += `de ${sourceParts.actor.name}`
+      }
+    } catch (e) {
+      console.warn("CustomEffectData - tooltip", e)
     }
-    tip += "<br />"
-    const sourceParts = this.sourceParts
-    if (sourceParts.item) {
-      tip += `par ${sourceParts.item.name} `
-    }
-    if (sourceParts.actor) {
-      tip += `de ${sourceParts.actor.name}`
-    }
+    console.log("CustomEffectData - tooltip", "je renvoi le tooltip", tip)
     return tip
   }
 

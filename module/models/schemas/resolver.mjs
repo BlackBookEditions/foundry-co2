@@ -319,10 +319,11 @@ export class Resolver extends foundry.abstract.DataModel {
    * await _manageAdditionalEffect(actor, item, action);
    */
   async _manageAdditionalEffect(actor, item, action) {
+    console.log("Resolver - _manageAdditionalEffect", this.additionalEffect)
     // Si pas de combat, pas d'effet sur la durée
-    if (!game.combat || !game.combat.started) {
+    if ((!game.combat || !game.combat.started) && this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited) {
       // FIXME Debug pour l'instant, à supprimer
-      ui.notifications.warn("Pas de combat en cours ou combat non démarré !")
+      ui.notifications.warn(game.i18n.localize("CO.label.long.customEffectInCombat"))
       return false
     }
 
@@ -346,7 +347,7 @@ export class Resolver extends foundry.abstract.DataModel {
   }
 
   async _createCustomEffect(actor, item, action) {
-    if (!game.combat || game.combat.round === null) {
+    if ((!game.combat || game.combat.round === null) && this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited) {
       ui.notifications.warn(game.i18n.localize("CO.label.long.customEffectInCombat"))
       return
     }
@@ -409,7 +410,7 @@ export class Resolver extends foundry.abstract.DataModel {
       statuses: this.additionalEffect.statuses,
       unit: this.additionalEffect.unit,
       duration,
-      startedAt: game.combat.round,
+      startedAt: game.combat ? game.combat.round : 0,
       remainingTurn,
       modifiers,
       formula: evaluatedFormula,
