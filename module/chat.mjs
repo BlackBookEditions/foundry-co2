@@ -25,6 +25,7 @@ export default class CoChat {
     this.whisper = null
     this.system = null
     this.type = "base"
+    this.options = null
   }
 
   /**
@@ -102,6 +103,11 @@ export default class CoChat {
     return this
   }
 
+  withOptions(options) {
+    this.options = options
+    return this
+  }
+
   /**
    * Creates the chat message
    * @returns {CoChat} this instance
@@ -117,20 +123,24 @@ export default class CoChat {
       return null
     }
 
-    let speaker = ChatMessage.getSpeaker({ actor: this.actor.id })
+    // let speaker = ChatMessage.getSpeaker({ actor: this.actor.id })
 
     const dataMessage = {
       user: game.user.id,
-      speaker: speaker,
       content: this.content,
       type: this.type,
       rolls: [],
       system: this.system,
     }
 
+    // Merge options if any
+    if (this.options) {
+      foundry.utils.mergeObject(dataMessage, this.options)
+    }
+
     // Set the roll parameter if necessary
     if (this.rolls) {
-      dataMessage.rolls.push(this.rolls)
+      dataMessage.rolls.push(...this.rolls)
     }
 
     // Set the flags parameter if necessary

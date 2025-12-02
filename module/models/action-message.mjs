@@ -4,6 +4,7 @@ import { CORoll } from "../documents/roll.mjs"
 import Hitpoints from "../helpers/hitpoints.mjs"
 import { Resolver } from "./schemas/resolver.mjs"
 import Utils from "../helpers/utils.mjs"
+import COChatMessage from "../documents/chat-message.mjs"
 
 export default class ActionMessageData extends BaseMessageData {
   static defineSchema() {
@@ -47,7 +48,7 @@ export default class ActionMessageData extends BaseMessageData {
   /**
    * Modifie le contenu HTML d'un message
    * @async
-   * @param {PenombreMessage} message Le document ChatMessage en cours de rendu.
+   * @param {COChatMessage} message Le document ChatMessage en cours de rendu.
    * @param {HTMLElement} html Élément HTML représentant le message à modifier.
    * @returns {Promise<void>} Résout lorsque le HTML a été mis à jour.
    */

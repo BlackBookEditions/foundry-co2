@@ -3200,8 +3200,7 @@ co-toggle-switch[checked] thumb {
 }
 #interface #sidebar .chat-message .message-content .card-content,
 #interface #ui-right-column-1 .chat-message .message-content .card-content {
-  font-size: 16px;
-  margin: -6px 0px 0px 0px;
+  font-size: 1rem;
 }
 #interface #sidebar .chat-message .message-content .card-content p,
 #interface #ui-right-column-1 .chat-message .message-content .card-content p {
@@ -3236,7 +3235,7 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .chat-message .message-content .diff-result,
 #interface #sidebar .chat-message .message-content .vs,
 #interface #ui-right-column-1 .chat-message .message-content .vs {
-  font-size: 38px;
+  font-size: 2rem;
   font-weight: bold;
   text-align: center;
 }
@@ -3363,6 +3362,10 @@ co-toggle-switch[checked] thumb {
   font-size: 25px;
   font-weight: bold;
   font-variant: small-caps;
+}
+#interface #sidebar .chat-message .message-content .type-card,
+#interface #ui-right-column-1 .chat-message .message-content .type-card {
+  margin-right: 10px;
 }
 #interface #sidebar .chat-message .message-content .type-card label,
 #interface #ui-right-column-1 .chat-message .message-content .type-card label {
@@ -3546,6 +3549,116 @@ co-toggle-switch[checked] thumb {
   padding-left: 5px;
   font-weight: bold;
   color: var(--color-abilities);
+}
+#interface #sidebar .co.chat-card.roll-card.attack-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+#interface #sidebar .co.chat-card.roll-card.attack-card .card-header .action-name,
+#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-header .action-name {
+  font-size: 18px;
+  font-style: italic;
+  margin-left: 5px;
+}
+#interface #sidebar .co.chat-card.roll-card.damage-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+#interface #sidebar .co.chat-card.roll-card.damage-card .card-header .action-name,
+#interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .card-header .action-name {
+  font-size: 18px;
+  font-style: italic;
+  margin-left: 5px;
+}
+#interface #sidebar .co.chat-card.roll-card.heal-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.heal-card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+#interface #sidebar .co.chat-card.roll-card.heal-card .card-header .action-name,
+#interface #ui-right-column-1 .co.chat-card.roll-card.heal-card .card-header .action-name {
+  font-size: 18px;
+  font-style: italic;
+}
+#interface #sidebar .co.chat-card.roll-card.heal-card .card-content section.targets,
+#interface #ui-right-column-1 .co.chat-card.roll-card.heal-card .card-content section.targets {
+  margin-top: 10px;
+}
+#interface #sidebar .co.chat-card.roll-card.heal-card .card-content section.targets .target-list,
+#interface #ui-right-column-1 .co.chat-card.roll-card.heal-card .card-content section.targets .target-list {
+  list-style-type: none;
+  margin-left: 10px;
+}
+#interface #sidebar .co.chat-card.roll-card.heal-card .card-content section.targets .target-list li,
+#interface #ui-right-column-1 .co.chat-card.roll-card.heal-card .card-content section.targets .target-list li {
+  display: flex;
+  align-items: center;
+}
+#interface #sidebar .co.chat-card.roll-card.heal-card .card-content section.targets .target-list .target-actor-img,
+#interface #ui-right-column-1 .co.chat-card.roll-card.heal-card .card-content section.targets .target-list .target-actor-img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-header .action-name,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-header .action-name {
+  font-size: 18px;
+  font-style: italic;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content section.targets,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.targets {
+  margin-top: 10px;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content section.targets .target-list,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.targets .target-list {
+  list-style-type: none;
+  margin-left: 10px;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content section.targets .target-list li,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.targets .target-list li {
+  display: flex;
+  align-items: center;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content section.targets .target-list .target-actor-img,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.targets .target-list .target-actor-img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content section.result,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.result {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-header .action-name,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-header .action-name {
+  font-size: 18px;
+  font-style: italic;
+  margin-left: 5px;
 }
 .icon.co {
   background-image: url('/systems/co2/ui/icone_co.webp');

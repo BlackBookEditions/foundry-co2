@@ -616,13 +616,31 @@ export class COHealRoll extends CORoll {
 
   static ROLL_CSS = ["co", "heal-roll"]
 
-  // TODO Vérifier pourquoi flavor est dans options.message.flavor
+  /**
+   * Prepares the context object for rendering a chat message for this roll.
+   *
+   * @param {Object} [options={}] Options for preparing the chat render context
+   * @param {string} [options.flavor] Flavor text for the chat message
+   * @param {boolean} [options.isPrivate=false] Whether the roll details should be hidden (showing "???" instead)
+   * @param {Object} options.message Message object containing additional properties
+   * @param {string} options.message.flavor Flavor text from the message
+   * @returns {Promise<Object>} The chat render context object containing:
+   *   - actor: The actor associated with this roll
+   *   - speaker: The chat speaker object for this roll
+   *   - formula: The roll formula (or "???" if private)
+   *   - flavor: The flavor text for the message
+   *   - user: The current user's ID
+   *   - tooltip: The roll tooltip HTML (or empty string if private)
+   *   - total: The rounded total result (or "?" if private)
+   * @private
+   */
   async _prepareChatRenderContext({ flavor, isPrivate = false, ...options } = {}) {
+    const message = options.message || {}
+    const messageSystem = message?.system || {}
     return {
-      actor: this.options.actor,
-      speaker: ChatMessage.getSpeaker({ actor: this.options.actor, scene: canvas.scene }),
+      speaker: ChatMessage.getSpeaker(message.speaker),
       formula: isPrivate ? "???" : this.formula,
-      flavor: options.message.flavor,
+      flavor: message.flavor ? message.flavor : messageSystem.label,
       user: game.user.id,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "?" : Math.round(this.total * 100) / 100,

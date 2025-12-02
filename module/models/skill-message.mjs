@@ -92,7 +92,7 @@ export default class SkillMessageData extends BaseMessageData {
         // Gestion des custom effects
         const customEffect = message.system.customEffect
         const additionalEffect = message.system.additionalEffect
-        if (customEffect && additionalEffect && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
+        if (customEffect && additionalEffect && additionalEffect.active && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
           if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
           else {
             await game.users.activeGM.query("co2.applyCustomEffect", { ce: customEffect, targets: [targetActor.uuid] })

@@ -29,11 +29,67 @@ export default class SaveMessageData extends BaseMessageData {
   /**
    * Modifie le contenu HTML d'un message
    * @async
-   * @param {PenombreMessage} message Le document ChatMessage en cours de rendu.
+   * @param {COChatMessage} message Le document ChatMessage en cours de rendu.
    * @param {HTMLElement} html Élément HTML représentant le message à modifier.
    * @returns {Promise<void>} Résout lorsque le HTML a été mis à jour.
    */
   async alterMessageHTML(message, html) {
+    // Affichage des cibles
+    const targetsSection = html.querySelector(".targets")
+    if (!targetsSection) return
+
+    if (this.targetType !== SYSTEM.RESOLVER_TARGET.none.id) {
+      const targetActors = Array.from(message.system.targets)
+      if (targetActors.length > 0) {
+        const targetList = document.createElement("ul")
+        targetList.classList.add("target-list")
+        targetActors.forEach((actorUuid) => {
+          const actor = fromUuidSync(actorUuid)
+          if (!actor) return
+          const listItem = document.createElement("li")
+          // Ajouter l'image de l'acteur avant le nom
+          const img = document.createElement("img")
+          img.src = actor.img
+          img.classList.add("target-actor-img")
+          listItem.appendChild(img)
+          // Ajouter le nom de l'acteur après l'image
+          const name = document.createElement("span")
+          name.textContent = actor.name
+          name.classList.add("name-stacked")
+          listItem.appendChild(name)
+
+          // ----- Bouton appliquer le soin -----
+
+          /*
+          // ----- création de <a> -----
+          const link = document.createElement("a")
+          link.classList.add("btn", "apply-dmg")
+          link.dataset.apply = "heal"
+          link.dataset.total = message.system.total
+
+          // ----- création de <i> -----
+          const icon = document.createElement("i")
+          icon.classList.add("fas", "fa-user-plus")
+          icon.dataset.tooltip = game.i18n.localize("CO.ui.applyHealing")
+          icon.dataset.tooltipDirection = "UP"
+
+          // ----- on insère <i> dans <a> -----
+          link.appendChild(icon)
+
+          // ----- on insère <a> dans le <li> -----
+          listItem.append(" ")
+          listItem.appendChild(link)
+          */
+
+          // ----- on insère le <li> dans la <ul> -----
+          targetList.appendChild(listItem)
+        })
+        targetsSection.appendChild(targetList)
+      }
+    } else {
+      targetsSection.remove()
+    }
+
     // Affiche ou non la difficulté
     const displayDifficulty = game.settings.get("co2", "displayDifficulty")
     if (displayDifficulty === "none" || (displayDifficulty === "gm" && !game.user.isGM)) {
@@ -42,11 +98,29 @@ export default class SaveMessageData extends BaseMessageData {
         element.remove()
       }
     }
+
     // Affiche ou non le bouton de jet de sauvegarde
     if (!this.showButton) {
       const button = html.querySelector(".save-roll")
       if (button) {
         button.remove()
+      }
+      const totalDiv = html.querySelector(".save-total")
+      if (totalDiv) {
+        totalDiv.innerHTML = `<label>${game.i18n.localize("CO.ui.total")}</label><div>${this.result.total}</div>`
+      }
+      const footerFormula = html.querySelector(".footer-formula")
+      if (footerFormula) {
+        footerFormula.innerText = this.parent.rolls[0].formula
+      }
+      const footerTooltip = html.querySelector(".footer-tooltip")
+      if (footerTooltip) {
+        footerTooltip.innerHTML = this.parent.rolls[0].options.toolTip
+      }
+    } else {
+      const footer = html.querySelector(".card-footer")
+      if (footer) {
+        footer.remove()
       }
     }
   }
@@ -57,6 +131,7 @@ export default class SaveMessageData extends BaseMessageData {
    * @param {HTMLElement} html Élément HTML représentant le message à modifier.
    */
   async addListeners(html) {
+    // TODO Vérifier la gestion de la chance
     // Click sur le bouton de chance si c'est un jet d'attaque raté
     if (this.isFailure) {
       const luckyButton = html.querySelector(".lp-button-attack")
@@ -173,7 +248,7 @@ export default class SaveMessageData extends BaseMessageData {
         // Doit on appliquer l'effet s'il y en a
         const customEffect = message.system.customEffect
         const additionalEffect = message.system.additionalEffect
-        if (customEffect && additionalEffect && Resolver.shouldManageAdditionalEffect(retour.result, additionalEffect)) {
+        if (customEffect && additionalEffect && additionalEffect.active && Resolver.shouldManageAdditionalEffect(retour.result, additionalEffect)) {
           console.log("on va appliquer les effets", "customEffect : ", customEffect)
 
           if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)

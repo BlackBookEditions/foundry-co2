@@ -3,7 +3,6 @@ import Utils from "../../helpers/utils.mjs"
 import COActor from "../../documents/actor.mjs"
 import CustomEffectData from "./custom-effect.mjs"
 import { CORoll } from "../../documents/roll.mjs"
-import CoChat from "../../chat.mjs"
 
 /**
  * Resolver
@@ -39,9 +38,10 @@ export class Resolver extends foundry.abstract.DataModel {
         formula: new fields.StringField({ required: false }),
         formulaType: new fields.StringField({ required: false, choices: SYSTEM.RESOLVER_FORMULA_TYPE }),
         elementType: new fields.StringField({ required: false }),
-      }), // Ajout de la possibilité de faire un jet de sauvegarde pour la cible et applique l'effet en cas d'échec ou de succes selon le "applyOn" (ajout de saveFailure et saveSuccess)
-      saveAbility: new fields.StringField({ required: false, choices: SYSTEM.ABILITIES, initial: "con" }),
-      saveDifficulty: new fields.StringField({ required: false, nullable: false, initial: "0" }), //peux etre une formule
+      }),
+      // Ajout de la possibilité de faire un jet de sauvegarde pour la cible et applique l'effet en cas d'échec ou de succès selon le "applyOn" (ajout de saveFailure et saveSuccess)
+      saveAbility: new fields.StringField({ required: false, choices: SYSTEM.ABILITIES, initial: undefined }),
+      saveDifficulty: new fields.StringField({ required: false, nullable: false, initial: undefined }), // Peut être une formule
     }
   }
 
@@ -185,9 +185,19 @@ export class Resolver extends foundry.abstract.DataModel {
     let healFormulaEvaluated = Roll.replaceFormulaData(healFormula, actor.getRollData())
 
     const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
+    if (targets.length === 0) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
+      return false
+    }
     if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver heal - Targets", targets))
 
-    await actor.rollHeal(item, { actionName: action.label, healFormula: healFormulaEvaluated, targetType: this.target.type, targets: targets })
+    const heal = await actor.rollHeal(item, {
+      actionName: action.label,
+      healFormula: healFormulaEvaluated,
+      targetType: this.target.type,
+      targets: targets,
+    })
+    if (!heal) return false
 
     // Gestion des effets supplémentaires
     if (this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) {
@@ -216,9 +226,13 @@ export class Resolver extends foundry.abstract.DataModel {
     showDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
 
     const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
+    if (targets.length === 0) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
+      return false
+    }
     if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver save - Targets", targets))
 
-    await actor.rollAskSave(item, {
+    const save = await actor.rollAskSave(item, {
       actionName: action.label,
       ability: saveAbility,
       difficulty: difficultyFormulaEvaluated,
@@ -226,6 +240,7 @@ export class Resolver extends foundry.abstract.DataModel {
       targetType: this.target.type,
       targets: targets,
     })
+    if (!save) return false
 
     /* Gestion des effets supplémentaires
     if (this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) {

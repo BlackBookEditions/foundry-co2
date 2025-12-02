@@ -4,7 +4,7 @@ import CustomEffectData from "../models/schemas/custom-effect.mjs"
 import { CORoll, COSkillRoll, COAttackRoll, COHealRoll } from "./roll.mjs"
 import CoChat from "../chat.mjs"
 import Utils from "../helpers/utils.mjs"
-import COChatMessage from "./chat-message.mjs"
+
 /**
  * @class COActor
  * @classdesc
@@ -1012,7 +1012,6 @@ export default class COActor extends Actor {
   }
 
   // #endregion
-
 
   /**
    * Update this Document using a provided JSON string.
@@ -2167,6 +2166,13 @@ export default class COActor extends Actor {
       targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id
         ? [this.uuid]
         : targets.map((obj) => obj.actor?.uuid ?? obj.uuid).filter((uuid) => typeof uuid === "string")
+
+    // Si le type de cible est unique alors que plusieurs cibles sont sélectionnées, on affiche un avertissement et on retourne false
+    if (targetType === SYSTEM.RESOLVER_TARGET.single.id && targets.length > 1) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningOnlyOneTarget"))
+      return false
+    }
+
     const rollMode = roll.options.rollMode ?? game.settings.get("core", "rollMode")
 
     await roll.toMessage(
@@ -2219,6 +2225,13 @@ export default class COActor extends Actor {
       targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id
         ? [this.uuid]
         : targets.map((obj) => obj.actor?.uuid ?? obj.uuid).filter((uuid) => typeof uuid === "string")
+
+    // Si le type de cible est unique alors que plusieurs cibles sont sélectionnées, on affiche un avertissement et on retourne false
+    if (targetType === SYSTEM.RESOLVER_TARGET.single.id && targets.length > 1) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningOnlyOneTarget"))
+      return false
+    }
+
     const rollMode = game.settings.get("core", "rollMode")
 
     /*
@@ -2247,6 +2260,7 @@ export default class COActor extends Actor {
       ability: ability,
       difficulty: difficulty,
       showButton: true,
+      flavor: flavor,
     }
 
     const messageSystem = {
@@ -2257,7 +2271,13 @@ export default class COActor extends Actor {
       showButton: true,
     }
 
-    new CoChat(this).withTemplate("systems/co2/templates/chat/save-card.hbs").withData(contentData).withMessageType("save").withSystem(messageSystem).create()
+    new CoChat(this)
+      .withTemplate("systems/co2/templates/chat/save-card.hbs")
+      .withData(contentData)
+      .withMessageType("save")
+      .withSystem(messageSystem)
+      .withOptions({ speaker: speaker, style: CONST.CHAT_MESSAGE_STYLES.OTHER })
+      .create()
 
     return true
   }
@@ -2352,40 +2372,54 @@ export default class COActor extends Actor {
     return { token, actor: token.actor, uuid: token.actor.uuid, name: token.name }
   }
 
-  // FIXE ME revoir la gestion des erreurs
+  // ...existing code...
+
+  /**
+   * Récupère et valide les cibles sélectionnées selon les critères spécifiés.
+   *
+   * @param {string} actionName Nom de l'action (pour les messages d'erreur)
+   * @param {string} scope Portée des cibles : "allies", "enemies", ou "all"
+   * @param {number} number Nombre maximum de cibles autorisées
+   * @param {boolean} single Si true, une seule cible est attendue
+   * @returns {Array} Tableau des cibles validées
+   * @private
+   */
   _getTargets(actionName, scope, number, single) {
     const tokens = game.user.targets
-    let errorAll
+    const targets = []
 
-    // Too few targets
+    // Pas de cibles sélectionnées
     if (tokens.size < 1) {
       return []
     }
 
-    // Too many targets
-    if ((single && tokens.size > 1) || (!single && tokens.size > number)) {
-      errorAll = game.i18n.format("CO.notif.warningIncorrectTargets", {
-        number: single ? 1 : number,
+    // Validation du nombre de cibles
+    const expectedNumber = single ? 1 : number
+    if (tokens.size > expectedNumber) {
+      const error = game.i18n.format("CO.notif.warningIncorrectTargets", {
+        number: expectedNumber,
         action: actionName,
       })
+      ui.notifications.warn(error)
+      return []
     }
 
-    // Test each target
-    const targets = []
+    // Filtrage des cibles selon la portée
     for (const token of tokens) {
-      const t = this._getTargetFromToken(token)
-      if (errorAll) t.error = errorAll
-      if (scope === "allies" && t.token.document.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) targets.push(t)
-      else if (scope === "enemies" && t.token.document.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) targets.push(t)
-      else if (scope === "all") targets.push(t)
-      if (!this.token) continue
-      if (token === this.token) {
-        t.error = game.i18n.localize("CO.notif.warningCannotTargetSelf")
-        continue
+      // Vérification de la disposition selon la portée
+      const disposition = token.document.disposition
+      const isValidTarget =
+        scope === "all" || (scope === "allies" && disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) || (scope === "enemies" && disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE)
+
+      if (isValidTarget) {
+        targets.push(this._getTargetFromToken(token))
       }
     }
+
     return targets
   }
+
+  // ...existing code...
   // #endregion
 
   // #region Gestion des Custom Effects
