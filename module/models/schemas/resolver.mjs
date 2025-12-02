@@ -34,7 +34,7 @@ export class Resolver extends foundry.abstract.DataModel {
         successThreshold: new fields.NumberField({ integer: true, positive: true }),
         statuses: new fields.SetField(new fields.StringField({ required: true, blank: true, choices: SYSTEM.RESOLVER_ADDITIONAL_EFFECT_STATUS })),
         duration: new fields.StringField({ required: true, nullable: false, initial: "0" }),
-        unit: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: "round" }),
+        unit: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: SYSTEM.COMBAT_UNITE.round.id }),
         formula: new fields.StringField({ required: false }),
         formulaType: new fields.StringField({ required: false, choices: SYSTEM.RESOLVER_FORMULA_TYPE }),
         elementType: new fields.StringField({ required: false }),
@@ -319,9 +319,8 @@ export class Resolver extends foundry.abstract.DataModel {
    * await _manageAdditionalEffect(actor, item, action);
    */
   async _manageAdditionalEffect(actor, item, action) {
-    console.log("Resolver - _manageAdditionalEffect", this.additionalEffect)
     // Si pas de combat, pas d'effet sur la durée
-    if ((!game.combat || !game.combat.started) && this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited) {
+    if ((!game.combat || !game.combat.started) && this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id) {
       // FIXME Debug pour l'instant, à supprimer
       ui.notifications.warn(game.i18n.localize("CO.label.long.customEffectInCombat"))
       return false
@@ -347,7 +346,7 @@ export class Resolver extends foundry.abstract.DataModel {
   }
 
   async _createCustomEffect(actor, item, action) {
-    if ((!game.combat || game.combat.round === null) && this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited) {
+    if ((!game.combat || game.combat.round === null) && this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id) {
       ui.notifications.warn(game.i18n.localize("CO.label.long.customEffectInCombat"))
       return
     }
@@ -367,9 +366,9 @@ export class Resolver extends foundry.abstract.DataModel {
 
     // Calcul du round de fin
     let remainingTurn
-    if (this.additionalEffect.unit === SYSTEM.COMBAT_UNITE.round) {
+    if (this.additionalEffect.unit === SYSTEM.COMBAT_UNITE.round.id) {
       remainingTurn = duration
-    } else if (this.additionalEffect.unit === SYSTEM.COMBAT_UNITE.second) {
+    } else if (this.additionalEffect.unit === SYSTEM.COMBAT_UNITE.second.id) {
       remainingTurn = Math.round(duration / CONFIG.time.roundTime)
     }
 

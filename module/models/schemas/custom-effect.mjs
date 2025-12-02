@@ -17,7 +17,7 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
       name: new fields.StringField({ required: true }),
       source: new fields.DocumentUUIDField(),
       statuses: new fields.ArrayField(new fields.StringField({ required: false })),
-      unit: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: "round" }),
+      unit: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: SYSTEM.COMBAT_UNITE.round.id }),
       duration: new fields.StringField({ required: true, initial: 0 }),
       startedAt: new fields.NumberField({ ...requiredInteger, initial: 0 }),
       previousRound: new fields.NumberField({ ...requiredInteger, initial: 0 }),
@@ -35,11 +35,12 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
    * @returns {string} Renvoi un tooltip à afficher
    */
   get tooltip() {
-    console.log("CustomEffectData - tooltip", this)
     try {
       const source = this.source ? fromUuidSync(this.source) : null
-      let tip = `${game.i18n.localize("CO.ui.duration")} : ${this.duration} ${this.unit}<br />`
-      if (this.unit !== SYSTEM.COMBAT_UNITE.combat && this.unit !== SYSTEM.COMBAT_UNITE.unlimited)
+      let tip = `${game.i18n.localize("CO.ui.duration")} :`
+      if (this.unit === SYSTEM.COMBAT_UNITE.round.id || this.unit === SYSTEM.COMBAT_UNITE.second.id) tip += `${this.duration}`
+      tip += ` ${game.i18n.localize(SYSTEM.COMBAT_UNITE[this.unit].label)}<br />`
+      if (this.unit !== SYSTEM.COMBAT_UNITE.combat.id && this.unit !== SYSTEM.COMBAT_UNITE.unlimited.id)
         tip += `${game.i18n.localize("CO.ui.remainingRound")} : ${this.remainingTurn}<br />`
       if (this.formula && this.formula !== "") {
         if (this.formulaType === "damage") tip += `${game.i18n.localize("CO.customEffect.damage")} : ${this.formula}`
@@ -66,11 +67,11 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
       if (sourceParts.actor) {
         tip += `de ${sourceParts.actor.name}`
       }
+      return tip
     } catch (e) {
       console.warn("CustomEffectData - tooltip", e)
+      throw e
     }
-    console.log("CustomEffectData - tooltip", "je renvoi le tooltip", tip)
-    return tip
   }
 
   get sourceParts() {
@@ -81,6 +82,7 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
     if (primaryType === "Actor") {
       actor = game.actors.get(primaryId)
     }
+    const parts = this.source.split(".")
     // Acteur d'un token
     if (primaryType === "Scene") {
       const tokenId = parts[3]
