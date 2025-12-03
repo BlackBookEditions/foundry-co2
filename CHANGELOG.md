@@ -1,6 +1,6 @@
 # 1.3.1
 ## Améliorations
-- Changement du logo de la pause
+- Changement du logo de la pause (Merci Mystery Man From Outerspace)
 - Messages de tchat : amélioration du CSS des compétences utilisées
 - Journaux : les puces des listes sont des losanges
 - Un équipement de sous-type Divers a maintenant la propriété Rechargeable

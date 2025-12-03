@@ -163,6 +163,10 @@ export const RESOLVER_TYPE = Object.freeze({
     id: "consumable",
     label: "CO.action.types.consumable",
   },
+  save: {
+    id: "save",
+    label: "CO.action.types.save",
+  },
 })
 
 export const RESOLVER_TARGET = Object.freeze({
@@ -199,6 +203,19 @@ export const RESOLVER_SCOPE = Object.freeze({
   },
 })
 
+/**
+ * Frozen object containing resolver result types for action outcomes.
+ * Each result type has an id and a localization label key.
+ *
+ * @constant {Object} RESOLVER_RESULT
+ * @property {Object} always - Effect that always triggers
+ * @property {Object} success - Effect that triggers on success
+ * @property {Object} successTreshold - Effect that triggers when success meets threshold
+ * @property {Object} critical - Effect that triggers on critical success
+ * @property {Object} failure - Effect that triggers on failure
+ * @property {Object} saveFailure - Effect that triggers on save failure
+ * @property {Object} saveSuccess - Effect that triggers on save success
+ */
 export const RESOLVER_RESULT = Object.freeze({
   always: {
     id: "always",
@@ -219,6 +236,14 @@ export const RESOLVER_RESULT = Object.freeze({
   failure: {
     id: "failure",
     label: "CO.resolver.additionalEffect.onFailure",
+  },
+  saveFailure: {
+    id: "saveFailure",
+    label: "CO.resolver.additionalEffect.onSaveFailure",
+  },
+  saveSuccess: {
+    id: "saveSuccess",
+    label: "CO.resolver.additionalEffect.onSaveSuccess",
   },
 })
 

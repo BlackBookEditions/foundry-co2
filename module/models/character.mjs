@@ -928,7 +928,7 @@ export default class CharacterData extends ActorData {
         total: roll.total,
         toolTip: toolTip,
       })
-      .withRoll(roll)
+      .withRolls([roll])
       .create()
 
     this.parent.update({ "system.attributes.hp": newHp })

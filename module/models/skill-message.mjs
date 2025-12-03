@@ -9,21 +9,6 @@ export default class SkillMessageData extends BaseMessageData {
     })
   }
 
-  // Est-ce que l'actor du user courant est ciblé par le message
-  get isActorTargeted() {
-    // Si c'est un MJ, on considère que tous les acteurs sont ciblés
-    if (game.user.isGM) return true
-    const actor = game.user.character
-    if (!actor) return false
-    const { id } = foundry.utils.parseUuid(actor.uuid)
-    // Extrare tous les ids des cibles
-    const targets = this.targets.map((target) => {
-      const { id } = foundry.utils.parseUuid(target)
-      return id
-    })
-    return targets.includes(id)
-  }
-
   /**
    * Ajoute les listeners du message
    * @async
@@ -107,7 +92,7 @@ export default class SkillMessageData extends BaseMessageData {
         // Gestion des custom effects
         const customEffect = message.system.customEffect
         const additionalEffect = message.system.additionalEffect
-        if (customEffect && additionalEffect && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
+        if (customEffect && additionalEffect && additionalEffect.active && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
           if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
           else {
             await game.users.activeGM.query("co2.applyCustomEffect", { ce: customEffect, targets: [targetActor.uuid] })

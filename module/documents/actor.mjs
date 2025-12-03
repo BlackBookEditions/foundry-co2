@@ -814,7 +814,7 @@ export default class COActor extends Actor {
               const burnRoll = new Roll(`${manaBurnedCost}${recoveryDice}`)
               let result = await burnRoll.roll()
               const message = game.i18n.format("CO.notif.manaBurn", { actorName: this.name, amount: result.total, capacityName: item.name })
-              await new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
+              new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
               const newHP = Math.max(this.system.attributes.hp.value - burnRoll.total, 0)
               await this.update({ "system.attributes.hp.value": newHP })
             }
@@ -994,13 +994,13 @@ export default class COActor extends Actor {
       case "none":
         return []
       case "self":
-        targets = this.getActiveTokens(true).map(this.#getTargetFromToken)
+        targets = this.getActiveTokens(true).map(this._getTargetFromToken)
         break
       case "single":
-        targets = this.#getTargets(actionName, targetScope, targetNumber, true)
+        targets = this._getTargets(actionName, targetScope, targetNumber, true)
         break
       case "multiple":
-        targets = this.#getTargets(actionName, targetScope, targetNumber, false)
+        targets = this._getTargets(actionName, targetScope, targetNumber, false)
         break
     }
 
@@ -1012,7 +1012,6 @@ export default class COActor extends Actor {
   }
 
   // #endregion
-
 
   /**
    * Update this Document using a provided JSON string.
@@ -1544,6 +1543,8 @@ export default class COActor extends Actor {
 
   /**
    * Lance un test de compétence pour l'acteur.
+   * Note de Caloup mise à jour 19-11-2025 : Pour l'usage de rollSkill ou on veux juste récupérer les resultat et pa les afficher je modifie la fonction
+   * je retourne le resultat et je met un argument showResult = true par defaut que je peux mettre à false pour récupérer uniquement le resultat dans d'autre circonstance (ex : save, opposite)
    *
    * @param {string} skillId L'ID de la compétence à lancer.
    * @param {Object} [options] Options pour le test de compétence.
@@ -1554,14 +1555,14 @@ export default class COActor extends Actor {
    * @param {number} [options.critical=20] Le seuil critique pour le test.
    * @param {number} [options.bonusDice] Le nombre de dés bonus à ajouter au jet.
    * @param {number} [options.malusDice] Le nombre de dés malus à soustraire du jet.
-  
    * @param {number} [options.difficulty] La difficulté du test.
    * @param {boolean} [options.oppositeRoll=false] Si le test est un jet opposé.
    * @param {boolean} [options.useDifficulty] Si la difficulté doit être utilisée : dépend de l'option du système displayDifficulty
    * @param {boolean} [options.showDifficulty] Si la difficulté doit être affichée : dépend de displayDifficulty et du user
    * @param {boolean} [options.withDialog=true] Si une boîte de dialogue doit être affichée ou non.
    * @param {Array} [options.targets] Les cibles du test.
-   * @returns {Promise} Le résultat du test de compétence.
+   * @param {boolean} [options.showResult=true] Whether to show the result in chat or just return it.
+   * @returns {Roll, { diceResult, total, isCritical, isFumble, difficulty, isSuccess, isFailure }} Le jet et le résultat du jet de compétence
    */
   async rollSkill(
     skillId,
@@ -1579,6 +1580,7 @@ export default class COActor extends Actor {
       showDifficulty = undefined,
       withDialog = true,
       targets = undefined,
+      showResult = true,
     } = {},
   ) {
     const options = {
@@ -1596,6 +1598,7 @@ export default class COActor extends Actor {
       withDialog,
       targets,
       skillUsed: [],
+      showResult,
     }
     /**
      * A hook event that fires before the roll is made.
@@ -1738,7 +1741,6 @@ export default class COActor extends Actor {
     let roll = await COSkillRoll.prompt(dialogContext, { withDialog: withDialog })
     if (!roll) return null
 
-    console.log("rollSkill", dialogContext)
     /**
      * A hook event that fires after the roll is made.
      * @function co.postRollSkill
@@ -1763,23 +1765,26 @@ export default class COActor extends Actor {
      */
     if (Hooks.call("co.resultRollSkill", skillId, options, roll, result) === false) return
 
-    // Prépare le message de résultat
-    const speaker = ChatMessage.getSpeaker({ actor: this, scene: canvas.scene })
+    if (showResult) {
+      // Prépare le message de résultat
+      const speaker = ChatMessage.getSpeaker({ actor: this, scene: canvas.scene })
+      let targetsUuid = targets?.map((target) => target.uuid)
 
-    let targetsUuid = targets?.map((target) => target.uuid)
-
-    await roll.toMessage(
-      {
-        speaker,
-        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-        type: "skill",
-        system: {
-          result: result,
-          targets: targetsUuid,
+      await roll.toMessage(
+        {
+          speaker,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          type: "skill",
+          system: {
+            result: result,
+            targets: targetsUuid,
+          },
         },
-      },
-      { rollMode: roll.options.rollMode },
-    )
+        { rollMode: roll.options.rollMode },
+      )
+    } else {
+      return { roll, result }
+    }
   }
 
   /**
@@ -2161,6 +2166,13 @@ export default class COActor extends Actor {
       targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id
         ? [this.uuid]
         : targets.map((obj) => obj.actor?.uuid ?? obj.uuid).filter((uuid) => typeof uuid === "string")
+
+    // Si le type de cible est unique alors que plusieurs cibles sont sélectionnées, on affiche un avertissement et on retourne false
+    if (targetType === SYSTEM.RESOLVER_TARGET.single.id && targets.length > 1) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningOnlyOneTarget"))
+      return false
+    }
+
     const rollMode = roll.options.rollMode ?? game.settings.get("core", "rollMode")
 
     await roll.toMessage(
@@ -2193,6 +2205,81 @@ export default class COActor extends Actor {
         await game.users.activeGM.query("co2.characterHeal", { fromActor: this.uuid, targets: uuidList, healAmount: healAmount })
       }
     }
+  }
+
+  async rollAskSave(
+    item,
+    { actionName = "", ability = undefined, difficulty = undefined, showDifficulty = false, targetType = SYSTEM.RESOLVER_TARGET.none.id, targets = [] } = {},
+  ) {
+    const baseLabel = item?.name ?? ""
+    let flavor = baseLabel
+    if (actionName && actionName !== "") {
+      flavor = baseLabel ? `${baseLabel} - ${actionName}` : actionName
+    }
+    if (!flavor) {
+      flavor = game.i18n.localize("CO.ui.save")
+    }
+
+    const speaker = ChatMessage.getSpeaker({ actor: this, scene: canvas.scene })
+    const targetUuids =
+      targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id
+        ? [this.uuid]
+        : targets.map((obj) => obj.actor?.uuid ?? obj.uuid).filter((uuid) => typeof uuid === "string")
+
+    // Si le type de cible est unique alors que plusieurs cibles sont sélectionnées, on affiche un avertissement et on retourne false
+    if (targetType === SYSTEM.RESOLVER_TARGET.single.id && targets.length > 1) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningOnlyOneTarget"))
+      return false
+    }
+
+    const rollMode = game.settings.get("core", "rollMode")
+
+    /*
+    const contentData = {
+      author: game.user.id,
+      speaker,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      type: "save",
+      system: {
+        ability: ability,
+        difficulty: difficulty,
+        targetType,
+        targets: targetUuids,
+      },
+    }
+
+    const msg = new COChatMessage(contentData)
+    msg.applyRollMode(rollMode)
+
+    // Render the chat message
+    let html = await foundry.applications.handlebars.renderTemplate("systems/co2/templates/chat/save-card.hbs", contentData)
+    msg.content = foundry.utils.parseHTML(html)
+*/
+
+    const contentData = {
+      ability: ability,
+      difficulty: difficulty,
+      showButton: true,
+      flavor: flavor,
+    }
+
+    const messageSystem = {
+      ability: ability,
+      difficulty: difficulty,
+      targetType,
+      targets: targetUuids,
+      showButton: true,
+    }
+
+    new CoChat(this)
+      .withTemplate("systems/co2/templates/chat/save-card.hbs")
+      .withData(contentData)
+      .withMessageType("save")
+      .withSystem(messageSystem)
+      .withOptions({ speaker: speaker, style: CONST.CHAT_MESSAGE_STYLES.OTHER })
+      .create()
+
+    return true
   }
 
   // FIXE ME Supprimer applyHealAndDamage
@@ -2246,7 +2333,7 @@ export default class COActor extends Actor {
     }
     await this.update({ "system.attributes.hp": hp })
     const message = game.i18n.format("CO.notif.damaged", { actorName: this.name, amount: damage })
-    await new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
+    new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
   }
 
   /**
@@ -2281,44 +2368,58 @@ export default class COActor extends Actor {
    * @returns {Object} An object containing the token, actor, actor's UUID, and token's name.
    * @private
    */
-  #getTargetFromToken(token) {
+  _getTargetFromToken(token) {
     return { token, actor: token.actor, uuid: token.actor.uuid, name: token.name }
   }
 
-  // FIXE ME revoir la gestion des erreurs
-  #getTargets(actionName, scope, number, single) {
-    const tokens = game.user.targets
-    let errorAll
+  // ...existing code...
 
-    // Too few targets
+  /**
+   * Récupère et valide les cibles sélectionnées selon les critères spécifiés.
+   *
+   * @param {string} actionName Nom de l'action (pour les messages d'erreur)
+   * @param {string} scope Portée des cibles : "allies", "enemies", ou "all"
+   * @param {number} number Nombre maximum de cibles autorisées
+   * @param {boolean} single Si true, une seule cible est attendue
+   * @returns {Array} Tableau des cibles validées
+   * @private
+   */
+  _getTargets(actionName, scope, number, single) {
+    const tokens = game.user.targets
+    const targets = []
+
+    // Pas de cibles sélectionnées
     if (tokens.size < 1) {
       return []
     }
 
-    // Too many targets
-    if ((single && tokens.size > 1) || (!single && tokens.size > number)) {
-      errorAll = game.i18n.format("CO.notif.warningIncorrectTargets", {
-        number: single ? 1 : number,
+    // Validation du nombre de cibles
+    const expectedNumber = single ? 1 : number
+    if (tokens.size > expectedNumber) {
+      const error = game.i18n.format("CO.notif.warningIncorrectTargets", {
+        number: expectedNumber,
         action: actionName,
       })
+      ui.notifications.warn(error)
+      return []
     }
 
-    // Test each target
-    const targets = []
+    // Filtrage des cibles selon la portée
     for (const token of tokens) {
-      const t = this.#getTargetFromToken(token)
-      if (errorAll) t.error = errorAll
-      if (scope === "allies" && t.token.document.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) targets.push(t)
-      else if (scope === "enemies" && t.token.document.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) targets.push(t)
-      else if (scope === "all") targets.push(t)
-      if (!this.token) continue
-      if (token === this.token) {
-        t.error = game.i18n.localize("CO.notif.warningCannotTargetSelf")
-        continue
+      // Vérification de la disposition selon la portée
+      const disposition = token.document.disposition
+      const isValidTarget =
+        scope === "all" || (scope === "allies" && disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) || (scope === "enemies" && disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE)
+
+      if (isValidTarget) {
+        targets.push(this._getTargetFromToken(token))
       }
     }
+
     return targets
   }
+
+  // ...existing code...
   // #endregion
 
   // #region Gestion des Custom Effects

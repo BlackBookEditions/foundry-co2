@@ -1,7 +1,7 @@
-{{!log "Chroniques Oubliées | hbs | attack-roll-card" this}}
-<div class="co chat-card roll-card attack-card" data-actor-id="{{speaker.actor}}">
+{{!log "Chroniques Oubliées | hbs | damage-card" this}}
+<div class="co chat-card roll-card damage-card" data-actor-id="{{speaker.actor}}">
   <header class="card-header flexcol">
-    <div class="type-card"><label><i class="fa-solid fa-swords"></i>{{localize "CO.label.long.damage"}}</label></div>
+    <div class="type-card"><label><i class="fa-solid fa-droplet" data-tooltip="{{localize "CO.label.long.damage"}}" data-tooltip-direction="LEFT"></i></label></div>
     <div class="action-name"><strong>{{flavor}}</strong></div>   
   </header>
 

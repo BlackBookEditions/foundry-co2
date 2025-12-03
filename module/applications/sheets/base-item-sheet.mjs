@@ -180,7 +180,10 @@ export default class COBaseItemSheet extends HandlebarsApplicationMixin(sheets.I
     context.choiceModifierSubtypes = SYSTEM.MODIFIERS.MODIFIERS_SUBTYPE
     context.choiceModifierTargets = SYSTEM.MODIFIERS.MODIFIERS_TARGET
     context.choiceModifierApplies = SYSTEM.MODIFIERS.MODIFIERS_APPLY
-
+    context.choiceModifierSkillTargetsWithoutAll = Object.fromEntries(
+      Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "ability" && value.id !== "all"),
+    )
+    context.choiceResolverApplyOnSave = Object.fromEntries(Object.entries(SYSTEM.RESOLVER_RESULT).filter(([key, value]) => key === "saveFailure" || key === "saveSuccess"))
     context.choiceModifierAbilityTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "ability"))
     context.choiceModifierCombatTargets = Object.fromEntries(
       Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "combat" || value.subtype === "attack"),

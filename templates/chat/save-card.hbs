@@ -1,0 +1,53 @@
+{{log "Chroniques Oubliées | save card" this}}
+<div class="co chat-card roll-card save-card" data-actor-id="{{actorId}}">
+  <header class="card-header flexcol">
+    <div class="type-card"><label><i class="fa-solid fa-user-shield" data-tooltip="{{localize 'CO.ui.saves'}}"></i></label></div>
+    <div class="action-name">{{flavor}}</div>
+  </header>
+
+  <div class="card-content">
+    <section class="targets"></section>
+    <section class="result">
+      <div class="total-result">
+          <button class="save-roll" data-save-target="{{targetUuid}}" data-save-ability="{{ability}}" data-save-difficulty="{{difficulty}}">{{localize
+              "CO.ui.saves"
+            }}<br>{{getAbilityLabel ability}}
+          </button>
+          <div class="save-total"></div>
+      </div>
+      {{#if isFailure}}
+        {{#if hasLuckyPoints}}
+          <div class="lucky-points">
+            <a class="lp-button-attack">
+              <img class="imgLucky" src="icons/magic/control/buff-luck-fortune-green.webp" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" />
+            </a>
+          </div>
+        {{/if}}
+      {{/if}}
+
+      {{#if (eq difficulty "")}}{{else}}
+        <div class="vs"><label>VS</label></div>
+        <div class="diff-result">
+          <div class="display-difficulty">
+            <label>
+              {{localize "CO.label.long.difficulty"}}
+            </label>
+          </div>
+          <div class="display-difficulty">
+            {{difficulty}}
+          </div>
+        </div>
+      {{/if}}
+    </section>
+  </div>
+
+  <footer class="card-footer">
+    <div class="dice-roll" data-action="expandRoll">
+      <div class="dice-result">
+        <div class="dice-formula">{{localize "CO.ui.formula"}} : <span class="footer-formula"></span></div>
+        <span class="footer-tooltip"></span>
+      </div>
+    </div>
+  </footer>
+</div>
+</div>

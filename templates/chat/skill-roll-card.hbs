@@ -1,4 +1,4 @@
-{{!log "Chroniques Oubliées | hbs | skill-roll-card" this}}
+{{!log "Chroniques Oubliées | hbs | skill-card" this}}
 <div class="co chat-card roll-card skill-card" data-actor-id="{{speaker.actor}}">
   <header class="card-header flexcol">
      <div class="type-card-skill">
@@ -30,11 +30,9 @@
           <div class="vs"><label>VS</label></div>
           <div class="form-group diff-result">
             <div class="display-difficulty"><label>{{localize "CO.label.long.difficulty"}}</label></div>
-
             {{#if oppositeRoll}}
               <button class="opposite-roll" data-opposite-value="{{difficulty}}" data-opposite-target="{{oppositeTarget}}">{{localize "CO.ui.oppositeRoll"}}</button>
             {{else}}
-              <!--<label class="difficultyChat"></label>-->
               <div><strong class="display-difficulty"></strong>{{difficulty}}</div>
             {{/if}}
             </strong>

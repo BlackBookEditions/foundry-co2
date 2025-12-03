@@ -386,7 +386,9 @@
       "manaBurn": "{actorName} brûle {amount} point(s) de vigueur pour accomplir son sort {capacityName}",
       "warningNeedLearnedCapacities": "Vous devez apprendre les capacités des rangs précédents avant d'apprendre celle-ci",
       "consume": "{actorName} a consommé un(e) {itemName}",
-      "attackActionLimit": "Une attaque de créature ne peut avoir qu'une seule action"
+      "attackActionLimit": "Une attaque de créature ne peut avoir qu'une seule action",
+      "warningOnlyOneTarget": "Vous ne pouvez désigner qu'une cible pour l'action !",
+      "warningNoTargetOrTooManyTargets": "Vous n'avez ciblé personne ou trop de cibles pour cette action !"
     },
     "tooltip": {
       "formulaAttack": "Formule d'attaque (sans le dé)",
@@ -590,7 +592,9 @@
       "fullDef": "En défense totale (L)",
       "fullDefDescription": "+5 en DEF et aux tests opposés pour résister à une attaque ou un effet pendant 1 round",
       "fullDefActivate": "Activer la défense totale (L)",
-      "fullDefDeactivate": "Désactiver la défense totale (L)"
+      "fullDefDeactivate": "Désactiver la défense totale (L)",
+      "enslaved": "Asservi",
+      "enslavedDescription": "Vous êtes sous le contrôle d'une autre entité"
     },
     "ui": {
       "none": "--",
@@ -661,7 +665,7 @@
       "modifiers": "Modificateurs",
       "resolvers": "Résolutions",
       "skill": "Compétence",
-      "skillUsed" :  "Compétence(s) utilisée(s)",
+      "skillUsed": "Compétence(s) utilisée(s)",
       "formula": "Formule",
       "oppositeRoll": "Jet opposé",
       "skillformula": "Formule de compétence",
@@ -671,6 +675,8 @@
       "difficulty": "Difficulté",
       "dmg": "Dommages",
       "saves": "Sauvegarde",
+      "saveAbility": "Sauvegarde basé sur :",
+      "saveDifficulty": "Seuil de difficulté :",
       "targets": "Cible(s)",
       "width": "Largeur",
       "range": "Portée",
@@ -771,7 +777,8 @@
       "sortByName": "Tri par nom",
       "sortByRank": "Tri par rang",
       "sortByType": "Tri par type",
-      "sortByActionType": "Trier par temps d'action"
+      "sortByActionType": "Trier par temps d'action",
+      "save": "Sauvegarde"
     },
     "properties": {
       "attack": "Attaque",
@@ -887,8 +894,8 @@
       "putridDescription": "Applique des dommages de type putréfaction",
       "sacred": "Sacré",
       "sacredDescription": "Applique des dommages/soins de type sacré",
-      "heal":"Soins",
-      "damage":"Dommages"
+      "heal": "Soins",
+      "damage": "Dommages"
     },
     "tabs": {
       "main": "Principal",
@@ -958,7 +965,8 @@
         "heal": "Soin",
         "buff": "Amélioration",
         "debuff": "Affaiblissement",
-        "consumable": "Consommable"
+        "consumable": "Consommable",
+        "save": "Sauvegarde"
       },
       "equip": "Équiper",
       "unequip": "Déséquiper",
@@ -1049,7 +1057,8 @@
         "attack": "Attaque",
         "heal": "Soin",
         "buffDebuff": "Buff/Debuff",
-        "consumable": "Consommable"
+        "consumable": "Consommable",
+        "save": "Sauvegarde"
       },
       "target": {
         "none": "Aucune",
@@ -1079,7 +1088,9 @@
         "elementType": "Type d'énergie pour les dommages",
         "formulaType": "Type",
         "statusAvailable": "Inflige le(s) statut(s)",
-        "statuses": "Liste des statuts"
+        "statuses": "Liste des statuts",
+        "onSaveFailure": "Echec de sauvegarde",
+        "onSaveSuccess": "Succès de sauvegarde"
       },
       "formula": {
         "damage": "Dommages",

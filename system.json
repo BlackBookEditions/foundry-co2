@@ -50,7 +50,8 @@
       "action": {},
       "skill": {},
       "item": {},
-      "heal": {}
+      "heal": {},
+      "save": {}
     },
     "Item": {
       "equipment": { "htmlFields": ["description"] },
