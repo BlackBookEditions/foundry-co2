@@ -232,15 +232,15 @@ export default class SaveMessageData extends BaseMessageData {
           return
         }
 
-        // Ok donc je vais demander à l'acteur cible de faire un rollSkill
-        const retour = await targetActor.rollSkill(saveAbility, { difficulty: difficulty, showResult: false })
-        message.system.result = retour.result
-        message.system.linkedRoll = retour.roll
+        // L'acteur cible effectue son jet de compétence et retourne {roll, result}
+        const targetRollSkill = await targetActor.rollSkill(saveAbility, { difficulty: difficulty, showResult: false })
+        message.system.result = targetRollSkill.result
+        message.system.linkedRoll = targetRollSkill.roll
 
-        console.log("result : ", retour.result)
+        console.log("result : ", targetRollSkill.result)
 
         let rolls = this.parent.rolls
-        rolls[0] = retour.roll
+        rolls[0] = targetRollSkill.roll
         rolls[0].options.oppositeRoll = false
 
         // TODO : Doit on prévoir autre chose qu'un effet supplémentaire ? genre des dés de degat bonus appliqué si jet raté ? A voir...
@@ -248,7 +248,7 @@ export default class SaveMessageData extends BaseMessageData {
         // Doit on appliquer l'effet s'il y en a
         const customEffect = message.system.customEffect
         const additionalEffect = message.system.additionalEffect
-        if (customEffect && additionalEffect && additionalEffect.active && Resolver.shouldManageAdditionalEffect(retour.result, additionalEffect)) {
+        if (customEffect && additionalEffect && additionalEffect.active && Resolver.shouldManageAdditionalEffect(targetRollSkill.result, additionalEffect)) {
           console.log("on va appliquer les effets", "customEffect : ", customEffect)
 
           if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
@@ -260,11 +260,11 @@ export default class SaveMessageData extends BaseMessageData {
         // Mise à jour du message de chat
         // Le MJ peut mettre à jour le message de chat
         if (game.user.isGM) {
-          await message.update({ rolls: rolls, "system.showButton": false, "system.result": retour.result })
+          await message.update({ rolls: rolls, "system.showButton": false, "system.result": targetRollSkill.result })
         }
         // Sinon on émet un message pour mettre à jour le message de chat
         else {
-          await game.users.activeGM.query("co2.updateMessageAfterSavedRoll", { existingMessageId: message.id, rolls: rolls, result: retour.result })
+          await game.users.activeGM.query("co2.updateMessageAfterSavedRoll", { existingMessageId: message.id, rolls: rolls, result: targetRollSkill.result })
         }
       })
     }

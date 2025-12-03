@@ -1985,21 +1985,21 @@ export default class COActor extends Actor {
     }
 
     // Gestion des modificateurs de dommages selon le type d'attaque
-    let target
+    let modifierTarget
     switch (actionType) {
       case SYSTEM.ACTION_TYPES.melee.id:
-        target = SYSTEM.MODIFIERS_TARGET.damMelee.id
+        modifierTarget = SYSTEM.MODIFIERS_TARGET.damMelee.id
         break
       case SYSTEM.ACTION_TYPES.ranged.id:
-        target = SYSTEM.MODIFIERS_TARGET.damRanged.id
+        modifierTarget = SYSTEM.MODIFIERS_TARGET.damRanged.id
         break
       case SYSTEM.ACTION_TYPES.spell.id:
-        target = SYSTEM.MODIFIERS_TARGET.damMagic.id
+        modifierTarget = SYSTEM.MODIFIERS_TARGET.damMagic.id
         break
     }
-    if (target) {
-      let withDice = this.system.combatModifiers.some((m) => m.target === target && m.value.match("[dD]\\d"))
-      const damModifiers = this.system.computeTotalModifiersByTarget(this.system.combatModifiers, target, withDice)
+    if (modifierTarget) {
+      let withDice = this.system.combatModifiers.some((m) => m.target === modifierTarget && m.value.match("[dD]\\d"))
+      const damModifiers = this.system.computeTotalModifiersByTarget(this.system.combatModifiers, modifierTarget, withDice)
       if (damModifiers) {
         if (damModifiers.total !== 0) damageFormula = `${damageFormula} + ${damModifiers.total}`
         if (damModifiers.total !== 0) damageFormulaTooltip = damageFormulaTooltip.concat(" +", damModifiers.tooltip)
@@ -2209,8 +2209,38 @@ export default class COActor extends Actor {
 
   async rollAskSave(
     item,
-    { actionName = "", ability = undefined, difficulty = undefined, showDifficulty = false, targetType = SYSTEM.RESOLVER_TARGET.none.id, targets = [] } = {},
+    {
+      actionName = "",
+      ability = undefined,
+      difficulty = undefined,
+      showDifficulty = false,
+      targetType = SYSTEM.RESOLVER_TARGET.none.id,
+      targets = [],
+      customEffect = undefined,
+      additionalEffect = undefined,
+    } = {},
   ) {
+    const options = {
+      actionName,
+      ability,
+      difficulty,
+      showDifficulty,
+      targetType,
+      targets,
+      customEffect,
+      additionalEffect,
+    }
+
+    /**
+     * A hook event that fires before the roll is made.
+     * @function co.preRollAskSave
+     * @memberof hookEvents
+     * @param {Object} item             Item used for the roll.
+     * @param {Object} options          Options for the roll.
+     * @returns {boolean}               Explicitly return `false` to prevent roll to be made.
+     */
+    if (Hooks.call("co.preRollAskSave", item, options) === false) return
+
     const baseLabel = item?.name ?? ""
     let flavor = baseLabel
     if (actionName && actionName !== "") {
@@ -2220,6 +2250,7 @@ export default class COActor extends Actor {
       flavor = game.i18n.localize("CO.ui.save")
     }
 
+    // Prépare le message
     const speaker = ChatMessage.getSpeaker({ actor: this, scene: canvas.scene })
     const targetUuids =
       targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id
@@ -2269,6 +2300,8 @@ export default class COActor extends Actor {
       targetType,
       targets: targetUuids,
       showButton: true,
+      customEffect,
+      additionalEffect,
     }
 
     new CoChat(this)

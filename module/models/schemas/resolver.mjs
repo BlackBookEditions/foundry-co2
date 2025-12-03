@@ -117,7 +117,7 @@ export class Resolver extends foundry.abstract.DataModel {
       customEffect,
       additionalEffect: this.additionalEffect,
     })
-    if (result === null) return false
+    if (!result) return false
 
     // Gestion des effets supplémentaires
     if (this.additionalEffect.active && Resolver.shouldManageAdditionalEffect(result[0], this.additionalEffect)) {
@@ -225,23 +225,32 @@ export class Resolver extends foundry.abstract.DataModel {
     const displayDifficulty = game.settings.get("co2", "displayDifficulty")
     showDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
 
+    // Création de l'éventuel custom effect
+    let customEffect
+    if (this.additionalEffect.active) {
+      customEffect = await this._createCustomEffect(actor, item, action)
+    }
+
+    // TODO : Gestion des cibles ici ?
     const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
     if (targets.length === 0) {
       ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
       return false
     }
-    if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver save - Targets", targets))
 
-    const save = await actor.rollAskSave(item, {
+    const result = await actor.rollAskSave(item, {
       actionName: action.label,
       ability: saveAbility,
       difficulty: difficultyFormulaEvaluated,
       showDifficulty,
       targetType: this.target.type,
       targets: targets,
+      customEffect,
+      additionalEffect: this.additionalEffect,
     })
-    if (!save) return false
+    if (!result) return false
 
+    // TODO : Effet supplémentaire ici ?
     /* Gestion des effets supplémentaires
     if (this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) {
       await this._manageAdditionalEffect(actor, item, action)
