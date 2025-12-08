@@ -2265,28 +2265,6 @@ export default class COActor extends Actor {
 
     const rollMode = game.settings.get("core", "rollMode")
 
-    /*
-    const contentData = {
-      author: game.user.id,
-      speaker,
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
-      type: "save",
-      system: {
-        ability: ability,
-        difficulty: difficulty,
-        targetType,
-        targets: targetUuids,
-      },
-    }
-
-    const msg = new COChatMessage(contentData)
-    msg.applyRollMode(rollMode)
-
-    // Render the chat message
-    let html = await foundry.applications.handlebars.renderTemplate("systems/co2/templates/chat/save-card.hbs", contentData)
-    msg.content = foundry.utils.parseHTML(html)
-*/
-
     const contentData = {
       ability: ability,
       difficulty: difficulty,

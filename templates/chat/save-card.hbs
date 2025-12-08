@@ -15,15 +15,12 @@
           </button>
           <div class="save-total"></div>
       </div>
-      {{#if isFailure}}
-        {{#if hasLuckyPoints}}
-          <div class="lucky-points">
-            <a class="lp-button-attack">
-              <img class="imgLucky" src="icons/magic/control/buff-luck-fortune-green.webp" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" />
-            </a>
-          </div>
-        {{/if}}
-      {{/if}}
+      <div class="lucky-points">
+        <a class="lp-button-save">
+          <img class="imgLucky" src="icons/magic/control/buff-luck-fortune-green.webp" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" />
+        </a>
+      </div>
+
 
       {{#if (eq difficulty "")}}{{else}}
         <div class="vs"><label>VS</label></div>

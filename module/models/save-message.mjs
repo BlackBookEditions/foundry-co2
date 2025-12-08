@@ -99,8 +99,19 @@ export default class SaveMessageData extends BaseMessageData {
       }
     }
 
-    // Affiche ou non le bouton de jet de sauvegarde
-    if (!this.showButton) {
+    // Affiche le bouton de jet de sauvegarde
+    if (this.showButton) {
+      const footer = html.querySelector(".card-footer")
+      if (footer) {
+        footer.remove()
+      }
+      const luckyPointsDiv = html.querySelector(".lucky-points")
+      if (luckyPointsDiv) {
+        luckyPointsDiv.remove()
+      }
+    }
+    // Affiche le résultat du jet de sauvegarde
+    else {
       const button = html.querySelector(".save-roll")
       if (button) {
         button.remove()
@@ -117,10 +128,16 @@ export default class SaveMessageData extends BaseMessageData {
       if (footerTooltip) {
         footerTooltip.innerHTML = this.parent.rolls[0].options.toolTip
       }
-    } else {
-      const footer = html.querySelector(".card-footer")
-      if (footer) {
-        footer.remove()
+
+      // Affichage de la div de gestion des points de chance si c'est un échec, et uniquement dans le cas d'un personnage
+      const targetUuid = this.targets[0]
+      const currentUserActor = game.user.character
+      const currentUserActorUuid = currentUserActor ? currentUserActor.uuid : null
+      if (this.result.isCritical || this.result.isSuccess || currentUserActorUuid !== targetUuid || currentUserActor.type !== "character") {
+        const luckyPointsDiv = html.querySelector(".lucky-points")
+        if (luckyPointsDiv) {
+          luckyPointsDiv.remove()
+        }
       }
     }
   }
@@ -133,9 +150,13 @@ export default class SaveMessageData extends BaseMessageData {
   async addListeners(html) {
     // TODO Vérifier la gestion de la chance
     // Click sur le bouton de chance si c'est un jet d'attaque raté
-    if (this.isFailure) {
-      const luckyButton = html.querySelector(".lp-button-attack")
-      const displayButton = game.user.isGM || this.parent.isAuthor
+    if (this.result.isFailure) {
+      const luckyButton = html.querySelector(".lp-button-save")
+      const targetUuid = this.targets[0]
+      const currentUserActor = game.user.character
+      const currentUserActorUuid = currentUserActor ? currentUserActor.uuid : null
+
+      const displayButton = game.user.isGM || currentUserActorUuid === targetUuid
 
       if (luckyButton && displayButton) {
         luckyButton.addEventListener("click", async (event) => {
@@ -158,15 +179,6 @@ export default class SaveMessageData extends BaseMessageData {
           if (actor.system.resources.fortune.value > 0) {
             actor.system.resources.fortune.value -= 1
             await actor.update({ "system.resources.fortune.value": actor.system.resources.fortune.value })
-          }
-
-          // Si on a un succes et qu'en plus on est en option ou on jette automatiquement les dommages
-          if (newResult.isSuccess && game.settings.get("co2", "useComboRolls")) {
-            const damageRoll = Roll.fromData(message.system.linkedRoll)
-            await damageRoll.toMessage(
-              { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },
-              { rollMode: rolls[0].options.rollMode },
-            )
           }
 
           // Gestion des custom effects
