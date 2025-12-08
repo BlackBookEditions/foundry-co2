@@ -170,6 +170,7 @@
       <div class="form-group duration">
         <label>{{localize "CO.ui.duration"}}</label>
         <div class="form-fields">
+          {{#if (or (eq r.additionalEffect.unit "round") (eq r.additionalEffect.unit "second"))}}
           <input
             class="field-value"
             name="system.actions.{{idx}}.resolvers.{{id}}.additionalEffect.duration"
@@ -179,6 +180,7 @@
             data-dtype="String"
             {{#if @root.locked}}readonly{{/if}}
           />
+          {{/if}}
           <select name="system.actions.{{idx}}.resolvers.{{id}}.additionalEffect.unit" data-type="String" {{#if @root.locked}}class="disabled"{{/if}}>
             {{selectOptions @root.choiceResolverEffectDurationUnit selected=r.additionalEffect.unit localize=true}}
           </select>

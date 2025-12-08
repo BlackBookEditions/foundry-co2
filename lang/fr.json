@@ -838,11 +838,11 @@
         "def": "DEF"
       }
     },
-    "combat_unit": {
+    "combatUnit": {
       "round": "round(s)",
       "second": "seconde(s)",
       "combat": "Combat",
-      "unlimited": "Illimité"
+      "unlimited": "Illimitée"
     },
     "resources": {
       "long": {

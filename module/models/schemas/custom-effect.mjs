@@ -69,7 +69,7 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
       }
       return tip
     } catch (e) {
-      console.warn("CustomEffectData - tooltip", e)
+      console.warn("CustomEffectData - get tooltip", e)
       throw e
     }
   }
