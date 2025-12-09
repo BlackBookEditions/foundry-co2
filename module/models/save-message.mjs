@@ -58,29 +58,6 @@ export default class SaveMessageData extends BaseMessageData {
           name.classList.add("name-stacked")
           listItem.appendChild(name)
 
-          // ----- Bouton appliquer le soin -----
-
-          /*
-          // ----- création de <a> -----
-          const link = document.createElement("a")
-          link.classList.add("btn", "apply-dmg")
-          link.dataset.apply = "heal"
-          link.dataset.total = message.system.total
-
-          // ----- création de <i> -----
-          const icon = document.createElement("i")
-          icon.classList.add("fas", "fa-user-plus")
-          icon.dataset.tooltip = game.i18n.localize("CO.ui.applyHealing")
-          icon.dataset.tooltipDirection = "UP"
-
-          // ----- on insère <i> dans <a> -----
-          link.appendChild(icon)
-
-          // ----- on insère <a> dans le <li> -----
-          listItem.append(" ")
-          listItem.appendChild(link)
-          */
-
           // ----- on insère le <li> dans la <ul> -----
           targetList.appendChild(listItem)
         })

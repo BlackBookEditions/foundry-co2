@@ -53,6 +53,35 @@ export default class ActionMessageData extends BaseMessageData {
    * @returns {Promise<void>} Résout lorsque le HTML a été mis à jour.
    */
   async alterMessageHTML(message, html) {
+    // Affichage des cibles
+    const targetsSection = html.querySelector(".targets")
+    if (!targetsSection) return
+
+    const targetActors = Array.from(message.system.targets)
+    if (targetActors.length > 0) {
+      const targetList = document.createElement("ul")
+      targetList.classList.add("target-list")
+      targetActors.forEach((actorUuid) => {
+        const actor = fromUuidSync(actorUuid)
+        if (!actor) return
+        const listItem = document.createElement("li")
+        // Ajouter l'image de l'acteur avant le nom
+        const img = document.createElement("img")
+        img.src = actor.img
+        img.classList.add("target-actor-img")
+        listItem.appendChild(img)
+        // Ajouter le nom de l'acteur après l'image
+        const name = document.createElement("span")
+        name.textContent = actor.name
+        name.classList.add("name-stacked")
+        listItem.appendChild(name)
+
+        // ----- on insère le <li> dans la <ul> -----
+        targetList.appendChild(listItem)
+      })
+      targetsSection.appendChild(targetList)
+    }
+
     // Affiche ou non les boutons d'application des dommages
     if (!game.settings.get("co2", "displayChatDamageButtonsToAll") && !game.user.isGM) {
       html.querySelectorAll(".apply-dmg").forEach((btn) => {

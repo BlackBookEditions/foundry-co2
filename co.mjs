@@ -77,7 +77,6 @@ Hooks.once("init", async function () {
   CONFIG.Dice.rolls.push(documents.CORoll, documents.COSkillRoll, documents.COAttackRoll, documents.COHealRoll)
 
   // Queries
-  // Pas utilisé finalement CONFIG.queries["co2.characterSpendLuck"] = documents.COActor._handleQuerySpendLuck
   CONFIG.queries["co2.updateMessageAfterLuck"] = documents.COChatMessage._handleQueryUpdateMessageAfterLuck
   CONFIG.queries["co2.updateMessageAfterOpposedRoll"] = documents.COChatMessage._handleQueryUpdateMessageAfterOpposedRoll
   CONFIG.queries["co2.updateMessageAfterSavedRoll"] = documents.COChatMessage._handleQueryUpdateMessageAfterSavedRoll

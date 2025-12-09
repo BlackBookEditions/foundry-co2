@@ -977,6 +977,10 @@ export default class COActor extends Actor {
 
   /**
    * Acquire targets based on the specified target type and scope.
+   * none retourns an empty array
+   * self returns the active tokens of the actor
+   * single returns a single target based on the scope and number
+   * multiple returns multiple targets based on the scope and number
    *
    * @param {string} targetType The type of target to acquire. Can be "none", "self", "single", or "multiple".
    * @param {string} targetScope The scope of the target acquisition : allies, enemies, all.
@@ -1002,11 +1006,6 @@ export default class COActor extends Actor {
       case "multiple":
         targets = this._getTargets(actionName, targetScope, targetNumber, false)
         break
-    }
-
-    // Throw an error if any target had an error
-    for (const target of targets) {
-      if (target.error) ui.notifications.error(target.error)
     }
     return targets
   }
@@ -2114,15 +2113,16 @@ export default class COActor extends Actor {
 
       // Affichage du jet de dommages dans le cas d'un jet combiné, si ce n'est pas un jet opposé et que l'attaque est un succès
       if (game.settings.get("co2", "useComboRolls") && !rolls[0].options.oppositeRoll && results[0].isSuccess) {
-        if (rolls[1])
+        if (rolls[1]) {
           await rolls[1].toMessage(
             { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid }, speaker },
             { rollMode: rolls[1].options.rollMode },
           )
+        }
       }
     }
 
-    // Jet de dégâts
+    // Jet de dommages
     else if (type === "damage") {
       await rolls[0].toMessage(
         { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid }, speaker },
@@ -2292,38 +2292,6 @@ export default class COActor extends Actor {
 
     return true
   }
-
-  // FIXE ME Supprimer applyHealAndDamage
-  /**
-   * Applique les soins sur soi meme
-   * Positif les degats péridiques sont traités comme des dégats et devrait être réduit ou amplifié en fonction de résistance/vulnérabilité (voir plus tard).
-   * Negatif les degats péridiques sont traités comme des soins et ne devrait pas être affecté par des résistance ou vulnérabilité.
-   * @param {integer} healValue heal or damageValue (heal < 0 and damage > 0)
-   
-  async applyHealAndDamage(healValue) {
-    let hp = this.system.attributes.hp
-    if (healValue > 0) {
-      // Si ce sont des degat il faut déduire la Résistance
-      healValue -= this.system.combat.dr.value
-      if (healValue < 0) healValue = 0
-    }
-    hp.value -= healValue
-    if (hp.value > hp.max) hp.value = hp.max
-    if (hp.value < 0) {
-      hp.value = 0
-      if (this.type !== "character") this.toggleStatusEffect("dead", true)
-    }
-    this.update({ "system.attributes.hp": hp })
-
-    let message = ""
-    if (healValue > 0) {
-      message = game.i18n.localize("CO.notif.damaged").replace("{actorName}", this.name).replace("{amount}", healValue.toString())
-    } else {
-      message = game.i18n.localize("CO.notif.healed").replace("{actorName}", this.name).replace("{amount}", Math.abs(healValue).toString())
-    }
-    await new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
-  }
-*/
 
   /**
    * Applique des dégâts à l'acteur, réduisant ses points de vie (PV) en conséquence.
@@ -2584,20 +2552,6 @@ export default class COActor extends Actor {
   // #endregion
 
   // #region Queries handlers
-
-  /**
-   * Handles a query to spend luck points for an actor.
-   * Retrieves the actor by ID and spends the specified number of lucky points.
-   *
-   * @param {string} actorId The ID of the actor to spend luck points for
-   * @param {number} nb The number of luck points to spend
-   * @returns {Promise<void>} A promise that resolves when the luck points have been spent
-   NOT USED
-  static async _handleQuerySpendLuck(actorId, nb) {
-    const actor = game.actors.get(actorId)
-    if (!actor) return
-    await actor.spendLuckyPoints(nb)
-  }*/
 
   /**
    * Handles healing query for multiple targets.

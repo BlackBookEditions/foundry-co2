@@ -84,6 +84,7 @@ export class Resolver extends foundry.abstract.DataModel {
    */
   async attack(actor, item, action, type) {
     if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log(`Resolver attack`), actor, item, action, type)
+
     let skillFormula = this.skill.formula
     skillFormula = Utils.evaluateFormulaCustomValues(actor, skillFormula, item.uuid)
     let skillFormulaEvaluated = Roll.replaceFormulaData(skillFormula, actor.getRollData())
@@ -99,6 +100,21 @@ export class Resolver extends foundry.abstract.DataModel {
     if (this.additionalEffect.active) {
       customEffect = await this._createCustomEffect(actor, item, action)
     }
+
+    // Gestion des cibles
+    let targets = []
+    // Si le type de cible est none et que la formule de la difficulté contient @cible, on considère que c'est une unique cible
+    if (this.target.type === SYSTEM.RESOLVER_TARGET.none.id && this.skill.difficulty.includes("@cible")) {
+      targets = actor.acquireTargets(SYSTEM.RESOLVER_TARGET.single.id, SYSTEM.RESOLVER_SCOPE.all.id, 1, action.actionName)
+    } else {
+      targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
+    }
+    if (targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
+      return false
+    }
+
+    if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver attack - Targets", targets))
 
     const result = await actor.rollAttack(item, {
       auto: false,
@@ -146,11 +162,23 @@ export class Resolver extends foundry.abstract.DataModel {
    */
   async auto(actor, item, action) {
     if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log(`Resolver auto`), actor, item, action)
+
     let damageFormula = this.dmg.formula
     damageFormula = Utils.evaluateFormulaCustomValues(actor, damageFormula, item.uuid)
     let damageFormulaEvaluated = Roll.replaceFormulaData(damageFormula, actor.getRollData())
     const damageFormulaTooltip = this.dmg.formula
+
+    // Si la formule de dommage est vide ou nulle on ne fait pas le roll de dommage
     if (this.dmg.formula && this.dmg.formula !== "" && this.dmg.formula !== "0") {
+      // Gestion des cibles
+      const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
+      if (targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)) {
+        ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
+        return false
+      }
+
+      if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver auto - Targets", targets))
+
       const result = await actor.rollAttack(item, {
         auto: true,
         type: "damage",
@@ -159,8 +187,10 @@ export class Resolver extends foundry.abstract.DataModel {
         damageFormulaTooltip,
         bonusDice: this.bonusDiceAdd === true ? 1 : 0,
         malusDice: this.malusDiceAdd === true ? 1 : 0,
+        targetType: this.target.type,
+        targets: targets,
       })
-      if (result === null) return false
+      if (!result) return false
     }
 
     // Gestion des effets supplémentaires
@@ -184,11 +214,13 @@ export class Resolver extends foundry.abstract.DataModel {
     healFormula = Utils.evaluateFormulaCustomValues(actor, healFormula, item.uuid)
     let healFormulaEvaluated = Roll.replaceFormulaData(healFormula, actor.getRollData())
 
+    // Gestion des cibles
     const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
-    if (targets.length === 0) {
+    if (targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)) {
       ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
       return false
     }
+
     if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver heal - Targets", targets))
 
     const heal = await actor.rollHeal(item, {
