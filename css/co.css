@@ -3367,10 +3367,6 @@ co-toggle-switch[checked] thumb {
   font-weight: bold;
   font-variant: small-caps;
 }
-#interface #sidebar .chat-message .message-content .type-card,
-#interface #ui-right-column-1 .chat-message .message-content .type-card {
-  margin-right: 10px;
-}
 #interface #sidebar .chat-message .message-content .type-card label,
 #interface #ui-right-column-1 .chat-message .message-content .type-card label {
   color: var(--color-abilities);
@@ -3470,6 +3466,11 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-content p {
   border: 2px solid var(--color-encounterSheet);
   background-color: #5d142b3d;
+}
+#interface #sidebar .co.chat-card.roll-card.attack-card .card-content section.options,
+#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-content section.options {
+  display: flex;
+  flex-direction: column;
 }
 #interface #sidebar .co.chat-card.roll-card.attack-card button.opposite-roll,
 #interface #ui-right-column-1 .co.chat-card.roll-card.attack-card button.opposite-roll {
@@ -3645,26 +3646,6 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-header .action-name {
   font-size: 18px;
   font-style: italic;
-}
-#interface #sidebar .co.chat-card.roll-card.save-card .card-content section.targets,
-#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.targets {
-  margin-top: 10px;
-}
-#interface #sidebar .co.chat-card.roll-card.save-card .card-content section.targets .target-list,
-#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.targets .target-list {
-  list-style-type: none;
-  margin-left: 10px;
-}
-#interface #sidebar .co.chat-card.roll-card.save-card .card-content section.targets .target-list li,
-#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.targets .target-list li {
-  display: flex;
-  align-items: center;
-}
-#interface #sidebar .co.chat-card.roll-card.save-card .card-content section.targets .target-list .target-actor-img,
-#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.targets .target-list .target-actor-img {
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
 }
 #interface #sidebar .co.chat-card.roll-card.save-card .card-content section.result,
 #interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.result {
