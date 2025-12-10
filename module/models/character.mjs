@@ -213,6 +213,13 @@ export default class CharacterData extends ActorData {
           await this.parent.unsetFlag("co2", "statuses.unconsciousFromZeroHP")
         }
       }
+
+      // FIXME Ca ne marche pas
+      // Cas des DM temporaires supérieurs au nombre de PV restant
+      // PV mis à 0, et si c'est un PNJ c'est la mort
+      if (this.isTempDmSuperiorToCurrentHp) {
+        if (this.parent.type !== "character") await this.parent.toggleStatusEffect("dead", { active: true })
+      }
     }
   }
 

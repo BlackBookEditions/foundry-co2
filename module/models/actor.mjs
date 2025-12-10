@@ -166,8 +166,6 @@ export default class ActorData extends foundry.abstract.TypeDataModel {
    * @returns {boolean} True if the temporary damage is greater than the current hit points, otherwise false.
    */
   get isTempDmSuperiorToCurrentHp() {
-    const currentHp = this.attributes.hp.value
-    const currentTempDamage = this.attributes.tempDm
-    return currentTempDamage > currentHp
+    return this.attributes.tempDm > this.attributes.hp.value
   }
 }

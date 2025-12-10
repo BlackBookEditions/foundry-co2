@@ -81,7 +81,10 @@ Hooks.once("init", async function () {
   CONFIG.queries["co2.updateMessageAfterOpposedRoll"] = documents.COChatMessage._handleQueryUpdateMessageAfterOpposedRoll
   CONFIG.queries["co2.updateMessageAfterSavedRoll"] = documents.COChatMessage._handleQueryUpdateMessageAfterSavedRoll
   CONFIG.queries["co2.applyCustomEffect"] = models.CustomEffectData._handleQueryApplyCustomEffect
-  CONFIG.queries["co2.characterHeal"] = documents.COActor._handleQueryHeal
+  CONFIG.queries["co2.actorHeal"] = documents.COActor._handleQueryHeal
+  CONFIG.queries["co2.actorHealSingleTarget"] = documents.COActor._handleQueryHealSingleTarget
+  CONFIG.queries["co2.actorDamage"] = documents.COActor._handleQueryDamage
+  CONFIG.queries["co2.actorDamageSingleTarget"] = documents.COActor._handleQueryDamageSingleTarget
 
   helpers.registerHandlebarsHelpers()
   helpers.registerSystemSettings()

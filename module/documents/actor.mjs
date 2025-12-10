@@ -2063,7 +2063,7 @@ export default class COActor extends Actor {
       hasLuckyPoints,
     }
 
-    // Rolls contient le jet d'attaque et éventuellement le jet de dommages
+    // Rolls contient le jet d'attaque et le jet de dommages si le type est "attack"
     let rolls = await COAttackRoll.prompt(dialogContext, { withDialog: withDialog })
     if (!rolls) return null
 
@@ -2111,7 +2111,7 @@ export default class COActor extends Actor {
         { rollMode: rolls[0].options.rollMode },
       )
 
-      // Affichage du jet de dommages dans le cas d'un jet combiné, si ce n'est pas un jet opposé et que l'attaque est un succès
+      // Affichage du jet de dommages dans le cas d'un jet combiné, si ce n'est pas un jet opposé et si l'attaque est un succès
       if (game.settings.get("co2", "useComboRolls") && !rolls[0].options.oppositeRoll && results[0].isSuccess) {
         if (rolls[1]) {
           await rolls[1].toMessage(
@@ -2202,7 +2202,7 @@ export default class COActor extends Actor {
         }
       } else {
         const uuidList = targets.map((obj) => obj.uuid)
-        await game.users.activeGM.query("co2.characterHeal", { fromActor: this.uuid, targets: uuidList, healAmount: healAmount })
+        await game.users.activeGM.query("co2.actorHeal", { fromActor: this.uuid, targets: uuidList, healAmount: healAmount })
       }
     }
   }
@@ -2299,19 +2299,29 @@ export default class COActor extends Actor {
    * Met à jour les PV de l'acteur et envoie un message de notification dans le chat.
    *
    * @async
-   * @param {number} damage La quantité de dégâts à appliquer à l'acteur.
+   * @param {string|null} [source=null] La source des dégâts (optionnel).
+   * @param {number} damage La quantité de domamges à appliquer à l'acteur.
+   * @param {boolean} [isTemporaryDamage=false] Indique si les dégâts sont temporaires.
+   * @param {boolean} [ignoreDR=false] Indique si la résistance aux dégâts (DR) doit être ignorée.
    * @returns {Promise<void>} Résout lorsque la mise à jour des PV et la création du message de chat sont terminées.
    */
-  async applyDamage(damage) {
+  async applyDamage({ source = null, damage, isTemporaryDamage = false, ignoreDR = false } = {}) {
     let hp = this.system.attributes.hp
-    damage = Math.max(0, damage - this.system.combat.dr.value)
+    damage = ignoreDR ? Math.max(0, damage) : Math.max(0, damage - this.system.combat.dr.value)
     if (damage === 0) return
     hp.value = Math.max(0, hp.value - damage)
     if (hp.value === 0) {
       if (this.type !== "character") this.toggleStatusEffect("dead", true)
     }
     await this.update({ "system.attributes.hp": hp })
-    const message = game.i18n.format("CO.notif.damaged", { actorName: this.name, amount: damage })
+    let message
+    if (!source) {
+      if (isTemporaryDamage) message = game.i18n.format("CO.notif.tmpDamaged", { actorName: this.name, amount: damage })
+      else message = game.i18n.format("CO.notif.damaged", { actorName: this.name, amount: damage })
+    } else {
+      if (isTemporaryDamage) message = game.i18n.format("CO.notif.tmpDamagedBy", { actorName: this.name, amount: damage, source: source })
+      else message = game.i18n.format("CO.notif.damagedBy", { actorName: this.name, amount: damage, source: source })
+    }
     new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
   }
 
@@ -2558,8 +2568,8 @@ export default class COActor extends Actor {
    * Validates the targets array and applies healing amount to each target actor.
    *
    * @param {Object} options The options object
-   * @param {string} [options.fromActor] The uuid of the actor initiating the heal
-   * @param {string[]} [options.targets] Array of actor UUIDs to be healed
+   * @param {string} options.fromActor UUID of the source actor dealing the damage
+   * @param {string[]} options.targets Array of UUIDs for target actors receiving damage
    * @param {number} [options.healAmount] The amount of healing to apply
    * @returns {Promise<void>}
    */
@@ -2567,9 +2577,60 @@ export default class COActor extends Actor {
     const sourceActor = fromUuidSync(fromActor)
     const source = sourceActor ? sourceActor.name : null
     for (const target of targets) {
-      const actor = fromUuidSync(target)
-      await actor.applyHeal({ heal: healAmount, source: source })
+      const targetActor = fromUuidSync(target)
+      await targetActor.applyHeal({ heal: healAmount, source: source })
     }
+  }
+
+  static async _handleQueryHealSingleTarget({ fromActor, targetUuid, healAmount } = {}) {
+    const sourceActor = fromUuidSync(fromActor)
+    const source = sourceActor ? sourceActor.name : null
+    const targetActor = fromUuidSync(targetUuid)
+    await targetActor.applyHeal({ heal: healAmount, source: source })
+  }
+
+  /**
+   * Handles damage query by applying damage from a source actor to multiple target actors.
+   *
+   * @private
+   * @static
+   * @async
+   * @param {Object} options - The damage query options
+   * @param {string} options.fromActor UUID of the source actor dealing the damage
+   * @param {string[]} options.targets Array of UUIDs for target actors receiving damage
+   * @param {number} options.damageAmount Amount of damage to apply to each target
+   * @param {boolean} options.isTemporaryDamage Indicates if the damage is temporary
+   * @param {boolean} [options.ignoreDR=false] Indicates if damage resistance should be ignored
+   * @returns {Promise<void>}
+   */
+  static async _handleQueryDamage({ fromActor, targets, damageAmount, isTemporaryDamage, ignoreDR = false } = {}) {
+    const sourceActor = fromUuidSync(fromActor)
+    const source = sourceActor ? sourceActor.name : null
+    for (const target of targets) {
+      const targetActor = fromUuidSync(target)
+      await targetActor.applyDamage({ source, damage: damageAmount, isTemporaryDamage, ignoreDR })
+    }
+  }
+
+  /**
+   * Handles damage query by applying damage from a source actor to multiple target actors.
+   *
+   * @private
+   * @static
+   * @async
+   * @param {Object} options - The damage query options
+   * @param {string} options.fromActor UUID of the source actor dealing the damage
+   * @param {string} options.fromSource Name of the source dealing the damage
+   * @param {string} options.targetUuid UUID of the target actor receiving damage
+   * @param {number} options.damageAmount Amount of damage to apply to each target
+   * @param {boolean} options.isTemporaryDamage Indicates if the damage is temporary
+   * @param {boolean} [options.ignoreDR=false] Indicates if damage resistance should be ignored
+   * @returns {Promise<void>}
+   */
+  static async _handleQueryDamageSingleTarget({ fromActor, fromSource, targetUuid, damageAmount, isTemporaryDamage, ignoreDR = false } = {}) {
+    const source = `${fromSource} (${fromActor})`
+    const targetActor = fromUuidSync(targetUuid)
+    await targetActor.applyDamage({ source, damage: damageAmount, isTemporaryDamage, ignoreDR })
   }
 
   // #endregion

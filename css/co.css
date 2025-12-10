@@ -3211,10 +3211,6 @@ co-toggle-switch[checked] thumb {
   font-weight: bold;
   padding: 1px 0 0px 10px;
 }
-#interface #sidebar .chat-message .message-content .card-content section.targets,
-#interface #ui-right-column-1 .chat-message .message-content .card-content section.targets {
-  margin-top: 10px;
-}
 #interface #sidebar .chat-message .message-content .card-content section.targets .target-list,
 #interface #ui-right-column-1 .chat-message .message-content .card-content section.targets .target-list {
   list-style-type: none;
@@ -3243,6 +3239,7 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .chat-message .message-content .result {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 #interface #sidebar .chat-message .message-content .total-result,
 #interface #ui-right-column-1 .chat-message .message-content .total-result,
@@ -3389,8 +3386,6 @@ co-toggle-switch[checked] thumb {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 5px;
-  margin-top: 35px;
 }
 #interface #sidebar .chat-message .message-content .lucky-points .imgLucky,
 #interface #ui-right-column-1 .chat-message .message-content .lucky-points .imgLucky {

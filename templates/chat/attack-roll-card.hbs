@@ -1,43 +1,41 @@
 {{log "Chroniques Oubliées | hbs | attack-card" this}}
-<div class="co chat-card roll-card attack-card" data-actor-id="{{speaker.actor}}">
+<div class="co chat-card roll-card attack-card" data-actor-id="{{actorId}}">
   <header class="card-header flexcol">
     <div class="type-card"><label><i class="fa-solid fa-swords" data-tooltip="{{localize "CO.label.long.attack"}}" data-tooltip-direction="LEFT"></i></label></div>
     <div class="action-name"><strong>{{flavor}}</strong></div>
-    {{#if hasDice}}
-      <label class="display-dice-type">{{localize "CO.label.long.diceType"}} : <strong class="display-dice-type">{{diceType}}</strong></label>
-    {{/if}}
-    {{#if hasTactical}}
-      <label class="display-tactical">{{localize "CO.label.long.tactical"}} : <strong class="display-tactical">{{tactical}}</strong></label>
-    {{/if}}   
   </header>
 
   <div class="card-content">
+    <section class="options">
+      {{#if hasDice}}
+        <label class="display-dice-type">{{localize "CO.label.long.diceType"}} : <strong class="display-dice-type">{{diceType}}</strong></label>
+      {{/if}}
+      {{#if hasTactical}}
+        <label class="display-tactical">{{localize "CO.label.long.tactical"}} : <strong class="display-tactical">{{tactical}}</strong></label>
+      {{/if}}  
+    </section>
     <section class="targets"></section>
     <section class="result">
       <div class="form-group total-result">
-          <div class="dice-total"><label>{{localize "CO.ui.total"}}</label></div>
-          <div>{{total}}</div>
+          <div data-tooltip="{{localize 'CO.ui.total'}}" data-tooltip-direction="UP">{{total}}</div>
       </div>
-      {{#if isFailure}}
-        {{#if hasLuckyPoints}}
+      {{#if (and isFailure hasLuckyPoints) }}
           <div class="lucky-points">
               <a class="lp-button-attack">
-              <img class="imgLucky" src="icons/magic/control/buff-luck-fortune-green.webp" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" />
+                <img class="imgLucky" src="icons/magic/control/buff-luck-fortune-green.webp" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" />
               </a>
           </div>
-        {{/if}}
       {{/if}}
                   
       {{#if showDifficulty}}
         {{#if (eq difficulty "")}}
         {{else}}
           <div class="vs"><label>VS</label></div>
-          <div class="form-group diff-result">
-            <div class="display-difficulty"><label>{{localize "CO.label.long.difficulty"}}</label></div>        
+          <div class="form-group diff-result">      
             {{#if oppositeRoll}}
               <button class="opposite-roll" data-opposite-value="{{difficulty}}" data-opposite-target="{{oppositeTarget}}">{{localize "CO.ui.oppositeRoll"}}</button>
             {{else}}
-              <div><strong class="display-difficulty"></strong>{{difficulty}}</div>
+              <div data-tooltip="{{localize 'CO.label.long.difficulty'}}" data-tooltip-direction="UP"><strong class="display-difficulty"></strong>{{difficulty}}</div>
             {{/if}}
           </div>
         {{/if}}      
