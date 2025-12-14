@@ -256,7 +256,6 @@ export default class ActionMessageData extends BaseMessageData {
               const tempDamage = html.querySelector("#tempDm").checked
               const drChecked = html.querySelector("#dr").checked
               const rolls = this.parent.rolls
-              const options = rolls[0].options
               Hitpoints.applyToTargets({ fromActor: actorId, source: sourceLabel, type, amount: dmg, drChecked, tempDamage })
             })
           })

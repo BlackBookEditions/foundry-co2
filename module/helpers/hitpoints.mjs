@@ -1,11 +1,10 @@
 export default class Hitpoints {
   static async applyToTargets({ fromActor, source, type, amount, drChecked, tempDamage } = {}) {
-    // On prend les cibles s'il y en a
+    // On prend uniquement les cibles s'il y en a
     let targets = [...game.user.targets].length > 0 ? [...game.user.targets] : []
     if (targets.length === 0) {
       ui.notifications.warn(game.i18n.localize("CO.notif.warningApplyDamageNoTarget"))
     } else {
-      console.log("CO2 | Applying hitpoints change", { fromActor, source, type, amount, drChecked, tempDamage, targets })
       const sourceActor = game.actors.get(fromActor)
       const sourceActorName = sourceActor.name
 
@@ -70,11 +69,29 @@ export default class Hitpoints {
             const amountTempDamage = Math.max(0, finalAmount - targetFor)
             let newTempDamage = Math.max(currentTempDamage - amountTempDamage, 0)
             if (game.user.isGM) await actor.update({ "system.attributes.tempDm": newTempDamage })
+            else
+              await game.users.activeGM.query("co2.actorHealSingleTarget", {
+                fromActor: sourceActorName,
+                fromSource: source,
+                targetUuid: actor.uuid,
+                healAmount: finalAmount,
+                isTemporaryDamage: true,
+                ignoreDR: drChecked,
+              })
           }
           // Dommages normaux
           else {
             let newHp = Math.min(currentHp + finalAmount, currentMaxHp)
             if (game.user.isGM) await actor.update({ "system.attributes.hp.value": newHp })
+            else
+              await game.users.activeGM.query("co2.actorHealSingleTarget", {
+                fromActor: sourceActorName,
+                fromSource: source,
+                targetUuid: actor.uuid,
+                healAmount: finalAmount,
+                isTemporaryDamage: false,
+                ignoreDR: drChecked,
+              })
           }
         }
       }
