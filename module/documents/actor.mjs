@@ -561,19 +561,20 @@ export default class COActor extends Actor {
     const modifiersByTarget = this.system.skillModifiers.filter((m) => m.target === ability)
     // Ajout des modifiers qui affecte toutes les cibles
     modifiersByTarget.push(...this.system.skillModifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.all.id))
-    // Si le modifier est d'origine d'un customEffectData il ne faut pas chercher sa source
+
     let bonuses = []
     for (const modifier of modifiersByTarget) {
-      if (!modifier.parent) {
+      // Si le modifiera pour origine un customEffectData, il ne faut pas chercher sa source
+      if (!modifier.parent || modifier.parent instanceof CustomEffectData) {
         const customeffect = this.system.currentEffects.find((e) => e.source === modifier.source)
         if (customeffect) {
           bonuses.push({
             sourceType: "CustomEffectData",
             name: customeffect.name,
             description: customeffect.name,
-            pathType: "",
+            pathType: game.i18n.localize("CO.label.long.effects"),
             value: modifier.evaluate(this),
-            additionalInfos: "",
+            additionalInfos: modifier.additionalInfos,
           })
         }
       } else {
