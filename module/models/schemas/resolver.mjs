@@ -3,6 +3,7 @@ import Utils from "../../helpers/utils.mjs"
 import COActor from "../../documents/actor.mjs"
 import CustomEffectData from "./custom-effect.mjs"
 import { CORoll } from "../../documents/roll.mjs"
+import CoChat from "../../chat.mjs"
 
 /**
  * Resolver
@@ -373,6 +374,10 @@ export class Resolver extends foundry.abstract.DataModel {
       else {
         await game.users.activeGM.query("co2.applyCustomEffect", { ce: ce, targets: uuidList })
       }
+      // On affiche un message pour signaler
+      const targetNames = targets.map((t) => t.name).join(", ")
+      const message = game.i18n.format("CO.notif.applyEffect", { actorName: actor.name, skillName: item.name, targetNames: targetNames })
+      new CoChat(actor).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
     }
     return true
   }
