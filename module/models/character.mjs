@@ -443,8 +443,11 @@ export default class CharacterData extends ActorData {
       const tooltipBase = Utils.getTooltip("Base", this.attributes.hp.base)
 
       this.attributes.hp.max = this.attributes.hp.base + constitutionBonus + hpMaxBonuses + hpMaxModifiers.total
+
       this.attributes.hp.tooltip = tooltipBase.concat(` ${Utils.getAbilityName("con")} : `, constitutionBonus, hpMaxModifiers.tooltip, Utils.getTooltip("Bonus", hpMaxBonuses))
     }
+
+    if (this.attributes.hp.value > this.attributes.hp.max) this.attributes.hp.value = this.attributes.hp.max // on ne depasse pas le max
   }
 
   _prepareMovement() {
@@ -640,6 +643,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.fp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
+    if (skill.value > skill.max) skill.value = skill.max //on ne depasse pas le max
     skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
@@ -680,6 +684,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.mp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
+    if (skill.value > skill.max) skill.value = skill.max //on ne depasse pas le max
     skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
@@ -711,6 +716,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.rp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
+    if (skill.value > skill.max) skill.value = skill.max //on ne depasse pas le max
     skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 

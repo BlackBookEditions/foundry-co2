@@ -228,6 +228,7 @@ export default class EncounterData extends ActorData {
     const hpMaxBonuses = Object.values(this.attributes.hp.bonuses).reduce((prev, curr) => prev + curr)
     const hpMaxModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "hp")
     this.attributes.hp.max = this.attributes.hp.base + hpMaxBonuses + hpMaxModifiers.total
+    if (this.attributes.hp.max < this.attributes.hp.value) this.attributes.hp.value = this.attributes.hp.max
     this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat(Utils.getTooltip("Bonus", hpMaxBonuses))
   }
 

@@ -1,6 +1,7 @@
 # 1.4.0
 
 ## Améliorations
+
 - Refactoring global de la gestion des messages et de l'affichage dans le chat
 - CustomEffects : amélioration infobulle et changement de la génération du nom des CustomEffects
 - CustomEffects : Durée minimum à 1, cible aucune équivalente à cible unique, correction suppression
@@ -16,6 +17,7 @@
 - Tooltip d'une action : Correction de l'affichage des modificateurs. Affiche la valeur au lieu de la formule
 - Seuls les Effets actifs sont pris en compte lors du transfert
 - Message d'attaque dans le chat : correction de l'affichage des options
+- Correction d'un bug permetttait de mettre une valeur courante de PV, Mana, points de chance, dé de recup supérieur au max sur les personnage et les rencontres (issue [#210](https://github.com/BlackBookEditions/foundry-co2/issues/210))
 
 # 1.3.1
 
