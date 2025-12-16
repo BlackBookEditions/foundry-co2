@@ -1,7 +1,7 @@
 {{log "Chroniques Oubliées | hbs | attack-card" this}}
 <div class="co chat-card roll-card attack-card" data-actor-id="{{actorId}}">
   <header class="card-header flexcol">
-    <div class="type-card"><label><i class="fa-solid fa-swords" data-tooltip="{{localize "CO.label.long.attack"}}" data-tooltip-direction="LEFT"></i></label></div>
+    <div class="type-card"><label><i class="fa-solid fa-swords" data-tooltip="{{localize 'CO.label.long.attack'}}" data-tooltip-direction="LEFT"></i></label></div>
     <div class="action-name"><strong>{{flavor}}</strong></div>
   </header>
 
@@ -12,59 +12,58 @@
       {{/if}}
       {{#if hasTactical}}
         <label class="display-tactical">{{localize "CO.label.long.tactical"}} : <strong class="display-tactical">{{tactical}}</strong></label>
-      {{/if}}  
+      {{/if}}
     </section>
     <section class="targets"></section>
     <section class="result">
       <div class="form-group total-result">
-          <div data-tooltip="{{localize 'CO.ui.total'}}" data-tooltip-direction="UP">{{total}}</div>
+        <div data-tooltip="{{localize 'CO.ui.total'}}" data-tooltip-direction="UP">{{total}}</div>
       </div>
-      {{#if (and isFailure hasLuckyPoints) }}
-          <div class="lucky-points">
-              <a class="lp-button-attack">
-                <img class="imgLucky" src="icons/magic/control/buff-luck-fortune-green.webp" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" />
-              </a>
-          </div>
+      {{#if (and isFailure hasLuckyPoints)}}
+        <div class="lucky-points">
+          <a class="lp-button-attack">
+            <img class="imgLucky" src="icons/magic/control/buff-luck-fortune-green.webp" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" />
+          </a>
+        </div>
       {{/if}}
-                  
+
       {{#if showDifficulty}}
-        {{#if (eq difficulty "")}}
-        {{else}}
+        {{#if (eq difficulty "")}}{{else}}
           <div class="vs"><label>VS</label></div>
-          <div class="form-group diff-result">      
+          <div class="form-group diff-result">
             {{#if oppositeRoll}}
               <button class="opposite-roll" data-opposite-value="{{difficulty}}" data-opposite-target="{{oppositeTarget}}">{{localize "CO.ui.oppositeRoll"}}</button>
             {{else}}
               <div data-tooltip="{{localize 'CO.label.long.difficulty'}}" data-tooltip-direction="UP"><strong class="display-difficulty"></strong>{{difficulty}}</div>
             {{/if}}
           </div>
-        {{/if}}      
+        {{/if}}
       {{/if}}
-    </section>      
+    </section>
     <section class="result-sentence">
       {{#if showDifficulty}}
-          {{#if isSuccess}}
-            {{#if isCritical}}
-              <span class="success critical"><i class="fas fa-check-double"></i>&nbsp;{{localize "CO.roll.critical"}}&nbsp;<i class="fas fa-check-double"></i></span>
-            {{else}}
-              <span class="success"><i class="fas fa-check"></i>&nbsp;{{localize "CO.roll.success"}}&nbsp;<i class="fas fa-check"></i></span>
-            {{/if}}
-          {{/if}}
-          {{#if isFailure}}
-            {{#if isFumble}}
-              <span class="failure fumble"><i class="fas fa-skull-crossbones"></i>&nbsp;{{localize "CO.roll.fumble"}}&nbsp;<i class="fas fa-skull-crossbones"></i></span>
-            {{else}}
-              <span class="failure"><i class="fas fa-times"></i>&nbsp;{{localize "CO.roll.failure"}}&nbsp;<i class="fas fa-times"></i></span>
-            {{/if}}
-          {{/if}}
-      {{else}}
+        {{#if isSuccess}}
           {{#if isCritical}}
-            <span class="standard critical"><i class="fas fa-check-double"></i>&nbsp;{{localize "CO.roll.critical"}}&nbsp;<i class="fas fa-check-double"></i></span>
+            <span class="success critical"><i class="fas fa-check-double"></i>&nbsp;{{localize "CO.roll.critical"}}&nbsp;<i class="fas fa-check-double"></i></span>
+          {{else}}
+            <span class="success"><i class="fas fa-check"></i>&nbsp;{{localize "CO.roll.success"}}&nbsp;<i class="fas fa-check"></i></span>
           {{/if}}
+        {{/if}}
+        {{#if isFailure}}
           {{#if isFumble}}
             <span class="failure fumble"><i class="fas fa-skull-crossbones"></i>&nbsp;{{localize "CO.roll.fumble"}}&nbsp;<i class="fas fa-skull-crossbones"></i></span>
+          {{else}}
+            <span class="failure"><i class="fas fa-times"></i>&nbsp;{{localize "CO.roll.failure"}}&nbsp;<i class="fas fa-times"></i></span>
           {{/if}}
-      {{/if}}      
+        {{/if}}
+      {{else}}
+        {{#if isCritical}}
+          <span class="standard critical"><i class="fas fa-check-double"></i>&nbsp;{{localize "CO.roll.critical"}}&nbsp;<i class="fas fa-check-double"></i></span>
+        {{/if}}
+        {{#if isFumble}}
+          <span class="failure fumble"><i class="fas fa-skull-crossbones"></i>&nbsp;{{localize "CO.roll.fumble"}}&nbsp;<i class="fas fa-skull-crossbones"></i></span>
+        {{/if}}
+      {{/if}}
     </section>
   </div>
 
@@ -74,7 +73,16 @@
         <div class="dice-formula">{{localize "CO.ui.formula"}} : {{formula}}</div>
         {{{tooltip}}}
       </div>
+      {{#if showDifficulty}}
+        {{#if opposeResult}}
+          <div class="dice-result">
+            <div class="dice-formula">{{localize "CO.ui.oppositeFormula"}} : {{opposeResult}}</div>
+            {{{opposeTooltip}}}
+          </div>
+        {{/if}}
+      {{/if}}
     </div>
+
   </footer>
 
 </div>

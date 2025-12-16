@@ -670,6 +670,7 @@
       "skill": "Compétence",
       "skillUsed": "Compétence(s) utilisée(s)",
       "formula": "Formule",
+      "oppositeFormula": "Formule du jet opposé",
       "oppositeRoll": "Jet opposé",
       "skillformula": "Formule de compétence",
       "healformula": "Formule de soin",
