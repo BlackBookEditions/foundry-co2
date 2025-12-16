@@ -1,13 +1,21 @@
 # 1.4.0
 
 ## Améliorations
-
-- Ajout d'une option de durée "illimité" sur le seffets supplémentaire qui peux maintenant s'activer hors combat et devra donc se supprimer manuellement. Permet des effets qui n'ont pas de notions de durée.(issue [#355](https://github.com/BlackBookEditions/foundry-co2/issues/355))
-- Ajout de l'affichage du résultat du jet opposé si on affiche la difficultée.(issue [#329](https://github.com/BlackBookEditions/foundry-co2/issues/329))
+- Refactoring global de la gestion des messages et de l'affichage dans le chat
+- CustomEffects : amélioration infobulle et changement de la génération du nom des CustomEffects
+- CustomEffects : Durée minimum à 1, cible aucune équivalente à cible unique, correction suppression
+- Ajout d'une option de durée "illimité" sur le seffets supplémentaire qui peux maintenant s'activer hors combat et devra donc se supprimer manuellement. Permet des effets qui n'ont pas de notions de durée (issue [#355](https://github.com/BlackBookEditions/foundry-co2/issues/355))
+- Ajout de l'affichage du résultat du jet opposé si on affiche la difficultée (issue [#329](https://github.com/BlackBookEditions/foundry-co2/issues/329))
+- Ajout de la prise en charge d'un effet supplémentaire illimité et utilisable hors des combats
+- Attaque automatique : affichage des cibles
 
 ## Corrections
 
-- Correction d'un bug qui empêchait l'affichage de la fenêtre de jet de compétences en cas où le joueur avait été ciblé par un buff provenant d'un autre joueur et augmentant son jet de compétences [#356](https://github.com/BlackBookEditions/foundry-co2/issues/356))
+- Correction d'un bug qui empêchait l'affichage de la fenêtre de jet de compétences en cas où le joueur avait été ciblé par un buff provenant d'un autre joueur et augmentant son jet de compétences (issue [#356](https://github.com/BlackBookEditions/foundry-co2/issues/356))
+- Correction du drop d'un item depuis une rencontre vers un personnage
+- Tooltip d'une action : Correction de l'affichage des modificateurs. Affiche la valeur au lieu de la formule
+- Seuls les Effets actifs sont pris en compte lors du transfert
+- Message d'attaque dans le chat : correction de l'affichage des options
 
 # 1.3.1
 
