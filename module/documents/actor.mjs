@@ -2029,6 +2029,9 @@ export default class COActor extends Actor {
       }
     }
 
+    let opposeResult = ""
+    let opposeTooltip = ""
+
     const dialogContext = {
       rollMode,
       rollModes: CONFIG.Dice.rollModes,
@@ -2062,6 +2065,8 @@ export default class COActor extends Actor {
       canBeTempDamage,
       tactical,
       hasLuckyPoints,
+      opposeResult: opposeResult,
+      opposeTooltip: opposeTooltip,
     }
 
     // Rolls contient le jet d'attaque et le jet de dommages si le type est "attack"

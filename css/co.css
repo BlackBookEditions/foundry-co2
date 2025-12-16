@@ -3267,8 +3267,6 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .chat-message .message-content .vs .vs {
   flex-basis: 40px;
 }
-#interface #sidebar .chat-message .message-content .display-difficulty,
-#interface #ui-right-column-1 .chat-message .message-content .display-difficulty,
 #interface #sidebar .chat-message .message-content .dice-total,
 #interface #ui-right-column-1 .chat-message .message-content .dice-total {
   margin-bottom: -10px;

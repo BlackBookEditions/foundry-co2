@@ -206,6 +206,8 @@ export default class ActionMessageData extends BaseMessageData {
           let rolls = message.rolls
           rolls[0].options.oppositeRoll = false
           rolls[0].options.difficulty = difficulty
+          rolls[0].options.opposeResult = roll.result
+          rolls[0].options.opposeTooltip = await roll.getTooltip()
 
           let newResult = CORoll.analyseRollResult(rolls[0])
           if (newResult.isSuccess) {

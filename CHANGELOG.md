@@ -3,6 +3,7 @@
 ## Améliorations
 
 - Ajout d'une option de durée "illimité" sur le seffets supplémentaire qui peux maintenant s'activer hors combat et devra donc se supprimer manuellement. Permet des effets qui n'ont pas de notions de durée.(issue [#355](https://github.com/BlackBookEditions/foundry-co2/issues/355))
+- Ajout de l'affichage du résultat du jet opposé si on affiche la difficultée.(issue [#329](https://github.com/BlackBookEditions/foundry-co2/issues/329))
 
 ## Corrections
 

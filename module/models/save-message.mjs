@@ -95,7 +95,9 @@ export default class SaveMessageData extends BaseMessageData {
       }
       const totalDiv = html.querySelector(".save-total")
       if (totalDiv) {
-        totalDiv.innerHTML = `<label>${game.i18n.localize("CO.ui.total")}</label><div>${this.result.total}</div>`
+        totalDiv.innerHTML = `<div>${this.result.total}</div>`
+        totalDiv.setAttribute("data-tooltip", `${game.i18n.localize("CO.ui.total")}`)
+        totalDiv.setAttribute("data-tooltip-direction", "LEFT")
       }
       const footerFormula = html.querySelector(".footer-formula")
       if (footerFormula) {

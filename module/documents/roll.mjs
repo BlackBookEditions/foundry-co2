@@ -448,6 +448,8 @@ export class COAttackRoll extends CORoll {
         tooltip,
         tempDamage: withDialog ? rollContext.tempDamage : dialogContext.tempDamage,
         tactical: withDialog ? rollContext.tactical : dialogContext.tactical,
+        opposeResult: dialogContext.opposeResult,
+        opposeTooltip: dialogContext.opposeTooltip,
         ...options,
       }
 
@@ -571,6 +573,8 @@ export class COAttackRoll extends CORoll {
       tempDamage: this.options.tempDamage,
       hasTactical,
       tactical,
+      opposeResult: this.options.opposeResult,
+      opposeTooltip: this.options.opposeTooltip,
     }
   }
 
