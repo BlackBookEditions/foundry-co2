@@ -1,7 +1,7 @@
 {{log "Chroniques Oubliées | save card" this}}
 <div class="co chat-card roll-card save-card" data-actor-id="{{actorId}}">
   <header class="card-header flexcol">
-    <div class="type-card"><label><i class="fa-solid fa-user-shield" data-tooltip="{{localize 'CO.ui.saves'}}"></i></label></div>
+    <div class="type-card"><label><i class="fa-solid fa-user-shield" data-tooltip="{{localize 'CO.ui.saves'}}" data-tooltip-direction="LEFT"></i></label></div>
     <div class="action-name">{{flavor}}</div>
   </header>
 
@@ -21,16 +21,10 @@
         </a>
       </div>
 
-
       {{#if (eq difficulty "")}}{{else}}
         <div class="vs"><label>VS</label></div>
         <div class="diff-result">
-          <div class="display-difficulty">
-            <label>
-              {{localize "CO.label.long.difficulty"}}
-            </label>
-          </div>
-          <div class="display-difficulty">
+          <div class="display-difficulty" data-tooltip="{{localize 'CO.label.long.difficulty'}}" data-tooltip-direction="UP">
             {{difficulty}}
           </div>
         </div>
