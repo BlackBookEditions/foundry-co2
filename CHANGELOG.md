@@ -10,6 +10,7 @@
 - Ajout de la prise en charge d'un effet supplémentaire illimité et utilisable hors des combats
 - Attaque automatique : affichage des cibles
 - Ajout de l'affichage d'un message indiquant qui a lancé un buff/debuff sur quelles cibles (issue [#363](https://github.com/BlackBookEditions/foundry-co2/issues/363))
+- Ajout de l'affichage de la fenêtre de jet de compétences si une attaque opposée s'oppose à un attribut du personnage (issue [#179](https://github.com/BlackBookEditions/foundry-co2/issues/179))
 
 ## Corrections
 
