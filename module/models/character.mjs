@@ -643,7 +643,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.fp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
-    if (skill.value > skill.max) skill.value = skill.max //on ne depasse pas le max
+    skill.value = Math.min(skill.max, skill.value) //on ne depasse pas le max
     skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
@@ -684,7 +684,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.mp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
-    if (skill.value > skill.max) skill.value = skill.max //on ne depasse pas le max
+    skill.value = Math.min(skill.max, skill.value) //on ne depasse pas le max
     skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
@@ -716,7 +716,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.rp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
-    if (skill.value > skill.max) skill.value = skill.max //on ne depasse pas le max
+    skill.value = Math.min(skill.max, skill.value) //on ne depasse pas le max
     skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
