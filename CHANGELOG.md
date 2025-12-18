@@ -9,6 +9,7 @@
 - Ajout de l'affichage du résultat du jet opposé si on affiche la difficultée (issue [#329](https://github.com/BlackBookEditions/foundry-co2/issues/329))
 - Ajout de la prise en charge d'un effet supplémentaire illimité et utilisable hors des combats
 - Attaque automatique : affichage des cibles
+- Ajout de l'affichage d'un message indiquant qui a lancé un buff/debuff sur quelles cibles (issue [#363](https://github.com/BlackBookEditions/foundry-co2/issues/363))
 
 ## Corrections
 
