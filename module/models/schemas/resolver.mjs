@@ -375,7 +375,7 @@ export class Resolver extends foundry.abstract.DataModel {
         await game.users.activeGM.query("co2.applyCustomEffect", { ce: ce, targets: uuidList })
       }
       // On affiche un message pour signaler
-      const targetNames = targets.map((t) => t.name).join(", ")
+      const targetNames = targets ? targets.map((t) => t.name).join(", ") : ""
       const message = game.i18n.format("CO.notif.applyEffect", { actorName: actor.name, skillName: item.name, targetNames: targetNames })
       new CoChat(actor).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
     }
