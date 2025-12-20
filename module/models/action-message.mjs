@@ -96,7 +96,8 @@ export default class ActionMessageData extends BaseMessageData {
     else {
       // Affiche ou non les boutons d'application des dommages
       // Boutons visibles uniquement par le MJ ou l'auteur du message si l'option est activée
-      if ((!game.settings.get("co2", "displayChatDamageButtonsToAll") || !this.parent.isAuthor) && !game.user.isGM) {
+      // FIXME : ne pas afficher pour tous les joueurs, mais uniquement pour le joueur à l'origine du message
+      if (!game.settings.get("co2", "displayChatDamageButtonsToAll") && !game.user.isGM) {
         html.querySelectorAll(".apply-dmg").forEach((btn) => {
           btn.style.display = "none"
         })
