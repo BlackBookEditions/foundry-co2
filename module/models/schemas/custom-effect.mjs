@@ -77,18 +77,21 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
   get sourceParts() {
     let actor
     let item
-    const { primaryType, primaryId, id } = foundry.utils.parseUuid(this.source)
-    // Acteur du monde
-    if (primaryType === "Actor") {
-      actor = game.actors.get(primaryId)
+
+    if (this.source) {
+      const { primaryType, primaryId, id } = foundry.utils.parseUuid(this.source)
+      // Acteur du monde
+      if (primaryType === "Actor") {
+        actor = game.actors.get(primaryId)
+      }
+      const parts = this.source.split(".")
+      // Acteur d'un token
+      if (primaryType === "Scene") {
+        const tokenId = parts[3]
+        actor = fromUuidSync(`Scene.${primaryId}.Token.${tokenId}`).actor
+      }
+      item = actor.items.get(id)
     }
-    const parts = this.source.split(".")
-    // Acteur d'un token
-    if (primaryType === "Scene") {
-      const tokenId = parts[3]
-      actor = fromUuidSync(`Scene.${primaryId}.Token.${tokenId}`).actor
-    }
-    item = actor.items.get(id)
     return { actor, item }
   }
 
