@@ -438,7 +438,7 @@ export class Resolver extends foundry.abstract.DataModel {
     // et actionName : le nom de l'action qui génère l'effet (libellé de l'action, ou nom de l'item)
 
     const effectName = `${actor.id}.${action.actionName}`
-
+    console.log("Resolver : création d'un customEffet depuis l'item : ", item)
     // Création de l'effet
     ce = new CustomEffectData({
       name: action.actionName,

@@ -77,6 +77,8 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
   get sourceParts() {
     let actor
     let item
+    console.log("CustomEffectData - get sourceParts", this)
+    if (!this.source) return { actor, item }
     const { primaryType, primaryId, id } = foundry.utils.parseUuid(this.source)
     // Acteur du monde
     if (primaryType === "Actor") {
@@ -173,6 +175,7 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
    * @returns {CustomEffectData} A new instance of CustomEffectData populated with the provided custom effect data.
    */
   static createFromCE(ce) {
+    console.log("CustomEffectData - createFromCE", ce)
     let customEffect = new CustomEffectData({
       name: ce.name,
       source: ce.source,
