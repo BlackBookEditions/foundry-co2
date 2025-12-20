@@ -77,8 +77,10 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
   get sourceParts() {
     let actor
     let item
-    console.log("CustomEffectData - get sourceParts", this)
-    if (!this.source) return { actor, item }
+    if (!this.source) {
+      console.warn("La source de l'effet est null ce qui n'est pas normal pour pour l effet : ", this)
+      return { actor, item }
+    }
     const { primaryType, primaryId, id } = foundry.utils.parseUuid(this.source)
     // Acteur du monde
     if (primaryType === "Actor") {
@@ -129,7 +131,6 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
       console.log("CustomEffectData - handle data", data)
       // Création de l'effet
       const ce = CustomEffectData.createFromCE(data.ce)
-      console.log("CustomEffectData - handle ce", ce)
       for (const target of data.targets) {
         const actor = fromUuidSync(target)
         await actor.applyCustomEffect(ce)
