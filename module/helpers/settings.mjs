@@ -57,6 +57,15 @@ export function registerSystemSettings() {
     type: Boolean,
   })
 
+  game.settings.register("co2", "allowPlayersToModifyTargets", {
+    name: "CO.settings.allowPlayersToModifyTargets.name",
+    hint: "CO.settings.allowPlayersToModifyTargets.hint",
+    scope: "world",
+    config: true,
+    default: false,
+    type: Boolean,
+  })
+
   game.settings.register("co2", "checkFreeHandsBeforeEquip", {
     name: "CO.settings.checkFreeHandsBeforeEquip.name",
     hint: "CO.settings.checkFreeHandsBeforeEquip.hint",

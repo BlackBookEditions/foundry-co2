@@ -117,7 +117,7 @@ export class Resolver extends foundry.abstract.DataModel {
 
     if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver attack - Targets", targets))
 
-    const result = await actor.rollAttack(item, {
+    const attack = await actor.rollAttack(item, {
       auto: false,
       type,
       actionName: action.label,
@@ -134,12 +134,13 @@ export class Resolver extends foundry.abstract.DataModel {
       customEffect,
       additionalEffect: this.additionalEffect,
     })
-    if (!result) return false
+    if (!attack) return false
 
     // Gestion des effets supplémentaires
-    if (this.additionalEffect.active && Resolver.shouldManageAdditionalEffect(result[0], this.additionalEffect)) {
+    if (this.additionalEffect.active && Resolver.shouldManageAdditionalEffect(attack[0], this.additionalEffect)) {
       await this._manageAdditionalEffect(actor, item, action)
     }
+
     return true
   }
 
@@ -169,7 +170,7 @@ export class Resolver extends foundry.abstract.DataModel {
     let damageFormulaEvaluated = Roll.replaceFormulaData(damageFormula, actor.getRollData())
     const damageFormulaTooltip = this.dmg.formula
 
-    // Si la formule de dommage est vide ou nulle on ne fait pas le roll de dommage
+    // Gestion des dommages automatiques uniquement si la formule est définie
     if (this.dmg.formula && this.dmg.formula !== "" && this.dmg.formula !== "0") {
       // Gestion des cibles
       const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
@@ -180,7 +181,7 @@ export class Resolver extends foundry.abstract.DataModel {
 
       if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver auto - Targets", targets))
 
-      const result = await actor.rollAttack(item, {
+      const attack = await actor.rollAttack(item, {
         auto: true,
         type: "damage",
         actionName: action.label,
@@ -191,10 +192,10 @@ export class Resolver extends foundry.abstract.DataModel {
         targetType: this.target.type,
         targets: targets,
       })
-      if (!result) return false
+      if (!attack) return false
     }
 
-    // Gestion des effets supplémentaires
+    // Gestion des effets supplémentaires s'il s'applique toujours
     if (this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) {
       await this._manageAdditionalEffect(actor, item, action)
     }
@@ -232,7 +233,7 @@ export class Resolver extends foundry.abstract.DataModel {
     })
     if (!heal) return false
 
-    // Gestion des effets supplémentaires
+    // Gestion des effets supplémentaires s'il s'applique toujours
     if (this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) {
       await this._manageAdditionalEffect(actor, item, action)
     }
@@ -264,14 +265,16 @@ export class Resolver extends foundry.abstract.DataModel {
       customEffect = await this._createCustomEffect(actor, item, action)
     }
 
-    // TODO : Gestion des cibles ici ?
+    // Gestion des cibles
     const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
-    if (targets.length === 0) {
+    if (targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)) {
       ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
       return false
     }
 
-    const result = await actor.rollAskSave(item, {
+    if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver save - Targets", targets))
+
+    const save = await actor.rollAskSave(item, {
       actionName: action.label,
       ability: saveAbility,
       difficulty: difficultyFormulaEvaluated,
@@ -281,7 +284,7 @@ export class Resolver extends foundry.abstract.DataModel {
       customEffect,
       additionalEffect: this.additionalEffect,
     })
-    if (!result) return false
+    if (!save) return false
 
     // TODO : Effet supplémentaire ici ?
     /* Gestion des effets supplémentaires

@@ -1262,8 +1262,12 @@
         "hint": "Permet de lancer les jets d'attaque et de dommages simultanément."
       },
       "displayChatDamageButtonsToAll": {
-        "name": "Afficher les boutons de dommages",
-        "hint": "Affiche les boutons d'application des dommages dans les messages de chat à tout le monde."
+        "name": "Afficher les boutons de dommages et de soins aux joueurs",
+        "hint": "Affiche les boutons d'application des dommages et des soins dans les messages de chat aux joueurs."
+      },
+      "allowPlayersToModifyTargets": {
+        "name": "Autoriser les joueurs à modifier les cibles",
+        "hint": "Permet aux joueurs de soigner ou blesser les cibles, y compris les autres joueurs ou PNJs."
       },
       "checkFreeHandsBeforeEquip": {
         "name": "Vérification des mains libres",

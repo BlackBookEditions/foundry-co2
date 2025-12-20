@@ -33,7 +33,7 @@ export default class Hitpoints {
             const amountTempDamage = Math.max(0, finalAmount - targetFor)
             let newTempDamage = Math.min(currentTempDamage + amountTempDamage, currentMaxHp)
             if (game.user.isGM) await actor.update({ "system.attributes.tempDm": newTempDamage })
-            else
+            else if (game.settings.get("co2", "allowPlayersToModifyTargets"))
               await game.users.activeGM.query("co2.actorDamageSingleTarget", {
                 fromActor: sourceActorName,
                 fromSource: source,
@@ -48,7 +48,7 @@ export default class Hitpoints {
             let newHp = Math.max(0, currentHp - finalAmount)
 
             if (game.user.isGM) await actor.update({ "system.attributes.hp.value": newHp })
-            else
+            else if (game.settings.get("co2", "allowPlayersToModifyTargets"))
               await game.users.activeGM.query("co2.actorDamageSingleTarget", {
                 fromActor: sourceActorName,
                 fromSource: source,
@@ -69,7 +69,7 @@ export default class Hitpoints {
             const amountTempDamage = Math.max(0, finalAmount - targetFor)
             let newTempDamage = Math.max(currentTempDamage - amountTempDamage, 0)
             if (game.user.isGM) await actor.update({ "system.attributes.tempDm": newTempDamage })
-            else
+            else if (game.settings.get("co2", "allowPlayersToModifyTargets"))
               await game.users.activeGM.query("co2.actorHealSingleTarget", {
                 fromActor: sourceActorName,
                 fromSource: source,
@@ -83,7 +83,7 @@ export default class Hitpoints {
           else {
             let newHp = Math.min(currentHp + finalAmount, currentMaxHp)
             if (game.user.isGM) await actor.update({ "system.attributes.hp.value": newHp })
-            else
+            else if (game.settings.get("co2", "allowPlayersToModifyTargets"))
               await game.users.activeGM.query("co2.actorHealSingleTarget", {
                 fromActor: sourceActorName,
                 fromSource: source,

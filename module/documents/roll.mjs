@@ -398,9 +398,18 @@ export class COAttackRoll extends CORoll {
                   newMalus = `${dialogContext.skillMalus - 7}`
                   break
               }
-              dialog.element.querySelector('input[name="skillBonus"]').value = newBonus
-              dialog.element.querySelector('input[name="formulaDamage"]').value = newDamage
-              dialog.element.querySelector('input[name="skillMalus"]').value = newMalus
+              const skillBonusElement = dialog.element.querySelector('input[name="skillBonus"]')
+              if (skillBonusElement) {
+                skillBonusElement.value = newBonus
+              }
+              const skillMalusElement = dialog.element.querySelector('input[name="skillMalus"]')
+              if (skillMalusElement) {
+                skillMalusElement.value = newMalus
+              }
+              const formulaDamageElement = dialog.element.querySelector('input[name="formulaDamage"]')
+              if (formulaDamageElement) {
+                formulaDamageElement.value = newDamage
+              }
             })
           })
           // Dommages temporaires
@@ -455,12 +464,13 @@ export class COAttackRoll extends CORoll {
 
       rolls.push(roll)
 
+      // Si l'option Jet combiné est activée, on lance le jet de dommages immédiatement
       // Jet de dommages enregistré si la formule de dommages n'est pas vide ou égale à 0
       const damageFormula = withDialog
         ? Utils.evaluateFormulaCustomValues(dialogContext.actor, `${rollContext.formulaDamage}+${rollContext.damageBonus}+${rollContext.damageMalus}`)
         : Utils.evaluateFormulaCustomValues(dialogContext.actor, `${dialogContext.formulaDamage}+${dialogContext.damageBonus}+${dialogContext.damageMalus}`)
 
-      if (damageFormula !== "0" && damageFormula !== "") {
+      if (Roll.validate(damageFormula)) {
         const damageRoll = new this(damageFormula, dialogContext.actor.getRollData())
         await damageRoll.evaluate()
         const damageRollTooltip = await damageRoll.getTooltip()

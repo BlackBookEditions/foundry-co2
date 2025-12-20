@@ -978,10 +978,11 @@ export default class COActor extends Actor {
 
   /**
    * Acquire targets based on the specified target type and scope.
-   * none retourns an empty array
-   * self returns the active tokens of the actor
-   * single returns a single target based on the scope and number
-   * multiple returns multiple targets based on the scope and number
+   *
+   * - none: returns an empty array
+   * - self: returns the active tokens of the actor
+   * - single: returns a single target based on the scope and number
+   * - multiple: returns multiple targets based on the scope and number
    *
    * @param {string} targetType The type of target to acquire. Can be "none", "self", "single", or "multiple".
    * @param {string} targetScope The scope of the target acquisition : allies, enemies, all.
@@ -993,16 +994,16 @@ export default class COActor extends Actor {
    */
   acquireTargets(targetType, targetScope, targetNumber, actionName, options = {}) {
     if (!canvas.ready) return []
-    let targets
+    let targets = []
 
     switch (targetType) {
       case "none":
-        return []
+        break
       case "self":
-        targets = this.getActiveTokens(true).map(this._getTargetFromToken)
+        targets = this._getTargets(actionName, targetScope, 1, true)
         break
       case "single":
-        targets = this._getTargets(actionName, targetScope, targetNumber, true)
+        targets = this._getTargets(actionName, targetScope, 1, true)
         break
       case "multiple":
         targets = this._getTargets(actionName, targetScope, targetNumber, false)
@@ -2118,12 +2119,18 @@ export default class COActor extends Actor {
       )
 
       // Affichage du jet de dommages dans le cas d'un jet combiné, si ce n'est pas un jet opposé et si l'attaque est un succès
-      if (game.settings.get("co2", "useComboRolls") && !rolls[0].options.oppositeRoll && results[0].isSuccess) {
-        if (rolls[1]) {
-          await rolls[1].toMessage(
-            { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid }, speaker },
-            { rollMode: rolls[1].options.rollMode },
-          )
+      if (game.settings.get("co2", "useComboRolls")) {
+        // Option de la difficulté activée
+        if (
+          game.settings.get("co2", "displayDifficulty") === "none" ||
+          (game.settings.get("co2", "displayDifficulty") !== "none" && !rolls[0].options.oppositeRoll && results[0].isSuccess)
+        ) {
+          if (rolls[1]) {
+            await rolls[1].toMessage(
+              { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid }, speaker },
+              { rollMode: rolls[1].options.rollMode },
+            )
+          }
         }
       }
     }
@@ -2154,6 +2161,9 @@ export default class COActor extends Actor {
    * @param {Array<COActor>} options.targets : une liste d'acteurs ciblés
    */
   async rollHeal(item, { actionName = "", healFormula = undefined, targetType = SYSTEM.RESOLVER_TARGET.none.id, targets = [] } = {}) {
+    // A hook event that fires before the roll is made.
+    if (Hooks.call("co.preRollHeal", item, options) === false) return
+
     const roll = new COHealRoll(healFormula)
     await roll.evaluate()
     const healAmount = roll.total
@@ -2167,7 +2177,11 @@ export default class COActor extends Actor {
       flavor = game.i18n.localize("CO.ui.heal")
     }
 
+    // Prépare le message
     const speaker = ChatMessage.getSpeaker({ actor: this, scene: canvas.scene })
+
+    // Si le type de cible est none ou self, on ajoute l'uuid de l'acteur soigneur
+    // Sinon on ajoute les uuid des cibles
     const targetUuids =
       targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id
         ? [this.uuid]
@@ -2199,16 +2213,23 @@ export default class COActor extends Actor {
       { rollMode },
     )
 
+    // Si le soin est pour soi-même ou sans cible, on applique directement le soin
     if (targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id) {
       this.applyHeal({ heal: healAmount, source: source })
-    } else if (targetType === SYSTEM.RESOLVER_TARGET.single.id || targetType === SYSTEM.RESOLVER_TARGET.multiple.id) {
+    }
+    // Si le soin est pour une cible et que celle-ci est l'acteur joueur, on applique le soin
+    else if (targetType === SYSTEM.RESOLVER_TARGET.single.id && targets.length === 1 && targets[0] === this.uuid) {
+      this.applyHeal({ heal: healAmount, source: source })
+    }
+    // Sinon on applique si c'est le MJ, sinon on demande au MJ de l'appliquer
+    else if (targetType === SYSTEM.RESOLVER_TARGET.single.id || targetType === SYSTEM.RESOLVER_TARGET.multiple.id) {
       if (game.user.isGM) {
         for (const target of targets) {
           target.actor.applyHeal({ heal: healAmount, source: flavor })
         }
       } else {
-        const uuidList = targets.map((obj) => obj.uuid)
-        await game.users.activeGM.query("co2.actorHeal", { fromActor: this.uuid, targets: uuidList, healAmount: healAmount })
+        if (game.settings.get("co2", "allowPlayersToModifyTargets"))
+          await game.users.activeGM.query("co2.actorHeal", { fromActor: this.uuid, targets: targetUuids, healAmount: healAmount })
       }
     }
   }
@@ -2258,6 +2279,9 @@ export default class COActor extends Actor {
 
     // Prépare le message
     const speaker = ChatMessage.getSpeaker({ actor: this, scene: canvas.scene })
+
+    // Si le type de cible est none ou self, on ajoute l'uuid de l'acteur lanceur
+    // Sinon on ajoute les uuid des cibles
     const targetUuids =
       targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id
         ? [this.uuid]
@@ -2339,7 +2363,11 @@ export default class COActor extends Actor {
       if (isTemporaryDamage) message = game.i18n.format("CO.notif.tmpDamagedBy", { actorName: this.name, amount: damage, source: source })
       else message = game.i18n.format("CO.notif.damagedBy", { actorName: this.name, amount: damage, source: source })
     }
-    new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
+    new CoChat(this)
+      .withTemplate(SYSTEM.TEMPLATE.MESSAGE)
+      .withData({ message: message })
+      .withWhisper(ChatMessage.getWhisperRecipients("GM").map((u) => u.id))
+      .create()
   }
 
   /**
@@ -2372,7 +2400,11 @@ export default class COActor extends Actor {
     let message
     if (!source) message = game.i18n.format("CO.notif.healed", { actorName: this.name, amount: heal })
     else message = game.i18n.format("CO.notif.healedBy", { actorName: this.name, amount: heal, source: source })
-    new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
+    new CoChat(this)
+      .withTemplate(SYSTEM.TEMPLATE.MESSAGE)
+      .withData({ message: message })
+      .withWhisper(ChatMessage.getWhisperRecipients("GM").map((u) => u.id))
+      .create()
   }
   // #endregion
 

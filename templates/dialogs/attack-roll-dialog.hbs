@@ -1,6 +1,6 @@
 {{log "Chroniques Oubliées | dialog attack-roll" this}}
-{{#if (eq type 'attack')}}
-    <section class="attack-roll-1">
+<section class="attack-roll-1">
+    {{#if (eq type 'attack')}}
         <div class="icone"><i class="fa-solid fa-dice"></i></div>
         <div class="form-group">
             <div class="form-fields-radio">
@@ -29,77 +29,79 @@
                 {{/if}}
             </div>
         </div>        
-        <div class="icone"><i class="fa-solid fa-user-secret"></i></div>  
-        <div class="form-group rollMode">
-            <label class="near" for="rollMode">{{localize 'CHAT.RollDefault'}}</label>
-            <div class="form-fields">
-                <select name="rollMode" id="rollMode">
-                    {{selectOptions rollModes selected=rollMode localize=true}}            
-                </select>
-            </div>
+    {{/if}}
+    <div class="icone"><i class="fa-solid fa-user-secret"></i></div>  
+    <div class="form-group rollMode">
+        <label for="rollMode">{{localize 'CHAT.RollDefault'}}</label>
+        <div class="form-fields">
+            <select name="rollMode" id="rollMode">
+                {{selectOptions rollModes selected=rollMode localize=true}}            
+            </select>
         </div>
-    </section>
+    </div>
+</section>
 
+{{#if (eq type 'attack')}}
     <fieldset class="attack-roll-2">      
-        <!--<legend>{{localize "CO.resolver.types.attack"}}</legend>-->
-        <div class="icone"><i class="fa-solid fa-dice-d20"></i></div>
+    <div class="icone"><i class="fa-solid fa-dice-d20"></i></div>
+    <div class="form-group">
+        <label data-tooltip="{{localize 'CO.tooltip.formulaAttack'}}">Jet d'Attaque</label>            
+        <div class="form-fields flex1">                    
+            <input class="field-value" id="formulaAttack" name="formulaAttack" type="text" value="{{formulaAttack}}" data-dtype="String" data-tooltip="{{formulaAttackTooltip}}" {{#if auto}}readonly{{/if}} />
+        </div>  
+    </div>    
+    <div class="form-group">
+        <label class="textCenter">{{localize 'CO.label.long.bonus'}}</label>              
+        <div class="form-fields" data-tooltip="Saisir un nombre positif">
+            {{ numberInput skillBonus min=0 step=1 name="skillBonus" class="field-value textCenter"}}
+        </div>
+    </div>
+    <div class="form-group">           
+        <label class="textCenter">{{localize 'CO.label.long.malus'}}</label>                
+        <div class="form-fields" data-tooltip="Saisir un nombre négatif">                    
+            {{ numberInput skillMalus max=0 step=1 name="skillMalus" class="field-value textCenter"}}
+        </div>
+    </div> 
+    <div class="form-group">         
+        <label class="textCenter">{{localize 'CO.label.long.critrange'}}</label> 
+        <div class="form-fields" data-tooltip="{{criticalTooltip}}">                    
+            <input class="field-value textCenter" id="critical" name="critical" type="text" value="{{critical}}" data-dtype="String" {{#if auto}}readonly{{/if}}/>
+        </div>           
+    </div>         
+    </fieldset>
+{{/if}}
+        
+{{#if (or useComboRolls (eq type 'damage'))}}
+    <fieldset class="dommageDialog">      
+        <div class="icone"><i class="fa-solid fa-droplet"></i></div>       
         <div class="form-group">
-            <label data-tooltip="{{localize 'CO.tooltip.formulaAttack'}}">Jet d'Attaque</label>            
-            <div class="form-fields flex1">                    
-                <input class="field-value" id="formulaAttack" name="formulaAttack" type="text" value="{{formulaAttack}}" data-dtype="String" data-tooltip="{{formulaAttackTooltip}}" {{#if auto}}readonly{{/if}} />
-            </div>  
-        </div>    
-        <div class="form-group">
-            <label class="textCenter">{{localize 'CO.label.long.bonus'}}</label>              
-            <div class="form-fields" data-tooltip="Saisir un nombre positif">
-                {{ numberInput skillBonus min=0 step=1 name="skillBonus" class="field-value textCenter"}}
+            <label data-tooltip="{{localize 'CO.tooltip.formulaDamage'}}">Jet de Dommages</label>          
+            <div class="form-fields">
+                <input class="field-value" id="formulaDamage" name="formulaDamage" type="text" value="{{formulaDamage}}" data-dtype="String" data-tooltip="{{formulaDamageTooltip}}"/>                    
             </div>
         </div>
-        <div class="form-group">           
-            <label class="textCenter">{{localize 'CO.label.long.malus'}}</label>                
-            <div class="form-fields" data-tooltip="Saisir un nombre négatif">                    
-                {{ numberInput skillMalus max=0 step=1 name="skillMalus" class="field-value textCenter"}}
+        <div class="form-group">
+            <label class="textCenter">{{localize 'CO.label.long.bonus'}}</label>
+            <div class="form-fields flex1" data-tooltip="Saisir un nombre positif">
+                {{ numberInput damageBonus min=0 step=1 name="damageBonus" class="field-value textCenter"}}
             </div>
-        </div> 
-        <div class="form-group">         
-            <label class="textCenter">{{localize 'CO.label.long.critrange'}}</label> 
-            <div class="form-fields" data-tooltip="{{criticalTooltip}}">                    
-                <input class="field-value textCenter" id="critical" name="critical" type="text" value="{{critical}}" data-dtype="String" {{#if auto}}readonly{{/if}}/>
-            </div>           
-        </div>         
-    </fieldset>
-            
-    {{#if useComboRolls}}   
-        <fieldset class="dommageDialog">      
-            <!--<legend>{{ localize "CO.resolver.formula.damage"}}</legend>-->
-            <div class="icone"><i class="fa-solid fa-droplet"></i></div>       
-            <div class="form-group">
-                <label data-tooltip="{{localize 'CO.tooltip.formulaDamage'}}">Jet de Dommages</label>          
-                <div class="form-fields">
-                    <input class="field-value" id="formulaDamage" name="formulaDamage" type="text" value="{{formulaDamage}}" data-dtype="String" data-tooltip="{{formulaDamageTooltip}}"/>                    
-                </div>
+        </div>
+        <div class="form-group">
+            <label class="textCenter">{{localize 'CO.label.long.malus'}}</label>
+            <div class="form-fields" data-tooltip="Saisir un nombre négatif">
+                {{ numberInput damageMalus max=0 step=1 name="damageMalus" class="field-value textCenter"}}
             </div>
-            <div class="form-group">
-                <label class="textCenter">{{localize 'CO.label.long.bonus'}}</label>
-                <div class="form-fields flex1" data-tooltip="Saisir un nombre positif">
-                    {{ numberInput damageBonus min=0 step=1 name="damageBonus" class="field-value textCenter"}}
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="textCenter">{{localize 'CO.label.long.malus'}}</label>
-                <div class="form-fields" data-tooltip="Saisir un nombre négatif">
-                    {{ numberInput damageMalus max=0 step=1 name="damageMalus" class="field-value textCenter"}}
-                </div>
-            </div>
-            <div class="form-group">  
-                <label class="textCenter">{{localize 'CO.ui.tempDamage'}}</label>
-                <div class="form-fields">
-                    <input class="temp-checkbox" type="checkbox" name="tempDamage" {{checked tempDamage}} data-canBeTempDamage="{{canBeTempDamage}}" />
-                </div>  
-            </div>
-        </fieldset>           
-        
-    <section class="tacticalTargets">   
+        </div>
+        <div class="form-group">  
+            <label class="textCenter">{{localize 'CO.ui.tempDamage'}}</label>
+            <div class="form-fields">
+                <input class="temp-checkbox" type="checkbox" name="tempDamage" {{checked tempDamage}} data-canBeTempDamage="{{canBeTempDamage}}" />
+            </div>  
+        </div>
+    </fieldset>           
+{{/if}}     
+
+<section class="tacticalTargets">       
     <fieldset class="tacticalOptions">      
         <legend>{{localize "CO.ui.optionsTactiques"}}</legend>
         <div class="icone"><i class="fa-solid fa-sliders-up"></i></div>
@@ -124,7 +126,6 @@
             </div>
         </div>
     </fieldset>
-    {{/if}} 
     <fieldset class="targetsBox">
         <legend>{{localize "CO.ui.attackTarget"}}</legend>
         <div class="targets center">
@@ -134,49 +135,5 @@
             </div> 
             {{/each}}
         </div>
-    </section>
-        
-{{else}}
-    <section class="rollDommages">
-        <div></div>
-        <div class="icone"><i class="fa-solid fa-user-secret"></i></div>
-        <div class="form-group rollMode">
-            <label for="rollMode">{{localize 'CHAT.RollDefault'}}</label>
-            <div class="form-fields">
-                <select name="rollMode" id="rollMode">
-                    {{selectOptions rollModes selected=rollMode localize=true}}            
-                </select>
-            </div>
-        </div>
-        <div></div>
-    </section>
-    
-    <fieldset class="dommageDialog">          
-        <!--<legend>{{ localize "CO.resolver.formula.damage"}}</legend>-->
-        <div class="icone"><i class="fa-solid fa-droplet"></i></div>       
-        <div class="form-group">
-            <label data-tooltip="{{localize 'CO.tooltip.formulaDamage'}}">Jet de Dommages</label>          
-            <div class="form-fields flex1">
-                <input class="field-value" id="formulaDamage" name="formulaDamage" type="text" value="{{formulaDamage}}" data-dtype="String" data-tooltip="{{formulaDamageTooltip}}"/>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="textCenter">{{localize 'CO.label.long.bonus'}}</label>
-            <div class="form-fields flex1" data-tooltip="Saisir un nombre positif">
-                {{ numberInput damageBonus min=0 step=1 name="damageBonus" class="field-value textCenter"}}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="textCenter">{{localize 'CO.label.long.malus'}}</label>
-            <div class="form-fields flex1" data-tooltip="Saisir un nombre négatif">
-                {{ numberInput damageMalus max=0 step=1 name="damageMalus" class="field-value textCenter"}}
-            </div>
-        </div>
-        <div class="form-group">  
-            <label class="textCenter">{{localize 'CO.ui.tempDamage'}}</label>
-            <div class="form-fields">
-                <input class="temp-checkbox textCenter" type="checkbox" name="tempDamage" {{checked tempDamage}} data-canBeTempDamage="{{canBeTempDamage}}" />
-            </div>  
-        </div>
-    </fieldset>    
-{{/if}}
+    </fieldset>
+</section>

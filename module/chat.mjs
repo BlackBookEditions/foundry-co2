@@ -123,8 +123,6 @@ export default class CoChat {
       return null
     }
 
-    // let speaker = ChatMessage.getSpeaker({ actor: this.actor.id })
-
     const dataMessage = {
       user: game.user.id,
       content: this.content,
