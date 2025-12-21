@@ -4,6 +4,13 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+    border-top: 1px solid var(--color-chatAttack);
+    color: var(--color-chatAttack);
+    label {
+      color: var(--color-chatAttack);
+      text-shadow: 0 0px 2px var(--color-chatShadow);
+    }
+
     .action-name {
       font-size: 18px;
       font-style: italic;
@@ -11,24 +18,32 @@
     }
   }
   .card-content {
-    p {
+    /*p {
       border: 2px solid var(--color-encounterSheet);
       background-color: #5d142b3d;
-    }
+    }*/
     section.options {
-        display: flex;
-        flex-direction: column;        
+      display: flex;
+      flex-direction: row;
+      border-bottom: 1px dashed var(--color-chatAttack);
+      margin-top: -3px;
+    }
+    .bloc-result {
+      display: grid;
+      grid-template-columns: 1fr 0.7fr;
+      align-items: center;
     }
   }
   button.opposite-roll {
     height: 40px;
     font-size: 18px;
-    color: #910000;
+    color: var(--color-chatAttack);
     background: #5d142b3d;
-    border: 2px solid var(--color-encounterSheet);
-    border-radius: 15px;
-    box-shadow: 1px 1px 0px 1px var(--color-encounterSheet);
+    border: 2px solid var(--color-chatAttack);
+    border-radius: 5px;
+    box-shadow: 1px 1px 0px 1px var(--color-chatAttack);
     padding: 0px 5px;
+    margin: 0;
   }
   .damage-part {
     margin: 18px 0px 0px 15px;
