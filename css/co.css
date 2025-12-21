@@ -3346,11 +3346,15 @@ co-toggle-switch[checked] thumb {
 .theme-light #interface #ui-right-column-1 .chat-message .message-content .type-card-skill label {
   color: #084f7b;
 }
-#interface #sidebar .chat-message .message-content .action-name strong,
-#interface #ui-right-column-1 .chat-message .message-content .action-name strong {
-  font-size: var(--font-size-20);
+#interface #sidebar .chat-message .message-content .action-name,
+#interface #ui-right-column-1 .chat-message .message-content .action-name {
+  font-size: 1.2rem;
   font-style: italic;
+  font-weight: bold;
   margin-left: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #interface #sidebar .chat-message .message-content .lucky-points,
 #interface #ui-right-column-1 .chat-message .message-content .lucky-points {
@@ -3416,11 +3420,6 @@ co-toggle-switch[checked] thumb {
   align-items: center;
   border-top: 1px solid var(--color-chatAttack);
   color: var(--color-chatAttack);
-  /*.action-name {
-      font-size: 18px;
-      font-style: italic;
-      margin-left: 5px;
-    }*/
 }
 #interface #sidebar .co.chat-card.roll-card.attack-card .card-header label,
 #interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-header label {
@@ -3439,7 +3438,7 @@ co-toggle-switch[checked] thumb {
   display: flex;
   flex-direction: row;
   border-bottom: 1px dashed var(--color-chatAttack);
-  margin-top: -3px;
+  margin-bottom: 2px;
 }
 #interface #sidebar .co.chat-card.roll-card.attack-card .card-content .bloc-result,
 #interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-content .bloc-result {

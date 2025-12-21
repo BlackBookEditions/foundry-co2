@@ -2,7 +2,7 @@
 <div class="co chat-card roll-card damage-card" data-actor-id="{{actorId}}">
   <header class="card-header flexcol">
     <div class="type-card"><label><i class="fa-solid fa-raindrops" data-tooltip="{{localize 'CO.label.long.damage'}}" data-tooltip-direction="LEFT"></i></label></div>
-    <div class="action-name"><strong>{{flavor}}</strong></div>
+    <div class="action-name" data-tooltip="{{flavor}}" data-tooltip-direction="LEFT">{{flavor}}</div>
   </header>
 
   <div class="card-content">
@@ -14,11 +14,11 @@
       <div class="damage-part">
         <div class="damage-buttons">
           <div class="temp-dm">
-            <label for="tempDm" class="temp-dm-checkbox">Temp.</label>
+            <label for="tempDm" class="temp-dm-checkbox" data-tooltip="{{localize 'CO.ui.tempText'}}" data-tooltip-direction="UP">{{localize 'CO.ui.temp'}}</label>
             <input type="checkbox" id="tempDm" name="tempDm" class="temp-dm-checkbox" {{checked tempDamage}} />
           </div>
           <div class="dr">
-            <label for="dr" class="dr-checkbox">{{localize "CO.ui.dr"}}</label>
+            <label for="dr" class="dr-checkbox" data-tooltip="{{localize 'CO.ui.drText'}}" data-tooltip-direction="UP">{{localize "CO.ui.dr"}}</label>
             <input type="checkbox" id="dr" name="dr" class="dr-checkbox" checked />
           </div>
           <div>
