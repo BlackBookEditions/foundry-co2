@@ -3131,7 +3131,7 @@ co-toggle-switch[checked] thumb {
   --color-chatAttack: #db5305;
   --color-chatDamages: #cb0909;
   --color-chatHeal: #3fa13f;
-  --color-chatRest: #222;
+  --color-chatRest: #93a13f;
   --color-chatSave: #222;
   --color-chatItem: #222;
   --color-chatShadow: #7ce6ef;
@@ -3151,7 +3151,7 @@ co-toggle-switch[checked] thumb {
   --color-chatAttack: #702900;
   --color-chatDamages: darkred;
   --color-chatHeal: #2c532c;
-  --color-chatRest: #222;
+  --color-chatRest: #597928;
   --color-chatSave: #222;
   --color-chatItem: #222;
   --color-chatShadow: #7ce6ef;
@@ -3387,6 +3387,11 @@ co-toggle-switch[checked] thumb {
   margin-top: 8px;
   font-weight: bold;
 }
+#interface #sidebar .chat-message .dice-formula,
+#interface #ui-right-column-1 .chat-message .dice-formula {
+  margin-bottom: 2px;
+  font-size: var(--font-size-14);
+}
 #interface #sidebar .co.chat-card.roll-card.attack-card .card-header,
 #interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-header {
   display: flex;
@@ -3547,6 +3552,42 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .co.chat-card.roll-card.item-card .itemTitle img {
   height: 27px;
   margin-right: 5px;
+}
+#interface #sidebar .co.chat-card.roll-card.rest-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  border-top: 1px solid var(--color-chatRest);
+  color: var(--color-chatRest);
+  border-bottom: 1px dashed var(--color-chatRest);
+}
+#interface #sidebar .co.chat-card.roll-card.rest-card .card-header label,
+#interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .card-header label {
+  color: var(--color-chatRest);
+  text-shadow: 0 0px 2px var(--color-chatShadow);
+}
+#interface #sidebar .co.chat-card.roll-card.rest-card .card-content .result,
+#interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .card-content .result {
+  justify-content: space-evenly;
+}
+#interface #sidebar .co.chat-card.roll-card.rest-card .heal-message,
+#interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .heal-message {
+  width: 150px;
+}
+#interface #sidebar .co.chat-card.roll-card.rest-card .heal-message h3,
+#interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .heal-message h3 {
+  margin: 0;
+  line-height: 15px;
+}
+.theme-dark #interface #sidebar .co.chat-card.roll-card.rest-card .heal-message h3,
+.theme-dark #interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .heal-message h3 {
+  color: var(--color-light-3);
+}
+.theme-light #interface #sidebar .co.chat-card.roll-card.rest-card .heal-message h3,
+.theme-light #interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .heal-message h3 {
+  color: #222;
 }
 #interface #sidebar .co.chat-card.roll-card.save-card .card-header,
 #interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-header {
