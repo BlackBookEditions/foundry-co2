@@ -46,17 +46,17 @@
           <button class="opposite-roll" data-opposite-value="{{difficulty}}" data-opposite-target="{{oppositeTarget}}">{{localize "CO.ui.oppositeRoll"}}</button>
         {{else}}
           {{#if showDifficulty}}
-            {{#if isSuccess}}
-              {{#if isCritical}}
-                <div class="show-result success critical"><i class="fas fa-check-double"></i><br /><strong>{{localize "CO.roll.critical"}}</strong></div>
-              {{else}}
-                <div class="show-result success"><i class="fas fa-check"></i><br /><strong>{{localize "CO.roll.success"}}</strong></div>
+            {{#if isFumble}}
+              <div class="show-result failure fumble"><i class="fas fa-skull-crossbones"></i><br /><strong>{{localize "CO.roll.fumble"}}</strong></div>
+            {{else}}
+              {{#if isSuccess}}
+                {{#if isCritical}}
+                  <div class="show-result success critical"><i class="fas fa-check-double"></i><br /><strong>{{localize "CO.roll.critical"}}</strong></div>
+                {{else}}
+                  <div class="show-result success"><i class="fas fa-check"></i><br /><strong>{{localize "CO.roll.success"}}</strong></div>
+                {{/if}}
               {{/if}}
-            {{/if}}
-            {{#if isFailure}}
-              {{#if isFumble}}
-                <div class="show-result failure fumble"><i class="fas fa-skull-crossbones"></i><br /><strong>{{localize "CO.roll.fumble"}}</strong></div>
-              {{else}}
+              {{#if isFailure}}
                 <div class="show-result failure"><i class="fas fa-times"></i><br /><strong>{{localize "CO.roll.failure"}}</strong></div>
               {{/if}}
             {{/if}}

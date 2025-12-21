@@ -5,7 +5,7 @@
     --color-abilities: #2a83b9;
     --color-chatSkill: #2a83b9;
     --color-chatAttack: #db5305;
-    --color-chatDamages: red;
+    --color-chatDamages: #cb0909;
     --color-chatHeal: #3fa13f;
     --color-chatRest: #222;
     --color-chatSave: #222;
@@ -22,7 +22,7 @@
     --color-abilities: #084f7b;
     --color-chatSkill: #084f7b;
     --color-chatAttack: #702900;
-    --color-chatDamages: red;
+    --color-chatDamages: darkred;
     --color-chatHeal: #2c532c;
     --color-chatRest: #222;
     --color-chatSave: #222;
@@ -50,7 +50,6 @@
     }
   }
   .message-header {
-    border-bottom: 1px solid #5d142b;
     display: grid;
     .theme-dark & {
       color: var(--color-textLight);
@@ -179,12 +178,6 @@
     }
     .type-card,
     .type-card-skill {
-      /*.theme-dark & {
-        text-shadow: 0px 0px 4px #795403;
-      }
-      .theme-light & {
-        text-shadow: 0 0px 4px #cf7306c4;
-      }*/
       label {
         font-size: 25px;
         font-weight: bold;
@@ -203,8 +196,9 @@
     }
     .action-name {
       strong {
-        font-size: 18px;
+        font-size: var(--font-size-20);
         font-style: italic;
+        margin-left: 5px;
       }
     }
 

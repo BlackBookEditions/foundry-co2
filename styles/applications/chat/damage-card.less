@@ -4,25 +4,27 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    .action-name {
-      font-size: 18px;
-      font-style: italic;
-      margin-left: 5px;
+    border-top: 1px solid var(--color-chatDamages);
+    color: var(--color-chatDamages);
+    border-bottom: 1px dashed var(--color-chatDamages);
+    label {
+      color: var(--color-chatDamages);
+      text-shadow: 0 0px 2px var(--color-chatShadow);
     }
   }
   .damage-part {
-    margin: 18px 0px 0px 15px;
+    margin: 0 0 0 10px;
   }
   .damage-buttons {
     display: grid;
     grid-template-columns: repeat(4, 37px);
     grid-template-rows: 30px 30px;
     justify-items: center;
-    border-left: 4px solid var(--color-encounterSheet);
+    border-left: 2px solid var(--color-chatDamages);
     padding-left: 10px;
     .fas {
       font-size: 25px;
-      text-shadow: 0px 0px 2px red;
+      text-shadow: 0px 0px 2px var(--color-chatDamages);
     }
   }
   .temp-dm {

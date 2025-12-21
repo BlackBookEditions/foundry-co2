@@ -1,47 +1,47 @@
 {{log "Chroniques Oubliées | hbs | damage-card" this}}
 <div class="co chat-card roll-card damage-card" data-actor-id="{{actorId}}">
   <header class="card-header flexcol">
-    <div class="type-card"><label><i class="fa-solid fa-droplet" data-tooltip="{{localize "CO.label.long.damage"}}" data-tooltip-direction="LEFT"></i></label></div>
-    <div class="action-name"><strong>{{flavor}}</strong></div>   
+    <div class="type-card"><label><i class="fa-solid fa-raindrops" data-tooltip="{{localize 'CO.label.long.damage'}}" data-tooltip-direction="LEFT"></i></label></div>
+    <div class="action-name"><strong>{{flavor}}</strong></div>
   </header>
 
   <div class="card-content">
     <section class="result">
       <div class="form-group total-result">
-          <div class="dice-total"><label>{{localize "CO.ui.total"}}</label></div>
-          <div>{{total}}</div>
+
+        <div>{{total}} <label>DM</label></div>
       </div>
       <div class="damage-part">
-          <div class="damage-buttons">
-            <div class="temp-dm">
-                <label for="tempDm" class="temp-dm-checkbox">Temp.</label>
-                <input type="checkbox" id="tempDm" name="tempDm" class="temp-dm-checkbox" {{checked tempDamage}}>
-            </div> 
-            <div class="dr">
-                  <label for="dr" class="dr-checkbox">{{localize "CO.ui.dr"}}</label>
-                  <input type="checkbox" id="dr" name="dr" class="dr-checkbox" checked >
-            </div> 
-            <div>           
-                <a class="btn apply-dmg" data-actor-id="{{actorId}}" data-source-label="{{flavor}}" data-apply="full" data-total="{{total}}" data-tempdamage={{tempDamage}}>
-                    <i class="fas fa-user-minus" data-tooltip="{{localize 'CO.ui.applyDamage'}}" data-tooltip-direction="UP"></i>
-                </a>
-            </div>
-            <div>    
-                <a class="btn apply-dmg" data-actor-id="{{actorId}}" data-source-label="{{flavor}}" data-apply="half" data-total="{{total}}" data-tempdamage={{tempDamage}}>
-                    <i class="fas fa-user-shield" data-tooltip="{{localize 'CO.ui.applyHalfDamage'}}" data-tooltip-direction="UP"></i>
-                </a>
-            </div>
-            <div>    
-                <a class="btn apply-dmg" data-actor-id="{{actorId}}" data-source-label="{{flavor}}" data-apply="double" data-total="{{total}}" data-tempdamage={{tempDamage}}>
-                    <i class="fas fa-user-injured" data-tooltip="{{localize 'CO.ui.applyDoubleDamage'}}" data-tooltip-direction="UP"></i>
-                </a>
-            </div>
-            <div>    
-              <a class="btn apply-dmg" data-actor-id="{{actorId}}" data-source-label="{{flavor}}" data-apply="heal" data-total="{{total}}">
-                  <i class="fas fa-user-plus" data-tooltip="{{localize 'CO.ui.applyHealing'}}" data-tooltip-direction="UP"></i>
-              </a>
-            </div>    
+        <div class="damage-buttons">
+          <div class="temp-dm">
+            <label for="tempDm" class="temp-dm-checkbox">Temp.</label>
+            <input type="checkbox" id="tempDm" name="tempDm" class="temp-dm-checkbox" {{checked tempDamage}} />
           </div>
+          <div class="dr">
+            <label for="dr" class="dr-checkbox">{{localize "CO.ui.dr"}}</label>
+            <input type="checkbox" id="dr" name="dr" class="dr-checkbox" checked />
+          </div>
+          <div>
+            <a class="btn apply-dmg" data-actor-id="{{actorId}}" data-source-label="{{flavor}}" data-apply="full" data-total="{{total}}" data-tempdamage={{tempDamage}}>
+              <i class="fas fa-user-minus" data-tooltip="{{localize 'CO.ui.applyDamage'}}" data-tooltip-direction="UP"></i>
+            </a>
+          </div>
+          <div>
+            <a class="btn apply-dmg" data-actor-id="{{actorId}}" data-source-label="{{flavor}}" data-apply="half" data-total="{{total}}" data-tempdamage={{tempDamage}}>
+              <i class="fas fa-user-shield" data-tooltip="{{localize 'CO.ui.applyHalfDamage'}}" data-tooltip-direction="UP"></i>
+            </a>
+          </div>
+          <div>
+            <a class="btn apply-dmg" data-actor-id="{{actorId}}" data-source-label="{{flavor}}" data-apply="double" data-total="{{total}}" data-tempdamage={{tempDamage}}>
+              <i class="fas fa-user-injured" data-tooltip="{{localize 'CO.ui.applyDoubleDamage'}}" data-tooltip-direction="UP"></i>
+            </a>
+          </div>
+          <div>
+            <a class="btn apply-dmg" data-actor-id="{{actorId}}" data-source-label="{{flavor}}" data-apply="heal" data-total="{{total}}">
+              <i class="fas fa-user-plus" data-tooltip="{{localize 'CO.ui.applyHealing'}}" data-tooltip-direction="UP"></i>
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   </div>
