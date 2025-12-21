@@ -105,6 +105,11 @@
           }
         }
       }
+      .bloc-result {
+        display: grid;
+        grid-template-columns: 1fr 0.7fr;
+        align-items: center;
+      }
     }
     strong {
       font-size: var(--font-size-15);
@@ -143,8 +148,7 @@
         font-size: var(--font-size-28);
       }
       .show-result {
-        padding: 3px;
-        border-radius: 5px;
+        padding: 3px 0;
       }
       span {
         text-align: center;
@@ -176,29 +180,20 @@
         color: #222;
       }
     }
-    .type-card,
-    .type-card-skill {
+    .type-card {
       label {
-        font-size: 25px;
+        font-size: 1.5rem;
         font-weight: bold;
         font-variant: small-caps;
       }
     }
-    .type-card-skill {
-      label {
-        .theme-dark & {
-          color: #2a83b9;
-        }
-        .theme-light & {
-          color: #084f7b;
-        }
-      }
-    }
+
     .action-name {
       font-size: 1.2rem;
       font-style: italic;
       font-weight: bold;
       margin-left: 5px;
+      padding-right: 2px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -233,25 +228,6 @@
     .dice-roll {
       margin-top: 8px;
       font-weight: bold;
-    }
-    .skill-used {
-      font-size: 16px;
-      margin-top: 8px;
-      border-top: 1px solid var(--color-chatSkill);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-
-      .skill-used-title {
-        font-style: italic;
-        font-weight: bold;
-      }
-      .skill-used-bonus {
-        font-size: 20px;
-        padding-left: 5px;
-        font-weight: bold;
-        color: var(--color-chatSkill);
-      }
     }
   }
 }
