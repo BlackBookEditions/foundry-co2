@@ -3,6 +3,14 @@
     background: #0b0a13e6;
     color: var(--color-textLight);
     --color-abilities: #2a83b9;
+    --color-chatSkill: #2a83b9;
+    --color-chatAttack: #db5305;
+    --color-chatDamages: #cb0909;
+    --color-chatHeal: #3fa13f;
+    --color-chatRest: #222;
+    --color-chatSave: #222;
+    --color-chatItem: #222;
+    --color-chatShadow: #7ce6ef;
     span,
     label {
       color: var(--color-textLight);
@@ -12,6 +20,14 @@
     background-color: var(--color-light-3);
     color: #222;
     --color-abilities: #084f7b;
+    --color-chatSkill: #084f7b;
+    --color-chatAttack: #702900;
+    --color-chatDamages: darkred;
+    --color-chatHeal: #2c532c;
+    --color-chatRest: #222;
+    --color-chatSave: #222;
+    --color-chatItem: #222;
+    --color-chatShadow: #7ce6ef;
     span,
     label {
       color: #222;
@@ -34,7 +50,6 @@
     }
   }
   .message-header {
-    border-bottom: 1px solid #5d142b;
     display: grid;
     .theme-dark & {
       color: var(--color-textLight);
@@ -67,35 +82,35 @@
   .message-content {
     .card-content {
       font-size: 1rem;
-      p {
+      /*p {
         margin-bottom: -15px;
-        border: 2px solid var(--color-abilities);
+        border: 2px solid var(--color-chatSkill);
         border-radius: 15px;
         background-color: #084f7b66;
         font-weight: bold;
         padding: 1px 0 0px 10px;
-      }
+      }*/
       section.targets {
         .target-list {
           list-style-type: none;
-          margin-left: 10px;
+          margin: 0 0 0 10px;
           li {
             display: flex;
             align-items: center;
           }
           .target-actor-img {
-            width: 40px;
-            height: 40px;
+            width: fit-content;
+            height: 35px;
             margin-right: 10px;
           }
         }
       }
     }
     strong {
-      font-size: 15px;
+      font-size: var(--font-size-15);
     }
     label {
-      font-size: 14px;
+      font-size: var(--font-size-14);
     }
     .result {
       display: flex;
@@ -105,14 +120,12 @@
     .total-result,
     .diff-result,
     .vs {
-      font-size: 2rem;
+      font-size: var(--font-size-32);
       font-weight: bold;
       text-align: center;
       label {
-        font-size: 20px;
-      }
-      .vs {
-        flex-basis: 40px;
+        font-size: var(--font-size-15);
+        vertical-align: middle;
       }
     }
     .dice-total {
@@ -120,15 +133,22 @@
     }
 
     .vs {
-      margin: 0px 25px;
+      flex-basis: 40px;
       align-self: center;
     }
     .result-sentence {
       text-align: center;
       margin: -5px 0px -5px 0px;
+      .fas {
+        font-size: var(--font-size-28);
+      }
+      .show-result {
+        padding: 3px;
+        border-radius: 5px;
+      }
       span {
         text-align: center;
-        font-size: 20px;
+        font-size: var(--font-size-14);
 
         .theme-dark & {
           color: #0b0a13e6;
@@ -137,44 +157,18 @@
           font-weight: bold;
         }
       }
-      .theme-dark & {
-        .success {
-          background: #2c532c;
-        }
-        .critical {
-          background: green;
-        }
-        .failure {
-          background: darkred;
-        }
-        .failure.fumble {
-          background: red;
-        }
-      }
 
-      .theme-light & {
-        .success {
-          color: #2c532c;
-        }
-        .critical {
-          color: green;
-        }
-        .failure {
-          color: darkred;
-        }
-        .failure.fumble {
-          color: red;
-        }
+      .success {
+        color: green;
+      }
+      .failure {
+        color: #c90000;
       }
     }
 
     button {
-      background: #084f7b66;
       justify-self: center;
-      margin-top: 5px;
       font-weight: bold;
-      padding: 0 10px;
-      box-shadow: 1px 1px 0px 1px #084f7b;
       .theme-dark & {
         color: var(--color-light-3);
       }
@@ -184,21 +178,10 @@
     }
     .type-card,
     .type-card-skill {
-      .theme-dark & {
-        text-shadow: 0px 0px 4px #795403;
-      }
-      .theme-light & {
-        text-shadow: 0 0px 4px #cf7306c4;
-      }
       label {
         font-size: 25px;
         font-weight: bold;
         font-variant: small-caps;
-      }
-    }
-    .type-card {
-      label {
-        color: var(--color-abilities);
       }
     }
     .type-card-skill {
@@ -212,27 +195,24 @@
       }
     }
     .action-name {
-      strong {
-        font-size: 18px;
-        font-style: italic;
-      }
+      font-size: 1.2rem;
+      font-style: italic;
+      font-weight: bold;
+      margin-left: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-
     .lucky-points {
       display: flex;
       justify-content: center;
       align-items: center;
-      .imgLucky {
-        height: 25px;
-        margin-left: 5px;
-      }
-      label {
-        font-size: 17px;
-      }
+      margin-left: 5px;
+      font-size: var(--font-size-20);
     }
     .message-card {
       p {
-        font-size: 15px;
+        font-size: var(--font-size-15);
       }
     }
     .button-row {
@@ -257,7 +237,7 @@
     .skill-used {
       font-size: 16px;
       margin-top: 8px;
-      border-top: 1px solid var(--color-abilities);
+      border-top: 1px solid var(--color-chatSkill);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -270,7 +250,7 @@
         font-size: 20px;
         padding-left: 5px;
         font-weight: bold;
-        color: var(--color-abilities);
+        color: var(--color-chatSkill);
       }
     }
   }

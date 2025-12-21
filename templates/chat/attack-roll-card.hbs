@@ -2,68 +2,74 @@
 <div class="co chat-card roll-card attack-card" data-actor-id="{{actorId}}">
   <header class="card-header flexcol">
     <div class="type-card"><label><i class="fa-solid fa-swords" data-tooltip="{{localize 'CO.label.long.attack'}}" data-tooltip-direction="LEFT"></i></label></div>
-    <div class="action-name"><strong>{{flavor}}</strong></div>
+    <div class="action-name" data-tooltip="{{flavor}}" data-tooltip-direction="LEFT">{{flavor}}</div>
   </header>
 
   <div class="card-content">
     <section class="options">
       {{#if hasDice}}
-        <label class="display-dice-type">{{localize "CO.label.long.diceType"}} : <strong class="display-dice-type">{{diceType}}</strong></label>
+        <strong class="display-dice-type"><i class="fa-solid fa-dice"></i> {{diceType}}&nbsp;&nbsp;</strong>
       {{/if}}
       {{#if hasTactical}}
-        <label class="display-tactical">{{localize "CO.label.long.tactical"}} : <strong class="display-tactical">{{tactical}}</strong></label>
+        <strong class="display-tactical"><i class="fa-solid fa-sliders-up"></i> {{tactical}}</strong>
       {{/if}}
     </section>
     <section class="targets"></section>
-    <section class="result">
-      <div class="form-group total-result">
-        <div data-tooltip="{{localize 'CO.ui.total'}}" data-tooltip-direction="UP">{{total}}</div>
-      </div>
-      {{#if (and isFailure hasLuckyPoints)}}
-        <div class="lucky-points">
-          <a class="lp-button-attack">
-            <img class="imgLucky" src="icons/magic/control/buff-luck-fortune-green.webp" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" />
-          </a>
+    <section class="bloc-result">
+      <section class="result">
+        <div class="form-group total-result">
+          <div data-tooltip="{{localize 'CO.ui.total'}}" data-tooltip-direction="UP">{{total}}</div>
         </div>
-      {{/if}}
-
-      {{#if showDifficulty}}
-        {{#if (eq difficulty "")}}{{else}}
-          <div class="vs"><label>VS</label></div>
-          <div class="form-group diff-result">
-            {{#if oppositeRoll}}
-              <button class="opposite-roll" data-opposite-value="{{difficulty}}" data-opposite-target="{{oppositeTarget}}">{{localize "CO.ui.oppositeRoll"}}</button>
-            {{else}}
-              <div data-tooltip="{{localize 'CO.label.long.difficulty'}}" data-tooltip-direction="UP"><strong class="display-difficulty"></strong>{{difficulty}}</div>
-            {{/if}}
+        {{#if (and isFailure hasLuckyPoints)}}
+          <div class="lucky-points">
+            <a class="lp-button-attack">
+              <i class="fa-regular fa-clover" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" data-tooltip-direction="UP"></i>
+            </a>
           </div>
         {{/if}}
-      {{/if}}
-    </section>
-    <section class="result-sentence">
-      {{#if showDifficulty}}
-        {{#if isSuccess}}
-          {{#if isCritical}}
-            <span class="success critical"><i class="fas fa-check-double"></i>&nbsp;{{localize "CO.roll.critical"}}&nbsp;<i class="fas fa-check-double"></i></span>
-          {{else}}
-            <span class="success"><i class="fas fa-check"></i>&nbsp;{{localize "CO.roll.success"}}&nbsp;<i class="fas fa-check"></i></span>
+
+        {{#if showDifficulty}}
+          {{#if (eq difficulty "")}}{{else}}
+            <div class="vs"><label>VS</label></div>
+            <div class="form-group diff-result">
+              {{#if oppositeRoll}}
+                <i class="fa-solid fa-square-question"></i>
+              {{else}}
+                <div data-tooltip="{{localize 'CO.label.long.difficulty'}}" data-tooltip-direction="UP"><strong class="display-difficulty"></strong>{{difficulty}}</div>
+              {{/if}}
+            </div>
           {{/if}}
         {{/if}}
-        {{#if isFailure}}
-          {{#if isFumble}}
-            <span class="failure fumble"><i class="fas fa-skull-crossbones"></i>&nbsp;{{localize "CO.roll.fumble"}}&nbsp;<i class="fas fa-skull-crossbones"></i></span>
+      </section>
+      <section class="result-sentence">
+        {{#if oppositeRoll}}
+          <button class="opposite-roll" data-opposite-value="{{difficulty}}" data-opposite-target="{{oppositeTarget}}">{{localize "CO.ui.oppositeRoll"}}</button>
+        {{else}}
+          {{#if showDifficulty}}
+            {{#if isFumble}}
+              <div class="show-result failure fumble"><i class="fas fa-skull-crossbones"></i><br /><strong>{{localize "CO.roll.fumble"}}</strong></div>
+            {{else}}
+              {{#if isSuccess}}
+                {{#if isCritical}}
+                  <div class="show-result success critical"><i class="fas fa-check-double"></i><br /><strong>{{localize "CO.roll.critical"}}</strong></div>
+                {{else}}
+                  <div class="show-result success"><i class="fas fa-check"></i><br /><strong>{{localize "CO.roll.success"}}</strong></div>
+                {{/if}}
+              {{/if}}
+              {{#if isFailure}}
+                <div class="show-result failure"><i class="fas fa-times"></i><br /><strong>{{localize "CO.roll.failure"}}</strong></div>
+              {{/if}}
+            {{/if}}
           {{else}}
-            <span class="failure"><i class="fas fa-times"></i>&nbsp;{{localize "CO.roll.failure"}}&nbsp;<i class="fas fa-times"></i></span>
+            {{#if isCritical}}
+              <div class="show-result standard critical"><i class="fas fa-check-double"></i><br /><strong>{{localize "CO.roll.critical"}}</strong></div>
+            {{/if}}
+            {{#if isFumble}}
+              <div class="show-result failure fumble"><i class="fas fa-skull-crossbones"></i><br /><strong>{{localize "CO.roll.fumble"}}</strong></div>
+            {{/if}}
           {{/if}}
         {{/if}}
-      {{else}}
-        {{#if isCritical}}
-          <span class="standard critical"><i class="fas fa-check-double"></i>&nbsp;{{localize "CO.roll.critical"}}&nbsp;<i class="fas fa-check-double"></i></span>
-        {{/if}}
-        {{#if isFumble}}
-          <span class="failure fumble"><i class="fas fa-skull-crossbones"></i>&nbsp;{{localize "CO.roll.fumble"}}&nbsp;<i class="fas fa-skull-crossbones"></i></span>
-        {{/if}}
-      {{/if}}
+      </section>
     </section>
   </div>
 
