@@ -13,8 +13,7 @@
   <div class="card-content">
     <section class="result">
       <div class="form-group total-result">
-        <div class="dice-total"><label>{{localize "CO.ui.total"}}</label></div>
-        <div>{{total}}</div>
+        <div data-tooltip="{{localize 'CO.ui.total'}}" data-tooltip-direction="UP">{{total}}</div>
       </div>
       {{#if (and isFailure hasLuckyPoints)}}
         <div class="lucky-points">
@@ -29,11 +28,10 @@
         {{else}}
           <div class="vs"><label>VS</label></div>
           <div class="form-group diff-result">
-            <div class="display-difficulty"><label>{{localize "CO.label.long.difficulty"}}</label></div>
             {{#if oppositeRoll}}
               <button class="opposite-roll" data-opposite-value="{{difficulty}}" data-opposite-target="{{oppositeTarget}}">{{localize "CO.ui.oppositeRoll"}}</button>
             {{else}}
-              <div><strong class="display-difficulty"></strong>{{difficulty}}</div>
+              <div data-tooltip="{{localize 'CO.label.long.difficulty'}}" data-tooltip-direction="UP"><strong class="display-difficulty"></strong>{{difficulty}}</div>
             {{/if}}
             </strong>
             </label>
