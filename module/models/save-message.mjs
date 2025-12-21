@@ -227,7 +227,7 @@ export default class SaveMessageData extends BaseMessageData {
         const targetRollSkill = await targetActor.rollSkill(saveAbility, { difficulty: difficulty, showResult: false })
         message.system.result = targetRollSkill.result
         message.system.linkedRoll = targetRollSkill.roll
-
+        let opposeResultAnalyse = CORoll.analyseRollResult(targetRollSkill.roll)
         console.log("result : ", targetRollSkill.result)
 
         let rolls = this.parent.rolls

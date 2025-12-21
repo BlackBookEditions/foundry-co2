@@ -198,19 +198,61 @@ export default class ActionMessageData extends BaseMessageData {
 
           const targetActor = fromUuidSync(oppositeTarget)
           if (!targetActor) return
-          const value = Utils.evaluateOppositeFormula(oppositeValue, targetActor)
 
-          const formula = value ? `1d20 + ${value}` : `1d20`
-          const roll = await new Roll(formula).roll()
-          const difficulty = roll.total
+          // Gestion de la fenêtre de skill en cas d'attaque opposé à une ability
+          // Vérifie que oppositeValue commence par "oppose." sinon ben on a rien à faire ici !
+          if (!oppositeValue.startsWith("@oppose.")) {
+            console.warn("On clique sur un bouton d'opposition qui n'a pas le terme oppose : ", oppositeValue)
+            return
+          }
 
+          // Extrait la partie après "oppose."
+          const abilityId = oppositeValue.replace("@oppose.", "")
+
+          // Vérifie si abilityId est une clé valide dans ABILITIES
+          let isSkillRoll = Object.keys(SYSTEM.ABILITIES).includes(abilityId)
+          let value = 0
           let rolls = message.rolls
-          rolls[0].options.oppositeRoll = false
-          rolls[0].options.difficulty = difficulty
-          rolls[0].options.opposeResult = roll.result
-          rolls[0].options.opposeTooltip = await roll.getTooltip()
+
+          let opposeResultAnalyse = null
+
+          if (isSkillRoll) {
+            // On ouvre la fenêtre de rollSkill et on récupère le résultat
+            const targetRollSkill = await targetActor.rollSkill(abilityId, { difficulty: rolls[0].total, showResult: false })
+            opposeResultAnalyse = CORoll.analyseRollResult(targetRollSkill.roll)
+            rolls[0].options.oppositeRoll = false
+            rolls[0].options.difficulty = targetRollSkill.roll.total
+            rolls[0].options.opposeResult = targetRollSkill.roll.result
+            rolls[0].options.opposeTooltip = await targetRollSkill.roll.getTooltip()
+          } else {
+            value = Utils.evaluateOppositeFormula(oppositeValue, targetActor)
+            const formula = value ? `1d20 + ${value}` : `1d20`
+            const roll = await new Roll(formula).roll()
+            const difficulty = roll.total
+            opposeResultAnalyse = CORoll.analyseRollResult(roll)
+            rolls[0].options.oppositeRoll = false
+            rolls[0].options.difficulty = difficulty
+            rolls[0].options.opposeResult = roll.result
+            rolls[0].options.opposeTooltip = await roll.getTooltip()
+          }
 
           let newResult = CORoll.analyseRollResult(rolls[0])
+          console.log("opposeResultAnalyse", opposeResultAnalyse, "newResult", newResult, "rolls[0].product", rolls[0].product)
+          // Attention il est aussi possible que le jet de l'opposant soit un critique ou un fumble il faut le gérer
+          if (opposeResultAnalyse.isCritical && !newResult.isCritical) {
+            newResult.isSuccess = false
+            newResult.isFailure = true
+          } else if (opposeResultAnalyse.isFumble && rolls[0].product > 1) {
+            // Si l'opposition fait un fumble et l'attaque n'en fait pas
+            newResult.isSuccess = true
+            newResult.isFailure = false
+          } else if (!opposeResultAnalyse.isCritical && rolls[0].product === 20) {
+            // Si l'attaquand fait un 20 naturel mais pas le defense c'est un succès
+            // Si l'opposition fait un fumble et l'attaque n'en fait pas
+            newResult.isSuccess = true
+            newResult.isFailure = false
+          }
+
           if (newResult.isSuccess) {
             const damageRoll = Roll.fromData(message.system.linkedRoll)
             await damageRoll.toMessage(
