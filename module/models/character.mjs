@@ -830,13 +830,15 @@ export default class CharacterData extends ActorData {
       const formula = `${hd} + ${level}`
       const labelTooltip = game.i18n.format("CO.ui.fastRestLabelTooltip", { formula: formula })
 
-      await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fastRest.title"), labelTooltip)
+      //await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fastRest.title"), labelTooltip)
+      await this.parent.rollHeal(null, { actionName: game.i18n.format("CO.ui.fastRest"), healFormula: formula, targetType: SYSTEM.RESOLVER_TARGET.self.id, targets: [this.parent] })
 
       // Récupération des charges des capacités
       await this.recoverCapacityCharges(isFullRest)
 
       // Dépense du DR
       newRp.value = rp.value - 1
+      console.log("on met à jour les rp", newRp)
       await this.parent.update({ "system.resources.recovery": newRp })
     }
     // Récupération complète
@@ -872,8 +874,13 @@ export default class CharacterData extends ActorData {
         }
 
         const labelTooltip = game.i18n.format("CO.ui.fullRestLabelTooltip", { formula: formula })
-        await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fullRest.title"), labelTooltip)
-
+        //await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fullRest.title"), labelTooltip)
+        await this.parent.rollHeal(null, {
+          actionName: game.i18n.format("CO.ui.fullRest"),
+          healFormula: formula,
+          targetType: SYSTEM.RESOLVER_TARGET.self.id,
+          targets: [this.parent],
+        })
         // On aurait dû gagner 1 DR mais si on l'utilise pour la récup on va pas faire +1 et -1.
       } else {
         // Récupération d'un DR puisqu'on en dépense pas
@@ -906,45 +913,6 @@ export default class CharacterData extends ActorData {
         }
       }
     }
-  }
-
-  /**
-   * Applique une récupération au personnage : met à jour les points de récupération (rp) et les points de vigueur (hp),
-   * Lance le jet de dés pour la récupération de PV, et affiche un message de chat avec le résultat.
-   *
-   * @async
-   * @param {Object} hp Objet représentant les points de vie actuels.
-   * @param {string} formula Formule de dés à lancer pour la récupération de PV.
-   * @param {string} title Clé de localisation pour le titre de la carte de chat.
-   * @param {string} labelTooltip Texte à afficher dans l'infobulle du label de la carte de chat.
-   * @returns {Promise<void>} Résout lorsque la récupération est appliquée et le message de chat créé.
-   */
-  async _applyRecovery(hp, formula, title, labelTooltip) {
-    const roll = await new Roll(formula).roll()
-    const toolTip = new Handlebars.SafeString(await roll.getTooltip())
-
-    const newHp = foundry.utils.duplicate(hp)
-    newHp.value += roll.total
-    newHp.value = Math.min(newHp.value, newHp.max)
-
-    const hasLabelToolTip = labelTooltip !== undefined && labelTooltip !== null && labelTooltip !== ""
-
-    new CoChat(this.parent)
-      .withTemplate("systems/co2/templates/chat/rest-card.hbs")
-      .withData({
-        actorId: this.id,
-        title: game.i18n.localize(title),
-        label: game.i18n.format("CO.dialogs.restHpRecovered", { hp: roll.total }),
-        hasLabelToolTip,
-        labelTooltip,
-        formula: formula,
-        total: roll.total,
-        toolTip: toolTip,
-      })
-      .withRolls([roll])
-      .create()
-
-    this.parent.update({ "system.attributes.hp": newHp })
   }
 
   /**
