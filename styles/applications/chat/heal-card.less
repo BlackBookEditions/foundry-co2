@@ -4,12 +4,21 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    .action-name {
-      font-size: 18px;
-      font-style: italic;
+    border-top: 1px solid var(--color-chatHeal);
+    color: var(--color-chatHeal);
+    border-bottom: 1px dashed var(--color-chatHeal);
+    label {
+      color: var(--color-chatHeal);
+      text-shadow: 0 0px 2px var(--color-chatShadow);
     }
   }
-  .chatroll {
+  .card-content {
+    .bloc-result {
+      display: grid;
+      grid-template-columns: 0.7fr 1fr;
+    }
+  }
+  /*.chatroll {
     .heal {
       font-size: 22px;
       margin: 5px;
@@ -56,5 +65,5 @@
         color: #222;
       }
     }
-  }
+  }*/
 }
