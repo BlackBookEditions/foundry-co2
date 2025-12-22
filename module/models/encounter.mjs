@@ -51,9 +51,21 @@ export default class EncounterData extends ActorData {
       melee: new fields.EmbeddedDataField(BaseValue), // Va servir à stocker les modifiers
       ranged: new fields.EmbeddedDataField(BaseValue), // Va servir à stocker les modifiers
       magic: new fields.EmbeddedDataField(BaseValue), // Va servir à stocker les modifiers
+      atkNbre: new fields.NumberField({ required: true, nullable: false, initial: 1, min: 1, integer: true }), // ajout pour le bestiaire, seuil de déclenchement
+      dmgBonus: new fields.StringField({ required: true, nullable: false, initial: "" }), // ajout pour le bestiaire bonus de boss
     })
-
-    schema.magic = new fields.NumberField({ ...requiredInteger, initial: 0 })
+    // Ajout des ressources pour le bestiaire qui donne des points de chances aux boss
+    const initial = {
+      base: 0,
+      ability: "cha",
+      bonuses: {
+        sheet: 0,
+        effects: 0,
+      },
+    }
+    schema.resources = new fields.SchemaField({
+      fortune: new fields.EmbeddedDataField(BaseValue, { label: "CO.resources.long.fortune", nullable: false, initial: initial }),
+    })
 
     schema.pasteData = new fields.HTMLField()
 
@@ -221,7 +233,7 @@ export default class EncounterData extends ActorData {
       ability.tooltipValue = Utils.getTooltip(Utils.getAbilityName(key), ability.base).concat(abilityModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
     }
 
-    this.magic = this.abilities.vol.value + (this.attributes.nc === 0.5 ? 0 : this.attributes.nc)
+    this.combat.magic = this.abilities.vol.value + (this.attributes.nc === 0.5 ? 0 : this.attributes.nc)
   }
 
   _prepareHPMax() {

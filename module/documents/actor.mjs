@@ -89,7 +89,7 @@ export default class COActor extends Actor {
 
     if (this.type === "encounter") {
       rollData.niv = this.system.attributes.nc
-      rollData.atm = this.system.magic
+      rollData.atm = this.system.combat.magic
     }
 
     return rollData
