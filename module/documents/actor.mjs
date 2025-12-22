@@ -2161,6 +2161,7 @@ export default class COActor extends Actor {
    * @param {Array<COActor>} options.targets : une liste d'acteurs ciblés
    */
   async rollHeal(item, { actionName = "", healFormula = undefined, targetType = SYSTEM.RESOLVER_TARGET.none.id, targets = [] } = {}) {
+    const options = { actionName, healFormula, targetType, targets }
     // A hook event that fires before the roll is made.
     if (Hooks.call("co.preRollHeal", item, options) === false) return
 
@@ -2215,11 +2216,12 @@ export default class COActor extends Actor {
 
     // Si le soin est pour soi-même ou sans cible, on applique directement le soin
     if (targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id) {
-      this.applyHeal({ heal: healAmount, source: source })
+      console.log("le personnage devrait recuperer des PV :", healAmount)
+      this.applyHeal({ heal: healAmount, source: flavor })
     }
     // Si le soin est pour une cible et que celle-ci est l'acteur joueur, on applique le soin
     else if (targetType === SYSTEM.RESOLVER_TARGET.single.id && targets.length === 1 && targets[0] === this.uuid) {
-      this.applyHeal({ heal: healAmount, source: source })
+      this.applyHeal({ heal: healAmount, source: flavor })
     }
     // Sinon on applique si c'est le MJ, sinon on demande au MJ de l'appliquer
     else if (targetType === SYSTEM.RESOLVER_TARGET.single.id || targetType === SYSTEM.RESOLVER_TARGET.multiple.id) {
