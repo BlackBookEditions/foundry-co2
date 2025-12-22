@@ -1,34 +1,69 @@
 {{log "Chroniques Oubliées | save card" this}}
 <div class="co chat-card roll-card save-card" data-actor-id="{{actorId}}">
   <header class="card-header flexcol">
-    <div class="type-card"><label><i class="fa-solid fa-user-shield" data-tooltip="{{localize 'CO.ui.saves'}}" data-tooltip-direction="LEFT"></i></label></div>
+    <div class="type-card"><label><i class="fa-solid fa-bell-on" data-tooltip="{{localize 'CO.ui.saves'}}" data-tooltip-direction="LEFT"></i></label></div>
     <div class="action-name">{{flavor}}</div>
   </header>
 
   <div class="card-content">
     <section class="targets"></section>
-    <section class="result">
-      <div class="total-result">
-          <button class="save-roll" data-save-target="{{targetUuid}}" data-save-ability="{{ability}}" data-save-difficulty="{{difficulty}}">{{localize
-              "CO.ui.saves"
-            }}<br>{{getAbilityLabel ability}}
-          </button>
-          <div class="save-total"></div>
-      </div>
-      <div class="lucky-points">
-        <a class="lp-button-save">
-          <img class="imgLucky" src="icons/magic/control/buff-luck-fortune-green.webp" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" />
-        </a>
-      </div>
-
-      {{#if (eq difficulty "")}}{{else}}
-        <div class="vs"><label>VS</label></div>
-        <div class="diff-result">
-          <div class="display-difficulty" data-tooltip="{{localize 'CO.label.long.difficulty'}}" data-tooltip-direction="UP">
-            {{difficulty}}
-          </div>
+    <section class="bloc-result">
+      <section class="result">
+        <div class="total-result">
+            <!--<button class="save-roll" data-save-target="{{targetUuid}}" data-save-ability="{{ability}}" data-save-difficulty="{{difficulty}}">
+              <div class="save-title">{{localize "CO.ui.saves"}}</div>
+              <div class="save-skill">{{getAbilityLabel ability}}</div>
+            </button>-->
+            {{#if (eq result "")}}
+            <i class="fa-solid fa-square-question"></i>
+            {{else}}
+            <div class="save-total"></div>
+            {{/if}}
         </div>
-      {{/if}}
+        <div class="lucky-points">
+          <a class="lp-button-save">
+            <i class="fa-regular fa-clover" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" data-tooltip-direction="UP"></i>
+          </a>
+        </div>
+
+        {{#if (eq difficulty "")}}{{else}}
+          <div class="vs"><label>VS</label></div>
+          <div class="diff-result">
+            <div class="display-difficulty" data-tooltip="{{localize 'CO.label.long.difficulty'}}" data-tooltip-direction="UP">
+              {{difficulty}}
+            </div>
+          </div>
+        {{/if}}
+      </section>
+      <section class="result-sentence">
+        <button class="save-roll" data-save-target="{{targetUuid}}" data-save-ability="{{ability}}" data-save-difficulty="{{difficulty}}">
+              <div class="save-title">{{localize "CO.ui.saves"}}</div>
+              <div class="save-skill">{{getAbilityLabel ability}}</div>
+            </button>
+          {{#if showDifficulty}}
+            {{#if isFumble}}
+              <div class="show-result failure fumble"><i class="fas fa-skull-crossbones"></i><br /><strong>{{localize "CO.roll.fumble"}}</strong></div>
+            {{else}}
+              {{#if isSuccess}}
+                {{#if isCritical}}
+                  <div class="show-result success critical"><i class="fas fa-check-double"></i><br /><strong>{{localize "CO.roll.critical"}}</strong></div>
+                {{else}}
+                  <div class="show-result success"><i class="fas fa-check"></i><br /><strong>{{localize "CO.roll.success"}}</strong></div>
+                {{/if}}
+              {{/if}}
+              {{#if isFailure}}
+                <div class="show-result failure"><i class="fas fa-times"></i><br /><strong>{{localize "CO.roll.failure"}}</strong></div>
+              {{/if}}
+            {{/if}}
+          {{else}}
+            {{#if isCritical}}
+              <div class="show-result standard critical"><i class="fas fa-check-double"></i><br /><strong>{{localize "CO.roll.critical"}}</strong></div>
+            {{/if}}
+            {{#if isFumble}}
+              <div class="show-result failure fumble"><i class="fas fa-skull-crossbones"></i><br /><strong>{{localize "CO.roll.fumble"}}</strong></div>
+            {{/if}}
+          {{/if}}
+      </section>
     </section>
   </div>
 

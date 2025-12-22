@@ -3132,7 +3132,7 @@ co-toggle-switch[checked] thumb {
   --color-chatDamages: #cb0909;
   --color-chatHeal: #3fa13f;
   --color-chatRest: #93a13f;
-  --color-chatSave: #222;
+  --color-chatSave: #8a43ab;
   --color-chatItem: #222;
   --color-chatShadow: #7ce6ef;
 }
@@ -3152,7 +3152,7 @@ co-toggle-switch[checked] thumb {
   --color-chatDamages: darkred;
   --color-chatHeal: #2c532c;
   --color-chatRest: #597928;
-  --color-chatSave: #222;
+  --color-chatSave: #380052;
   --color-chatItem: #222;
   --color-chatShadow: #7ce6ef;
 }
@@ -3595,11 +3595,14 @@ co-toggle-switch[checked] thumb {
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  border-top: 1px solid var(--color-chatSave);
+  color: var(--color-chatSave);
+  border-bottom: 1px dashed var(--color-chatSave);
 }
-#interface #sidebar .co.chat-card.roll-card.save-card .card-header .action-name,
-#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-header .action-name {
-  font-size: 18px;
-  font-style: italic;
+#interface #sidebar .co.chat-card.roll-card.save-card .card-header label,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-header label {
+  color: var(--color-chatSave);
+  text-shadow: 0 0px 2px var(--color-chatShadow);
 }
 #interface #sidebar .co.chat-card.roll-card.save-card .card-content section.result,
 #interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.result {
@@ -3607,6 +3610,29 @@ co-toggle-switch[checked] thumb {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content .save-roll,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content .save-roll {
+  display: flex;
+  flex-direction: column;
+  height: 40px;
+  font-size: 18px;
+  color: var(--color-chatSave);
+  background: #5d142b3d;
+  border: 2px solid var(--color-chatSave);
+  border-radius: 5px;
+  box-shadow: 1px 1px 0px 1px var(--color-chatSave);
+  padding: 0px 5px;
+  margin: 0 0 5px 0;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content .save-roll .save-title,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content .save-roll .save-title {
+  font-size: var(--font-size-12);
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content .save-roll .save-skill,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content .save-roll .save-skill {
+  font-size: var(--font-size-18);
+  margin-top: -5px;
 }
 #interface #sidebar .co.chat-card.roll-card.skill-card .card-header,
 #interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-header {

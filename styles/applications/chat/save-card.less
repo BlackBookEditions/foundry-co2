@@ -4,17 +4,40 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    .action-name {
-      font-size: 18px;
-      font-style: italic;
+    border-top: 1px solid var(--color-chatSave);
+    color: var(--color-chatSave);
+    border-bottom: 1px dashed var(--color-chatSave);
+    label {
+      color: var(--color-chatSave);
+      text-shadow: 0 0px 2px var(--color-chatShadow);
     }
   }
   .card-content {
     section.result {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+    }
+    .save-roll {
+      display: flex;
+      flex-direction: column;
+      height: 40px;
+      font-size: 18px;
+      color: var(--color-chatSave);
+      background: #5d142b3d;
+      border: 2px solid var(--color-chatSave);
+      border-radius: 5px;
+      box-shadow: 1px 1px 0px 1px var(--color-chatSave);
+      padding: 0px 5px;
+      margin: 0 0 5px 0;
+      .save-title {
+        font-size: var(--font-size-12);
+      }
+      .save-skill {
+        font-size: var(--font-size-18);
+        margin-top: -5px;
+      }
     }
   }
 }
