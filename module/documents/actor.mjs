@@ -2161,6 +2161,7 @@ export default class COActor extends Actor {
    * @param {Array<COActor>} options.targets : une liste d'acteurs ciblés
    */
   async rollHeal(item, { actionName = "", healFormula = undefined, targetType = SYSTEM.RESOLVER_TARGET.none.id, targets = [] } = {}) {
+    const options = { actionName, healFormula, targetType, targets }
     // A hook event that fires before the roll is made.
     if (Hooks.call("co.preRollHeal", item, options) === false) return
 
