@@ -3131,9 +3131,9 @@ co-toggle-switch[checked] thumb {
   --color-chatAttack: #db5305;
   --color-chatDamages: #cb0909;
   --color-chatHeal: #3fa13f;
-  --color-chatRest: #222;
-  --color-chatSave: #222;
-  --color-chatItem: #222;
+  --color-chatRest: #93a13f;
+  --color-chatSave: #8a43ab;
+  --color-chatItem: #bb9d68;
   --color-chatShadow: #7ce6ef;
 }
 .theme-dark #interface #sidebar .chat-message span,
@@ -3151,9 +3151,9 @@ co-toggle-switch[checked] thumb {
   --color-chatAttack: #702900;
   --color-chatDamages: darkred;
   --color-chatHeal: #2c532c;
-  --color-chatRest: #222;
-  --color-chatSave: #222;
-  --color-chatItem: #222;
+  --color-chatRest: #597928;
+  --color-chatSave: #380052;
+  --color-chatItem: #4b3a0c;
   --color-chatShadow: #7ce6ef;
 }
 .theme-light #interface #sidebar .chat-message span,
@@ -3169,6 +3169,11 @@ co-toggle-switch[checked] thumb {
 .theme-light #interface #sidebar .chat-message.whisper,
 .theme-light #interface #ui-right-column-1 .chat-message.whisper {
   background: #b5a2a2;
+}
+#interface #sidebar .chat-message .whisper-to,
+#interface #ui-right-column-1 .chat-message .whisper-to {
+  margin-top: -15px;
+  margin-left: 55px;
 }
 .theme-dark #interface #sidebar .chat-message.blind,
 .theme-dark #interface #ui-right-column-1 .chat-message.blind {
@@ -3241,6 +3246,12 @@ co-toggle-switch[checked] thumb {
   height: 35px;
   margin-right: 10px;
 }
+#interface #sidebar .chat-message .message-content .card-content .bloc-result,
+#interface #ui-right-column-1 .chat-message .message-content .card-content .bloc-result {
+  display: grid;
+  grid-template-columns: 1fr 0.7fr;
+  align-items: center;
+}
 #interface #sidebar .chat-message .message-content strong,
 #interface #ui-right-column-1 .chat-message .message-content strong {
   font-size: var(--font-size-15);
@@ -3294,8 +3305,7 @@ co-toggle-switch[checked] thumb {
 }
 #interface #sidebar .chat-message .message-content .result-sentence .show-result,
 #interface #ui-right-column-1 .chat-message .message-content .result-sentence .show-result {
-  padding: 3px;
-  border-radius: 5px;
+  padding: 3px 0;
 }
 #interface #sidebar .chat-message .message-content .result-sentence span,
 #interface #ui-right-column-1 .chat-message .message-content .result-sentence span {
@@ -3331,20 +3341,10 @@ co-toggle-switch[checked] thumb {
   color: #222;
 }
 #interface #sidebar .chat-message .message-content .type-card label,
-#interface #ui-right-column-1 .chat-message .message-content .type-card label,
-#interface #sidebar .chat-message .message-content .type-card-skill label,
-#interface #ui-right-column-1 .chat-message .message-content .type-card-skill label {
-  font-size: 25px;
+#interface #ui-right-column-1 .chat-message .message-content .type-card label {
+  font-size: 1.5rem;
   font-weight: bold;
   font-variant: small-caps;
-}
-.theme-dark #interface #sidebar .chat-message .message-content .type-card-skill label,
-.theme-dark #interface #ui-right-column-1 .chat-message .message-content .type-card-skill label {
-  color: #2a83b9;
-}
-.theme-light #interface #sidebar .chat-message .message-content .type-card-skill label,
-.theme-light #interface #ui-right-column-1 .chat-message .message-content .type-card-skill label {
-  color: #084f7b;
 }
 #interface #sidebar .chat-message .message-content .action-name,
 #interface #ui-right-column-1 .chat-message .message-content .action-name {
@@ -3352,6 +3352,7 @@ co-toggle-switch[checked] thumb {
   font-style: italic;
   font-weight: bold;
   margin-left: 5px;
+  padding-right: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3368,20 +3369,6 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .chat-message .message-content .message-card p {
   font-size: var(--font-size-15);
 }
-#interface #sidebar .chat-message .message-content .button-row,
-#interface #ui-right-column-1 .chat-message .message-content .button-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-  margin-bottom: 3px;
-}
-#interface #sidebar .chat-message .message-content .button-row button,
-#interface #ui-right-column-1 .chat-message .message-content .button-row button {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
 #interface #sidebar .chat-message .message-content h4.dice-total,
 #interface #ui-right-column-1 .chat-message .message-content h4.dice-total {
   margin: 0;
@@ -3391,26 +3378,10 @@ co-toggle-switch[checked] thumb {
   margin-top: 8px;
   font-weight: bold;
 }
-#interface #sidebar .chat-message .message-content .skill-used,
-#interface #ui-right-column-1 .chat-message .message-content .skill-used {
-  font-size: 16px;
-  margin-top: 8px;
-  border-top: 1px solid var(--color-chatSkill);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-#interface #sidebar .chat-message .message-content .skill-used .skill-used-title,
-#interface #ui-right-column-1 .chat-message .message-content .skill-used .skill-used-title {
-  font-style: italic;
-  font-weight: bold;
-}
-#interface #sidebar .chat-message .message-content .skill-used .skill-used-bonus,
-#interface #ui-right-column-1 .chat-message .message-content .skill-used .skill-used-bonus {
-  font-size: 20px;
-  padding-left: 5px;
-  font-weight: bold;
-  color: var(--color-chatSkill);
+#interface #sidebar .chat-message .dice-formula,
+#interface #ui-right-column-1 .chat-message .dice-formula {
+  margin-bottom: 2px;
+  font-size: var(--font-size-14);
 }
 #interface #sidebar .co.chat-card.roll-card.attack-card .card-header,
 #interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-header {
@@ -3426,13 +3397,6 @@ co-toggle-switch[checked] thumb {
   color: var(--color-chatAttack);
   text-shadow: 0 0px 2px var(--color-chatShadow);
 }
-#interface #sidebar .co.chat-card.roll-card.attack-card .card-content,
-#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-content {
-  /*p {
-      border: 2px solid var(--color-encounterSheet);
-      background-color: #5d142b3d;
-    }*/
-}
 #interface #sidebar .co.chat-card.roll-card.attack-card .card-content section.options,
 #interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-content section.options {
   display: flex;
@@ -3440,14 +3404,8 @@ co-toggle-switch[checked] thumb {
   border-bottom: 1px dashed var(--color-chatAttack);
   margin-bottom: 2px;
 }
-#interface #sidebar .co.chat-card.roll-card.attack-card .card-content .bloc-result,
-#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-content .bloc-result {
-  display: grid;
-  grid-template-columns: 1fr 0.7fr;
-  align-items: center;
-}
-#interface #sidebar .co.chat-card.roll-card.attack-card button.opposite-roll,
-#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card button.opposite-roll {
+#interface #sidebar .co.chat-card.roll-card.attack-card .card-content button.opposite-roll,
+#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-content button.opposite-roll {
   height: 40px;
   font-size: 18px;
   color: var(--color-chatAttack);
@@ -3457,32 +3415,6 @@ co-toggle-switch[checked] thumb {
   box-shadow: 1px 1px 0px 1px var(--color-chatAttack);
   padding: 0px 5px;
   margin: 0;
-}
-#interface #sidebar .co.chat-card.roll-card.attack-card .damage-part,
-#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .damage-part {
-  margin: 18px 0px 0px 15px;
-}
-#interface #sidebar .co.chat-card.roll-card.attack-card .damage-buttons,
-#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .damage-buttons {
-  display: grid;
-  grid-template-columns: repeat(4, 37px);
-  grid-template-rows: 30px 30px;
-  justify-items: center;
-  border-left: 4px solid var(--color-encounterSheet);
-  padding-left: 10px;
-}
-#interface #sidebar .co.chat-card.roll-card.attack-card .damage-buttons .fas,
-#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .damage-buttons .fas {
-  font-size: 25px;
-  text-shadow: 0px 0px 2px red;
-}
-#interface #sidebar .co.chat-card.roll-card.attack-card .temp-dm,
-#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .temp-dm {
-  grid-column: 1/3;
-}
-#interface #sidebar .co.chat-card.roll-card.attack-card .dr,
-#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .dr {
-  grid-column: 3/5;
 }
 #interface #sidebar .co.chat-card.roll-card.damage-card .card-header,
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .card-header {
@@ -3596,11 +3528,19 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .co.chat-card.roll-card.item-card .itemTitle {
   font-size: 16px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   margin-top: 3px;
+  border-top: 1px solid var(--color-chatItem);
+  border-bottom: 1px dashed var(--color-chatItem);
+}
+#interface #sidebar .co.chat-card.roll-card.item-card .itemTitle label,
+#interface #ui-right-column-1 .co.chat-card.roll-card.item-card .itemTitle label {
+  color: var(--color-chatItem);
+  text-shadow: 0 0px 2px var(--color-chatShadow);
 }
 #interface #sidebar .co.chat-card.roll-card.item-card .itemTitle span,
 #interface #ui-right-column-1 .co.chat-card.roll-card.item-card .itemTitle span {
+  color: var(--color-chatItem);
   text-transform: uppercase;
   font-weight: bold;
   text-wrap: nowrap;
@@ -3609,8 +3549,73 @@ co-toggle-switch[checked] thumb {
 }
 #interface #sidebar .co.chat-card.roll-card.item-card .itemTitle img,
 #interface #ui-right-column-1 .co.chat-card.roll-card.item-card .itemTitle img {
-  height: 27px;
-  margin-right: 5px;
+  height: 40px;
+  width: fit-content;
+  margin: 2px 5px 2px 0;
+}
+#interface #sidebar .co.chat-card.roll-card.item-card p,
+#interface #ui-right-column-1 .co.chat-card.roll-card.item-card p {
+  padding-left: 15px;
+  line-height: 15px;
+}
+#interface #sidebar .co.chat-card.roll-card.item-card .button-row,
+#interface #ui-right-column-1 .co.chat-card.roll-card.item-card .button-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 3px;
+  gap: 5px;
+}
+#interface #sidebar .co.chat-card.roll-card.item-card .button-row button,
+#interface #ui-right-column-1 .co.chat-card.roll-card.item-card .button-row button {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-14);
+  color: var(--color-chatItem);
+  background: #5d142b3d;
+  border: 2px solid var(--color-chatItem);
+  border-radius: 5px;
+  box-shadow: 1px 1px 0px 1px var(--color-chatItem);
+  padding: 0px 5px;
+  margin: 0;
+}
+#interface #sidebar .co.chat-card.roll-card.rest-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  border-top: 1px solid var(--color-chatRest);
+  color: var(--color-chatRest);
+  border-bottom: 1px dashed var(--color-chatRest);
+}
+#interface #sidebar .co.chat-card.roll-card.rest-card .card-header label,
+#interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .card-header label {
+  color: var(--color-chatRest);
+  text-shadow: 0 0px 2px var(--color-chatShadow);
+}
+#interface #sidebar .co.chat-card.roll-card.rest-card .card-content .result,
+#interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .card-content .result {
+  justify-content: space-evenly;
+}
+#interface #sidebar .co.chat-card.roll-card.rest-card .heal-message,
+#interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .heal-message {
+  width: 150px;
+}
+#interface #sidebar .co.chat-card.roll-card.rest-card .heal-message h3,
+#interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .heal-message h3 {
+  margin: 0;
+  line-height: 15px;
+}
+.theme-dark #interface #sidebar .co.chat-card.roll-card.rest-card .heal-message h3,
+.theme-dark #interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .heal-message h3 {
+  color: var(--color-light-3);
+}
+.theme-light #interface #sidebar .co.chat-card.roll-card.rest-card .heal-message h3,
+.theme-light #interface #ui-right-column-1 .co.chat-card.roll-card.rest-card .heal-message h3 {
+  color: #222;
 }
 #interface #sidebar .co.chat-card.roll-card.save-card .card-header,
 #interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-header {
@@ -3618,11 +3623,14 @@ co-toggle-switch[checked] thumb {
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  border-top: 1px solid var(--color-chatSave);
+  color: var(--color-chatSave);
+  border-bottom: 1px dashed var(--color-chatSave);
 }
-#interface #sidebar .co.chat-card.roll-card.save-card .card-header .action-name,
-#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-header .action-name {
-  font-size: 18px;
-  font-style: italic;
+#interface #sidebar .co.chat-card.roll-card.save-card .card-header label,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-header label {
+  color: var(--color-chatSave);
+  text-shadow: 0 0px 2px var(--color-chatShadow);
 }
 #interface #sidebar .co.chat-card.roll-card.save-card .card-content section.result,
 #interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.result {
@@ -3631,18 +3639,71 @@ co-toggle-switch[checked] thumb {
   justify-content: center;
   align-items: center;
 }
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content .save-roll,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content .save-roll {
+  display: flex;
+  flex-direction: column;
+  height: 40px;
+  font-size: 18px;
+  color: var(--color-chatSave);
+  background: #5d142b3d;
+  border: 2px solid var(--color-chatSave);
+  border-radius: 5px;
+  box-shadow: 1px 1px 0px 1px var(--color-chatSave);
+  padding: 0px 5px;
+  margin: 0 0 5px 0;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content .save-roll .save-title,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content .save-roll .save-title {
+  font-size: var(--font-size-12);
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content .save-roll .save-skill,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content .save-roll .save-skill {
+  font-size: var(--font-size-18);
+  margin-top: -5px;
+}
 #interface #sidebar .co.chat-card.roll-card.skill-card .card-header,
 #interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-header {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
+  border-top: 1px solid var(--color-chatSkill);
+  color: var(--color-chatSkill);
+  border-bottom: 1px dashed var(--color-chatSkill);
 }
-#interface #sidebar .co.chat-card.roll-card.skill-card .card-header .action-name,
-#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-header .action-name {
-  font-size: 18px;
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-header label,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-header label {
+  color: var(--color-chatSkill);
+  text-shadow: 0 0px 2px var(--color-chatShadow);
+}
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-content .skill-used,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-content .skill-used {
+  font-size: var(--font-size-16);
+  margin-top: 2px;
+  border-top: 1px dashed var(--color-chatSkill);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 16px;
+  padding-top: 2px;
+}
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-content .skill-used .skill-used-title,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-content .skill-used .skill-used-title {
   font-style: italic;
-  margin-left: 5px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-content .skill-used .skill-used-bonus,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-content .skill-used .skill-used-bonus {
+  font-size: var(--font-size-18);
+  padding-left: 10px;
+  font-weight: bold;
+  color: var(--color-chatSkill);
+}
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-content .bloc-result,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-content .bloc-result {
+  padding: 8px 0 3px 0;
 }
 .icon.co {
   background-image: url('/systems/co2/ui/icone_co.webp');

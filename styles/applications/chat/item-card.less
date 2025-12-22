@@ -2,18 +2,52 @@
   .itemTitle {
     font-size: 16px;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     margin-top: 3px;
+    border-top: 1px solid var(--color-chatItem);
+    border-bottom: 1px dashed var(--color-chatItem);
+    label {
+      color: var(--color-chatItem);
+      text-shadow: 0 0px 2px var(--color-chatShadow);
+    }
     span {
+      color: var(--color-chatItem);
       text-transform: uppercase;
       font-weight: bold;
       text-wrap: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     img {
-      height: 27px;
-      margin-right: 5px;
+      height: 40px;
+      width: fit-content;
+      margin: 2px 5px 2px 0;
+    }
+  }
+  p {
+    padding-left: 15px;
+    line-height: 15px;
+  }
+  .button-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 3px;
+    gap: 5px;
+    button {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-size: var(--font-size-14);
+      color: var(--color-chatItem);
+      background: #5d142b3d;
+      border: 2px solid var(--color-chatItem);
+      border-radius: 5px;
+      box-shadow: 1px 1px 0px 1px var(--color-chatItem);
+      padding: 0px 5px;
+      margin: 0;
     }
   }
 }
