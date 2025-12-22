@@ -9,7 +9,7 @@
     --color-chatHeal: #3fa13f;
     --color-chatRest: #93a13f;
     --color-chatSave: #8a43ab;
-    --color-chatItem: #222;
+    --color-chatItem: #bb9d68;
     --color-chatShadow: #7ce6ef;
     span,
     label {
@@ -26,7 +26,7 @@
     --color-chatHeal: #2c532c;
     --color-chatRest: #597928;
     --color-chatSave: #380052;
-    --color-chatItem: #222;
+    --color-chatItem: #4b3a0c;
     --color-chatShadow: #7ce6ef;
     span,
     label {
@@ -40,6 +40,10 @@
     .theme-light & {
       background: #b5a2a2;
     }
+  }
+  .whisper-to {
+    margin-top: -15px;
+    margin-left: 55px;
   }
   &.blind {
     .theme-dark & {
@@ -210,18 +214,7 @@
         font-size: var(--font-size-15);
       }
     }
-    .button-row {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-evenly;
-      flex-wrap: wrap;
-      margin-bottom: 3px;
-      button {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-    }
+
     h4.dice-total {
       margin: 0;
     }
