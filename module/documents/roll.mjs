@@ -437,6 +437,7 @@ export class COAttackRoll extends CORoll {
       const tooltip = await roll.getTooltip()
       roll.options = {
         actorId: dialogContext.actor.id,
+        rollMode: withDialog ? rollContext.rollMode : dialogContext.rollMode,
         type: "attack",
         flavor: dialogContext.flavor,
         dice: withDialog ? rollContext.dice : dialogContext.dice,
