@@ -2760,6 +2760,28 @@ co-toggle-switch[checked] thumb {
 .co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section:nth-child(5) .labelled-field i {
   color: var(--color-damages);
 }
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.resource-section {
+  background-color: var(--color-resource);
+  margin-top: 8px;
+}
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.resource-section .field,
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.resource-section .labelled-field,
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.resource-section .labelled-field input {
+  color: var(--color-resource);
+}
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.resource-section .current {
+  width: 25px;
+}
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.resource-section .fa-clover {
+  cursor: pointer;
+}
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.resource-section .fa-clover:hover {
+  text-shadow: 0px 0px 4px darkred;
+}
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar span.max,
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar span.slash {
+  color: var(--color-abilities);
+}
 .co.application.sheet.actor.encounter .window-content .sheet-sidebar .state-name {
   list-style: "\1F782";
   margin-left: 5px;

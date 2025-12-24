@@ -1,4 +1,5 @@
 {{!log "Chroniques Oubliées | Encounter sidebar" this}}
+{{log "Chroniques Oubliées | Encounter sidebar vewlimited" viewLimited}}
 <div class="sheet-sidebar">
   <div class="scrollable">
     <!-- INIT -->
@@ -191,6 +192,51 @@
           {{/if}}
         </div>
       </div>
+    </div>
+
+    <!-- FP -->
+    <div class="sidebar-section resource-section">
+      <div class="sidebar-section-header">
+        <div class="sidebar-label">
+          <h4 data-tooltip="{{localize 'CO.resources.long.fortune'}}">{{localize "CO.resources.medium.fortune"}}</h4>
+        </div>
+        <div class="resource-points labelled-field">
+          {{#if viewLimited}}
+            <i class="fas fa-fw fa-clover"></i>??
+          {{else}}
+            <i class="fas fa-fw fa-clover" data-action="rollFortune" data-tooltip="Jet de chance"></i>
+            <input class="current" name="system.resources.fortune.value" value="{{resources.fortune.value}}" type="number" data-dtype="Number" placeholder="0" />
+            <span class="slash">/</span>
+            <span class="max" data-tooltip="{{resources.fortune.tooltip}}">{{resources.fortune.max}}</span>
+          {{/if}}
+        </div>
+      </div>
+      {{#if unlocked}}        
+        <div class="sidebar-section-content">
+          <div class="field">
+            <input
+              class="hp-base"
+              type="number"
+              name="system.resources.fortune.base"
+              value="{{resources.fortune.base}}"
+              data-dtype="Number"
+              placeholder="0"
+              readonly
+              data-tooltip="{{localize 'CO.label.long.base'}}"
+            />
+            <span class="slash">/</span>
+            <input
+              class="hp-bonus"
+              type="text"
+              name="system.resources.fortune.bonuses.sheet"
+              value="{{numberFormat resources.fortune.bonuses.sheet decimals=0 sign=true}}"
+              data-dtype="Number"
+              data-tooltip="{{localize 'CO.label.long.bonus'}}"
+              placeholder="0"
+            />
+          </div>
+        </div>
+      {{/if}}
     </div>
 
     <!-- MOUVEMENT -->

@@ -6,10 +6,32 @@
           color: var(--color-damages);
         }
       }
+      &.resource-section {
+        background-color: var(--color-resource);
+        margin-top: 8px;
+
+        .field,
+        .labelled-field,
+        .labelled-field input {
+          color: var(--color-resource);
+        }
+        .current {
+          width: 25px;
+        }
+        .fa-clover {
+          cursor: pointer;
+        }
+        .fa-clover:hover {
+          text-shadow: 0px 0px 4px darkred;
+        }
+      }
     }
   }
   background-color: var(--color-encounterSheet);
-
+  span.max,
+  span.slash {
+    color: var(--color-abilities);
+  }
   .state-name {
     list-style: "\1F782";
     margin-left: 5px;
@@ -21,7 +43,7 @@
       margin-left: 5px;
     }
   }
-  .status-effect{
+  .status-effect {
     margin-left: 5px;
     display: flex;
     img {

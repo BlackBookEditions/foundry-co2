@@ -16,6 +16,10 @@ export default class EncounterData extends ActorData {
         initial: { base: 10, unit: "m", bonuses: { sheet: 0, effects: 0 } },
       }),
       nc: new fields.NumberField({ required: true, nullable: false, initial: 0, min: 0 }),
+      // Pour eviter de modifier toutes les rencontres déjà crée je ne peux pas refaire le nc mais je peux faire un ncBonus et un ncTotal
+      ncBonus: new fields.NumberField({ required: true, nullable: false, initial: 0, min: 0 }), // Pour les modifiers
+      ncTotal: new fields.NumberField({ required: true, nullable: false, initial: 0, min: 0 }), // Pour l'usage lors des calculs
+
       hp: new fields.SchemaField(
         {
           base: new fields.NumberField({ ...requiredInteger, initial: 0 }),
@@ -51,9 +55,9 @@ export default class EncounterData extends ActorData {
       melee: new fields.EmbeddedDataField(BaseValue), // Va servir à stocker les modifiers
       ranged: new fields.EmbeddedDataField(BaseValue), // Va servir à stocker les modifiers
       magic: new fields.EmbeddedDataField(BaseValue), // Va servir à stocker les modifiers
-      atkNbre: new fields.NumberField({ required: true, nullable: false, initial: 1, min: 1, integer: true }), // ajout pour le bestiaire, seuil de déclenchement
-      dmgBonus: new fields.StringField({ required: true, nullable: false, initial: "" }), // ajout pour le bestiaire bonus de boss
     })
+    schema.atkNbre = new fields.NumberField({ required: true, nullable: false, initial: 1, min: 1, integer: true }) // ajout pour le bestiaire, seuil de déclenchement
+    schema.dmgBonus = new fields.StringField({ required: true, nullable: false, initial: "" }) // ajout pour le bestiaire bonus de boss
     // Ajout des ressources pour le bestiaire qui donne des points de chances aux boss
     const initial = {
       base: 0,
@@ -169,7 +173,11 @@ export default class EncounterData extends ActorData {
   prepareDerivedData() {
     super.prepareDerivedData()
 
+    this._prepareFinalNC()
+
     this._prepareAbilities()
+
+    this._prepareFP() // Ajout des points de chances des boss
 
     this._prepareHPMax()
 
@@ -178,11 +186,37 @@ export default class EncounterData extends ActorData {
     this._prepareCombat()
   }
 
+  _prepareFinalNC() {
+    const modNc = this.computeTotalModifiersByTarget(this.attributeModifiers, "nc")
+    this.attributes.ncBonus = modNc.total
+    this.attributes.ncTotal = this.attributes.nc + this.attributes.ncBonus
+  }
+
+  _prepareFP() {
+    try {
+      this.resources.fortune.base = 0
+      const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.fp.id)
+      this.resources.fortune.bonuses.sheet = resourceModifiers.total
+      this.resources.fortune.max = this.resources.fortune.base + this.resources.fortune.bonuses.sheet + this.resources.fortune.bonuses.effects
+      this.resources.fortune.value = Math.min(this.resources.fortune.max, this.resources.fortune.value)
+      this.resources.fortune.tooltip = resourceModifiers.tooltip
+    } catch (e) {
+      console.error("_prepareFP de ", this.parent.name)
+      console.error(e)
+    }
+  }
+
   _prepareCombat() {
     for (const [key, skill] of Object.entries(this.combat)) {
       // Somme du bonus de la feuille et du bonus des effets
+
       const bonuses = Object.values(skill.bonuses).reduce((prev, curr) => prev + curr)
       const combatModifiersBonus = this.computeTotalModifiersByTarget(this.combatModifiers, key)
+
+      if ([SYSTEM.COMBAT.melee.id, SYSTEM.COMBAT.ranged.id, SYSTEM.COMBAT.magic.id].includes(key)) {
+        this._prepareAttack(key, skill, bonuses)
+      }
+
       if (key !== SYSTEM.COMBAT.crit.id) {
         skill.value = skill.base + bonuses + combatModifiersBonus.total
       }
@@ -201,6 +235,24 @@ export default class EncounterData extends ActorData {
         }
       }
     }
+  }
+
+  /**
+   * Calcul les scores de combat melee/distance/magique
+   * @param {*} key clef dans la table des attributs : 'melee', 'ranged', 'magic'
+   * @param {*} skill Element pour lequel on calcul la valeur et le tooltip (ex : combat.melee combat.ranged, combat.magic)
+   * @param {*} bonuses Autres bonus (customeffect par ex)
+   */
+  _prepareAttack(key, skill, bonuses) {
+    // Le bonus de niveau est limité à 10
+    const levelBonus = Math.min(this.attributes.ncTotal, 10)
+    const combatModifiers = this.computeTotalModifiersByTarget(this.combatModifiers, key)
+
+    skill.base = levelBonus
+    skill.tooltipBase = Utils.getTooltip(game.i18n.localize("CO.label.long.level"), levelBonus)
+
+    skill.value = skill.base + bonuses + combatModifiers.total
+    skill.tooltipValue = skill.tooltipBase.concat(combatModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
   _prepareMovement() {
@@ -232,13 +284,12 @@ export default class EncounterData extends ActorData {
       ability.value = ability.base + bonuses + ability.modifiers
       ability.tooltipValue = Utils.getTooltip(Utils.getAbilityName(key), ability.base).concat(abilityModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
     }
-
-    this.combat.magic = this.abilities.vol.value + (this.attributes.nc === 0.5 ? 0 : this.attributes.nc)
   }
 
   _prepareHPMax() {
     const hpMaxBonuses = Object.values(this.attributes.hp.bonuses).reduce((prev, curr) => prev + curr)
     const hpMaxModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "hp")
+    console.log(this.parent.name, "hpMaxModifiers", hpMaxModifiers.total)
     this.attributes.hp.max = this.attributes.hp.base + hpMaxBonuses + hpMaxModifiers.total
     this.attributes.hp.value = Math.min(this.attributes.hp.max, this.attributes.hp.value)
     this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat(Utils.getTooltip("Bonus", hpMaxBonuses))

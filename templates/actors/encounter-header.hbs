@@ -11,12 +11,15 @@
   <div class="level">
     <label class="level-label">{{localize 'CO.label.short.nc'}}</label>
     {{#if unlocked}}
+      <label class="level-label">{{localize 'CO.label.long.base'}}</label>
       <input class="adjustable" type="text" name="system.attributes.nc" value="{{attributes.nc}}" data-dtype="Number" />
+      <label class="level-label">{{localize 'CO.label.long.bonus'}}</label>
+      <span>{{attributes.ncBonus}}</span>
     {{else}}
       {{#if viewLimited}}
         <span>??</span>
       {{else}}
-        <span>{{attributes.nc}}</span>
+        <span>{{attributes.ncTotal}}</span>
       {{/if}}
     {{/if}}
   </div>
