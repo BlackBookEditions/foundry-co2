@@ -709,7 +709,7 @@
       "dr": "RD",
       "drText": "Prendre en compte la résistance aux dommages",
       "temp": "Temp.",
-      "tempText" : "Les dommages sont temporaires",
+      "tempText": "Les dommages sont temporaires",
       "applyDamage": "Appliquer les dommages",
       "applyHalfDamage": "Appliquer la moitié des dommages",
       "applyDoubleDamage": "Appliquer le double des dommages",
@@ -957,7 +957,9 @@
         "infoLibre": "Indiquez les valeurs de chaque caractéristique manuellement",
         "infoAutres": "Glissez-déposez les valeurs ci-dessus à la place sur la ligne Base"
       },
-      "restHpRecovered": "Vous avez récupéré {hp} points de vigueur"
+      "restHpRecovered": "Vous avez récupéré {hp} points de vigueur",
+      "healRecovered": "PV soigné(s)",
+      "healTooltip": "Le soin est appliqué directement sur la cible"
     },
     "roll": {
       "skillcheck": "Test de compétence",

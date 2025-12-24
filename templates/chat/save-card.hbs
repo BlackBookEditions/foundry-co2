@@ -1,7 +1,7 @@
 {{log "Chroniques Oubliées | save card" this}}
 <div class="co chat-card roll-card save-card" data-actor-id="{{actorId}}">
   <header class="card-header flexcol">
-    <div class="type-card"><label><i class="fa-solid fa-bell-on" data-tooltip="{{localize 'CO.ui.saves'}}" data-tooltip-direction="LEFT"></i></label></div>
+    <div class="type-card"><label><i class="fa-solid fa-shield-exclamation" data-tooltip="{{localize 'CO.ui.saves'}}" data-tooltip-direction="LEFT"></i></label></div>
     <div class="action-name">{{flavor}}</div>
   </header>
 
@@ -37,9 +37,9 @@
       </section>
       <section class="result-sentence">
         <button class="save-roll" data-save-target="{{targetUuid}}" data-save-ability="{{ability}}" data-save-difficulty="{{difficulty}}">
-              <div class="save-title">{{localize "CO.ui.saves"}}</div>
-              <div class="save-skill">{{getAbilityLabel ability}}</div>
-            </button>
+          <div class="save-title">{{localize "CO.ui.saves"}}</div>
+          <div class="save-skill">{{getAbilityLabel ability}}</div>
+        </button>
           {{#if showDifficulty}}
             {{#if isFumble}}
               <div class="show-result failure fumble"><i class="fas fa-skull-crossbones"></i><br /><strong>{{localize "CO.roll.fumble"}}</strong></div>
