@@ -328,6 +328,27 @@ export default class Utils {
   }
 
   /**
+   * Fonction qui va prendre une formule qui peux etre aussi bien "1" que "1d4° + 5"
+   * et va diviser les nombre entier (sauf apres un "d") par le diviseur
+   * @param {String} formula
+   * @param {*} divisor
+   * @returns {String} Renvoi la formule modifiée
+   */
+  static divideModifierValue(formula, divisor) {
+    return formula.replace(/(\d+)(d\d+)?/g, (match, integerPart, dicePart) => {
+      // Divise la partie entière (arrondi supérieur)
+      const newIntegerPart = Math.ceil(parseInt(integerPart, 10) / divisor)
+
+      // Si c'est un jet de dés, reconstruit avec le nouveau nombre de dés
+      if (dicePart) {
+        return `${newIntegerPart}${dicePart}`
+      }
+      // Sinon, retourne juste l'entier divisé
+      return `${newIntegerPart}`
+    })
+  }
+
+  /**
    * Calcul la somme d'un tableau de valeurs positives ou négatives
    *
    * @param {*} array Un tableau de valeurs

@@ -2757,6 +2757,19 @@ co-toggle-switch[checked] thumb {
 .co.application.sheet.actor.encounter .window-content .sheet-sidebar {
   background-color: var(--color-encounterSheet);
 }
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.melee-section,
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.ranged-section,
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.magic-section {
+  background-color: var(--color-attack);
+}
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.melee-section .field,
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.ranged-section .field,
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.magic-section .field,
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.melee-section .labelled-field,
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.ranged-section .labelled-field,
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section.magic-section .labelled-field {
+  color: var(--color-attack);
+}
 .co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section:nth-child(5) .labelled-field i {
   color: var(--color-damages);
 }

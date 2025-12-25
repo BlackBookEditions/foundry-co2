@@ -2,6 +2,7 @@ import { SYSTEM } from "../config/system.mjs"
 import { BaseValue } from "./schemas/base-value.mjs"
 import ActorData from "./actor.mjs"
 import Utils from "../helpers/utils.mjs"
+import { Modifier } from "./schemas/modifier.mjs"
 
 export default class EncounterData extends ActorData {
   static defineSchema() {
@@ -47,17 +48,27 @@ export default class EncounterData extends ActorData {
       tempDm: new fields.NumberField({ ...requiredInteger, initial: 0, min: 0 }),
     })
 
-    schema.combat = new fields.SchemaField({
-      init: new fields.EmbeddedDataField(BaseValue),
-      def: new fields.EmbeddedDataField(BaseValue),
-      dr: new fields.EmbeddedDataField(BaseValue),
-      crit: new fields.EmbeddedDataField(BaseValue),
-      melee: new fields.EmbeddedDataField(BaseValue), // Va servir à stocker les modifiers
-      ranged: new fields.EmbeddedDataField(BaseValue), // Va servir à stocker les modifiers
-      magic: new fields.EmbeddedDataField(BaseValue), // Va servir à stocker les modifiers
+    schema.combat = new fields.SchemaField(
+      Object.values(SYSTEM.COMBAT).reduce((obj, combat) => {
+        const initial = {
+          base: 0,
+          ability: combat.ability,
+          bonuses: {
+            sheet: 0,
+            effects: 0,
+          },
+        }
+        obj[combat.id] = new fields.EmbeddedDataField(BaseValue, { label: combat.label, nullable: false, initial: initial })
+        return obj
+      }, {}),
+    ) // Va servir à stocker les modifiers
+    schema.atkNbre = new fields.SchemaField({
+      base: new fields.NumberField({ ...requiredInteger, initial: 1, min: 1 }),
+      value: new fields.NumberField({ ...requiredInteger, initial: 1, min: 1 }),
     })
-    schema.atkNbre = new fields.NumberField({ required: true, nullable: false, initial: 1, min: 1, integer: true }) // ajout pour le bestiaire, seuil de déclenchement
-    schema.dmgBonus = new fields.StringField({ required: true, nullable: false, initial: "" }) // ajout pour le bestiaire bonus de boss
+
+    // Nombre d'attaque de rencontre qui va jouer sur la répartition de dommages et les seuil basevalue au cas ou des modifiers seraioent ajoutés plus tard
+
     // Ajout des ressources pour le bestiaire qui donne des points de chances aux boss
     const initial = {
       base: 0,
@@ -188,7 +199,8 @@ export default class EncounterData extends ActorData {
 
   _prepareFinalNC() {
     const modNc = this.computeTotalModifiersByTarget(this.attributeModifiers, "nc")
-    this.attributes.ncBonus = modNc.total
+    this.attributes.ncBonus = 0
+    if (modNc && modNc.total) this.attributes.ncBonus += modNc.total
     this.attributes.ncTotal = this.attributes.nc + this.attributes.ncBonus
   }
 
@@ -196,10 +208,10 @@ export default class EncounterData extends ActorData {
     try {
       this.resources.fortune.base = 0
       const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.fp.id)
-      this.resources.fortune.bonuses.sheet = resourceModifiers.total
-      this.resources.fortune.max = this.resources.fortune.base + this.resources.fortune.bonuses.sheet + this.resources.fortune.bonuses.effects
+      this.resources.fortune.max = this.resources.fortune.base
+      if (resourceModifiers && resourceModifiers.total) this.resources.fortune.max += resourceModifiers.total
       this.resources.fortune.value = Math.min(this.resources.fortune.max, this.resources.fortune.value)
-      this.resources.fortune.tooltip = resourceModifiers.tooltip
+      if (resourceModifiers && resourceModifiers.tooltip) this.resources.fortune.tooltip = resourceModifiers.tooltip
     } catch (e) {
       console.error("_prepareFP de ", this.parent.name)
       console.error(e)
@@ -211,30 +223,32 @@ export default class EncounterData extends ActorData {
       // Somme du bonus de la feuille et du bonus des effets
 
       const bonuses = Object.values(skill.bonuses).reduce((prev, curr) => prev + curr)
+      // Somme des bonus des modifiers
       const combatModifiersBonus = this.computeTotalModifiersByTarget(this.combatModifiers, key)
 
       if ([SYSTEM.COMBAT.melee.id, SYSTEM.COMBAT.ranged.id, SYSTEM.COMBAT.magic.id].includes(key)) {
-        this._prepareAttack(key, skill, bonuses)
+        this._prepareAttack(key, skill, bonuses, combatModifiersBonus)
       }
 
       if (key !== SYSTEM.COMBAT.crit.id) {
-        skill.value = skill.base + bonuses + combatModifiersBonus.total
+        skill.value = skill.base + bonuses
+        if (combatModifiersBonus && combatModifiersBonus.total) skill.value = skill.value + combatModifiersBonus.total
       }
-
       if (key === SYSTEM.COMBAT.crit.id) {
         this.combat.crit.base = SYSTEM.BASE_CRITICAL
 
-        // Somme des bonus des modifiers
-        const critModifiers = this.computeTotalModifiersByTarget(this.combatModifiers, SYSTEM.COMBAT.crit.id)
-
-        if (critModifiers.total > 0) {
-          this.combat.crit.value = Math.max(16, SYSTEM.BASE_CRITICAL - critModifiers.total)
-          this.combat.crit.tooltipValue = Utils.getTooltip("Bonus", critModifiers.total)
+        if (combatModifiersBonus && combatModifiersBonus.total) {
+          this.combat.crit.value = Math.max(16, SYSTEM.BASE_CRITICAL - combatModifiersBonus.total)
+          this.combat.crit.tooltipValue = Utils.getTooltip("Bonus", combatModifiersBonus.total)
         } else {
           this.combat.crit.value = this.combat.crit.base
         }
       }
     }
+    // Initialisation de atckNumber
+    this.atkNbre.value = this.atkNbre.base
+    const combatModifiersBonus = this.computeTotalModifiersByTarget(this.combatModifiers, "atkNbre")
+    if (combatModifiersBonus && combatModifiersBonus.total) this.atkNbre.value += combatModifiersBonus.total
   }
 
   /**
@@ -242,22 +256,28 @@ export default class EncounterData extends ActorData {
    * @param {*} key clef dans la table des attributs : 'melee', 'ranged', 'magic'
    * @param {*} skill Element pour lequel on calcul la valeur et le tooltip (ex : combat.melee combat.ranged, combat.magic)
    * @param {*} bonuses Autres bonus (customeffect par ex)
+   * @param {Object} combatModifiersBonus { total, toolltip} total des bonus apportés par les modifier et tooltip associé
    */
-  _prepareAttack(key, skill, bonuses) {
+  _prepareAttack(key, skill, bonuses, combatModifiersBonus) {
     // Le bonus de niveau est limité à 10
     const levelBonus = Math.min(this.attributes.ncTotal, 10)
-    const combatModifiers = this.computeTotalModifiersByTarget(this.combatModifiers, key)
 
     skill.base = levelBonus
     skill.tooltipBase = Utils.getTooltip(game.i18n.localize("CO.label.long.level"), levelBonus)
 
-    skill.value = skill.base + bonuses + combatModifiers.total
-    skill.tooltipValue = skill.tooltipBase.concat(combatModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
+    skill.value = skill.base + bonuses
+
+    skill.tooltipValue = skill.tooltipBase.concat(Utils.getTooltip("Bonus", bonuses))
+    if (combatModifiersBonus) {
+      if (combatModifiersBonus.total) skill.value = skill.value + combatModifiersBonus.total
+      if (combatModifiersBonus.tooltip) skill.tooltipValue = skill.tooltipValue.concat(combatModifiersBonus.tooltip)
+    }
   }
 
   _prepareMovement() {
     const movementModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "mov")
-    this.attributes.movement.value = this.attributes.movement.base + this.attributes.movement.bonuses.sheet + this.attributes.movement.bonuses.effects + movementModifiers.total
+    this.attributes.movement.value = this.attributes.movement.base + this.attributes.movement.bonuses.sheet + this.attributes.movement.bonuses.effects
+    if (movementModifiers) this.attributes.movement.value += movementModifiers.total
   }
 
   /**
@@ -279,20 +299,21 @@ export default class EncounterData extends ActorData {
           ability.superior = true
         }
       }
-      ability.modifiers = abilityModifiers.total
-
-      ability.value = ability.base + bonuses + ability.modifiers
-      ability.tooltipValue = Utils.getTooltip(Utils.getAbilityName(key), ability.base).concat(abilityModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
+      if (abilityModifiers.total) ability.bonuses.effects = abilityModifiers.total
+      ability.value = ability.base + bonuses + ability.bonuses.effects
+      ability.tooltipValue = Utils.getTooltip(Utils.getAbilityName(key), ability.base).concat(Utils.getTooltip("Bonus", bonuses))
+      if (abilityModifiers.tooltip) ability.tooltipValue = ability.tooltipValue.concat(abilityModifiers.tooltip)
     }
   }
 
   _prepareHPMax() {
     const hpMaxBonuses = Object.values(this.attributes.hp.bonuses).reduce((prev, curr) => prev + curr)
     const hpMaxModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "hp")
-    console.log(this.parent.name, "hpMaxModifiers", hpMaxModifiers.total)
-    this.attributes.hp.max = this.attributes.hp.base + hpMaxBonuses + hpMaxModifiers.total
+    this.attributes.hp.max = this.attributes.hp.base + hpMaxBonuses
+    if (hpMaxModifiers.total) this.attributes.hp.max += hpMaxModifiers.total
     this.attributes.hp.value = Math.min(this.attributes.hp.max, this.attributes.hp.value)
     this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat(Utils.getTooltip("Bonus", hpMaxBonuses))
+    if (hpMaxModifiers.tooltip) this.attributes.hp.tooltip = this.attributes.hp.tooltip.concat(hpMaxModifiers.tooltip)
   }
 
   // #region accesseurs
@@ -334,20 +355,45 @@ export default class EncounterData extends ActorData {
    * Return the total modifier and the tooltip for the given target and an array of modifiers.
    * @param {Array} modifiers An array of modifier objects.
    * @param {SYSTEM.MODIFIERS.MODIFIER_TARGET} target The target for which the modifiers are filtered.
+   * @param {boolean} withDice Raw dice value can't be reduce, use a different methode
    **/
-  computeTotalModifiersByTarget(modifiers, target) {
+  computeTotalModifiersByTarget(modifiers, target, withDice = false) {
     if (!modifiers) return { total: 0, tooltip: "" }
-
     let modifiersByTarget = modifiers.filter((m) => m.target === target)
-
-    let total = modifiersByTarget.map((m) => m.evaluate(this.parent)).reduce((acc, curr) => acc + curr, 0)
+    if (!modifiersByTarget || modifiersByTarget.length === 0) return { total: 0, tooltip: "" }
+    let values = modifiersByTarget.map((m) => {
+      // Si ce sont des bonus au dommages pour les rencontre on doit les diviser par le nombre d'attaque et les répartir
+      if (
+        this.atkNbre.value > 1 &&
+        (target === SYSTEM.MODIFIERS_TARGET.damMelee.id || target === SYSTEM.MODIFIERS_TARGET.damRanged.id || target === SYSTEM.MODIFIERS_TARGET.damMagic.id)
+      ) {
+        if (m.value.match("\\d+[d|D]\\d+")) {
+          //il y a des dés il va falloir séparer les dés et chiffres entier et diviser le nombre de dé
+          let result = Utils.divideModifierValue(m.value, this.atkNbre.value)
+          const mCopy = JSON.parse(JSON.stringify(m))
+          mCopy.value = result
+          const mod = new Modifier(mCopy)
+          return mod.evaluate(this.parent, withDice)
+        } else {
+          return m.evaluate(this.parent, false) / this.atkNbre.value
+        }
+      } else {
+        let result = m.evaluate(this.parent, withDice)
+        return result
+      }
+    })
+    const total = withDice ? values.reduce((acc, curr) => (acc ? acc + " + " + curr.toString() : curr.toString()), "") : values.reduce((acc, curr) => acc + Number(curr), 0)
 
     let tooltip = ""
     for (const modifier of modifiersByTarget) {
-      let partialTooltip = modifier.getTooltip(this.parent)
+      let partialTooltip = modifier.getTooltip(this.parent, withDice)
       if (partialTooltip !== null) tooltip += partialTooltip
     }
-
+    if (
+      this.atkNbre.value > 1 &&
+      (target === SYSTEM.MODIFIERS_TARGET.damMelee.id || target === SYSTEM.MODIFIERS_TARGET.damRanged.id || target === SYSTEM.MODIFIERS_TARGET.damMagic.id)
+    )
+      tooltip += "<br />Bonus répartie sur " + this.atkNbre.value + " attaques"
     return { total: total, tooltip: tooltip }
   }
 

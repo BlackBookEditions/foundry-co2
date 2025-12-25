@@ -1,6 +1,16 @@
 .sheet-sidebar {
   .scrollable {
     .sidebar-section {
+      &.melee-section,
+      &.ranged-section,
+      &.magic-section {
+        background-color: var(--color-attack);
+
+        .field,
+        .labelled-field {
+          color: var(--color-attack);
+        }
+      }
       &:nth-child(5) {
         .labelled-field i {
           color: var(--color-damages);

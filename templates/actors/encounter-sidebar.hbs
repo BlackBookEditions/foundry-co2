@@ -1,7 +1,66 @@
 {{!log "Chroniques Oubliées | Encounter sidebar" this}}
-{{log "Chroniques Oubliées | Encounter sidebar vewlimited" viewLimited}}
 <div class="sheet-sidebar">
   <div class="scrollable">
+     <!-- MELEE -->
+    <div class="sidebar-section melee-section">
+      <div class="sidebar-section-header">
+        <div class="sidebar-label melee-label">
+          <h4>{{localize "CO.label.short.melee"}}</h4>
+        </div>
+
+        {{#if viewLimited}}
+          <div class="melee-value labelled-field">
+            <i class="fas fa-fw fa-sword"></i>??
+          </div>
+        {{else}}
+          <div class="melee-value labelled-field" data-tooltip="{{combat.melee.tooltipValue}}">
+            <i class="fas fa-fw fa-sword"></i>
+            {{numberFormat combat.melee.value decimals=0 sign=true}}
+          </div>
+        {{/if}}
+
+      </div>      
+    </div>
+    <!-- RANGED -->
+    <div class="sidebar-section ranged-section">
+      <div class="sidebar-section-header">
+        <div class="sidebar-label ranged-label">
+          <h4>{{localize "CO.label.short.ranged"}}</h4>
+          <!--                <a class="roll-icon roll-ranged"><i class="fas fa-dice-d20"></i><i class="fas fa-fw fa-plus"></i><div>{{!combat.ranged.value}}</div></a>-->
+          <!--                <a class="roll-icon roll-ranged"><i class="fas fa-dice-d20"></i><i class="fas fa-fw fa-plus"></i><div>{{!combat.ranged.value}}</div></a>-->
+        </div>
+        {{#if viewLimited}}
+          <div class="ranged-value labelled-field">
+            <i class="fas fa-fw fa-bow-arrow"></i>??
+          </div>
+        {{else}}
+          <div class="ranged-value labelled-field" data-tooltip="{{combat.ranged.tooltipValue}}">
+            <i class="fas fa-fw fa-bow-arrow"></i>
+            {{numberFormat combat.ranged.value decimals=0 sign=true}}
+          </div>
+        {{/if}}
+      </div>      
+    </div>
+    <!-- MAGIC -->
+    <div class="sidebar-section magic-section">
+      <div class="sidebar-section-header">
+        <div class="sidebar-label magic-label">
+          <h4>{{localize "CO.label.short.magic"}}</h4>
+          <!--                <a class="roll-icon roll-magic"><i class="fas fa-dice-d20"></i><i class="fas fa-fw fa-plus"></i><div>{{!combat.magic.value}}</div></a>-->
+          <!--                <a class="roll-icon roll-magic"><i class="fas fa-dice-d20"></i><i class="fas fa-fw fa-plus"></i><div>{{!combat.magic.value}}</div></a>-->
+        </div>
+        {{#if viewLimited}}
+          <div class="magic-value labelled-field">
+            <i class="fas fa-fw fa-wand-magic-sparkles"></i>??
+          </div>
+        {{else}}
+          <div class="magic-value labelled-field" data-tooltip="{{combat.magic.tooltipValue}}">
+            <i class="fas fa-fw fa-wand-magic-sparkles"></i>
+            {{numberFormat combat.magic.value decimals=0 sign=true}}
+          </div>
+        {{/if}}
+      </div>      
+    </div>
     <!-- INIT -->
     <div class="sidebar-section init-section">
       <div class="sidebar-section-header">
@@ -234,6 +293,39 @@
               data-tooltip="{{localize 'CO.label.long.bonus'}}"
               placeholder="0"
             />
+          </div>
+        </div>
+      {{/if}}
+    </div>
+
+    <!-- NOMBRE ATK -->
+    <div class="sidebar-section resource-section">
+      <div class="sidebar-section-header">
+        <div class="sidebar-label">
+          <h4 data-tooltip="{{localize 'CO.label.long.attackNumber'}}">{{localize "CO.label.short.attackNumber"}}</h4>
+        </div>
+        <div class="resource-points labelled-field">
+          {{#if viewLimited}}
+            <i class="fas fa-fw fa-paw-claws"></i>??
+          {{else}}
+            <i class="fas fa-fw fa-paw-claws"></i>
+            <input class="current" name="system.atkNbre.value" value="{{system.atkNbre.value}}" type="number" data-dtype="Number" placeholder="0" readonly />           
+          {{/if}}
+        </div>
+      </div>
+      {{#if unlocked}}        
+        <div class="sidebar-section-content">
+          <div class="field">
+            <input
+              class="hp-base"
+              type="number"
+              name="system.atkNbre.base"
+              value="{{system.atkNbre.base}}"
+              data-dtype="Number"
+              placeholder="0"
+              
+              data-tooltip="{{localize 'CO.label.long.base'}}"
+            />            
           </div>
         </div>
       {{/if}}

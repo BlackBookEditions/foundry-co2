@@ -53,6 +53,7 @@ export class Modifier extends foundry.abstract.DataModel {
    */
   getTooltip(actor, withDiceValue = false) {
     const id = foundry.utils.parseUuid(this.source)?.id
+    console.log("getTootlip de ", this.source, id)
     if (!id) return
     let item = actor.items.get(id)
     let name = "Autre"
@@ -60,6 +61,7 @@ export class Modifier extends foundry.abstract.DataModel {
       name = item.name
     }
     let value = this.evaluate(actor, withDiceValue)
+    console.log("getTootlip de ", item, value)
     return Utils.getTooltip(name, value)
   }
 
