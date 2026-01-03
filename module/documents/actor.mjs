@@ -707,8 +707,8 @@ export default class COActor extends Actor {
    * @param {*} state true to enable the action, false to disable the action
    * @param {*} source uuid of the embedded item which is the source of the action
    * @param {*} indice indice of the action in the array of actions
-   * @param {*} shiftKey true if the shift key is pressed
    * @param {string("attack","damage")} type  define if it's an attack or just a damage
+   * @param {*} shiftKey true if the shift key is pressed
    */
   async activateAction({ state, source, indice, type, shiftKey = null } = {}) {
     const item = await fromUuid(source)
@@ -2152,7 +2152,7 @@ export default class COActor extends Actor {
   }
 
   /**
-   * Fonction assurant les jet de dé pour le soin
+   * Fonction assurant le jet de dé pour le soin
    * @param {COItem} item Item à l'origine du soin (ex : Restauration mineure de prêtre)
    * @param {object} options Elements permettant le calcul du soin
    * @param {string} options.actionName  action déclencheur
@@ -2216,7 +2216,6 @@ export default class COActor extends Actor {
 
     // Si le soin est pour soi-même ou sans cible, on applique directement le soin
     if (targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id) {
-      console.log("le personnage devrait recuperer des PV :", healAmount)
       this.applyHeal({ heal: healAmount, source: flavor })
     }
     // Si le soin est pour une cible et que celle-ci est l'acteur joueur, on applique le soin
@@ -2231,7 +2230,7 @@ export default class COActor extends Actor {
         }
       } else {
         if (game.settings.get("co2", "allowPlayersToModifyTargets"))
-          await game.users.activeGM.query("co2.actorHeal", { fromActor: this.uuid, targets: targetUuids, healAmount: healAmount })
+          await game.users.activeGM.query("co2.actorHeal", { fromSource: actionName, fromActor: this.name, targets: targetUuids, healAmount: healAmount })
       }
     }
   }
@@ -2619,6 +2618,7 @@ export default class COActor extends Actor {
         description: itemChatData.description,
         actions: itemChatData.actions,
       })
+      .withMessageType("item")
       .withWhisper(ChatMessage.getWhisperRecipients("GM").map((u) => u.id))
       .create()
   }
