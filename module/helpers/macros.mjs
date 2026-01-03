@@ -35,6 +35,16 @@ export default class Macros {
           flags: { "co.abilityMacro": true },
         })
         break
+      case "co.attack":
+        const attackData = await Item.implementation.fromDropData(dropData)
+        if (!attackData) return ui.notifications.warn(game.i18n.localize("CO.macro.unownedWarn"))
+        foundry.utils.mergeObject(macroData, {
+          name: `Attaque - ${attackData.name}`,
+          img: attackData.img,
+          command: `if (event.ctrlKey) {game.system.api.macros.openSheet("${attackData.uuid}","${attackData.name}")} else { game.system.api.macros.sendToChat("${attackData.uuid}","${attackData.name}", null) }`,
+          flags: { "co.attackMacro": true },
+        })
+        break
       default:
         return
     }

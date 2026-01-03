@@ -28,15 +28,13 @@
             {{/if}}
         </div>
         <div class="section-body">
-
             <ol class="attacks-list strikes-list item-list">
                 {{#each attacks as |attack id|}}
                     {{!log "Chroniques Oubliées | attack" attack id}}
-                    <li class="item attack flexrow" data-item-type="attack" data-item-uuid="{{attack.uuid}}"
-                        data-item-id="{{attack.id}}" draggable="false">
+                    <li class="item attack flexrow draggable" data-item-type="attack" data-item-uuid="{{attack.uuid}}" data-item-id="{{attack.id}}">
                         <div class="attack-header">
                             <h4 class="attack-name tags">
-                                <i class="{{attack.system.subtypeIcon}}"></i>
+                                <a class="{{attack.system.subtypeIcon}}" data-action="editItem"></a>
                                 <span>
                                     <strong>{{attack.name}}</strong>
                                 </span>
@@ -84,8 +82,7 @@
             <div class="actions-controls controls">
                 <!--            <a class="action-add item-create" data-tooltip="Add Action" data-type="action" data-action-type="action"><i class="fas fa-plus"></i></a>-->
             </div>
-        </div>
-        <!-- ACTIONS -->        
+        </div>        
         {{> "systems/co2/templates/actors/shared/actions.hbs" this}}
     </div>
     <!-- PROPERTIES -->

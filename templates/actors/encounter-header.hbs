@@ -39,7 +39,7 @@
   <ol class="abilities">
     {{#each abilities as |ability id|}}
       <li class="ability" data-ability="{{id}}">
-        <div class="ability-id" data-tooltip="{{localize (concat 'CO.abilities.long.' id)}}" data-tooltip-direction="UP">
+        <div class="ability-id draggable" data-roll-target="{{id}}" data-tooltip="{{localize (concat 'CO.abilities.long.' id)}}" data-tooltip-direction="UP">
           {{localize (concat "CO.abilities.short." id)}}
           {{#if ../unlocked}}
             <input type="checkbox" name="system.abilities.{{id}}.superior" {{checked ability.superior}} data-tooltip="{{localize 'CO.ui.checkForSuperiorAbility'}}" >
