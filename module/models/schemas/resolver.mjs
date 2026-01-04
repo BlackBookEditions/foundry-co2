@@ -256,6 +256,8 @@ export class Resolver extends foundry.abstract.DataModel {
     difficultyFormula = Utils.evaluateCoModifierWithDiceValue(actor, difficultyFormula, item.uuid)
     const resultat = await new Roll(difficultyFormula).evaluate()
     difficultyFormula = resultat.total.toString()
+    let difficultyFormulaEvaluated = Roll.replaceFormulaData(difficultyFormula, actor.getRollData())
+
     let showDifficulty = false
     const displayDifficulty = game.settings.get("co2", "displayDifficulty")
     showDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
@@ -278,7 +280,7 @@ export class Resolver extends foundry.abstract.DataModel {
     const save = await actor.rollAskSave(item, {
       actionName: action.label,
       ability: saveAbility,
-      difficulty: difficultyFormula,
+      difficulty: difficultyFormulaEvaluated,
       showDifficulty,
       targetType: this.target.type,
       targets: targets,
