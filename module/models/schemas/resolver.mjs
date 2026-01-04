@@ -468,4 +468,8 @@ export class Resolver extends foundry.abstract.DataModel {
   get hasAdditionalEffect() {
     return this.additionalEffect.active
   }
+
+  get hasDamageFormulaDefined() {
+    return this.dmg.formula && this.dmg.formula !== "" && this.dmg.formula !== "0"
+  }
 }

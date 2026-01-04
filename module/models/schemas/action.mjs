@@ -325,6 +325,17 @@ export class Action extends foundry.abstract.DataModel {
   }
 
   /**
+   * Checks if the action has at least one resolver with a defined damage formula.
+   * Verifies that among all resolvers, at least one has a damage formula defined.
+   *
+   * @returns {boolean} True if there is at least one resolver with a damage formula, false otherwise.
+   */
+  get hasResolversWithDomage() {
+    // Vérifie que parmis tous les resolvers, au moins 1 a une formule de dégâts définie
+    return this.hasResolvers && this.resolvers.some((resolver) => resolver.hasDamageFormulaDefined)
+  }
+
+  /**
    * Update the source of the action and of all the modifiers
    * @param {*} source UUID of the source
    */
@@ -447,13 +458,15 @@ export class Action extends foundry.abstract.DataModel {
             })
           }
           // Bouton de dégâts
-          icons.push({
-            icon: "fa-solid fa-hand-fist",
-            iconClass: `${this.iconColor} toggle-action`,
-            tooltip: "CO.label.long.damage",
-            actionType: "activate",
-            type: "damage",
-          })
+          if (this.hasResolversWithDomage) {
+            icons.push({
+              icon: "fa-solid fa-hand-fist",
+              iconClass: `${this.iconColor} toggle-action`,
+              tooltip: "CO.label.long.damage",
+              actionType: "activate",
+              type: "damage",
+            })
+          }
         } else {
           icons.push({
             icon: this.iconFA,

@@ -13,8 +13,9 @@ export class CORoll extends Roll {
     // Vérification du type de roll
     const isAttackRoll = roll?.constructor?.name === "COAttackRoll" && roll.options?.type === "attack"
     const isSkillRoll = roll?.constructor?.name === "COSkillRoll"
+    const isRoll = roll?.constructor?.name === "Roll"
 
-    if (isAttackRoll || isSkillRoll) {
+    if (isAttackRoll || isSkillRoll || isRoll) {
       // On récupère le résultat du dé conservé
       const diceResult = roll.terms[0].results.find((r) => r.active).result
       const total = Math.ceil(roll.total)
@@ -471,7 +472,7 @@ export class COAttackRoll extends CORoll {
         ? Utils.evaluateFormulaCustomValues(dialogContext.actor, `${rollContext.formulaDamage}+${rollContext.damageBonus}+${rollContext.damageMalus}`)
         : Utils.evaluateFormulaCustomValues(dialogContext.actor, `${dialogContext.formulaDamage}+${dialogContext.damageBonus}+${dialogContext.damageMalus}`)
 
-      if (Roll.validate(damageFormula)) {
+      if (damageFormula && damageFormula !== "" && damageFormula !== "0" && COAttackRoll._formulaTest(damageFormula) && Roll.validate(damageFormula)) {
         const damageRoll = new this(damageFormula, dialogContext.actor.getRollData())
         await damageRoll.evaluate()
         const damageRollTooltip = await damageRoll.getTooltip()
@@ -508,6 +509,17 @@ export class COAttackRoll extends CORoll {
 
     if (CONFIG.debug.co2?.rolls) console.debug(Utils.log(`COAttackRoll - rolls`), rolls)
     return rolls
+  }
+
+  static _formulaTest(str) {
+    try {
+      const resultat = eval(str)
+      // !! force la conversion en booléen.
+      // Si le résultat est 0, cela renverra false.
+      return !!resultat
+    } catch (e) {
+      return false // En cas d'erreur de syntaxe
+    }
   }
 
   /**
