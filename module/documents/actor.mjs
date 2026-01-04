@@ -1,9 +1,9 @@
 import { SYSTEM } from "../config/system.mjs"
 import { Modifier } from "../models/schemas/modifier.mjs"
-import { CustomEffectData } from "../models/schemas/custom-effect.mjs"
-import { CORoll, COSkillRoll, COAttackRoll } from "./roll.mjs"
+import CustomEffectData from "../models/schemas/custom-effect.mjs"
+import { CORoll, COSkillRoll, COAttackRoll, COHealRoll } from "./roll.mjs"
 import CoChat from "../chat.mjs"
-import Utils from "../utils.mjs"
+import Utils from "../helpers/utils.mjs"
 
 /**
  * @class COActor
@@ -561,19 +561,20 @@ export default class COActor extends Actor {
     const modifiersByTarget = this.system.skillModifiers.filter((m) => m.target === ability)
     // Ajout des modifiers qui affecte toutes les cibles
     modifiersByTarget.push(...this.system.skillModifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.all.id))
-    // Si le modifier est d'origine d'un customEffectData il ne faut pas chercher sa source
+
     let bonuses = []
     for (const modifier of modifiersByTarget) {
-      if (!modifier.parent) {
+      // Si le modifiera pour origine un customEffectData, il ne faut pas chercher sa source
+      if (!modifier.parent || modifier.parent instanceof CustomEffectData) {
         const customeffect = this.system.currentEffects.find((e) => e.source === modifier.source)
         if (customeffect) {
           bonuses.push({
             sourceType: "CustomEffectData",
             name: customeffect.name,
             description: customeffect.name,
-            pathType: "",
+            pathType: game.i18n.localize("CO.label.long.effects"),
             value: modifier.evaluate(this),
-            additionalInfos: "",
+            additionalInfos: modifier.additionalInfos,
           })
         }
       } else {
@@ -706,8 +707,8 @@ export default class COActor extends Actor {
    * @param {*} state true to enable the action, false to disable the action
    * @param {*} source uuid of the embedded item which is the source of the action
    * @param {*} indice indice of the action in the array of actions
-   * @param {*} shiftKey true if the shift key is pressed
    * @param {string("attack","damage")} type  define if it's an attack or just a damage
+   * @param {*} shiftKey true if the shift key is pressed
    */
   async activateAction({ state, source, indice, type, shiftKey = null } = {}) {
     const item = await fromUuid(source)
@@ -814,7 +815,7 @@ export default class COActor extends Actor {
               const burnRoll = new Roll(`${manaBurnedCost}${recoveryDice}`)
               let result = await burnRoll.roll()
               const message = game.i18n.format("CO.notif.manaBurn", { actorName: this.name, amount: result.total, capacityName: item.name })
-              await new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
+              new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
               const newHP = Math.max(this.system.attributes.hp.value - burnRoll.total, 0)
               await this.update({ "system.attributes.hp.value": newHP })
             }
@@ -978,6 +979,11 @@ export default class COActor extends Actor {
   /**
    * Acquire targets based on the specified target type and scope.
    *
+   * - none: returns an empty array
+   * - self: returns the active tokens of the actor
+   * - single: returns a single target based on the scope and number
+   * - multiple: returns multiple targets based on the scope and number
+   *
    * @param {string} targetType The type of target to acquire. Can be "none", "self", "single", or "multiple".
    * @param {string} targetScope The scope of the target acquisition : allies, enemies, all.
    * @param {integer} targetNumber The number maximum of targets.
@@ -988,31 +994,25 @@ export default class COActor extends Actor {
    */
   acquireTargets(targetType, targetScope, targetNumber, actionName, options = {}) {
     if (!canvas.ready) return []
-    let targets
+    let targets = []
 
     switch (targetType) {
       case "none":
-        return []
+        break
       case "self":
-        targets = this.getActiveTokens(true).map(this.#getTargetFromToken)
+        targets = this._getTargets(actionName, targetScope, 1, true)
         break
       case "single":
-        targets = this.#getTargets(actionName, targetScope, targetNumber, true)
+        targets = this._getTargets(actionName, targetScope, 1, true)
         break
       case "multiple":
-        targets = this.#getTargets(actionName, targetScope, targetNumber, false)
+        targets = this._getTargets(actionName, targetScope, targetNumber, false)
         break
-    }
-
-    // Throw an error if any target had an error
-    for (const target of targets) {
-      if (target.error) ui.notifications.error(target.error)
     }
     return targets
   }
 
   // #endregion
-
 
   /**
    * Update this Document using a provided JSON string.
@@ -1132,6 +1132,19 @@ export default class COActor extends Actor {
    */
   getItemWithKey(slug) {
     return this.items.find((item) => item.system.slug === slug)
+  }
+
+  /**
+   * Spends a specified amount of lucky points from the actor's fortune resources.
+   * Reduces the current lucky points by the given amount, ensuring the value doesn't go below zero.
+   *
+   * @param {number} amount The amount of lucky points to spend
+   * @returns {Promise} A promise that resolves when the actor's fortune value has been updated
+   */
+  spendLuckyPoints(amount) {
+    const currentLuckyPoints = this.system.resources.fortune.value
+    const newLuckyPoints = Math.max(0, currentLuckyPoints - amount)
+    return this.update({ "system.resources.fortune.value": newLuckyPoints })
   }
   // #endregion
 
@@ -1531,6 +1544,8 @@ export default class COActor extends Actor {
 
   /**
    * Lance un test de compétence pour l'acteur.
+   * Note de Caloup mise à jour 19-11-2025 : Pour l'usage de rollSkill ou on veux juste récupérer les resultat et pa les afficher je modifie la fonction
+   * je retourne le resultat et je met un argument showResult = true par defaut que je peux mettre à false pour récupérer uniquement le resultat dans d'autre circonstance (ex : save, opposite)
    *
    * @param {string} skillId L'ID de la compétence à lancer.
    * @param {Object} [options] Options pour le test de compétence.
@@ -1541,14 +1556,14 @@ export default class COActor extends Actor {
    * @param {number} [options.critical=20] Le seuil critique pour le test.
    * @param {number} [options.bonusDice] Le nombre de dés bonus à ajouter au jet.
    * @param {number} [options.malusDice] Le nombre de dés malus à soustraire du jet.
-  
    * @param {number} [options.difficulty] La difficulté du test.
    * @param {boolean} [options.oppositeRoll=false] Si le test est un jet opposé.
    * @param {boolean} [options.useDifficulty] Si la difficulté doit être utilisée : dépend de l'option du système displayDifficulty
    * @param {boolean} [options.showDifficulty] Si la difficulté doit être affichée : dépend de displayDifficulty et du user
    * @param {boolean} [options.withDialog=true] Si une boîte de dialogue doit être affichée ou non.
    * @param {Array} [options.targets] Les cibles du test.
-   * @returns {Promise} Le résultat du test de compétence.
+   * @param {boolean} [options.showResult=true] Whether to show the result in chat or just return it.
+   * @returns {Roll, { diceResult, total, isCritical, isFumble, difficulty, isSuccess, isFailure }} Le jet et le résultat du jet de compétence
    */
   async rollSkill(
     skillId,
@@ -1566,6 +1581,7 @@ export default class COActor extends Actor {
       showDifficulty = undefined,
       withDialog = true,
       targets = undefined,
+      showResult = true,
     } = {},
   ) {
     const options = {
@@ -1583,6 +1599,7 @@ export default class COActor extends Actor {
       withDialog,
       targets,
       skillUsed: [],
+      showResult,
     }
     /**
      * A hook event that fires before the roll is made.
@@ -1725,7 +1742,6 @@ export default class COActor extends Actor {
     let roll = await COSkillRoll.prompt(dialogContext, { withDialog: withDialog })
     if (!roll) return null
 
-    console.log("rollSkill", dialogContext)
     /**
      * A hook event that fires after the roll is made.
      * @function co.postRollSkill
@@ -1750,12 +1766,26 @@ export default class COActor extends Actor {
      */
     if (Hooks.call("co.resultRollSkill", skillId, options, roll, result) === false) return
 
-    // Prépare le message de résultat
-    const speaker = ChatMessage.getSpeaker({ actor: this, scene: canvas.scene })
+    if (showResult) {
+      // Prépare le message de résultat
+      const speaker = ChatMessage.getSpeaker({ actor: this, scene: canvas.scene })
+      let targetsUuid = targets?.map((target) => target.uuid)
 
-    let targetsUuid = targets?.map((target) => target.uuid)
-
-    await roll.toMessage({ style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "skill", system: { targets: targetsUuid, result: result }, speaker }, { rollMode: roll.options.rollMode })
+      await roll.toMessage(
+        {
+          speaker,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          type: "skill",
+          system: {
+            result: result,
+            targets: targetsUuid,
+          },
+        },
+        { rollMode: roll.options.rollMode },
+      )
+    } else {
+      return { roll, result }
+    }
   }
 
   /**
@@ -1892,7 +1922,7 @@ export default class COActor extends Actor {
           difficulty = null
         }
         if (targets.length > 0) {
-          // Enlève le target. de la difficulté
+          // Enlève le cible. de la difficulté
           difficulty = difficulty.replace(/@.*\./, "@")
           difficulty = CORoll.replaceFormulaData(difficulty, targets[0].actor.getRollData())
         }
@@ -1956,21 +1986,21 @@ export default class COActor extends Actor {
     }
 
     // Gestion des modificateurs de dommages selon le type d'attaque
-    let target
+    let modifierTarget
     switch (actionType) {
       case SYSTEM.ACTION_TYPES.melee.id:
-        target = SYSTEM.MODIFIERS_TARGET.damMelee.id
+        modifierTarget = SYSTEM.MODIFIERS_TARGET.damMelee.id
         break
       case SYSTEM.ACTION_TYPES.ranged.id:
-        target = SYSTEM.MODIFIERS_TARGET.damRanged.id
+        modifierTarget = SYSTEM.MODIFIERS_TARGET.damRanged.id
         break
       case SYSTEM.ACTION_TYPES.spell.id:
-        target = SYSTEM.MODIFIERS_TARGET.damMagic.id
+        modifierTarget = SYSTEM.MODIFIERS_TARGET.damMagic.id
         break
     }
-    if (target) {
-      let withDice = this.system.combatModifiers.some((m) => m.target === target && m.value.match("[dD]\\d"))
-      const damModifiers = this.system.computeTotalModifiersByTarget(this.system.combatModifiers, target, withDice)
+    if (modifierTarget) {
+      let withDice = this.system.combatModifiers.some((m) => m.target === modifierTarget && m.value.match("[dD]\\d"))
+      const damModifiers = this.system.computeTotalModifiersByTarget(this.system.combatModifiers, modifierTarget, withDice)
       if (damModifiers) {
         if (damModifiers.total !== 0) damageFormula = `${damageFormula} + ${damModifiers.total}`
         if (damModifiers.total !== 0) damageFormulaTooltip = damageFormulaTooltip.concat(" +", damModifiers.tooltip)
@@ -1999,6 +2029,9 @@ export default class COActor extends Actor {
         }
       }
     }
+
+    let opposeResult = ""
+    let opposeTooltip = ""
 
     const dialogContext = {
       rollMode,
@@ -2033,9 +2066,11 @@ export default class COActor extends Actor {
       canBeTempDamage,
       tactical,
       hasLuckyPoints,
+      opposeResult: opposeResult,
+      opposeTooltip: opposeTooltip,
     }
 
-    // Rolls contient le jet d'attaque et éventuellement le jet de dommages
+    // Rolls contient le jet d'attaque et le jet de dommages si le type est "attack"
     let rolls = await COAttackRoll.prompt(dialogContext, { withDialog: withDialog })
     if (!rolls) return null
 
@@ -2083,17 +2118,24 @@ export default class COActor extends Actor {
         { rollMode: rolls[0].options.rollMode },
       )
 
-      // Affichage du jet de dommages dans le cas d'un jet combiné, si ce n'est pas un jet opposé et que l'attaque est un succès
-      if (game.settings.get("co2", "useComboRolls") && !rolls[0].options.oppositeRoll && results[0].isSuccess) {
-        if (rolls[1])
-          await rolls[1].toMessage(
-            { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid }, speaker },
-            { rollMode: rolls[1].options.rollMode },
-          )
+      // Affichage du jet de dommages dans le cas d'un jet combiné, si ce n'est pas un jet opposé et si l'attaque est un succès
+      if (game.settings.get("co2", "useComboRolls")) {
+        // Option de la difficulté activée
+        if (
+          game.settings.get("co2", "displayDifficulty") === "none" ||
+          (game.settings.get("co2", "displayDifficulty") !== "none" && !rolls[0].options.oppositeRoll && results[0].isSuccess)
+        ) {
+          if (rolls[1]) {
+            await rolls[1].toMessage(
+              { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid }, speaker },
+              { rollMode: rolls[1].options.rollMode },
+            )
+          }
+        }
       }
     }
 
-    // Jet de dégâts
+    // Jet de dommages
     else if (type === "damage") {
       await rolls[0].toMessage(
         { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid }, speaker },
@@ -2110,7 +2152,7 @@ export default class COActor extends Actor {
   }
 
   /**
-   * Fonction assurant les jet de dé pour le soin
+   * Fonction assurant le jet de dé pour le soin
    * @param {COItem} item Item à l'origine du soin (ex : Restauration mineure de prêtre)
    * @param {object} options Elements permettant le calcul du soin
    * @param {string} options.actionName  action déclencheur
@@ -2119,58 +2161,167 @@ export default class COActor extends Actor {
    * @param {Array<COActor>} options.targets : une liste d'acteurs ciblés
    */
   async rollHeal(item, { actionName = "", healFormula = undefined, targetType = SYSTEM.RESOLVER_TARGET.none.id, targets = [] } = {}) {
-    let roll = new Roll(healFormula)
-    await roll.roll()
+    const options = { actionName, healFormula, targetType, targets }
+    // A hook event that fires before the roll is made.
+    if (Hooks.call("co.preRollHeal", item, options) === false) return
+
+    const roll = new COHealRoll(healFormula)
+    await roll.evaluate()
     const healAmount = roll.total
+
+    const baseLabel = item?.name ?? ""
+    let flavor = baseLabel
+    if (actionName && actionName !== "") {
+      flavor = baseLabel ? `${baseLabel} - ${actionName}` : actionName
+    }
+    if (!flavor) {
+      flavor = game.i18n.localize("CO.ui.heal")
+    }
+
+    // Prépare le message
+    const speaker = ChatMessage.getSpeaker({ actor: this, scene: canvas.scene })
+
+    // Si le type de cible est none ou self, on ajoute l'uuid de l'acteur soigneur
+    // Sinon on ajoute les uuid des cibles
+    const targetUuids =
+      targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id
+        ? [this.uuid]
+        : targets.map((obj) => obj.actor?.uuid ?? obj.uuid).filter((uuid) => typeof uuid === "string")
+
+    // Si le type de cible est unique alors que plusieurs cibles sont sélectionnées, on affiche un avertissement et on retourne false
+    if (targetType === SYSTEM.RESOLVER_TARGET.single.id && targets.length > 1) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningOnlyOneTarget"))
+      return false
+    }
+
+    const rollMode = roll.options.rollMode ?? game.settings.get("core", "rollMode")
+
+    await roll.toMessage(
+      {
+        speaker,
+        style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+        type: "heal",
+        system: {
+          healer: this.uuid,
+          item: item?.uuid ?? null,
+          formula: roll.formula,
+          total: healAmount,
+          label: flavor,
+          targetType,
+          targets: targetUuids,
+        },
+      },
+      { rollMode },
+    )
+
+    // Si le soin est pour soi-même ou sans cible, on applique directement le soin
     if (targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id) {
-      this.applyHeal(healAmount)
-    } else if (targetType === SYSTEM.RESOLVER_TARGET.single.id || targetType === SYSTEM.RESOLVER_TARGET.multiple.id) {
+      this.applyHeal({ heal: healAmount, source: flavor })
+    }
+    // Si le soin est pour une cible et que celle-ci est l'acteur joueur, on applique le soin
+    else if (targetType === SYSTEM.RESOLVER_TARGET.single.id && targets.length === 1 && targets[0] === this.uuid) {
+      this.applyHeal({ heal: healAmount, source: flavor })
+    }
+    // Sinon on applique si c'est le MJ, sinon on demande au MJ de l'appliquer
+    else if (targetType === SYSTEM.RESOLVER_TARGET.single.id || targetType === SYSTEM.RESOLVER_TARGET.multiple.id) {
       if (game.user.isGM) {
         for (const target of targets) {
-          target.actor.applyHeal(healAmount)
+          target.actor.applyHeal({ heal: healAmount, source: flavor })
         }
       } else {
-        const uuidList = targets.map((obj) => obj.uuid)
-        game.socket.emit(`system.${SYSTEM.ID}`, {
-          action: "heal",
-          data: {
-            targets: uuidList,
-            healAmount,
-            fromUserId: this.uuid,
-          },
-        })
+        if (game.settings.get("co2", "allowPlayersToModifyTargets"))
+          await game.users.activeGM.query("co2.actorHeal", { fromSource: actionName, fromActor: this.name, targets: targetUuids, healAmount: healAmount })
       }
     }
   }
 
-  /**
-   * Applique les soins sur soi meme
-   * Positif les degats péridiques sont traités comme des dégats et devrait être réduit ou amplifié en fonction de résistance/vulnérabilité (voir plus tard).
-   * Negatif les degats péridiques sont traités comme des soins et ne devrait pas être affecté par des résistance ou vulnérabilité.
-   * @param {integer} healValue heal or damageValue (heal < 0 and damage > 0)
-   */
-  async applyHealAndDamage(healValue) {
-    let hp = this.system.attributes.hp
-    if (healValue > 0) {
-      // Si ce sont des degat il faut déduire la Résistance
-      healValue -= this.system.combat.dr.value
-      if (healValue < 0) healValue = 0
+  async rollAskSave(
+    item,
+    {
+      actionName = "",
+      ability = undefined,
+      difficulty = undefined,
+      showDifficulty = false,
+      targetType = SYSTEM.RESOLVER_TARGET.none.id,
+      targets = [],
+      customEffect = undefined,
+      additionalEffect = undefined,
+    } = {},
+  ) {
+    const options = {
+      actionName,
+      ability,
+      difficulty,
+      showDifficulty,
+      targetType,
+      targets,
+      customEffect,
+      additionalEffect,
     }
-    hp.value -= healValue
-    if (hp.value > hp.max) hp.value = hp.max
-    if (hp.value < 0) {
-      hp.value = 0
-      if (this.type !== "character") this.toggleStatusEffect("dead", true)
-    }
-    this.update({ "system.attributes.hp": hp })
 
-    let message = ""
-    if (healValue > 0) {
-      message = game.i18n.localize("CO.notif.damaged").replace("{actorName}", this.name).replace("{amount}", healValue.toString())
-    } else {
-      message = game.i18n.localize("CO.notif.healed").replace("{actorName}", this.name).replace("{amount}", Math.abs(healValue).toString())
+    /**
+     * A hook event that fires before the roll is made.
+     * @function co.preRollAskSave
+     * @memberof hookEvents
+     * @param {Object} item             Item used for the roll.
+     * @param {Object} options          Options for the roll.
+     * @returns {boolean}               Explicitly return `false` to prevent roll to be made.
+     */
+    if (Hooks.call("co.preRollAskSave", item, options) === false) return
+
+    const baseLabel = item?.name ?? ""
+    let flavor = baseLabel
+    if (actionName && actionName !== "") {
+      flavor = baseLabel ? `${baseLabel} - ${actionName}` : actionName
     }
-    await new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
+    if (!flavor) {
+      flavor = game.i18n.localize("CO.ui.save")
+    }
+
+    // Prépare le message
+    const speaker = ChatMessage.getSpeaker({ actor: this, scene: canvas.scene })
+
+    // Si le type de cible est none ou self, on ajoute l'uuid de l'acteur lanceur
+    // Sinon on ajoute les uuid des cibles
+    const targetUuids =
+      targetType === SYSTEM.RESOLVER_TARGET.none.id || targetType === SYSTEM.RESOLVER_TARGET.self.id
+        ? [this.uuid]
+        : targets.map((obj) => obj.actor?.uuid ?? obj.uuid).filter((uuid) => typeof uuid === "string")
+
+    // Si le type de cible est unique alors que plusieurs cibles sont sélectionnées, on affiche un avertissement et on retourne false
+    if (targetType === SYSTEM.RESOLVER_TARGET.single.id && targets.length > 1) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningOnlyOneTarget"))
+      return false
+    }
+
+    const rollMode = game.settings.get("core", "rollMode")
+
+    const contentData = {
+      ability: ability,
+      difficulty: difficulty,
+      showButton: true,
+      flavor: flavor,
+    }
+
+    const messageSystem = {
+      ability: ability,
+      difficulty: difficulty,
+      targetType,
+      targets: targetUuids,
+      showButton: true,
+      customEffect,
+      additionalEffect,
+    }
+
+    new CoChat(this)
+      .withTemplate("systems/co2/templates/chat/save-card.hbs")
+      .withData(contentData)
+      .withMessageType("save")
+      .withSystem(messageSystem)
+      .withOptions({ speaker: speaker, style: CONST.CHAT_MESSAGE_STYLES.OTHER })
+      .create()
+
+    return true
   }
 
   /**
@@ -2179,20 +2330,45 @@ export default class COActor extends Actor {
    * Met à jour les PV de l'acteur et envoie un message de notification dans le chat.
    *
    * @async
-   * @param {number} damage La quantité de dégâts à appliquer à l'acteur.
+   * @param {string|null} [source=null] La source des dégâts (optionnel).
+   * @param {number} damage La quantité de domamges à appliquer à l'acteur.
+   * @param {boolean} [isTemporaryDamage=false] Indique si les dégâts sont temporaires.
+   * @param {boolean} [ignoreDR=false] Indique si la résistance aux dégâts (DR) doit être ignorée.
    * @returns {Promise<void>} Résout lorsque la mise à jour des PV et la création du message de chat sont terminées.
    */
-  async applyDamage(damage) {
-    let hp = this.system.attributes.hp
-    damage = Math.max(0, damage - this.system.combat.dr.value)
+  async applyDamage({ source = null, damage, isTemporaryDamage = false, ignoreDR = false } = {}) {
     if (damage === 0) return
-    hp.value = Math.max(0, hp.value - damage)
-    if (hp.value === 0) {
-      if (this.type !== "character") this.toggleStatusEffect("dead", true)
+    const finalDamage = ignoreDR ? Math.max(0, damage) : Math.max(0, damage - this.system.combat.dr.value)
+    // Gestion des dommages temporaires
+    if (isTemporaryDamage) {
+      const currentMaxHp = this.system.attributes.hp.max
+      const currentTempDamage = this.system.attributes.tempDm
+      const newTempDamage = Math.min(currentTempDamage + finalDamage, currentMaxHp)
+      await this.update({ "system.attributes.tempDm": newTempDamage })
     }
-    await this.update({ "system.attributes.hp": hp })
-    const message = game.i18n.format("CO.notif.damaged", { actorName: this.name, amount: damage })
-    await new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
+    // Gestion des dommages normaux
+    else {
+      const hp = this.system.attributes.hp
+      hp.value = Math.max(0, hp.value - finalDamage)
+      if (hp.value === 0 && this.type !== "character") {
+        this.toggleStatusEffect("dead", true)
+      }
+      await this.update({ "system.attributes.hp": hp })
+    }
+
+    let message
+    if (!source) {
+      if (isTemporaryDamage) message = game.i18n.format("CO.notif.tmpDamaged", { actorName: this.name, amount: damage })
+      else message = game.i18n.format("CO.notif.damaged", { actorName: this.name, amount: damage })
+    } else {
+      if (isTemporaryDamage) message = game.i18n.format("CO.notif.tmpDamagedBy", { actorName: this.name, amount: damage, source: source })
+      else message = game.i18n.format("CO.notif.damagedBy", { actorName: this.name, amount: damage, source: source })
+    }
+    new CoChat(this)
+      .withTemplate(SYSTEM.TEMPLATE.MESSAGE)
+      .withData({ message: message })
+      .withWhisper(ChatMessage.getWhisperRecipients("GM").map((u) => u.id))
+      .create()
   }
 
   /**
@@ -2201,16 +2377,35 @@ export default class COActor extends Actor {
    * Met à jour les PV de l'acteur et envoie un message de notification dans le chat.
    *
    * @async
+   * @param {string|null} [source=null] La source du soin (optionnel).
    * @param {number} heal La quantité de soin à appliquer aux PV de l'acteur.
-   * @returns {Promise<void>} Résout lorsque les PV de l'acteur ont été mis à jour.
+   * @param {boolean} [isTemporaryHeal=false] Indique si le soin est temporaire.
+   * @param {boolean} [ignoreDR=true] Indique si la résistance aux dégâts (DR) doit être ignorée.
+   * @returns {Promise<void>} Résolue lorsque les PV de l'acteur ont été mis à jour.
    */
-  async applyHeal(heal) {
-    let hp = this.system.attributes.hp
-    if (hp === hp.max) return
-    hp.value = Math.min(hp.max, hp.value + heal)
-    await this.update({ "system.attributes.hp": hp })
-    const message = game.i18n.format("CO.notif.healed", { actorName: this.name, amount: heal })
-    await new CoChat(this).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
+  async applyHeal({ source = null, heal = 0, isTemporaryHeal = false, ignoreDR = true } = {}) {
+    // Soigne des dommages temporaires
+    if (isTemporaryHeal) {
+      let tempDm = this.system.attributes.tempDm
+      const healAmount = ignoreDR ? heal : heal + this.system.combat.dr.value
+      tempDm = Math.min(this.system.attributes.hp.max, tempDm + healAmount)
+      await this.update({ "system.attributes.tempDm": tempDm })
+    }
+    // Soigne des dommages normaux
+    else {
+      let hpValue = this.system.attributes.hp.value
+      const healAmount = ignoreDR ? heal : heal + this.system.combat.dr.value
+      hpValue = Math.min(this.system.attributes.hp.max, hpValue + healAmount)
+      await this.update({ "system.attributes.hp.value": hpValue })
+    }
+    let message
+    if (!source) message = game.i18n.format("CO.notif.healed", { actorName: this.name, amount: heal })
+    else message = game.i18n.format("CO.notif.healedBy", { actorName: this.name, amount: heal, source: source })
+    new CoChat(this)
+      .withTemplate(SYSTEM.TEMPLATE.MESSAGE)
+      .withData({ message: message })
+      .withWhisper(ChatMessage.getWhisperRecipients("GM").map((u) => u.id))
+      .create()
   }
   // #endregion
 
@@ -2225,44 +2420,58 @@ export default class COActor extends Actor {
    * @returns {Object} An object containing the token, actor, actor's UUID, and token's name.
    * @private
    */
-  #getTargetFromToken(token) {
+  _getTargetFromToken(token) {
     return { token, actor: token.actor, uuid: token.actor.uuid, name: token.name }
   }
 
-  // FIXE ME revoir la gestion des erreurs
-  #getTargets(actionName, scope, number, single) {
-    const tokens = game.user.targets
-    let errorAll
+  // ...existing code...
 
-    // Too few targets
+  /**
+   * Récupère et valide les cibles sélectionnées selon les critères spécifiés.
+   *
+   * @param {string} actionName Nom de l'action (pour les messages d'erreur)
+   * @param {string} scope Portée des cibles : "allies", "enemies", ou "all"
+   * @param {number} number Nombre maximum de cibles autorisées
+   * @param {boolean} single Si true, une seule cible est attendue
+   * @returns {Array} Tableau des cibles validées
+   * @private
+   */
+  _getTargets(actionName, scope, number, single) {
+    const tokens = game.user.targets
+    const targets = []
+
+    // Pas de cibles sélectionnées
     if (tokens.size < 1) {
       return []
     }
 
-    // Too many targets
-    if ((single && tokens.size > 1) || (!single && tokens.size > number)) {
-      errorAll = game.i18n.format("CO.notif.warningIncorrectTargets", {
-        number: single ? 1 : number,
+    // Validation du nombre de cibles
+    const expectedNumber = single ? 1 : number
+    if (tokens.size > expectedNumber) {
+      const error = game.i18n.format("CO.notif.warningIncorrectTargets", {
+        number: expectedNumber,
         action: actionName,
       })
+      ui.notifications.warn(error)
+      return []
     }
 
-    // Test each target
-    const targets = []
+    // Filtrage des cibles selon la portée
     for (const token of tokens) {
-      const t = this.#getTargetFromToken(token)
-      if (errorAll) t.error = errorAll
-      if (scope === "allies" && t.token.document.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) targets.push(t)
-      else if (scope === "enemies" && t.token.document.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) targets.push(t)
-      else if (scope === "all") targets.push(t)
-      if (!this.token) continue
-      if (token === this.token) {
-        t.error = game.i18n.localize("CO.notif.warningCannotTargetSelf")
-        continue
+      // Vérification de la disposition selon la portée
+      const disposition = token.document.disposition
+      const isValidTarget =
+        scope === "all" || (scope === "allies" && disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) || (scope === "enemies" && disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE)
+
+      if (isValidTarget) {
+        targets.push(this._getTargetFromToken(token))
       }
     }
+
     return targets
   }
+
+  // ...existing code...
   // #endregion
 
   // #region Gestion des Custom Effects
@@ -2342,8 +2551,8 @@ export default class COActor extends Actor {
           const roll = new Roll(effect.formula)
           formulaResult = roll.evaluateSync().total
         }
-        if (effect.formulaType === "damage") await this.applyDamage(formulaResult)
-        if (effect.formulaType === "heal") await this.applyHeal(formulaResult)
+        if (effect.formulaType === "damage") await this.applyDamage({ damage: formulaResult })
+        if (effect.formulaType === "heal") await this.applyHeal({ heal: formulaResult })
       }
     }
   }
@@ -2357,7 +2566,7 @@ export default class COActor extends Actor {
    */
   async expireEffects() {
     for (const effect of this.system.currentEffects) {
-      if (effect.remainingTurn <= 0 && effect.unit !== SYSTEM.COMBAT_UNITE.combat) await this.deleteCustomEffect(effect)
+      if (effect.remainingTurn <= 0 && effect.unit !== SYSTEM.COMBAT_UNITE.combat.id && effect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id) await this.deleteCustomEffect(effect)
     }
   }
 
@@ -2409,10 +2618,100 @@ export default class COActor extends Actor {
         description: itemChatData.description,
         actions: itemChatData.actions,
       })
+      .withMessageType("item")
       .withWhisper(ChatMessage.getWhisperRecipients("GM").map((u) => u.id))
       .create()
   }
 
   // #endregion
 
+  // #region Queries handlers
+
+  /**
+   * Handles healing query for multiple targets.
+   * Validates the targets array and applies healing amount to each target actor.
+   *
+   * @param {Object} options The options object
+   * @param {string} options.fromActor Name of the source actor dealing the damage
+   * @param {string} options.fromSource Name of the source dealing the damage
+   * @param {string[]} options.targets Array of UUIDs for target actors receiving damage
+   * @param {number} [options.healAmount] The amount of healing to apply
+   * @param {boolean} [options.isTemporaryHeal=false] Indicates if the healing is temporary
+   * @param {boolean} [options.ignoreDR=true] Indicates if damage resistance should be ignored
+   * @returns {Promise<void>}
+   */
+  static async _handleQueryHeal({ fromActor = "", fromSource = "", targets, healAmount, isTemporaryHeal = false, ignoreDR = true } = {}) {
+    const source = `${fromSource} (${fromActor})`
+    for (const target of targets) {
+      const targetActor = fromUuidSync(target)
+      await targetActor.applyHeal({ source, heal: healAmount, isTemporaryHeal, ignoreDR })
+    }
+  }
+
+  /**
+   * Handles healing a single target actor.
+   *
+   * @static
+   * @async
+   * @param {Object} options The healing options.
+   * @param {string} options.fromActor Name of the source actor dealing the damage
+   * @param {string} options.fromSource Name of the source dealing the damage
+   * @param {string} options.targetUuid UUID of the target actor receiving damage
+   * @param {number} options.healAmount Amount of healing to apply to each target
+   * @param {boolean} options.isTemporaryHeal Indicates if the healing is temporary
+   * @param {boolean} [options.ignoreDR=false] Indicates if damage resistance should be ignored
+   * @returns {Promise<void>}
+   * @private
+   */
+  static async _handleQueryHealSingleTarget({ fromActor = "", fromSource = "", targetUuid, healAmount, isTemporaryHeal = false, ignoreDR = true } = {}) {
+    const source = `${fromSource} (${fromActor})`
+    const targetActor = fromUuidSync(targetUuid)
+    await targetActor.applyHeal({ source, heal: healAmount, isTemporaryHeal, ignoreDR })
+  }
+
+  /**
+   * Handles damage query by applying damage from a source actor to multiple target actors.
+   *
+   * @private
+   * @static
+   * @async
+   * @param {Object} options - The damage query options
+   * @param {string} options.fromActor Name of the source actor dealing the damage
+   * @param {string[]} options.targets Array of UUIDs for target actors receiving damage
+   * @param {number} options.damageAmount Amount of damage to apply to each target
+   * @param {boolean} options.isTemporaryDamage Indicates if the damage is temporary
+   * @param {boolean} [options.ignoreDR=false] Indicates if damage resistance should be ignored
+   * @returns {Promise<void>}
+   */
+  static async _handleQueryDamage({ fromActor, targets, damageAmount, isTemporaryDamage = false, ignoreDR = false } = {}) {
+    const sourceActor = fromUuidSync(fromActor)
+    const source = sourceActor ? sourceActor.name : null
+    for (const target of targets) {
+      const targetActor = fromUuidSync(target)
+      await targetActor.applyDamage({ source, damage: damageAmount, isTemporaryDamage, ignoreDR })
+    }
+  }
+
+  /**
+   * Handles damage query by applying damage from a source actor to multiple target actors.
+   *
+   * @private
+   * @static
+   * @async
+   * @param {Object} options The damage query options
+   * @param {string} options.fromActor Name of the source actor dealing the damage
+   * @param {string} options.fromSource Name of the source dealing the damage
+   * @param {string} options.targetUuid UUID of the target actor receiving damage
+   * @param {number} options.damageAmount Amount of damage to apply to each target
+   * @param {boolean} options.isTemporaryDamage Indicates if the damage is temporary
+   * @param {boolean} [options.ignoreDR=false] Indicates if damage resistance should be ignored
+   * @returns {Promise<void>}
+   */
+  static async _handleQueryDamageSingleTarget({ fromActor, fromSource, targetUuid, damageAmount, isTemporaryDamage, ignoreDR = false } = {}) {
+    const source = `${fromSource} (${fromActor})`
+    const targetActor = fromUuidSync(targetUuid)
+    await targetActor.applyDamage({ source, damage: damageAmount, isTemporaryDamage, ignoreDR })
+  }
+
+  // #endregion
 }

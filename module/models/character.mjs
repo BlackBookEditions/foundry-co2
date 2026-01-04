@@ -1,7 +1,7 @@
 import { SYSTEM } from "../config/system.mjs"
 import { BaseValue } from "./schemas/base-value.mjs"
 import ActorData from "./actor.mjs"
-import Utils from "../utils.mjs"
+import Utils from "../helpers/utils.mjs"
 import CoChat from "../chat.mjs"
 
 import DefaultConfiguration from "../config/configuration.mjs"
@@ -212,6 +212,13 @@ export default class CharacterData extends ActorData {
           await this.parent.toggleStatusEffect("unconscious", { active: false })
           await this.parent.unsetFlag("co2", "statuses.unconsciousFromZeroHP")
         }
+      }
+
+      // FIXME Ca ne marche pas
+      // Cas des DM temporaires supérieurs au nombre de PV restant
+      // PV mis à 0, et si c'est un PNJ c'est la mort
+      if (this.isTempDmSuperiorToCurrentHp) {
+        if (this.parent.type !== "character") await this.parent.toggleStatusEffect("dead", { active: true })
       }
     }
   }
@@ -436,8 +443,11 @@ export default class CharacterData extends ActorData {
       const tooltipBase = Utils.getTooltip("Base", this.attributes.hp.base)
 
       this.attributes.hp.max = this.attributes.hp.base + constitutionBonus + hpMaxBonuses + hpMaxModifiers.total
+
       this.attributes.hp.tooltip = tooltipBase.concat(` ${Utils.getAbilityName("con")} : `, constitutionBonus, hpMaxModifiers.tooltip, Utils.getTooltip("Bonus", hpMaxBonuses))
     }
+
+    if (this.attributes.hp.value > this.attributes.hp.max) this.attributes.hp.value = this.attributes.hp.max // on ne depasse pas le max
   }
 
   _prepareMovement() {
@@ -633,6 +643,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.fp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
+    skill.value = Math.min(skill.max, skill.value) //on ne depasse pas le max
     skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
@@ -673,6 +684,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.mp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
+    skill.value = Math.min(skill.max, skill.value) //on ne depasse pas le max
     skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
@@ -704,6 +716,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.rp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
+    skill.value = Math.min(skill.max, skill.value) //on ne depasse pas le max
     skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
@@ -817,13 +830,15 @@ export default class CharacterData extends ActorData {
       const formula = `${hd} + ${level}`
       const labelTooltip = game.i18n.format("CO.ui.fastRestLabelTooltip", { formula: formula })
 
-      await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fastRest.title"), labelTooltip)
+      //await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fastRest.title"), labelTooltip)
+      await this.parent.rollHeal(null, { actionName: game.i18n.format("CO.ui.fastRest"), healFormula: formula, targetType: SYSTEM.RESOLVER_TARGET.self.id, targets: [this.parent] })
 
       // Récupération des charges des capacités
       await this.recoverCapacityCharges(isFullRest)
 
       // Dépense du DR
       newRp.value = rp.value - 1
+      console.log("on met à jour les rp", newRp)
       await this.parent.update({ "system.resources.recovery": newRp })
     }
     // Récupération complète
@@ -859,8 +874,13 @@ export default class CharacterData extends ActorData {
         }
 
         const labelTooltip = game.i18n.format("CO.ui.fullRestLabelTooltip", { formula: formula })
-        await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fullRest.title"), labelTooltip)
-
+        //await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fullRest.title"), labelTooltip)
+        await this.parent.rollHeal(null, {
+          actionName: game.i18n.format("CO.ui.fullRest"),
+          healFormula: formula,
+          targetType: SYSTEM.RESOLVER_TARGET.self.id,
+          targets: [this.parent],
+        })
         // On aurait dû gagner 1 DR mais si on l'utilise pour la récup on va pas faire +1 et -1.
       } else {
         // Récupération d'un DR puisqu'on en dépense pas
@@ -893,45 +913,6 @@ export default class CharacterData extends ActorData {
         }
       }
     }
-  }
-
-  /**
-   * Applique une récupération au personnage : met à jour les points de récupération (rp) et les points de vigueur (hp),
-   * Lance le jet de dés pour la récupération de PV, et affiche un message de chat avec le résultat.
-   *
-   * @async
-   * @param {Object} hp Objet représentant les points de vie actuels.
-   * @param {string} formula Formule de dés à lancer pour la récupération de PV.
-   * @param {string} title Clé de localisation pour le titre de la carte de chat.
-   * @param {string} labelTooltip Texte à afficher dans l'infobulle du label de la carte de chat.
-   * @returns {Promise<void>} Résout lorsque la récupération est appliquée et le message de chat créé.
-   */
-  async _applyRecovery(hp, formula, title, labelTooltip) {
-    const roll = await new Roll(formula).roll()
-    const toolTip = new Handlebars.SafeString(await roll.getTooltip())
-
-    const newHp = foundry.utils.duplicate(hp)
-    newHp.value += roll.total
-    newHp.value = Math.min(newHp.value, newHp.max)
-
-    const hasLabelToolTip = labelTooltip !== undefined && labelTooltip !== null && labelTooltip !== ""
-
-    new CoChat(this.parent)
-      .withTemplate("systems/co2/templates/chat/healing-card.hbs")
-      .withData({
-        actorId: this.id,
-        title: game.i18n.localize(title),
-        label: game.i18n.format("CO.dialogs.restHpRecovered", { hp: roll.total }),
-        hasLabelToolTip,
-        labelTooltip,
-        formula: formula,
-        total: roll.total,
-        toolTip: toolTip,
-      })
-      .withRoll(roll)
-      .create()
-
-    this.parent.update({ "system.attributes.hp": newHp })
   }
 
   /**

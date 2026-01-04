@@ -3,7 +3,7 @@ const { HandlebarsApplicationMixin } = foundry.applications.api
 const { DragDrop } = foundry.applications.ux
 
 import { SYSTEM } from "../../config/system.mjs"
-import Utils from "../../utils.mjs"
+import Utils from "../../helpers/utils.mjs"
 import slideToggle from "../../elements/slide-toggle.mjs"
 
 export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.ActorSheetV2) {
@@ -579,9 +579,9 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     // Vérification du droit Owner
     if (!this.isEditable) return
     event.preventDefault()
-    let effectname = target.dataset.ceName
+    let effectSlug = target.dataset.ceSlug
 
-    const ce = this.actor.system.currentEffects.find((ce) => ce.slug === effectname)
+    const ce = this.actor.system.currentEffects.find((ce) => ce.slug === effectSlug)
     if (ce) {
       await this.actor.deleteCustomEffect(ce)
     }

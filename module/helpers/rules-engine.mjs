@@ -1,4 +1,4 @@
-import { SYSTEM } from "./config/system.mjs"
+import { SYSTEM } from "../config/system.mjs"
 
 /* Vérifie les règles
   - isEquipped : type Equipement et équipé

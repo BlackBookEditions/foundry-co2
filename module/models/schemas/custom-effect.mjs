@@ -9,7 +9,7 @@ import { Modifier } from "./modifier.mjs"
  * modifiers : Liste des modifiers à appliquer sur l'acteur (buff/debuff)
  * Formula: Formule de calcul des dommages ou du soin
  */
-export class CustomEffectData extends foundry.abstract.DataModel {
+export default class CustomEffectData extends foundry.abstract.DataModel {
   static defineSchema() {
     const fields = foundry.data.fields
     const requiredInteger = { required: true, nullable: false, integer: true }
@@ -17,7 +17,7 @@ export class CustomEffectData extends foundry.abstract.DataModel {
       name: new fields.StringField({ required: true }),
       source: new fields.DocumentUUIDField(),
       statuses: new fields.ArrayField(new fields.StringField({ required: false })),
-      unit: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: "round" }),
+      unit: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: SYSTEM.COMBAT_UNITE.round.id }),
       duration: new fields.StringField({ required: true, initial: 0 }),
       startedAt: new fields.NumberField({ ...requiredInteger, initial: 0 }),
       previousRound: new fields.NumberField({ ...requiredInteger, initial: 0 }),
@@ -35,21 +35,64 @@ export class CustomEffectData extends foundry.abstract.DataModel {
    * @returns {string} Renvoi un tooltip à afficher
    */
   get tooltip() {
-    let tip = `${game.i18n.localize("CO.ui.duration")} : ${this.duration} ${this.unit}<br />`
-    if (this.unit !== SYSTEM.COMBAT_UNITE.combat) tip += `${game.i18n.localize("CO.ui.remainingRound")} : ${this.remainingTurn}<br />`
-    if (this.formula && this.formula !== "") {
-      if (this.formulaType === "damage") tip += `${game.i18n.localize("CO.customEffect.damage")} : ${this.formula}`
-      else if (this.formulaType === "heal") tip += `${game.i18n.localize("CO.customEffect.heal")} : ${this.formula}`
-    }
-    if (this.elementType && this.elementType !== "") tip += `${this.elementType}`
-    if (this.formula && this.formula !== "") tip += `<br />`
-    if (this.statuses && this.statuses.length > 0) tip += `${game.i18n.localize("CO.customEffect.status")} :${this.statuses.join(", ")}<br />`
-    if (this.modifiers && this.modifiers.length > 0) {
-      for (let i = 0; i < this.modifiers.length; i++) {
-        tip += ` ${game.i18n.localize(SYSTEM.MODIFIERS_SUBTYPE[this.modifiers[i].subtype].label)} ${game.i18n.localize(SYSTEM.MODIFIERS_TARGET[this.modifiers[i].target].label)} : ${this.modifiers[i].value}<br />`
+    try {
+      const source = this.source ? fromUuidSync(this.source) : null
+      let tip = `${game.i18n.localize("CO.ui.duration")} :`
+      if (this.unit === SYSTEM.COMBAT_UNITE.round.id || this.unit === SYSTEM.COMBAT_UNITE.second.id) tip += `${this.duration}`
+      tip += ` ${game.i18n.localize(SYSTEM.COMBAT_UNITE[this.unit].label)}<br />`
+      if (this.unit !== SYSTEM.COMBAT_UNITE.combat.id && this.unit !== SYSTEM.COMBAT_UNITE.unlimited.id)
+        tip += `${game.i18n.localize("CO.ui.remainingRound")} : ${this.remainingTurn}<br />`
+      if (this.formula && this.formula !== "") {
+        if (this.formulaType === "damage") tip += `${game.i18n.localize("CO.customEffect.damage")} : ${this.formula}`
+        else if (this.formulaType === "heal") tip += `${game.i18n.localize("CO.customEffect.heal")} : ${this.formula}`
       }
+      if (this.elementType && this.elementType !== "") tip += ` ${game.i18n.localize(`CO.customEffect.${this.elementType}`)} `
+      if (this.formula && this.formula !== "") tip += `<br />`
+      if (this.statuses && this.statuses.length > 0) {
+        tip += "Statuts : "
+        for (let i = 0; i < this.statuses.length; i++) {
+          tip += `${game.i18n.localize(`CO.customStatus.${this.statuses[i]}`)} `
+        }
+      }
+      if (this.modifiers && this.modifiers.length > 0) {
+        for (let i = 0; i < this.modifiers.length; i++) {
+          tip += ` ${game.i18n.localize(SYSTEM.MODIFIERS_SUBTYPE[this.modifiers[i].subtype].label)} ${game.i18n.localize(SYSTEM.MODIFIERS_TARGET[this.modifiers[i].target].label)} : ${this.modifiers[i].value}<br />`
+        }
+      }
+      tip += "<br />"
+      const sourceParts = this.sourceParts
+      if (sourceParts.item) {
+        tip += `par ${sourceParts.item.name} `
+      }
+      if (sourceParts.actor) {
+        tip += `de ${sourceParts.actor.name}`
+      }
+      return tip
+    } catch (e) {
+      console.warn("CustomEffectData - get tooltip", e)
+      throw e
     }
-    return tip
+  }
+
+  get sourceParts() {
+    let actor
+    let item
+
+    if (this.source) {
+      const { primaryType, primaryId, id } = foundry.utils.parseUuid(this.source)
+      // Acteur du monde
+      if (primaryType === "Actor") {
+        actor = game.actors.get(primaryId)
+      }
+      const parts = this.source.split(".")
+      // Acteur d'un token
+      if (primaryType === "Scene") {
+        const tokenId = parts[3]
+        actor = fromUuidSync(`Scene.${primaryId}.Token.${tokenId}`).actor
+      }
+      item = actor.items.get(id)
+    }
+    return { actor, item }
   }
 
   /** @override */
@@ -92,6 +135,25 @@ export class CustomEffectData extends foundry.abstract.DataModel {
         const actor = fromUuidSync(target)
         await actor.applyCustomEffect(ce)
       }
+    }
+  }
+
+  /**
+   * Handles the application of a custom effect to multiple target actors.
+   *
+   * @param {Object} options The options object.
+   * @param {Object} options.ce The custom effect configuration object to be applied.
+   * @param {string[]} options.targets An array of UUID strings representing the target actors.
+   * @returns {Promise<void>} A promise that resolves when all custom effects have been applied to the targets.
+   * @private
+   * @static
+   * @async
+   */
+  static async _handleQueryApplyCustomEffect({ ce, targets } = {}) {
+    const customEffect = CustomEffectData.createFromCE(ce)
+    for (const target of targets) {
+      const actor = fromUuidSync(target)
+      await actor.applyCustomEffect(customEffect)
     }
   }
 

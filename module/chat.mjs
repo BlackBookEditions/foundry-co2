@@ -9,8 +9,10 @@ export default class CoChat {
    * @property {Object|null} template - The template for the chat.
    * @property {Object|null} data - The data associated with the chat.
    * @property {Object|null} flags - The flags for the chat.
-   * @property {Object|null} roll - The roll associated with the chat.
+   * @property {Object|null} rolls - The roll associated with the chat.
    * @property {Object|null} whisper - The whisper settings for the chat.
+   * @property {Object|null} context - Objet contenant dees valeurs que l'on veux récupérer dans le chat
+   * @property {string} type - type de chat message a créer
    */
   constructor(actor) {
     this.actor = actor
@@ -19,8 +21,11 @@ export default class CoChat {
     this.template = null
     this.data = null
     this.flags = null
-    this.roll = null
+    this.rolls = null
     this.whisper = null
+    this.system = null
+    this.type = "base"
+    this.options = null
   }
 
   /**
@@ -53,6 +58,21 @@ export default class CoChat {
     return this
   }
 
+  withMessageType(type) {
+    this.type = type
+    return this
+  }
+
+  /**
+   * Objet contenant dees valeurs que l'on veux récupérer dans le chat
+   * @param {*} system
+   * @returns {CoChat} the instance
+   */
+  withSystem(system) {
+    this.system = system
+    return this
+  }
+
   /**
    * Sets the flags parameter
    * @param {*} flags
@@ -65,11 +85,11 @@ export default class CoChat {
 
   /**
    * Indicates if the chat is a roll.
-   * @param {Roll} roll The roll.
+   * @param {[Roll]} rolls The rolls.
    * @returns {CoChat} the instance.
    */
-  withRoll(roll) {
-    this.roll = roll
+  withRolls(rolls) {
+    this.rolls = rolls
     return this
   }
 
@@ -80,6 +100,11 @@ export default class CoChat {
    */
   withWhisper(whisper) {
     this.whisper = whisper
+    return this
+  }
+
+  withOptions(options) {
+    this.options = options
     return this
   }
 
@@ -98,42 +123,48 @@ export default class CoChat {
       return null
     }
 
-    let speaker = ChatMessage.getSpeaker({ actor: this.actor.id })
-    // Create the chat data
-    const data = {
+    const dataMessage = {
       user: game.user.id,
-      speaker: speaker,
       content: this.content,
+      type: this.type,
+      rolls: [],
+      system: this.system,
+    }
+
+    // Merge options if any
+    if (this.options) {
+      foundry.utils.mergeObject(dataMessage, this.options)
     }
 
     // Set the roll parameter if necessary
-    if (this.roll) {
-      data.roll = this.roll
+    if (this.rolls) {
+      dataMessage.rolls.push(...this.rolls)
     }
 
     // Set the flags parameter if necessary
     if (this.flags) {
-      d.flags = this.flags
+      dataMessage.flags = this.flags
     }
 
     // If the whisper has not been defined, set the whisper and blind parameters according to the player roll mode settings
     if (this.whisper === null) {
       switch (game.settings.get("core", "rollMode")) {
         case "gmroll":
-          data.whisper = ChatMessage.getWhisperRecipients("GM").map((u) => u.id)
+          dataMessage.whisper = ChatMessage.getWhisperRecipients("GM").map((u) => u.id)
           break
         case "blindroll":
-          data.whisper = ChatMessage.getWhisperRecipients("GM").map((u) => u.id)
-          data.blind = true
+          dataMessage.whisper = ChatMessage.getWhisperRecipients("GM").map((u) => u.id)
+          dataMessage.blind = true
           break
         case "selfroll":
-          data.whisper = [game.user.id]
+          dataMessage.whisper = [game.user.id]
           break
       }
-    } else data.whisper = this.whisper
+    } else dataMessage.whisper = this.whisper
 
     // Create the chat
-    this.chat = await ChatMessage.create(data)
+    const cls = getDocumentClass("ChatMessage")
+    this.chat = await cls.create(dataMessage)
     return this
   }
 

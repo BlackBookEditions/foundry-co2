@@ -1,26 +1,18 @@
 // Configuration
 import { SYSTEM } from "./module/config/system.mjs"
+globalThis.SYSTEM = SYSTEM
+
+export * as elements from "./module/elements/_module.mjs"
 
 // Import modules
 import * as models from "./module/models/_module.mjs"
 import * as documents from "./module/documents/_module.mjs"
 import * as applications from "./module/applications/_module.mjs"
-
-// Helpers
-import registerHandlebarsHelpers from "./module/helpers.mjs"
-import registerSystemSettings from "./module/settings.mjs"
-import registerHooks from "./module/hooks.mjs"
-import Macros from "./module/macros.mjs"
-import Utils from "./module/utils.mjs"
-import { handleSocketEvent } from "./module/socket.mjs"
-
-export * as elements from "./module/elements/_module.mjs"
-
-globalThis.SYSTEM = SYSTEM
+import * as helpers from "./module/helpers/_module.mjs"
 
 Hooks.once("init", async function () {
   console.info(SYSTEM.ASCII)
-  console.info(Utils.log("Initializing..."))
+  console.info(helpers.Utils.log("Initializing..."))
 
   globalThis.cof = game.system
   game.system.CONST = SYSTEM
@@ -30,7 +22,8 @@ Hooks.once("init", async function () {
     applications,
     models,
     documents,
-    macros: Macros,
+    helpers,
+    macros: helpers.Macros,
   }
 
   // Actor
@@ -72,21 +65,29 @@ Hooks.once("init", async function () {
     base: models.BaseMessageData,
     action: models.ActionMessageData,
     item: models.ItemMessageData,
+    heal: models.HealMessageData,
     skill: models.SkillMessageData,
+    save: models.SaveMessageData,
   }
 
   // Status Effects
   CONFIG.statusEffects = SYSTEM.STATUS_EFFECT
 
   // Dice system configuration
-  CONFIG.Dice.rolls.push(documents.CORoll, documents.COSkillRoll, documents.COAttackRoll)
+  CONFIG.Dice.rolls.push(documents.CORoll, documents.COSkillRoll, documents.COAttackRoll, documents.COHealRoll)
 
-  // Activate socket handler
-  game.socket.on(`system.${SYSTEM.ID}`, handleSocketEvent)
+  // Queries
+  CONFIG.queries["co2.updateMessageAfterLuck"] = documents.COChatMessage._handleQueryUpdateMessageAfterLuck
+  CONFIG.queries["co2.updateMessageAfterOpposedRoll"] = documents.COChatMessage._handleQueryUpdateMessageAfterOpposedRoll
+  CONFIG.queries["co2.updateMessageAfterSavedRoll"] = documents.COChatMessage._handleQueryUpdateMessageAfterSavedRoll
+  CONFIG.queries["co2.applyCustomEffect"] = models.CustomEffectData._handleQueryApplyCustomEffect
+  CONFIG.queries["co2.actorHeal"] = documents.COActor._handleQueryHeal
+  CONFIG.queries["co2.actorHealSingleTarget"] = documents.COActor._handleQueryHealSingleTarget
+  CONFIG.queries["co2.actorDamage"] = documents.COActor._handleQueryDamage
+  CONFIG.queries["co2.actorDamageSingleTarget"] = documents.COActor._handleQueryDamageSingleTarget
 
-  registerHandlebarsHelpers()
-  registerSystemSettings()
-  registerHooks()
+  helpers.registerHandlebarsHelpers()
+  helpers.registerSystemSettings()
 
   // Load Martial Training
   if (!game.system.CONST.martialTrainingsWeapons) {
@@ -123,7 +124,7 @@ Hooks.once("init", async function () {
   }
   CONFIG.ui.co = applications.COSidebarMenu
 
-  console.info(Utils.log("Initialized"))
+  console.info(helpers.Utils.log("Initialized"))
 })
 
 Hooks.once("i18nInit", function () {
@@ -139,6 +140,12 @@ Hooks.once("i18nInit", function () {
   customeffects.sort((a, b) => a.name.localeCompare(b.name))
   CONFIG.statusEffects = customeffects
 })
+
+Hooks.on("renderChatMessageHTML", applications.hooks.renderChatMessageHTML)
+Hooks.on("createActor", applications.hooks.createActor)
+Hooks.on("updateActor", applications.hooks.updateActor)
+Hooks.on("deleteCombat", applications.hooks.deleteCombat)
+Hooks.on("hotbarDrop", applications.hooks.hotbarDrop)
 
 /**
  * Register world usage statistics
@@ -200,5 +207,5 @@ Hooks.once("ready", async function () {
   // Statistics
   registerWorldCount("co2")
 
-  console.info(Utils.log(game.i18n.localize("CO.notif.ready")))
+  console.info(helpers.Utils.log(game.i18n.localize("CO.notif.ready")))
 })

@@ -811,7 +811,7 @@ co-toggle-switch[checked] thumb {
 .co.application.dialog.skill-roll .field-value,
 .co.application.dialog.skill-roll select {
   text-align: left;
-  font-size: 20px;
+  font-size: var(--font-size-16);
   font-weight: bolder;
   background-color: #ffffff57;
 }
@@ -993,7 +993,7 @@ co-toggle-switch[checked] thumb {
 .co.application.dialog.attack-roll .window-content .field-value,
 .co.application.dialog.attack-roll .window-content select {
   text-align: left;
-  font-size: 20px;
+  font-size: var(--font-size-16);
   font-weight: bolder;
   background-color: #ffffff57;
 }
@@ -3063,6 +3063,52 @@ co-toggle-switch[checked] thumb {
   background-color: #847e87;
   cursor: not-allowed;
 }
+#interface {
+  /*#sidebar {
+  #sidebar-content {
+    margin-left: -8px;
+  }
+
+  .tabs {
+    margin-right: 8px;
+    padding: 0;
+  }
+
+  .tab {
+    border-radius: 0;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+
+    &#chat {
+      padding: 0;
+    }
+  }
+
+  .chat-message {
+    margin-right: 0;
+  }
+
+  .chat-form {
+    gap: 2px;
+    padding-right: 0;
+
+    .chat-controls {
+      .control-buttons {
+        gap: 2px;
+      }
+    }
+  }
+}
+ 
+
+#chat-message {
+  border-width: 1px;
+}
+
+#ui-right-column-1 {
+  padding-bottom: 0;
+}
+   */
+}
 #interface #ui-left {
   padding: 0;
 }
@@ -3073,36 +3119,6 @@ co-toggle-switch[checked] thumb {
 #interface #ui-left button.ui-control:hover {
   z-index: 2;
 }
-#interface #sidebar #sidebar-content {
-  margin-left: -8px;
-}
-#interface #sidebar .tabs {
-  margin-right: 8px;
-  padding: 0;
-}
-#interface #sidebar .tab {
-  border-radius: 0;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
-}
-#interface #sidebar .tab#chat {
-  padding: 0;
-}
-#interface #sidebar .chat-message {
-  margin-right: 0;
-}
-#interface #sidebar .chat-form {
-  gap: 2px;
-  padding-right: 0;
-}
-#interface #sidebar .chat-form .chat-controls .control-buttons {
-  gap: 2px;
-}
-#interface #chat-message {
-  border-width: 1px;
-}
-#interface #ui-right-column-1 {
-  padding-bottom: 0;
-}
 #interface #hotbar {
   margin-bottom: 0;
 }
@@ -3111,6 +3127,14 @@ co-toggle-switch[checked] thumb {
   background: #0b0a13e6;
   color: var(--color-textLight);
   --color-abilities: #2a83b9;
+  --color-chatSkill: #2a83b9;
+  --color-chatAttack: #db5305;
+  --color-chatDamages: #cb0909;
+  --color-chatHeal: #3fa13f;
+  --color-chatRest: #93a13f;
+  --color-chatSave: #8a43ab;
+  --color-chatItem: #bb9d68;
+  --color-chatShadow: #7ce6ef;
 }
 .theme-dark #interface #sidebar .chat-message span,
 .theme-dark #interface #ui-right-column-1 .chat-message span,
@@ -3123,6 +3147,14 @@ co-toggle-switch[checked] thumb {
   background-color: var(--color-light-3);
   color: #222;
   --color-abilities: #084f7b;
+  --color-chatSkill: #084f7b;
+  --color-chatAttack: #702900;
+  --color-chatDamages: darkred;
+  --color-chatHeal: #2c532c;
+  --color-chatRest: #597928;
+  --color-chatSave: #380052;
+  --color-chatItem: #4b3a0c;
+  --color-chatShadow: #7ce6ef;
 }
 .theme-light #interface #sidebar .chat-message span,
 .theme-light #interface #ui-right-column-1 .chat-message span,
@@ -3138,6 +3170,11 @@ co-toggle-switch[checked] thumb {
 .theme-light #interface #ui-right-column-1 .chat-message.whisper {
   background: #b5a2a2;
 }
+#interface #sidebar .chat-message .whisper-to,
+#interface #ui-right-column-1 .chat-message .whisper-to {
+  margin-top: -15px;
+  margin-left: 55px;
+}
 .theme-dark #interface #sidebar .chat-message.blind,
 .theme-dark #interface #ui-right-column-1 .chat-message.blind {
   border: 3px solid #990000;
@@ -3148,7 +3185,6 @@ co-toggle-switch[checked] thumb {
 }
 #interface #sidebar .chat-message .message-header,
 #interface #ui-right-column-1 .chat-message .message-header {
-  border-bottom: 1px solid #5d142b;
   display: grid;
 }
 .theme-dark #interface #sidebar .chat-message .message-header,
@@ -3184,35 +3220,51 @@ co-toggle-switch[checked] thumb {
 }
 #interface #sidebar .chat-message .message-content .card-content,
 #interface #ui-right-column-1 .chat-message .message-content .card-content {
-  font-size: 16px;
-  margin: -6px 0px 0px 0px;
+  font-size: 1rem;
+  /*p {
+        margin-bottom: -15px;
+        border: 2px solid var(--color-chatSkill);
+        border-radius: 15px;
+        background-color: #084f7b66;
+        font-weight: bold;
+        padding: 1px 0 0px 10px;
+      }*/
 }
-#interface #sidebar .chat-message .message-content .card-content p,
-#interface #ui-right-column-1 .chat-message .message-content .card-content p {
-  margin-bottom: -15px;
-  border: 2px solid var(--color-abilities);
-  border-radius: 15px;
-  background-color: #084f7b66;
-  font-weight: bold;
-  padding: 1px 0 0px 10px;
+#interface #sidebar .chat-message .message-content .card-content section.targets .target-list,
+#interface #ui-right-column-1 .chat-message .message-content .card-content section.targets .target-list {
+  list-style-type: none;
+  margin: 0 0 0 10px;
 }
-#interface #sidebar .chat-message .message-content .attack-card .card-content p,
-#interface #ui-right-column-1 .chat-message .message-content .attack-card .card-content p {
-  border: 2px solid var(--color-encounterSheet);
-  background-color: #5d142b3d;
+#interface #sidebar .chat-message .message-content .card-content section.targets .target-list li,
+#interface #ui-right-column-1 .chat-message .message-content .card-content section.targets .target-list li {
+  display: flex;
+  align-items: center;
+}
+#interface #sidebar .chat-message .message-content .card-content section.targets .target-list .target-actor-img,
+#interface #ui-right-column-1 .chat-message .message-content .card-content section.targets .target-list .target-actor-img {
+  width: fit-content;
+  height: 35px;
+  margin-right: 10px;
+}
+#interface #sidebar .chat-message .message-content .card-content .bloc-result,
+#interface #ui-right-column-1 .chat-message .message-content .card-content .bloc-result {
+  display: grid;
+  grid-template-columns: 1fr 0.7fr;
+  align-items: center;
 }
 #interface #sidebar .chat-message .message-content strong,
 #interface #ui-right-column-1 .chat-message .message-content strong {
-  font-size: 15px;
+  font-size: var(--font-size-15);
 }
 #interface #sidebar .chat-message .message-content label,
 #interface #ui-right-column-1 .chat-message .message-content label {
-  font-size: 14px;
+  font-size: var(--font-size-14);
 }
 #interface #sidebar .chat-message .message-content .result,
 #interface #ui-right-column-1 .chat-message .message-content .result {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 #interface #sidebar .chat-message .message-content .total-result,
 #interface #ui-right-column-1 .chat-message .message-content .total-result,
@@ -3220,7 +3272,7 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .chat-message .message-content .diff-result,
 #interface #sidebar .chat-message .message-content .vs,
 #interface #ui-right-column-1 .chat-message .message-content .vs {
-  font-size: 38px;
+  font-size: var(--font-size-32);
   font-weight: bold;
   text-align: center;
 }
@@ -3230,25 +3282,16 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .chat-message .message-content .diff-result label,
 #interface #sidebar .chat-message .message-content .vs label,
 #interface #ui-right-column-1 .chat-message .message-content .vs label {
-  font-size: 20px;
+  font-size: var(--font-size-15);
+  vertical-align: middle;
 }
-#interface #sidebar .chat-message .message-content .total-result .vs,
-#interface #ui-right-column-1 .chat-message .message-content .total-result .vs,
-#interface #sidebar .chat-message .message-content .diff-result .vs,
-#interface #ui-right-column-1 .chat-message .message-content .diff-result .vs,
-#interface #sidebar .chat-message .message-content .vs .vs,
-#interface #ui-right-column-1 .chat-message .message-content .vs .vs {
-  flex-basis: 40px;
-}
-#interface #sidebar .chat-message .message-content .display-difficulty,
-#interface #ui-right-column-1 .chat-message .message-content .display-difficulty,
 #interface #sidebar .chat-message .message-content .dice-total,
 #interface #ui-right-column-1 .chat-message .message-content .dice-total {
   margin-bottom: -10px;
 }
 #interface #sidebar .chat-message .message-content .vs,
 #interface #ui-right-column-1 .chat-message .message-content .vs {
-  margin: 0px 25px;
+  flex-basis: 40px;
   align-self: center;
 }
 #interface #sidebar .chat-message .message-content .result-sentence,
@@ -3256,10 +3299,18 @@ co-toggle-switch[checked] thumb {
   text-align: center;
   margin: -5px 0px -5px 0px;
 }
+#interface #sidebar .chat-message .message-content .result-sentence .fas,
+#interface #ui-right-column-1 .chat-message .message-content .result-sentence .fas {
+  font-size: var(--font-size-28);
+}
+#interface #sidebar .chat-message .message-content .result-sentence .show-result,
+#interface #ui-right-column-1 .chat-message .message-content .result-sentence .show-result {
+  padding: 3px 0;
+}
 #interface #sidebar .chat-message .message-content .result-sentence span,
 #interface #ui-right-column-1 .chat-message .message-content .result-sentence span {
   text-align: center;
-  font-size: 20px;
+  font-size: var(--font-size-14);
 }
 .theme-dark #interface #sidebar .chat-message .message-content .result-sentence span,
 .theme-dark #interface #ui-right-column-1 .chat-message .message-content .result-sentence span {
@@ -3268,46 +3319,18 @@ co-toggle-switch[checked] thumb {
   border-radius: 15px;
   font-weight: bold;
 }
-.theme-dark #interface #sidebar .chat-message .message-content .result-sentence .success,
-.theme-dark #interface #ui-right-column-1 .chat-message .message-content .result-sentence .success {
-  background: #2c532c;
-}
-.theme-dark #interface #sidebar .chat-message .message-content .result-sentence .critical,
-.theme-dark #interface #ui-right-column-1 .chat-message .message-content .result-sentence .critical {
-  background: green;
-}
-.theme-dark #interface #sidebar .chat-message .message-content .result-sentence .failure,
-.theme-dark #interface #ui-right-column-1 .chat-message .message-content .result-sentence .failure {
-  background: darkred;
-}
-.theme-dark #interface #sidebar .chat-message .message-content .result-sentence .failure.fumble,
-.theme-dark #interface #ui-right-column-1 .chat-message .message-content .result-sentence .failure.fumble {
-  background: red;
-}
-.theme-light #interface #sidebar .chat-message .message-content .result-sentence .success,
-.theme-light #interface #ui-right-column-1 .chat-message .message-content .result-sentence .success {
-  color: #2c532c;
-}
-.theme-light #interface #sidebar .chat-message .message-content .result-sentence .critical,
-.theme-light #interface #ui-right-column-1 .chat-message .message-content .result-sentence .critical {
+#interface #sidebar .chat-message .message-content .result-sentence .success,
+#interface #ui-right-column-1 .chat-message .message-content .result-sentence .success {
   color: green;
 }
-.theme-light #interface #sidebar .chat-message .message-content .result-sentence .failure,
-.theme-light #interface #ui-right-column-1 .chat-message .message-content .result-sentence .failure {
-  color: darkred;
-}
-.theme-light #interface #sidebar .chat-message .message-content .result-sentence .failure.fumble,
-.theme-light #interface #ui-right-column-1 .chat-message .message-content .result-sentence .failure.fumble {
-  color: red;
+#interface #sidebar .chat-message .message-content .result-sentence .failure,
+#interface #ui-right-column-1 .chat-message .message-content .result-sentence .failure {
+  color: #c90000;
 }
 #interface #sidebar .chat-message .message-content button,
 #interface #ui-right-column-1 .chat-message .message-content button {
-  background: #084f7b66;
   justify-self: center;
-  margin-top: 5px;
   font-weight: bold;
-  padding: 0 10px;
-  box-shadow: 1px 1px 0px 1px #084f7b;
 }
 .theme-dark #interface #sidebar .chat-message .message-content button,
 .theme-dark #interface #ui-right-column-1 .chat-message .message-content button {
@@ -3317,189 +3340,34 @@ co-toggle-switch[checked] thumb {
 .theme-light #interface #ui-right-column-1 .chat-message .message-content button {
   color: #222;
 }
-#interface #sidebar .chat-message .message-content button.opposite-roll,
-#interface #ui-right-column-1 .chat-message .message-content button.opposite-roll {
-  height: 40px;
-  font-size: 18px;
-  color: #910000;
-  background: #5d142b3d;
-  border: 2px solid var(--color-encounterSheet);
-  border-radius: 15px;
-  box-shadow: 1px 1px 0px 1px var(--color-encounterSheet);
-  padding: 0px 5px;
-}
-.theme-dark #interface #sidebar .chat-message .message-content .type-card,
-.theme-dark #interface #ui-right-column-1 .chat-message .message-content .type-card,
-.theme-dark #interface #sidebar .chat-message .message-content .type-card-skill,
-.theme-dark #interface #ui-right-column-1 .chat-message .message-content .type-card-skill {
-  text-shadow: 0px 0px 4px #795403;
-}
-.theme-light #interface #sidebar .chat-message .message-content .type-card,
-.theme-light #interface #ui-right-column-1 .chat-message .message-content .type-card,
-.theme-light #interface #sidebar .chat-message .message-content .type-card-skill,
-.theme-light #interface #ui-right-column-1 .chat-message .message-content .type-card-skill {
-  text-shadow: 0 0px 4px #cf7306c4;
-}
 #interface #sidebar .chat-message .message-content .type-card label,
-#interface #ui-right-column-1 .chat-message .message-content .type-card label,
-#interface #sidebar .chat-message .message-content .type-card-skill label,
-#interface #ui-right-column-1 .chat-message .message-content .type-card-skill label {
-  font-size: 25px;
+#interface #ui-right-column-1 .chat-message .message-content .type-card label {
+  font-size: 1.5rem;
   font-weight: bold;
   font-variant: small-caps;
 }
-#interface #sidebar .chat-message .message-content .type-card label,
-#interface #ui-right-column-1 .chat-message .message-content .type-card label {
-  color: var(--color-abilities);
-}
-.theme-dark #interface #sidebar .chat-message .message-content .type-card-skill label,
-.theme-dark #interface #ui-right-column-1 .chat-message .message-content .type-card-skill label {
-  color: #2a83b9;
-}
-.theme-light #interface #sidebar .chat-message .message-content .type-card-skill label,
-.theme-light #interface #ui-right-column-1 .chat-message .message-content .type-card-skill label {
-  color: #084f7b;
-}
-#interface #sidebar .chat-message .message-content .action-name strong,
-#interface #ui-right-column-1 .chat-message .message-content .action-name strong {
-  font-size: 18px;
+#interface #sidebar .chat-message .message-content .action-name,
+#interface #ui-right-column-1 .chat-message .message-content .action-name {
+  font-size: 1.2rem;
   font-style: italic;
+  font-weight: bold;
+  margin-left: 5px;
+  padding-right: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #interface #sidebar .chat-message .message-content .lucky-points,
 #interface #ui-right-column-1 .chat-message .message-content .lucky-points {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 5px;
-  margin-top: 35px;
-}
-#interface #sidebar .chat-message .message-content .lucky-points .imgLucky,
-#interface #ui-right-column-1 .chat-message .message-content .lucky-points .imgLucky {
-  height: 25px;
   margin-left: 5px;
-}
-#interface #sidebar .chat-message .message-content .lucky-points label,
-#interface #ui-right-column-1 .chat-message .message-content .lucky-points label {
-  font-size: 17px;
-}
-#interface #sidebar .chat-message .message-content .damage-part,
-#interface #ui-right-column-1 .chat-message .message-content .damage-part {
-  margin: 18px 0px 0px 15px;
-}
-#interface #sidebar .chat-message .message-content .damage-buttons,
-#interface #ui-right-column-1 .chat-message .message-content .damage-buttons {
-  display: grid;
-  grid-template-columns: repeat(4, 37px);
-  grid-template-rows: 30px 30px;
-  justify-items: center;
-  border-left: 4px solid var(--color-encounterSheet);
-  padding-left: 10px;
-}
-#interface #sidebar .chat-message .message-content .damage-buttons .fas,
-#interface #ui-right-column-1 .chat-message .message-content .damage-buttons .fas {
-  font-size: 25px;
-  text-shadow: 0px 0px 2px red;
-}
-#interface #sidebar .chat-message .message-content .temp-dm,
-#interface #ui-right-column-1 .chat-message .message-content .temp-dm {
-  grid-column: 1/3;
-}
-#interface #sidebar .chat-message .message-content .dr,
-#interface #ui-right-column-1 .chat-message .message-content .dr {
-  grid-column: 3/5;
+  font-size: var(--font-size-20);
 }
 #interface #sidebar .chat-message .message-content .message-card p,
 #interface #ui-right-column-1 .chat-message .message-content .message-card p {
-  font-size: 15px;
-}
-#interface #sidebar .chat-message .message-content .itemTitle,
-#interface #ui-right-column-1 .chat-message .message-content .itemTitle {
-  font-size: 16px;
-  display: flex;
-  align-items: flex-end;
-  margin-top: 3px;
-}
-#interface #sidebar .chat-message .message-content .itemTitle span,
-#interface #ui-right-column-1 .chat-message .message-content .itemTitle span {
-  text-transform: uppercase;
-  font-weight: bold;
-  text-wrap: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-#interface #sidebar .chat-message .message-content .itemTitle img,
-#interface #ui-right-column-1 .chat-message .message-content .itemTitle img {
-  height: 27px;
-  margin-right: 5px;
-}
-#interface #sidebar .chat-message .message-content .button-row,
-#interface #ui-right-column-1 .chat-message .message-content .button-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-  margin-bottom: 3px;
-}
-#interface #sidebar .chat-message .message-content .button-row button,
-#interface #ui-right-column-1 .chat-message .message-content .button-row button {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-#interface #sidebar .chat-message .message-content .chatroll .heal,
-#interface #ui-right-column-1 .chat-message .message-content .chatroll .heal {
-  font-size: 22px;
-  margin: 5px;
-}
-.theme-dark #interface #sidebar .chat-message .message-content .chatroll .heal,
-.theme-dark #interface #ui-right-column-1 .chat-message .message-content .chatroll .heal {
-  color: #3fa13f;
-}
-.theme-light #interface #sidebar .chat-message .message-content .chatroll .heal,
-.theme-light #interface #ui-right-column-1 .chat-message .message-content .chatroll .heal {
-  color: #2c532c;
-}
-#interface #sidebar .chat-message .message-content .chatroll .heal-formula,
-#interface #ui-right-column-1 .chat-message .message-content .chatroll .heal-formula {
-  margin-bottom: -10px;
-  border: 2px solid #2c532c;
-  border-radius: 15px;
-  background-color: #087b1f66;
-  font-weight: bold;
-  padding: 1px 0 0px 10px;
-  font-size: 16px;
-}
-#interface #sidebar .chat-message .message-content .chatroll .heal-result,
-#interface #ui-right-column-1 .chat-message .message-content .chatroll .heal-result {
-  font-size: 38px;
-  font-weight: bold;
-  text-align: center;
-}
-#interface #sidebar .chat-message .message-content .chatroll .heal-result label,
-#interface #ui-right-column-1 .chat-message .message-content .chatroll .heal-result label {
-  font-size: 20px;
-}
-#interface #sidebar .chat-message .message-content .chatroll .heal-message,
-#interface #ui-right-column-1 .chat-message .message-content .chatroll .heal-message {
-  width: 150px;
-  margin-left: 30px;
-}
-#interface #sidebar .chat-message .message-content .chatroll p,
-#interface #ui-right-column-1 .chat-message .message-content .chatroll p {
-  margin: 0;
-}
-#interface #sidebar .chat-message .message-content .chatroll h3,
-#interface #ui-right-column-1 .chat-message .message-content .chatroll h3 {
-  text-align: center;
-  margin: -10px 0 0 0;
-}
-.theme-dark #interface #sidebar .chat-message .message-content .chatroll strong,
-.theme-dark #interface #ui-right-column-1 .chat-message .message-content .chatroll strong {
-  color: #e7d1b1;
-}
-.theme-light #interface #sidebar .chat-message .message-content .chatroll strong,
-.theme-light #interface #ui-right-column-1 .chat-message .message-content .chatroll strong {
-  color: #222;
+  font-size: var(--font-size-15);
 }
 #interface #sidebar .chat-message .message-content h4.dice-total,
 #interface #ui-right-column-1 .chat-message .message-content h4.dice-total {
@@ -3510,26 +3378,296 @@ co-toggle-switch[checked] thumb {
   margin-top: 8px;
   font-weight: bold;
 }
-#interface #sidebar .chat-message .message-content .skill-used,
-#interface #ui-right-column-1 .chat-message .message-content .skill-used {
+#interface #sidebar .chat-message .dice-formula,
+#interface #ui-right-column-1 .chat-message .dice-formula {
+  margin-bottom: 2px;
+  font-size: var(--font-size-14);
+}
+#interface #sidebar .co.chat-card.roll-card.attack-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  border-top: 1px solid var(--color-chatAttack);
+  color: var(--color-chatAttack);
+}
+#interface #sidebar .co.chat-card.roll-card.attack-card .card-header label,
+#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-header label {
+  color: var(--color-chatAttack);
+  text-shadow: 0 0px 2px var(--color-chatShadow);
+}
+#interface #sidebar .co.chat-card.roll-card.attack-card .card-content section.options,
+#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-content section.options {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px dashed var(--color-chatAttack);
+  margin-bottom: 2px;
+}
+#interface #sidebar .co.chat-card.roll-card.attack-card .card-content button.opposite-roll,
+#interface #ui-right-column-1 .co.chat-card.roll-card.attack-card .card-content button.opposite-roll {
+  height: 40px;
+  font-size: 18px;
+  color: var(--color-chatAttack);
+  background: #5d142b3d;
+  border: 2px solid var(--color-chatAttack);
+  border-radius: 5px;
+  box-shadow: 1px 1px 0px 1px var(--color-chatAttack);
+  padding: 0px 5px;
+  margin: 0;
+}
+#interface #sidebar .co.chat-card.roll-card.damage-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  border-top: 1px solid var(--color-chatDamages);
+  color: var(--color-chatDamages);
+  border-bottom: 1px dashed var(--color-chatDamages);
+}
+#interface #sidebar .co.chat-card.roll-card.damage-card .card-header label,
+#interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .card-header label {
+  color: var(--color-chatDamages);
+  text-shadow: 0 0px 2px var(--color-chatShadow);
+}
+#interface #sidebar .co.chat-card.roll-card.damage-card .damage-part,
+#interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .damage-part {
+  margin: 0 0 0 10px;
+}
+#interface #sidebar .co.chat-card.roll-card.damage-card .damage-buttons,
+#interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .damage-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 37px);
+  grid-template-rows: 30px 30px;
+  justify-items: center;
+  border-left: 2px solid var(--color-chatDamages);
+  padding-left: 10px;
+}
+#interface #sidebar .co.chat-card.roll-card.damage-card .damage-buttons .fas,
+#interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .damage-buttons .fas {
+  font-size: 25px;
+  text-shadow: 0px 0px 2px var(--color-chatDamages);
+}
+#interface #sidebar .co.chat-card.roll-card.damage-card .temp-dm,
+#interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .temp-dm {
+  grid-column: 1/3;
+}
+#interface #sidebar .co.chat-card.roll-card.damage-card .dr,
+#interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .dr {
+  grid-column: 3/5;
+}
+#interface #sidebar .co.chat-card.roll-card.heal-card,
+#interface #ui-right-column-1 .co.chat-card.roll-card.heal-card {
+  /*.chatroll {
+    .heal {
+      font-size: 22px;
+      margin: 5px;
+      .theme-dark & {
+        color: #3fa13f;
+      }
+      .theme-light & {
+        color: #2c532c;
+      }
+    }
+    .heal-formula {
+      margin-bottom: -10px;
+      border: 2px solid #2c532c;
+      border-radius: 15px;
+      background-color: #087b1f66;
+      font-weight: bold;
+      padding: 1px 0 0px 10px;
+      font-size: 16px;
+    }
+    .heal-result {
+      font-size: 38px;
+      font-weight: bold;
+      text-align: center;
+      label {
+        font-size: 20px;
+      }
+    }
+    .heal-message {
+      width: 150px;
+      margin-left: 30px;
+    }
+    p {
+      margin: 0;
+    }
+    h3 {
+      text-align: center;
+      margin: -10px 0 0 0;
+    }
+    strong {
+      .theme-dark & {
+        color: #e7d1b1;
+      }
+      .theme-light & {
+        color: #222;
+      }
+    }
+  }*/
+}
+#interface #sidebar .co.chat-card.roll-card.heal-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.heal-card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  border-top: 1px solid var(--color-chatHeal);
+  color: var(--color-chatHeal);
+  border-bottom: 1px dashed var(--color-chatHeal);
+}
+#interface #sidebar .co.chat-card.roll-card.heal-card .card-header label,
+#interface #ui-right-column-1 .co.chat-card.roll-card.heal-card .card-header label {
+  color: var(--color-chatHeal);
+  text-shadow: 0 0px 2px var(--color-chatShadow);
+}
+#interface #sidebar .co.chat-card.roll-card.heal-card .card-content .bloc-result,
+#interface #ui-right-column-1 .co.chat-card.roll-card.heal-card .card-content .bloc-result {
+  display: grid;
+  grid-template-columns: 0.7fr 1fr;
+}
+#interface #sidebar .co.chat-card.roll-card.item-card .itemTitle,
+#interface #ui-right-column-1 .co.chat-card.roll-card.item-card .itemTitle {
   font-size: 16px;
-  margin-top: 8px;
-  border-top: 1px solid var(--color-abilities);
+  display: flex;
+  align-items: center;
+  margin-top: 3px;
+  border-top: 1px solid var(--color-chatItem);
+  border-bottom: 1px dashed var(--color-chatItem);
+}
+#interface #sidebar .co.chat-card.roll-card.item-card .itemTitle label,
+#interface #ui-right-column-1 .co.chat-card.roll-card.item-card .itemTitle label {
+  color: var(--color-chatItem);
+  text-shadow: 0 0px 2px var(--color-chatShadow);
+}
+#interface #sidebar .co.chat-card.roll-card.item-card .itemTitle span,
+#interface #ui-right-column-1 .co.chat-card.roll-card.item-card .itemTitle span {
+  color: var(--color-chatItem);
+  text-transform: uppercase;
+  font-weight: bold;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#interface #sidebar .co.chat-card.roll-card.item-card .itemTitle img,
+#interface #ui-right-column-1 .co.chat-card.roll-card.item-card .itemTitle img {
+  height: 40px;
+  width: fit-content;
+  margin: 2px 5px 2px 0;
+}
+#interface #sidebar .co.chat-card.roll-card.item-card p,
+#interface #ui-right-column-1 .co.chat-card.roll-card.item-card p {
+  padding-left: 15px;
+  line-height: 15px;
+}
+#interface #sidebar .co.chat-card.roll-card.item-card .button-row,
+#interface #ui-right-column-1 .co.chat-card.roll-card.item-card .button-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 3px;
+  gap: 5px;
+}
+#interface #sidebar .co.chat-card.roll-card.item-card .button-row button,
+#interface #ui-right-column-1 .co.chat-card.roll-card.item-card .button-row button {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: var(--font-size-14);
+  color: var(--color-chatItem);
+  background: #5d142b3d;
+  border: 2px solid var(--color-chatItem);
+  border-radius: 5px;
+  box-shadow: 1px 1px 0px 1px var(--color-chatItem);
+  padding: 0px 5px;
+  margin: 0;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  border-top: 1px solid var(--color-chatSave);
+  color: var(--color-chatSave);
+  border-bottom: 1px dashed var(--color-chatSave);
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-header label,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-header label {
+  color: var(--color-chatSave);
+  text-shadow: 0 0px 2px var(--color-chatShadow);
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content section.result,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content section.result {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content .save-roll,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content .save-roll {
+  display: flex;
+  flex-direction: column;
+  height: 40px;
+  font-size: 18px;
+  color: var(--color-chatSave);
+  background: #5d142b3d;
+  border: 2px solid var(--color-chatSave);
+  border-radius: 5px;
+  box-shadow: 1px 1px 0px 1px var(--color-chatSave);
+  padding: 0px 5px;
+  margin: 0 0 5px 0;
+}
+#interface #sidebar .co.chat-card.roll-card.save-card .card-content .save-roll .save-skill,
+#interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-content .save-roll .save-skill {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  border-top: 1px solid var(--color-chatSkill);
+  color: var(--color-chatSkill);
+  border-bottom: 1px dashed var(--color-chatSkill);
+}
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-header label,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-header label {
+  color: var(--color-chatSkill);
+  text-shadow: 0 0px 2px var(--color-chatShadow);
+}
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-content .skill-used,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-content .skill-used {
+  font-size: var(--font-size-16);
+  margin-top: 2px;
+  border-top: 1px dashed var(--color-chatSkill);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  line-height: 16px;
+  padding-top: 2px;
 }
-#interface #sidebar .chat-message .message-content .skill-used .skill-used-title,
-#interface #ui-right-column-1 .chat-message .message-content .skill-used .skill-used-title {
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-content .skill-used .skill-used-title,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-content .skill-used .skill-used-title {
   font-style: italic;
   font-weight: bold;
+  margin-bottom: 4px;
 }
-#interface #sidebar .chat-message .message-content .skill-used .skill-used-bonus,
-#interface #ui-right-column-1 .chat-message .message-content .skill-used .skill-used-bonus {
-  font-size: 20px;
-  padding-left: 5px;
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-content .skill-used .skill-used-bonus,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-content .skill-used .skill-used-bonus {
+  font-size: var(--font-size-18);
+  padding-left: 10px;
   font-weight: bold;
-  color: var(--color-abilities);
+  color: var(--color-chatSkill);
+}
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-content .bloc-result,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-content .bloc-result {
+  padding: 8px 0 3px 0;
 }
 .icon.co {
   background-image: url('/systems/co2/ui/icone_co.webp');

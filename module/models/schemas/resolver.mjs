@@ -1,8 +1,9 @@
 import { SYSTEM } from "../../config/system.mjs"
-import Utils from "../../utils.mjs"
+import Utils from "../../helpers/utils.mjs"
 import COActor from "../../documents/actor.mjs"
-import { CustomEffectData } from "./custom-effect.mjs"
+import CustomEffectData from "./custom-effect.mjs"
 import { CORoll } from "../../documents/roll.mjs"
+import CoChat from "../../chat.mjs"
 
 /**
  * Resolver
@@ -34,11 +35,14 @@ export class Resolver extends foundry.abstract.DataModel {
         successThreshold: new fields.NumberField({ integer: true, positive: true }),
         statuses: new fields.SetField(new fields.StringField({ required: true, blank: true, choices: SYSTEM.RESOLVER_ADDITIONAL_EFFECT_STATUS })),
         duration: new fields.StringField({ required: true, nullable: false, initial: "0" }),
-        unit: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: "round" }),
+        unit: new fields.StringField({ required: true, choices: SYSTEM.COMBAT_UNITE, initial: SYSTEM.COMBAT_UNITE.round.id }),
         formula: new fields.StringField({ required: false }),
         formulaType: new fields.StringField({ required: false, choices: SYSTEM.RESOLVER_FORMULA_TYPE }),
         elementType: new fields.StringField({ required: false }),
       }),
+      // Ajout de la possibilité de faire un jet de sauvegarde pour la cible et applique l'effet en cas d'échec ou de succès selon le "applyOn" (ajout de saveFailure et saveSuccess)
+      saveAbility: new fields.StringField({ required: false, choices: SYSTEM.ABILITIES, initial: undefined }),
+      saveDifficulty: new fields.StringField({ required: false, nullable: false, initial: undefined }), // Peut être une formule
     }
   }
 
@@ -49,6 +53,7 @@ export class Resolver extends foundry.abstract.DataModel {
       auto: function () {},
       consume: function () {},
       buffDebuff: function () {},
+      save: function () {},
     }
   }
 
@@ -64,6 +69,8 @@ export class Resolver extends foundry.abstract.DataModel {
         return await this.consume(actor, item, action)
       case SYSTEM.RESOLVER_TYPE.buffDebuff.id:
         return await this.buffDebuff(actor, item, action)
+      case SYSTEM.RESOLVER_TYPE.save.id:
+        return await this.save(actor, item, action)
       default:
         return false
     }
@@ -78,6 +85,7 @@ export class Resolver extends foundry.abstract.DataModel {
    */
   async attack(actor, item, action, type) {
     if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log(`Resolver attack`), actor, item, action, type)
+
     let skillFormula = this.skill.formula
     skillFormula = Utils.evaluateFormulaCustomValues(actor, skillFormula, item.uuid)
     let skillFormulaEvaluated = Roll.replaceFormulaData(skillFormula, actor.getRollData())
@@ -94,7 +102,22 @@ export class Resolver extends foundry.abstract.DataModel {
       customEffect = await this._createCustomEffect(actor, item, action)
     }
 
-    const result = await actor.rollAttack(item, {
+    // Gestion des cibles
+    let targets = []
+    // Si le type de cible est none et que la formule de la difficulté contient @cible, on considère que c'est une unique cible
+    if (this.target.type === SYSTEM.RESOLVER_TARGET.none.id && this.skill.difficulty.includes("@cible")) {
+      targets = actor.acquireTargets(SYSTEM.RESOLVER_TARGET.single.id, SYSTEM.RESOLVER_SCOPE.all.id, 1, action.actionName)
+    } else {
+      targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
+    }
+    if (targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
+      return false
+    }
+
+    if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver attack - Targets", targets))
+
+    const attack = await actor.rollAttack(item, {
       auto: false,
       type,
       actionName: action.label,
@@ -111,12 +134,13 @@ export class Resolver extends foundry.abstract.DataModel {
       customEffect,
       additionalEffect: this.additionalEffect,
     })
-    if (result === null) return false
+    if (!attack) return false
 
     // Gestion des effets supplémentaires
-    if (this.additionalEffect.active && Resolver.shouldManageAdditionalEffect(result[0], this.additionalEffect)) {
+    if (this.additionalEffect.active && Resolver.shouldManageAdditionalEffect(attack[0], this.additionalEffect)) {
       await this._manageAdditionalEffect(actor, item, action)
     }
+
     return true
   }
 
@@ -125,6 +149,8 @@ export class Resolver extends foundry.abstract.DataModel {
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.success.id && result.isSuccess) return true
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.successTreshold.id && result.isSuccess && result.total >= result.difficulty + additionalEffect.successThreshold)
       return true
+    if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.saveSuccess.id && result.isSuccess) return true
+    if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.saveFailure.id && !result.isSuccess && result.total) return true
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.critical.id && result.isCritical) return true
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.failure.id && result.isFailure) return true
     return false
@@ -138,12 +164,24 @@ export class Resolver extends foundry.abstract.DataModel {
    */
   async auto(actor, item, action) {
     if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log(`Resolver auto`), actor, item, action)
+
     let damageFormula = this.dmg.formula
     damageFormula = Utils.evaluateFormulaCustomValues(actor, damageFormula, item.uuid)
     let damageFormulaEvaluated = Roll.replaceFormulaData(damageFormula, actor.getRollData())
     const damageFormulaTooltip = this.dmg.formula
+
+    // Gestion des dommages automatiques uniquement si la formule est définie
     if (this.dmg.formula && this.dmg.formula !== "" && this.dmg.formula !== "0") {
-      const result = await actor.rollAttack(item, {
+      // Gestion des cibles
+      const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
+      if (targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)) {
+        ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
+        return false
+      }
+
+      if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver auto - Targets", targets))
+
+      const attack = await actor.rollAttack(item, {
         auto: true,
         type: "damage",
         actionName: action.label,
@@ -151,11 +189,13 @@ export class Resolver extends foundry.abstract.DataModel {
         damageFormulaTooltip,
         bonusDice: this.bonusDiceAdd === true ? 1 : 0,
         malusDice: this.malusDiceAdd === true ? 1 : 0,
+        targetType: this.target.type,
+        targets: targets,
       })
-      if (result === null) return false
+      if (!attack) return false
     }
 
-    // Gestion des effets supplémentaires
+    // Gestion des effets supplémentaires s'il s'applique toujours
     if (this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) {
       await this._manageAdditionalEffect(actor, item, action)
     }
@@ -176,15 +216,85 @@ export class Resolver extends foundry.abstract.DataModel {
     healFormula = Utils.evaluateFormulaCustomValues(actor, healFormula, item.uuid)
     let healFormulaEvaluated = Roll.replaceFormulaData(healFormula, actor.getRollData())
 
+    // Gestion des cibles
     const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
-    if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Heal Targets", targets))
+    if (targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
+      return false
+    }
 
-    await actor.rollHeal(item, { actionName: action.label, healFormula: healFormulaEvaluated, targetType: this.target.type, targets: targets })
+    if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver heal - Targets", targets))
 
-    // Gestion des effets supplémentaires
+    const heal = await actor.rollHeal(item, {
+      actionName: action.label,
+      healFormula: healFormulaEvaluated,
+      targetType: this.target.type,
+      targets: targets,
+    })
+    if (!heal) return false
+
+    // Gestion des effets supplémentaires s'il s'applique toujours
     if (this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) {
       await this._manageAdditionalEffect(actor, item, action)
     }
+    return true
+  }
+
+  /**
+   * Resolver pour les actions de type Sauvegarde
+   * @param {COActor} actor : l'acteur pour lequel s'applique l'action
+   * @param {COItem} item : la source de l'action
+   * @param {Action} action : l'action.
+   */
+  async save(actor, item, action) {
+    if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log(`Resolver save`), actor, item, action)
+
+    const saveAbility = this.saveAbility
+
+    let difficultyFormula = this.saveDifficulty
+    // Modification pour prendre en compte tous les cas possible de formule et pour calculer un total avec jet de dé si dé présent
+    difficultyFormula = Utils.evaluateCoModifierWithDiceValue(actor, difficultyFormula, item.uuid)
+    const resultat = await new Roll(difficultyFormula).evaluate()
+    difficultyFormula = resultat.total.toString()
+    let difficultyFormulaEvaluated = Roll.replaceFormulaData(difficultyFormula, actor.getRollData())
+
+    let showDifficulty = false
+    const displayDifficulty = game.settings.get("co2", "displayDifficulty")
+    showDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
+
+    // Création de l'éventuel custom effect
+    let customEffect
+    if (this.additionalEffect.active) {
+      customEffect = await this._createCustomEffect(actor, item, action)
+    }
+
+    // Gestion des cibles
+    const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
+    if (targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
+      return false
+    }
+
+    if (CONFIG.debug.co2?.resolvers) console.debug(Utils.log("Resolver save - Targets", targets))
+
+    const save = await actor.rollAskSave(item, {
+      actionName: action.label,
+      ability: saveAbility,
+      difficulty: difficultyFormulaEvaluated,
+      showDifficulty,
+      targetType: this.target.type,
+      targets: targets,
+      customEffect,
+      additionalEffect: this.additionalEffect,
+    })
+    if (!save) return false
+
+    // TODO : Effet supplémentaire ici ?
+    /* Gestion des effets supplémentaires
+    if (this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) {
+      await this._manageAdditionalEffect(actor, item, action)
+    }
+    */
     return true
   }
 
@@ -249,37 +359,37 @@ export class Resolver extends foundry.abstract.DataModel {
    */
   async _manageAdditionalEffect(actor, item, action) {
     // Si pas de combat, pas d'effet sur la durée
-    if (!game.combat || !game.combat.started) {
+    if ((!game.combat || !game.combat.started) && this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id) {
       // FIXME Debug pour l'instant, à supprimer
-      ui.notifications.warn("Pas de combat en cours ou combat non démarré !")
+      ui.notifications.warn(game.i18n.localize("CO.label.long.customEffectInCombat"))
       return false
     }
 
     const ce = await this._createCustomEffect(actor, item, action)
 
     // Application de l'effet en fonction de la gestion des cibles
-    // Aucune cible ou soi-même : le MJ ou un joueur peut appliquer l'effet
-    if (this.target.type === SYSTEM.RESOLVER_TARGET.none.id || this.target.type === SYSTEM.RESOLVER_TARGET.self.id) await actor.applyCustomEffect(ce)
+    // Soi-même : le MJ ou un joueur peut appliquer l'effet
+    if (this.target.type === SYSTEM.RESOLVER_TARGET.self.id) await actor.applyCustomEffect(ce)
     else {
-      const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.name)
+      // Aucune cible est considérée comme Unique cible
+      let targetType = this.target.type
+      if (this.target.type === SYSTEM.RESOLVER_TARGET.none.id) targetType = SYSTEM.RESOLVER_TARGET.single.id
+      const targets = actor.acquireTargets(targetType, this.target.scope, this.target.number, action.name)
       const uuidList = targets.map((t) => t.uuid)
       if (game.user.isGM) await Promise.all(targets.map((target) => target.actor.applyCustomEffect(ce)))
       else {
-        game.socket.emit(`system.${SYSTEM.ID}`, {
-          action: "customEffect",
-          data: {
-            userId: game.user.id,
-            ce,
-            targets: uuidList,
-          },
-        })
+        await game.users.activeGM.query("co2.applyCustomEffect", { ce: ce, targets: uuidList })
       }
+      // On affiche un message pour signaler
+      const targetNames = targets ? targets.map((t) => t.name).join(", ") : ""
+      const message = game.i18n.format("CO.notif.applyEffect", { actorName: actor.name, skillName: item.name, targetNames: targetNames })
+      new CoChat(actor).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
     }
     return true
   }
 
   async _createCustomEffect(actor, item, action) {
-    if (!game.combat || game.combat.round === null) {
+    if ((!game.combat || game.combat.round === null) && this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id) {
       ui.notifications.warn(game.i18n.localize("CO.label.long.customEffectInCombat"))
       return
     }
@@ -294,13 +404,14 @@ export class Resolver extends foundry.abstract.DataModel {
     }
     // TODO : vérifier si eval est nécessaire ici
     if (/[+\-*/%]/.test(evaluatedDuration)) evaluatedDuration = eval(evaluatedDuration)
-    const duration = parseInt(evaluatedDuration)
+    let duration = parseInt(evaluatedDuration)
+    if (duration < 1) duration = 1
 
     // Calcul du round de fin
     let remainingTurn
-    if (this.additionalEffect.unit === SYSTEM.COMBAT_UNITE.round) {
+    if (this.additionalEffect.unit === SYSTEM.COMBAT_UNITE.round.id) {
       remainingTurn = duration
-    } else if (this.additionalEffect.unit === SYSTEM.COMBAT_UNITE.second) {
+    } else if (this.additionalEffect.unit === SYSTEM.COMBAT_UNITE.second.id) {
       remainingTurn = Math.round(duration / CONFIG.time.roundTime)
     }
 
@@ -313,26 +424,44 @@ export class Resolver extends foundry.abstract.DataModel {
 
     // Les modifiers qui s'appliquent (avec apply égal à others ou both)
     let modifiers = []
-    if (action.modifiers?.length) {
+    if (action.modifiers?.length > 0) {
       modifiers = action.modifiers.filter((m) => m.apply === SYSTEM.MODIFIERS_APPLY.others.id || m.apply === SYSTEM.MODIFIERS_APPLY.both.id)
     }
 
+    if (modifiers.length > 0) {
+      // Calcul de la valeur des modifiers
+      for (let i = 0; i < modifiers.length; i++) {
+        let modValue = modifiers[i].evaluate(actor, true)
+        modifiers[i] = {
+          ...modifiers[i],
+          value: modValue.toString(),
+        }
+      }
+    }
+
+    // Le nom de l'effet est actorId.actionName
+    // avec actorId : l'id de l'acteur qui applique l'effet
+    // et actionName : le nom de l'action qui génère l'effet (libellé de l'action, ou nom de l'item)
+
+    const effectName = `${actor.id}.${action.actionName}`
+
     // Création de l'effet
     ce = new CustomEffectData({
-      name: item.name,
+      name: action.actionName,
       source: item.uuid,
       statuses: this.additionalEffect.statuses,
       unit: this.additionalEffect.unit,
       duration,
-      startedAt: game.combat.round,
+      startedAt: game.combat ? game.combat.round : 0,
       remainingTurn,
       modifiers,
       formula: evaluatedFormula,
       formulaType: this.additionalEffect.formulaType,
       elementType: this.additionalEffect.elementType,
-      slug: item.name.slugify(),
+      slug: effectName.slugify(),
     })
 
+    console.log("Created custom effect :", ce)
     return ce
   }
 

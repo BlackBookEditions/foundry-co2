@@ -1,4 +1,4 @@
-import { SYSTEM } from "./config/system.mjs"
+import { SYSTEM } from "../config/system.mjs"
 
 export default class Utils {
   /**

@@ -3,6 +3,14 @@
     background: #0b0a13e6;
     color: var(--color-textLight);
     --color-abilities: #2a83b9;
+    --color-chatSkill: #2a83b9;
+    --color-chatAttack: #db5305;
+    --color-chatDamages: #cb0909;
+    --color-chatHeal: #3fa13f;
+    --color-chatRest: #93a13f;
+    --color-chatSave: #8a43ab;
+    --color-chatItem: #bb9d68;
+    --color-chatShadow: #7ce6ef;
     span,
     label {
       color: var(--color-textLight);
@@ -12,6 +20,14 @@
     background-color: var(--color-light-3);
     color: #222;
     --color-abilities: #084f7b;
+    --color-chatSkill: #084f7b;
+    --color-chatAttack: #702900;
+    --color-chatDamages: darkred;
+    --color-chatHeal: #2c532c;
+    --color-chatRest: #597928;
+    --color-chatSave: #380052;
+    --color-chatItem: #4b3a0c;
+    --color-chatShadow: #7ce6ef;
     span,
     label {
       color: #222;
@@ -25,6 +41,10 @@
       background: #b5a2a2;
     }
   }
+  .whisper-to {
+    margin-top: -15px;
+    margin-left: 55px;
+  }
   &.blind {
     .theme-dark & {
       border: 3px solid #990000;
@@ -34,7 +54,6 @@
     }
   }
   .message-header {
-    border-bottom: 1px solid #5d142b;
     display: grid;
     .theme-dark & {
       color: var(--color-textLight);
@@ -66,64 +85,78 @@
   }
   .message-content {
     .card-content {
-      font-size: 16px;
-      margin: -6px 0px 0px 0px;
-      p {
+      font-size: 1rem;
+      /*p {
         margin-bottom: -15px;
-        border: 2px solid var(--color-abilities);
+        border: 2px solid var(--color-chatSkill);
         border-radius: 15px;
         background-color: #084f7b66;
         font-weight: bold;
         padding: 1px 0 0px 10px;
-      }
-    }
-    .attack-card {
-      .card-content {
-        p {
-          border: 2px solid var(--color-encounterSheet);
-          background-color: #5d142b3d;
+      }*/
+      section.targets {
+        .target-list {
+          list-style-type: none;
+          margin: 0 0 0 10px;
+          li {
+            display: flex;
+            align-items: center;
+          }
+          .target-actor-img {
+            width: fit-content;
+            height: 35px;
+            margin-right: 10px;
+          }
         }
+      }
+      .bloc-result {
+        display: grid;
+        grid-template-columns: 1fr 0.7fr;
+        align-items: center;
       }
     }
     strong {
-      font-size: 15px;
+      font-size: var(--font-size-15);
     }
     label {
-      font-size: 14px;
+      font-size: var(--font-size-14);
     }
     .result {
       display: flex;
       justify-content: center;
-      //grid-template-columns: auto 40px auto;
+      align-items: center;
     }
     .total-result,
     .diff-result,
     .vs {
-      font-size: 38px;
+      font-size: var(--font-size-32);
       font-weight: bold;
       text-align: center;
       label {
-        font-size: 20px;
-      }
-      .vs {
-        flex-basis: 40px;
+        font-size: var(--font-size-15);
+        vertical-align: middle;
       }
     }
-    .display-difficulty,
     .dice-total {
       margin-bottom: -10px;
     }
 
     .vs {
-      margin: 0px 25px;
+      flex-basis: 40px;
       align-self: center;
     }
     .result-sentence {
       text-align: center;
       margin: -5px 0px -5px 0px;
+      .fas {
+        font-size: var(--font-size-28);
+      }
+      .show-result {
+        padding: 3px 0;
+      }
       span {
         text-align: center;
-        font-size: 20px;
+        font-size: var(--font-size-14);
 
         .theme-dark & {
           color: #0b0a13e6;
@@ -132,44 +165,18 @@
           font-weight: bold;
         }
       }
-      .theme-dark & {
-        .success {
-          background: #2c532c;
-        }
-        .critical {
-          background: green;
-        }
-        .failure {
-          background: darkred;
-        }
-        .failure.fumble {
-          background: red;
-        }
-      }
 
-      .theme-light & {
-        .success {
-          color: #2c532c;
-        }
-        .critical {
-          color: green;
-        }
-        .failure {
-          color: darkred;
-        }
-        .failure.fumble {
-          color: red;
-        }
+      .success {
+        color: green;
+      }
+      .failure {
+        color: #c90000;
       }
     }
 
     button {
-      background: #084f7b66;
       justify-self: center;
-      margin-top: 5px;
       font-weight: bold;
-      padding: 0 10px;
-      box-shadow: 1px 1px 0px 1px #084f7b;
       .theme-dark & {
         color: var(--color-light-3);
       }
@@ -177,169 +184,37 @@
         color: #222;
       }
     }
-    button.opposite-roll {
-      height: 40px;
-      font-size: 18px;
-      color: #910000;
-      background: #5d142b3d;
-      border: 2px solid var(--color-encounterSheet);
-      border-radius: 15px;
-      box-shadow: 1px 1px 0px 1px var(--color-encounterSheet);
-      padding: 0px 5px;
-    }
-    .type-card,
-    .type-card-skill {
-      .theme-dark & {
-        text-shadow: 0px 0px 4px #795403;
-      }
-      .theme-light & {
-        text-shadow: 0 0px 4px #cf7306c4;
-      }
+    .type-card {
       label {
-        font-size: 25px;
+        font-size: 1.5rem;
         font-weight: bold;
         font-variant: small-caps;
       }
     }
-    .type-card {
-      label {
-        color: var(--color-abilities);
-      }
-    }
-    .type-card-skill {
-      label {
-        .theme-dark & {
-          color: #2a83b9;
-        }
-        .theme-light & {
-          color: #084f7b;
-        }
-      }
-    }
-    .action-name {
-      strong {
-        font-size: 18px;
-        font-style: italic;
-      }
-    }
 
+    .action-name {
+      font-size: 1.2rem;
+      font-style: italic;
+      font-weight: bold;
+      margin-left: 5px;
+      padding-right: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .lucky-points {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 5px;
-      margin-top: 35px;
-      .imgLucky {
-        height: 25px;
-        margin-left: 5px;
-      }
-      label {
-        font-size: 17px;
-      }
-    }
-    .damage-part {
-      margin: 18px 0px 0px 15px;
-    }
-    .damage-buttons {
-      display: grid;
-      grid-template-columns: repeat(4, 37px);
-      grid-template-rows: 30px 30px;
-      justify-items: center;
-      border-left: 4px solid var(--color-encounterSheet);
-      padding-left: 10px;
-      .fas {
-        font-size: 25px;
-        text-shadow: 0px 0px 2px red;
-      }
-    }
-    .temp-dm {
-      grid-column: 1/3;
-    }
-    .dr {
-      grid-column: 3/5;
+      margin-left: 5px;
+      font-size: var(--font-size-20);
     }
     .message-card {
       p {
-        font-size: 15px;
+        font-size: var(--font-size-15);
       }
     }
-    .itemTitle {
-      font-size: 16px;
-      display: flex;
-      align-items: flex-end;
-      margin-top: 3px;
-      span {
-        text-transform: uppercase;
-        font-weight: bold;
-        text-wrap: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      img {
-        height: 27px;
-        margin-right: 5px;
-      }
-    }
-    .button-row {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-evenly;
-      flex-wrap: wrap;
-      margin-bottom: 3px;
-      button {
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-    }
-    .chatroll {
-      .heal {
-        font-size: 22px;
-        margin: 5px;
-        .theme-dark & {
-          color: #3fa13f;
-        }
-        .theme-light & {
-          color: #2c532c;
-        }
-      }
-      .heal-formula {
-        margin-bottom: -10px;
-        border: 2px solid #2c532c;
-        border-radius: 15px;
-        background-color: #087b1f66;
-        font-weight: bold;
-        padding: 1px 0 0px 10px;
-        font-size: 16px;
-      }
-      .heal-result {
-        font-size: 38px;
-        font-weight: bold;
-        text-align: center;
-        label {
-          font-size: 20px;
-        }
-      }
-      .heal-message {
-        width: 150px;
-        margin-left: 30px;
-      }
-      p {
-        margin: 0;
-      }
-      h3 {
-        text-align: center;
-        margin: -10px 0 0 0;
-      }
-      strong {
-        .theme-dark & {
-          color: #e7d1b1;
-        }
-        .theme-light & {
-          color: #222;
-        }
-      }
-    }
+
     h4.dice-total {
       margin: 0;
     }
@@ -347,24 +222,9 @@
       margin-top: 8px;
       font-weight: bold;
     }
-    .skill-used {
-      font-size: 16px;
-      margin-top: 8px;
-      border-top: 1px solid var(--color-abilities);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-
-      .skill-used-title {
-        font-style: italic;
-        font-weight: bold;
-      }
-      .skill-used-bonus {
-        font-size: 20px;
-        padding-left: 5px;
-        font-weight: bold;
-        color: var(--color-abilities);
-      }
-    }
+  }
+  .dice-formula {
+    margin-bottom: 2px;
+    font-size: var(--font-size-14);
   }
 }

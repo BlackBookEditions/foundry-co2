@@ -381,11 +381,18 @@
       "warningNoCharge": "Votre nombre d'utilisations restantes est insuffisant",
       "cantUseAllDef": "Vous ne pouvez pas utiliser les deux types de défense simultanément",
       "healed": "{actorName} a été soigné de {amount} point(s) de vigueur",
+      "healedBy": "{actorName} a été soigné de {amount} point(s) de vigueur par {source}",
       "damaged": "{actorName} perd {amount} point(s) de vigueur",
+      "damagedBy": "{actorName} perd {amount} point(s) de vigueur par {source}",
+      "tmpDamaged": "{actorName} prend {amount} point(s) de dommages temporaires",
+      "tmpDamagedBy": "{actorName} prend {amount} point(s) de dommages temporaires par {source}",
       "manaBurn": "{actorName} brûle {amount} point(s) de vigueur pour accomplir son sort {capacityName}",
       "warningNeedLearnedCapacities": "Vous devez apprendre les capacités des rangs précédents avant d'apprendre celle-ci",
       "consume": "{actorName} a consommé un(e) {itemName}",
-      "attackActionLimit": "Une attaque de créature ne peut avoir qu'une seule action"
+      "attackActionLimit": "Une attaque de créature ne peut avoir qu'une seule action",
+      "warningOnlyOneTarget": "Vous ne pouvez désigner qu'une cible pour l'action !",
+      "warningNoTargetOrTooManyTargets": "Vous n'avez ciblé personne ou trop de cibles pour cette action !",
+      "applyEffect": "{actorName} a lancé {skillName} sur :  {targetNames}"
     },
     "tooltip": {
       "formulaAttack": "Formule d'attaque (sans le dé)",
@@ -486,7 +493,8 @@
         "tempHP": "DM temporaires",
         "diceType": "Type de jet",
         "tactical": "Option tactique",
-        "special": "Spécial"
+        "special": "Spécial",
+        "heal": "Soins"
       },
       "short": {
         "label": "Label",
@@ -588,7 +596,9 @@
       "fullDef": "En défense totale (L)",
       "fullDefDescription": "+5 en DEF et aux tests opposés pour résister à une attaque ou un effet pendant 1 round",
       "fullDefActivate": "Activer la défense totale (L)",
-      "fullDefDeactivate": "Désactiver la défense totale (L)"
+      "fullDefDeactivate": "Désactiver la défense totale (L)",
+      "enslaved": "Asservi",
+      "enslavedDescription": "Vous êtes sous le contrôle d'une autre entité"
     },
     "ui": {
       "none": "--",
@@ -659,8 +669,9 @@
       "modifiers": "Modificateurs",
       "resolvers": "Résolutions",
       "skill": "Compétence",
-      "skillUsed" :  "Compétence(s) utilisée(s)",
+      "skillUsed": "Compétence(s) utilisée(s)",
       "formula": "Formule",
+      "oppositeFormula": "Formule du jet opposé",
       "oppositeRoll": "Jet opposé",
       "skillformula": "Formule de compétence",
       "healformula": "Formule de soin",
@@ -669,6 +680,8 @@
       "difficulty": "Difficulté",
       "dmg": "Dommages",
       "saves": "Sauvegarde",
+      "saveAbility": "Sauvegarde basé sur :",
+      "saveDifficulty": "Seuil de difficulté :",
       "targets": "Cible(s)",
       "width": "Largeur",
       "range": "Portée",
@@ -694,10 +707,13 @@
       "totalBonus": "Bonus total",
       "total": "Total",
       "dr": "RD",
+      "drText": "Prendre en compte la résistance aux dommages",
+      "temp": "Temp.",
+      "tempText": "Les dommages sont temporaires",
       "applyDamage": "Appliquer les dommages",
       "applyHalfDamage": "Appliquer la moitié des dommages",
       "applyDoubleDamage": "Appliquer le double des dommages",
-      "applyHealing": "Appliquer les soins",
+      "applyHealing": "Soigner du montant des dommages",
       "newAction": "",
       "capacitiesOffPaths": "Capacités hors voies",
       "capacitiesLearned": "Capacités acquises",
@@ -769,7 +785,8 @@
       "sortByName": "Tri par nom",
       "sortByRank": "Tri par rang",
       "sortByType": "Tri par type",
-      "sortByActionType": "Trier par temps d'action"
+      "sortByActionType": "Trier par temps d'action",
+      "save": "Sauvegarde"
     },
     "properties": {
       "attack": "Attaque",
@@ -829,6 +846,12 @@
         "def": "DEF"
       }
     },
+    "combatUnit": {
+      "round": "round(s)",
+      "second": "seconde(s)",
+      "combat": "Combat",
+      "unlimited": "Illimitée"
+    },
     "resources": {
       "long": {
         "fortune": "Points de chance",
@@ -885,8 +908,8 @@
       "putridDescription": "Applique des dommages de type putréfaction",
       "sacred": "Sacré",
       "sacredDescription": "Applique des dommages/soins de type sacré",
-      "heal":"Soins",
-      "damage":"Dommages"
+      "heal": "Soins",
+      "damage": "Dommages"
     },
     "tabs": {
       "main": "Principal",
@@ -934,7 +957,9 @@
         "infoLibre": "Indiquez les valeurs de chaque caractéristique manuellement",
         "infoAutres": "Glissez-déposez les valeurs ci-dessus à la place sur la ligne Base"
       },
-      "restHpRecovered": "Vous avez récupéré {hp} points de vigueur"
+      "restHpRecovered": "Vous avez récupéré {hp} points de vigueur",
+      "healRecovered": "PV soigné(s)",
+      "healTooltip": "Le soin est appliqué directement sur la cible"
     },
     "roll": {
       "skillcheck": "Test de compétence",
@@ -956,7 +981,8 @@
         "heal": "Soin",
         "buff": "Amélioration",
         "debuff": "Affaiblissement",
-        "consumable": "Consommable"
+        "consumable": "Consommable",
+        "save": "Sauvegarde"
       },
       "equip": "Équiper",
       "unequip": "Déséquiper",
@@ -1047,7 +1073,8 @@
         "attack": "Attaque",
         "heal": "Soin",
         "buffDebuff": "Buff/Debuff",
-        "consumable": "Consommable"
+        "consumable": "Consommable",
+        "save": "Sauvegarde"
       },
       "target": {
         "none": "Aucune",
@@ -1077,7 +1104,9 @@
         "elementType": "Type d'énergie pour les dommages",
         "formulaType": "Type",
         "statusAvailable": "Inflige le(s) statut(s)",
-        "statuses": "Liste des statuts"
+        "statuses": "Liste des statuts",
+        "onSaveFailure": "Echec de sauvegarde",
+        "onSaveSuccess": "Succès de sauvegarde"
       },
       "formula": {
         "damage": "Dommages",
@@ -1238,8 +1267,12 @@
         "hint": "Permet de lancer les jets d'attaque et de dommages simultanément."
       },
       "displayChatDamageButtonsToAll": {
-        "name": "Afficher les boutons de dommages",
-        "hint": "Affiche les boutons d'application des dommages dans les messages de chat à tout le monde."
+        "name": "Afficher les boutons de dommages et de soins aux joueurs",
+        "hint": "Affiche les boutons d'application des dommages et des soins dans les messages de chat aux joueurs."
+      },
+      "allowPlayersToModifyTargets": {
+        "name": "Autoriser les joueurs à modifier les cibles",
+        "hint": "Permet aux joueurs de soigner ou blesser les cibles, y compris les autres joueurs ou PNJs."
       },
       "checkFreeHandsBeforeEquip": {
         "name": "Vérification des mains libres",

@@ -37,7 +37,7 @@
                             {{!log "Chroniques Oubliées | capacity" capacity}}
                             {{#if capacity.system.learned}}
                                 {{!log "Chroniques Oubliées | capacity learned" capacity}}
-                                <li class="item flexrow" data-item-uuid="{{capacity.uuid}}" data-item-id="{{capacity._id}}" data-item-type="capacity">
+                                <li class="item flexrow draggable" data-item-uuid="{{capacity.uuid}}" data-item-id="{{capacity._id}}" data-item-type="capacity">
                                     <div class="item-detail rank">{{capacity.system.rank}}</div>
                                     <div class="item-name flexrow">
                                         <a class="item-img" data-action="editItem" style="background-image: url('{{capacity.img}}')" data-tooltip="{{capacity.system.description}}"></a>

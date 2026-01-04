@@ -163,6 +163,10 @@ export const RESOLVER_TYPE = Object.freeze({
     id: "consumable",
     label: "CO.action.types.consumable",
   },
+  save: {
+    id: "save",
+    label: "CO.action.types.save",
+  },
 })
 
 export const RESOLVER_TARGET = Object.freeze({
@@ -199,6 +203,19 @@ export const RESOLVER_SCOPE = Object.freeze({
   },
 })
 
+/**
+ * Frozen object containing resolver result types for action outcomes.
+ * Each result type has an id and a localization label key.
+ *
+ * @constant {Object} RESOLVER_RESULT
+ * @property {Object} always - Effect that always triggers
+ * @property {Object} success - Effect that triggers on success
+ * @property {Object} successTreshold - Effect that triggers when success meets threshold
+ * @property {Object} critical - Effect that triggers on critical success
+ * @property {Object} failure - Effect that triggers on failure
+ * @property {Object} saveFailure - Effect that triggers on save failure
+ * @property {Object} saveSuccess - Effect that triggers on save success
+ */
 export const RESOLVER_RESULT = Object.freeze({
   always: {
     id: "always",
@@ -220,6 +237,14 @@ export const RESOLVER_RESULT = Object.freeze({
     id: "failure",
     label: "CO.resolver.additionalEffect.onFailure",
   },
+  saveFailure: {
+    id: "saveFailure",
+    label: "CO.resolver.additionalEffect.onSaveFailure",
+  },
+  saveSuccess: {
+    id: "saveSuccess",
+    label: "CO.resolver.additionalEffect.onSaveSuccess",
+  },
 })
 
 export const RESOLVER_FORMULA_TYPE = Object.freeze({
@@ -234,50 +259,70 @@ export const RESOLVER_FORMULA_TYPE = Object.freeze({
 })
 
 export const RESOLVER_ADDITIONAL_EFFECT_STATUS = {
-  dead: {
-    id: "dead",
-    label: "CO.customStatus.dead",
+  weakened: {
+    id: "weakened",
+    label: "CO.customStatus.weakened",
   },
-  immobilized: {
-    id: "immobilized",
-    label: "CO.customStatus.immobilized",
-  },
-  stun: {
-    id: "stun",
-    label: "CO.customStatus.stun",
-  },
-  paralysis: {
-    id: "paralysis",
-    label: "CO.customStatus.paralysis",
+  enslaved: {
+    id: "enslaved",
+    label: "CO.customStatus.enslaved",
   },
   blind: {
     id: "blind",
     label: "CO.customStatus.blind",
   },
-  silence: {
-    id: "silence",
-    label: "CO.customStatus.silence",
-    img: "icons/svg/silenced.svg",
-  },
-  outOfBreath: {
-    id: "outOfBreath",
-    label: "CO.customStatus.outOfBreath",
-  },
-  bleeding: {
-    id: "bleeding",
-    label: "CO.customStatus.bleeding",
-  },
-  invalid: {
-    id: "invalid",
-    label: "CO.customStatus.invalid",
+  confused: {
+    id: "confused",
+    label: "CO.customStatus.confused",
   },
   poison: {
     id: "poison",
     label: "CO.customStatus.poison",
   },
+  bleeding: {
+    id: "bleeding",
+    label: "CO.customStatus.bleeding",
+  },
+  outOfBreath: {
+    id: "outOfBreath",
+    label: "CO.customStatus.outOfBreath",
+  },
+  stun: {
+    id: "stun",
+    label: "CO.customStatus.stun",
+  },
+  immobilized: {
+    id: "immobilized",
+    label: "CO.customStatus.immobilized",
+  },
+  unconscious: {
+    id: "unconscious",
+    label: "CO.customStatus.unconscious",
+  },
+  invalid: {
+    id: "invalid",
+    label: "CO.customStatus.invalid",
+  },
+  invisible: {
+    id: "invisible",
+    label: "CO.customStatus.invisible",
+  },
+  dead: {
+    id: "dead",
+    label: "CO.customStatus.dead",
+  },
+  paralysis: {
+    id: "paralysis",
+    label: "CO.customStatus.paralysis",
+  },
   slowed: {
     id: "slowed",
     label: "CO.customStatus.slowed",
+  },
+  silence: {
+    id: "silence",
+    label: "CO.customStatus.silence",
+    img: "icons/svg/silenced.svg",
   },
   overturned: {
     id: "overturned",
@@ -286,21 +331,5 @@ export const RESOLVER_ADDITIONAL_EFFECT_STATUS = {
   surprised: {
     id: "surprised",
     label: "CO.customStatus.surprised",
-  },
-  weakened: {
-    id: "weakened",
-    label: "CO.customStatus.weakened",
-  },
-  invisible: {
-    id: "invisible",
-    label: "CO.customStatus.invisible",
-  },
-  unconscious: {
-    id: "unconscious",
-    label: "CO.customStatus.unconscious",
-  },
-  confused: {
-    id: "confused",
-    label: "CO.customStatus.confused",
   },
 }

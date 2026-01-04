@@ -1,0 +1,33 @@
+.co.chat-card.roll-card.attack-card {
+  .card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    border-top: 1px solid var(--color-chatAttack);
+    color: var(--color-chatAttack);
+    label {
+      color: var(--color-chatAttack);
+      text-shadow: 0 0px 2px var(--color-chatShadow);
+    }
+  }
+  .card-content {
+    section.options {
+      display: flex;
+      flex-direction: row;
+      border-bottom: 1px dashed var(--color-chatAttack);
+      margin-bottom: 2px;
+    }
+    button.opposite-roll {
+      height: 40px;
+      font-size: 18px;
+      color: var(--color-chatAttack);
+      background: #5d142b3d;
+      border: 2px solid var(--color-chatAttack);
+      border-radius: 5px;
+      box-shadow: 1px 1px 0px 1px var(--color-chatAttack);
+      padding: 0px 5px;
+      margin: 0;
+    }
+  }
+}

@@ -1,7 +1,7 @@
 /**
  * Enregistre les paramètres du système
  */
-export default function registerSystemSettings() {
+export function registerSystemSettings() {
   /**
    * Mode DEBUG
    */
@@ -51,6 +51,15 @@ export default function registerSystemSettings() {
   game.settings.register("co2", "displayChatDamageButtonsToAll", {
     name: "CO.settings.displayChatDamageButtonsToAll.name",
     hint: "CO.settings.displayChatDamageButtonsToAll.hint",
+    scope: "world",
+    config: true,
+    default: false,
+    type: Boolean,
+  })
+
+  game.settings.register("co2", "allowPlayersToModifyTargets", {
+    name: "CO.settings.allowPlayersToModifyTargets.name",
+    hint: "CO.settings.allowPlayersToModifyTargets.hint",
     scope: "world",
     config: true,
     default: false,

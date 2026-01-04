@@ -49,7 +49,9 @@
     "ChatMessage": {
       "action": {},
       "skill": {},
-      "item": {}
+      "item": {},
+      "heal": {},
+      "save": {}
     },
     "Item": {
       "equipment": { "htmlFields": ["description"] },

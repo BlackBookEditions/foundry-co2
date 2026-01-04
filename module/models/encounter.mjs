@@ -1,7 +1,7 @@
 import { SYSTEM } from "../config/system.mjs"
 import { BaseValue } from "./schemas/base-value.mjs"
 import ActorData from "./actor.mjs"
-import Utils from "../utils.mjs"
+import Utils from "../helpers/utils.mjs"
 
 export default class EncounterData extends ActorData {
   static defineSchema() {
@@ -228,6 +228,7 @@ export default class EncounterData extends ActorData {
     const hpMaxBonuses = Object.values(this.attributes.hp.bonuses).reduce((prev, curr) => prev + curr)
     const hpMaxModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "hp")
     this.attributes.hp.max = this.attributes.hp.base + hpMaxBonuses + hpMaxModifiers.total
+    this.attributes.hp.value = Math.min(this.attributes.hp.max, this.attributes.hp.value)
     this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat(Utils.getTooltip("Bonus", hpMaxBonuses))
   }
 
