@@ -252,7 +252,10 @@ export class Resolver extends foundry.abstract.DataModel {
     const saveAbility = this.saveAbility
 
     let difficultyFormula = this.saveDifficulty
-    difficultyFormula = Utils.evaluateFormulaCustomValues(actor, difficultyFormula, item.uuid)
+    // Modification pour prendre en compte tous les cas possible de formule et pour calculer un total avec jet de dé si dé présent
+    difficultyFormula = Utils.evaluateCoModifierWithDiceValue(actor, difficultyFormula, item.uuid)
+    const resultat = await new Roll(difficultyFormula).evaluate()
+    difficultyFormula = resultat.total.toString()
     let difficultyFormulaEvaluated = Roll.replaceFormulaData(difficultyFormula, actor.getRollData())
 
     let showDifficulty = false
