@@ -13,7 +13,7 @@
 - Ajout de l'affichage de la fenêtre de jet de compétences si une attaque opposée s'oppose à un attribut du personnage (issue [#179](https://github.com/BlackBookEditions/foundry-co2/issues/179))
 - Rencontre : le clic sur l'icône d'une attaque ouvre l'objet correspondant
 - Rencontre : drag n drop des caractéristiques, des attaques et des actions dans la Hotbar
-- Résolution d'attaque : si la formule de dommage n'est pas définie, l'icône de point n'apparait pas dans la liste des actions, les dommages ne sont pas lancés, et il n'y a pas de messages avec 0 DM
+- Résolution d'attaque : si la formule de dommage n'est pas définie, l'icône de poing n'apparait pas dans la liste des actions, les dommages ne sont pas lancés, et il n'y a pas de messages avec 0 DM
 
 ## Corrections
 

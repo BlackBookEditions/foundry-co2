@@ -234,7 +234,7 @@ export default class SaveMessageData extends BaseMessageData {
         rolls[0] = targetRollSkill.roll
         rolls[0].options.oppositeRoll = false
 
-        // TODO : Doit on prévoir autre chose qu'un effet supplémentaire ? genre des dés de degat bonus appliqué si jet raté ? A voir...
+        // TODO Doit on prévoir autre chose qu'un effet supplémentaire ? genre des dés de degat bonus appliqué si jet raté ? A voir...
 
         // Doit on appliquer l'effet s'il y en a
         const customEffect = message.system.customEffect

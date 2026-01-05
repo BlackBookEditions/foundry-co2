@@ -289,7 +289,7 @@ export class Resolver extends foundry.abstract.DataModel {
     })
     if (!save) return false
 
-    // TODO : Effet supplémentaire ici ?
+    // TODO Effet supplémentaire ici ?
     /* Gestion des effets supplémentaires
     if (this.additionalEffect.active && this.additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.always.id) {
       await this._manageAdditionalEffect(actor, item, action)
@@ -402,7 +402,7 @@ export class Resolver extends foundry.abstract.DataModel {
       let roll = new CORoll(evaluatedDuration)
       evaluatedDuration = (await roll.evaluate()).total
     }
-    // TODO : vérifier si eval est nécessaire ici
+    // TODO Vérifier si eval est nécessaire ici
     if (/[+\-*/%]/.test(evaluatedDuration)) evaluatedDuration = eval(evaluatedDuration)
     let duration = parseInt(evaluatedDuration)
     if (duration < 1) duration = 1

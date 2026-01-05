@@ -1099,14 +1099,14 @@
         "onSuccessTreshold": "à partir d'un succès + ",
         "onFailure": "sur un échec",
         "always": "toujours",
+        "onSaveFailure": "si échec de sauvegarde",
+        "onSaveSuccess": "si succès de sauvegarde",
         "applyFormula": "Formule",
         "applyFormulaTooltip": "Appliquer des dommages ou des soins sur la durée",
         "elementType": "Type d'énergie pour les dommages",
         "formulaType": "Type",
         "statusAvailable": "Inflige le(s) statut(s)",
-        "statuses": "Liste des statuts",
-        "onSaveFailure": "Echec de sauvegarde",
-        "onSaveSuccess": "Succès de sauvegarde"
+        "statuses": "Liste des statuts"
       },
       "formula": {
         "damage": "Dommages",

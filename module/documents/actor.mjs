@@ -673,7 +673,7 @@ export default class COActor extends Actor {
     }
 
     // Imunisé aux altération de mouvement ?
-    if ((effectid === "stun" || effectid === "immobilized" || effectid === "paralysis") && state === true) {
+    if ((effectid === "stun" || effectid === "immobilized" || effectid === "paralysis") && state) {
       if (this.system.modifiers) {
         const state = this.system.modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.movemenAlterationImmunity.id)
         if (state && state.length > 0) {
@@ -685,7 +685,7 @@ export default class COActor extends Actor {
     }
 
     // Imunisé aux poisons ?
-    if (effectid === "poison" && state === true) {
+    if (effectid === "poison" && state) {
       if (this.system.modifiers) {
         const state = this.system.modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.poisonImmunity.id)
         if (state && state.length > 0) {
@@ -697,8 +697,8 @@ export default class COActor extends Actor {
     }
 
     let hasEffect = this.statuses.has(effectid)
-    if (hasEffect && state === false) return await this.toggleStatusEffect(effectid, state)
-    if (!hasEffect && state === true) return await this.toggleStatusEffect(effectid, state)
+    if (hasEffect && !state) return await this.toggleStatusEffect(effectid, state)
+    if (!hasEffect && state) return await this.toggleStatusEffect(effectid, state)
     return true
   }
 

@@ -48,7 +48,7 @@ export default class CombatCO extends Combat {
   /** @override */
   async _onEndTurn(combatant) {
     await super._onEndTurn(combatant)
-    // Retire les custom Effect qui se terminent ce tour-ci. #Fix 320 supprime l'effet avant que le nouveau tour commence
+    // Retire les custom Effects qui se terminent ce tour-ci : l'effet est supprimé avant que le nouveau tour commence
     if (combatant.actor?.system.currentEffects.length > 0) await combatant.actor.expireEffects()
     if (CONFIG.debug.co2?.combat) console.debug(Utils.log(`Fin du tour de ${combatant.actor?.name} !`))
   }
