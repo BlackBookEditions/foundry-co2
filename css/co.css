@@ -731,7 +731,7 @@ co-toggle-switch[checked] thumb {
 .theme-dark .co.application.dialog.skill-roll .window-header .window-title {
   color: #b3b4b5;
 }
-.co.application.dialog.skill-roll .icone {
+.co.application.dialog.skill-roll .icon {
   text-align: center;
   font-size: 30px;
   align-content: center;
@@ -750,9 +750,27 @@ co-toggle-switch[checked] thumb {
 }
 .co.application.dialog.skill-roll .window-content .skill-roll-1 {
   display: grid;
-  grid-template-columns: 0.5fr 1.5fr 0.3fr 1.7fr 0.3fr 1.5fr;
+  grid-template-columns: 0.5fr 1fr 1fr 0.3fr 1.7fr 0.3fr 1.5fr;
   padding-bottom: 6px;
   border-bottom: 2px solid #5d142b;
+}
+.co.application.dialog.skill-roll .window-content .skill-roll-1 .oppositeRoll {
+  display: flex;
+  flex-direction: column;
+  margin: 0 10px 0 10px;
+}
+.co.application.dialog.skill-roll .window-content .skill-roll-1 .oppositeRoll div {
+  align-items: center;
+  justify-content: center;
+}
+.co.application.dialog.skill-roll .window-content .skill-roll-1 .oppositeRoll div label {
+  margin-left: 10px;
+}
+.co.application.dialog.skill-roll .window-content .skill-roll-1 .oppositeRoll select {
+  width: 125px;
+}
+.co.application.dialog.skill-roll .window-content .skill-roll-1 .oppositeRoll .oppositeRoll-ability {
+  display: none;
 }
 .co.application.dialog.skill-roll .window-content .skill-roll-2 {
   display: grid;

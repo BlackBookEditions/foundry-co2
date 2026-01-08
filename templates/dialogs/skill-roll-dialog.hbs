@@ -1,6 +1,6 @@
 {{!log "Chroniques Oubliées | dialog skill-roll" this}}
 <section class="skill-roll-1">
-  <div class="icone"><i class="fa-solid fa-dice"></i></div>
+  <div class="icon"><i class="fa-solid fa-dice"></i></div>
   <div class="form-group">
     <div class="form-fields-radio">
       <div class="radio-row">
@@ -18,8 +18,19 @@
     </div>
   </div>
 
+  <div class="oppositeRoll">
+    <div>
+        <input type="checkbox" id="oppositeRoll" name="oppositeRoll">
+        <label for="oppositeRoll">{{localize "CO.ui.oppositeRoll"}}</label>
+    </div>
+    <div class="oppositeRoll-ability">
+      <select name="oppositeRollAbility">
+	      {{selectOptions choiceModifierSkillTargetsWithoutAll localize=true}}
+      </select>		
+    </div>    
+  </div>
   {{#if showDifficulty}}
-      <div class="icone"><i class="fas fa-fw fa-shield-alt"></i></div>
+      <div class="icon"><i class="fas fa-fw fa-shield-alt"></i></div>
       <div class="form-group diffGroup">
         <label class="near textCenter">{{localize "CO.label.long.difficulty"}}</label>
         <div class="form-fields">
@@ -27,7 +38,7 @@
         </div>
       </div>
   {{/if}}
-  <div class="icone"><i class="fa-solid fa-user-secret"></i></div>
+  <div class="icon"><i class="fa-solid fa-user-secret"></i></div>
   <div class="form-group rollMode">
     <label class="near" for="rollMode">{{localize "CHAT.RollDefault"}}</label>
     <div class="form-fields">
@@ -39,7 +50,7 @@
 </section>
 
 <section class="skill-roll-2">
-  <div class="icone"><i class="fa-solid fa-dice-d20"></i></div>
+  <div class="icon"><i class="fa-solid fa-dice-d20"></i></div>
   <div class="form-group">
     <label>Formule</label>
     <div class="form-fields">

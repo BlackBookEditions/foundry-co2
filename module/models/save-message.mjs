@@ -198,19 +198,19 @@ export default class SaveMessageData extends BaseMessageData {
         event.stopPropagation()
         const messageId = event.currentTarget.closest(".message").dataset.messageId
         if (!messageId) {
-          console.log("Evenement de click sur le bouton de jet de sauvegarde : erreur dans la récupération de l'ID du message")
+          if (CONFIG.debug.co2?.chat) console.debug(Utils.log(`SaveMessageData - click jet de sauvegarde`), "erreur dans la récupération de l'ID du message")
           return
         }
         const message = game.messages.get(messageId)
         if (!message || !message.system) {
-          console.log("Evenement de click sur le bouton de jet de sauvegarde : erreur dans la récupération du message ou de son context")
+          if (CONFIG.debug.co2?.chat) console.debug(Utils.log(`SaveMessageData - click jet de sauvegarde`), "erreur dans la récupération du message ou de son context")
           return
         }
 
         const dataset = event.currentTarget.dataset
         const targetUuid = message.system.targets[0]
         if (!targetUuid) {
-          console.log("Evenement de click sur le bouton de jet de sauvegarde : erreur dans la récupération de l'UUID de la cible")
+          if (CONFIG.debug.co2?.chat) console.debug(Utils.log(`SaveMessageData - click jet de sauvegarde`), "erreur dans la récupération de l'UUID de la cible")
           return
         }
 
@@ -219,7 +219,7 @@ export default class SaveMessageData extends BaseMessageData {
 
         const targetActor = fromUuidSync(targetUuid)
         if (!targetActor) {
-          console.log("Evenement de click sur le bouton de jet de sauvegarde : erreur dans la récupération de l'acteur cible")
+          if (CONFIG.debug.co2?.chat) console.debug(Utils.log(`SaveMessageData - click jet de sauvegarde`), "erreur dans la récupération de l'acteur cible")
           return
         }
 
@@ -227,21 +227,17 @@ export default class SaveMessageData extends BaseMessageData {
         const targetRollSkill = await targetActor.rollSkill(saveAbility, { difficulty: difficulty, showResult: false })
         message.system.result = targetRollSkill.result
         message.system.linkedRoll = targetRollSkill.roll
-        let opposeResultAnalyse = CORoll.analyseRollResult(targetRollSkill.roll)
-        console.log("result : ", targetRollSkill.result)
 
         let rolls = this.parent.rolls
         rolls[0] = targetRollSkill.roll
         rolls[0].options.oppositeRoll = false
 
-        // TODO Doit on prévoir autre chose qu'un effet supplémentaire ? genre des dés de degat bonus appliqué si jet raté ? A voir...
+        // TODO Doit on prévoir autre chose qu'un effet supplémentaire ? genre des dés de dommages bonus appliqués si le jet est raté ?
 
-        // Doit on appliquer l'effet s'il y en a
+        // On applique l'effet s'il y en a un
         const customEffect = message.system.customEffect
         const additionalEffect = message.system.additionalEffect
         if (customEffect && additionalEffect && additionalEffect.active && Resolver.shouldManageAdditionalEffect(targetRollSkill.result, additionalEffect)) {
-          console.log("on va appliquer les effets", "customEffect : ", customEffect)
-
           if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
           else {
             await game.users.activeGM.query("co2.applyCustomEffect", { ce: customEffect, targets: [targetActor.uuid] })

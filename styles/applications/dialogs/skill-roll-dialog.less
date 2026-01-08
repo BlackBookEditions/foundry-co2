@@ -18,7 +18,7 @@
     }*/
   }
 
-  .icone {
+  .icon {
     text-align: center;
     font-size: 30px;
     align-content: center;
@@ -37,9 +37,27 @@
     padding: 10px;
     .skill-roll-1 {
       display: grid;
-      grid-template-columns: 0.5fr 1.5fr 0.3fr 1.7fr 0.3fr 1.5fr;
+      grid-template-columns: 0.5fr 1fr 1fr 0.3fr 1.7fr 0.3fr 1.5fr;
       padding-bottom: 6px;
       border-bottom: 2px solid #5d142b;
+      .oppositeRoll {
+        display: flex;
+        flex-direction: column;
+        margin: 0 10px 0 10px;
+        div {
+          align-items: center;
+          justify-content: center;
+          label {
+            margin-left: 10px;
+          }
+        }
+        select {
+          width: 125px;
+        }
+        .oppositeRoll-ability {
+          display: none;
+        }
+      }
     }
     .skill-roll-2 {
       display: grid;

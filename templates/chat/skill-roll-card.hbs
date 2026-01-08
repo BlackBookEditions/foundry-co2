@@ -1,4 +1,4 @@
-{{!log "Chroniques Oubliées | hbs | skill-card" this}}
+{{log "Chroniques Oubliées | hbs | skill-card" this}}
 <div class="co chat-card roll-card skill-card" data-actor-id="{{speaker.actor}}">
   <header class="card-header flexcol">
     <div class="type-card"><label><i class="fa-solid fa-dice-d6" data-tooltip="{{localize 'CO.dialogs.skillCheck'}}" data-tooltip-direction="LEFT"></i></label></div>
@@ -6,6 +6,7 @@
   </header>
 
   <div class="card-content">
+    <section class="targets"></section>
     <section class="bloc-result">
       <section class="result">
         <div class="form-group total-result">
@@ -75,7 +76,7 @@
   <footer class="card-footer">
     <div class="dice-roll" data-action="expandRoll">
       <div class="dice-result">
-        <div class="dice-formula" style>{{localize "CO.ui.formula"}} : {{formula}}</div>
+        <div class="dice-formula">{{localize "CO.ui.formula"}} : {{formula}}</div>
         {{{tooltip}}}
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { SYSTEM } from "../config/system.mjs"
 import Utils from "../helpers/utils.mjs"
 export class CORoll extends Roll {
   static ROLL_TYPE = "standard"
@@ -75,6 +76,10 @@ export class COSkillRoll extends CORoll {
     let formula
     let rollContext
 
+    dialogContext.choiceModifierSkillTargetsWithoutAll = Object.fromEntries(
+      Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "ability" && value.id !== "all"),
+    )
+
     if (withDialog) {
       const content = await foundry.applications.handlebars.renderTemplate(this.DIALOG_TEMPLATE, dialogContext)
 
@@ -93,7 +98,18 @@ export class COSkillRoll extends CORoll {
             callback: (event, button, dialog) => {
               if (CONFIG.debug.co2?.rolls) console.debug(Utils.log(`COSkillRoll prompt - Callback`), event, button, dialog)
               const output = Array.from(button.form.elements).reduce((obj, input) => {
-                if (input.name) obj[input.name] = input.value
+                if (input.name) {
+                  if (input.type === "checkbox") {
+                    obj[input.name] = input.checked
+                  } else if (input.type === "radio") {
+                    // Only store the value if this radio button is checked
+                    if (input.checked) {
+                      obj[input.name] = input.value
+                    }
+                  } else {
+                    obj[input.name] = input.value
+                  }
+                }
                 return obj
               }, {})
               if (CONFIG.debug.co2?.rolls) console.debug(Utils.log(`COSkillRoll prompt - Output`), output)
@@ -129,6 +145,7 @@ export class COSkillRoll extends CORoll {
           },
         ],
         render: (event, dialog) => {
+          // Calcul de la somme des bonus de compétence
           const inputs = dialog.element.querySelectorAll(".bonus-item")
           if (inputs) {
             inputs.forEach((input) => {
@@ -154,6 +171,18 @@ export class COSkillRoll extends CORoll {
               }
               dialog.element.querySelector('input[name="formula"]').value = newFormula
             })
+          })
+          // Si la case de jet opposé est cochée, on affiche le select de choix de la caractéristique
+          const oppositeRollCheckbox = dialog.element.querySelector('input[name="oppositeRoll"]')
+          oppositeRollCheckbox.addEventListener("change", (event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            const oppositeRollAbilityDiv = dialog.element.querySelector(".oppositeRoll-ability")
+            if (event.target.checked) {
+              oppositeRollAbilityDiv.style.display = "block"
+            } else {
+              oppositeRollAbilityDiv.style.display = "none"
+            }
           })
         },
       })
@@ -187,6 +216,11 @@ export class COSkillRoll extends CORoll {
     await roll.evaluate()
 
     const toolTip = await roll.getTooltip()
+
+    let isOppositeRoll = false
+    isOppositeRoll = withDialog ? rollContext.difficulty?.includes("@oppose") : dialogContext.difficulty?.includes("@oppose")
+    if (rollContext.oppositeRoll) isOppositeRoll = true
+
     roll.options = {
       actorId: dialogContext.actor.id,
       rollMode: withDialog ? rollContext.rollMode : dialogContext.rollMode,
@@ -194,7 +228,8 @@ export class COSkillRoll extends CORoll {
       bonus: withDialog ? rollContext.bonus : dialogContext.bonus,
       malus: withDialog ? rollContext.malus : dialogContext.malus,
       critical: withDialog ? rollContext.critical : dialogContext.critical,
-      oppositeRoll: withDialog ? rollContext.difficulty?.includes("@oppose") : dialogContext.difficulty?.includes("@oppose"),
+      oppositeRoll: isOppositeRoll,
+      oppositeRollAbility: withDialog ? rollContext.oppositeRollAbility : dialogContext.oppositeRollAbility,
       oppositeTarget: dialogContext.targets?.length > 0 ? dialogContext.targets[0].uuid : null,
       oppositeValue: withDialog ? rollContext.difficulty : dialogContext.difficulty,
       hasLuckyPoints: withDialog ? rollContext.hasLuckyPoints === "true" : dialogContext.hasLuckyPoints,
