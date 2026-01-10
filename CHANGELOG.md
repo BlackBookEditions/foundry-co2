@@ -1,5 +1,8 @@
 # 1.4.2
 
+## Améliorations
+- Les dommages ne sont pas lancés si la formule vaut 0
+
 ## Corrections
 - Utilisation du point de chance sur un jet d'attaque
 - Corrige une erreur sur la résolution de type jet opposé

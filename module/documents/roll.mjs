@@ -468,11 +468,22 @@ export class COAttackRoll extends CORoll {
 
       // Si l'option Jet combiné est activée, on lance le jet de dommages immédiatement
       // Jet de dommages enregistré si la formule de dommages n'est pas vide ou égale à 0
-      const damageFormula = withDialog
-        ? Utils.evaluateFormulaCustomValues(dialogContext.actor, `${rollContext.formulaDamage}+${rollContext.damageBonus}+${rollContext.damageMalus}`)
-        : Utils.evaluateFormulaCustomValues(dialogContext.actor, `${dialogContext.formulaDamage}+${dialogContext.damageBonus}+${dialogContext.damageMalus}`)
+      let damageFormula
+      if (withDialog) {
+        let formulaToEvaluate
+        if (rollContext.formulaDamage !== "" && rollContext.formulaDamage !== "0") formulaToEvaluate = rollContext.formulaDamage
+        if (rollContext.damageBonus !== "" && rollContext.damageBonus !== "0") formulaToEvaluate += rollContext.formulaDamage
+        if (rollContext.damageMalus !== "" && rollContext.damageMalus !== "0") formulaToEvaluate += rollContext.damageMalus
+        if (formulaToEvaluate) damageFormula = Utils.evaluateFormulaCustomValues(dialogContext.actor, formulaToEvaluate)
+      } else {
+        let formulaToEvaluate
+        if (dialogContext.formulaDamage !== "" && dialogContext.formulaDamage !== "0") formulaToEvaluate = dialogContext.formulaDamage
+        if (dialogContext.damageBonus !== "" && dialogContext.damageBonus !== "0") formulaToEvaluate += dialogContext.formulaDamage
+        if (dialogContext.damageMalus !== "" && dialogContext.damageMalus !== "0") formulaToEvaluate += dialogContext.damageMalus
+        if (formulaToEvaluate) damageFormula = Utils.evaluateFormulaCustomValues(dialogContext.actor, formulaToEvaluate)
+      }
 
-      if (damageFormula && damageFormula !== "" && damageFormula !== "0" && Roll.validate(damageFormula)) {
+      if (damageFormula && damageFormula !== "" && Roll.validate(damageFormula)) {
         const damageRoll = new this(damageFormula, dialogContext.actor.getRollData())
         await damageRoll.evaluate()
         const damageRollTooltip = await damageRoll.getTooltip()
