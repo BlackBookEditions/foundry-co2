@@ -472,7 +472,7 @@ export class COAttackRoll extends CORoll {
         ? Utils.evaluateFormulaCustomValues(dialogContext.actor, `${rollContext.formulaDamage}+${rollContext.damageBonus}+${rollContext.damageMalus}`)
         : Utils.evaluateFormulaCustomValues(dialogContext.actor, `${dialogContext.formulaDamage}+${dialogContext.damageBonus}+${dialogContext.damageMalus}`)
 
-      if (damageFormula && damageFormula !== "" && damageFormula !== "0" && COAttackRoll._formulaTest(damageFormula) && Roll.validate(damageFormula)) {
+      if (damageFormula && damageFormula !== "" && damageFormula !== "0" && Roll.validate(damageFormula)) {
         const damageRoll = new this(damageFormula, dialogContext.actor.getRollData())
         await damageRoll.evaluate()
         const damageRollTooltip = await damageRoll.getTooltip()
@@ -509,17 +509,6 @@ export class COAttackRoll extends CORoll {
 
     if (CONFIG.debug.co2?.rolls) console.debug(Utils.log(`COAttackRoll - rolls`), rolls)
     return rolls
-  }
-
-  static _formulaTest(str) {
-    try {
-      const resultat = eval(str)
-      // !! force la conversion en booléen.
-      // Si le résultat est 0, cela renverra false.
-      return !!resultat
-    } catch (e) {
-      return false // En cas d'erreur de syntaxe
-    }
   }
 
   /**

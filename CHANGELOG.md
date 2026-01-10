@@ -1,3 +1,9 @@
+# 1.4.1
+
+## Corrections
+- Les dommages n'étaient plus lancés en cas de succès au jet d'attaque. Par contre, ils sont lancés même si la formule vaut 0 (comme 0+0).
+- Affichage du jet de sauvegarde avec le thème sombre
+
 # 1.4.0
 
 ## Améliorations

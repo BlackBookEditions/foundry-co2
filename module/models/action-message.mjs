@@ -253,7 +253,7 @@ export default class ActionMessageData extends BaseMessageData {
             newResult.isFailure = false
           }
 
-          if (newResult.isSuccess && rolls[1]) {
+          if (newResult.isSuccess) {
             const damageRoll = Roll.fromData(message.system.linkedRoll)
             await damageRoll.toMessage(
               { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },
