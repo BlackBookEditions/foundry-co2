@@ -144,8 +144,8 @@ export default class ActionMessageData extends BaseMessageData {
               await actor.update({ "system.resources.fortune.value": actor.system.resources.fortune.value })
             }
 
-            // Si on a un succes et qu'en plus on est en option ou on jette automatiquement les dommages
-            if (newResult.isSuccess && game.settings.get("co2", "useComboRolls")) {
+            // Si l'option Jet combinée est activée et le jet est un succès, on lance les dommages
+            if (game.settings.get("co2", "useComboRolls") && newResult.isSuccess && message.system.linkedRoll && Object.keys(message.system.linkedRoll).length > 0) {
               const damageRoll = Roll.fromData(message.system.linkedRoll)
               await damageRoll.toMessage(
                 { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },
@@ -237,7 +237,7 @@ export default class ActionMessageData extends BaseMessageData {
           }
 
           let newResult = CORoll.analyseRollResult(rolls[0])
-          console.log("opposeResultAnalyse", opposeResultAnalyse, "newResult", newResult, "rolls[0].product", rolls[0].product)
+
           // Attention il est aussi possible que le jet de l'opposant soit un critique ou un fumble il faut le gérer
           if (opposeResultAnalyse.isCritical && !newResult.isCritical) {
             newResult.isSuccess = false
@@ -253,7 +253,8 @@ export default class ActionMessageData extends BaseMessageData {
             newResult.isFailure = false
           }
 
-          if (newResult.isSuccess) {
+          // Le jet est un succès
+          if (newResult.isSuccess && message.system.linkedRoll && Object.keys(message.system.linkedRoll).length > 0) {
             const damageRoll = Roll.fromData(message.system.linkedRoll)
             await damageRoll.toMessage(
               { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },

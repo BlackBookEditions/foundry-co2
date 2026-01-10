@@ -1,3 +1,9 @@
+# 1.4.2
+
+## Corrections
+- Utilisation du point de chance sur un jet d'attaque
+- Corrige une erreur sur la résolution de type jet opposé
+
 # 1.4.1
 
 ## Corrections
