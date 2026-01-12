@@ -445,6 +445,8 @@ export class COAttackRoll extends CORoll {
         formulaAttack: withDialog ? rollContext.formulaAttack : dialogContext.formulaAttack,
         skillBonus: withDialog ? rollContext.skillBonus : dialogContext.skillBonus,
         skillMalus: withDialog ? rollContext.skillMalus : dialogContext.skillMalus,
+        skillBonusTooltip: withDialog ? rollContext.skillBonusTooltip : dialogContext.skillBonusTooltip,
+        skillMalusTooltip: withDialog ? rollContext.skillMalusTooltip : dialogContext.skillMalusTooltip,
         formulaDamage: withDialog ? rollContext.formulaDamage : dialogContext.formulaDamage,
         damageBonus: withDialog ? rollContext.damageBonus : dialogContext.damageBonus,
         damageMalus: withDialog ? rollContext.damageMalus : dialogContext.damageMalus,

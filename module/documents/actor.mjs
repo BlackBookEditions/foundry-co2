@@ -89,7 +89,7 @@ export default class COActor extends Actor {
 
     if (this.type === "encounter") {
       rollData.niv = this.system.attributes.nc
-      rollData.atm = this.system.magic
+      rollData.atm = this.system.combat.magic
     }
 
     return rollData
@@ -2006,7 +2006,6 @@ export default class COActor extends Actor {
         if (damModifiers.total !== 0) damageFormulaTooltip = damageFormulaTooltip.concat(" +", damModifiers.tooltip)
       }
     }
-
     // Gestion des points de chance
     let hasLuckyPoints = false
     if (this.system.resources?.fortune && this.system.resources.fortune.value > 0) hasLuckyPoints = true
@@ -2015,17 +2014,37 @@ export default class COActor extends Actor {
     if (chatFlavor === "") chatFlavor = `${item.name} ${actionName}`
 
     // Si l'actor est un encounter je dois prendre en comtpe en skillBonus ou skillMalus les modifiers qui lui sont apportés
+    let skillBonusTooltip = "Saisir un nombre entier positif"
+    let skillMalusTooltip = "Saisir un nombre entier négatif"
     if (this.type === "encounter") {
       if (item.type === "attack") {
         if (item.system.isContact) {
-          if (this.system.combat.melee.value > 0) skillBonus += this.system.combat.melee.value
-          else if (this.system.combat.melee.value < 0) skillMalus += this.system.combat.melee.value
+          let modificateur = this.system.combat.melee.value - this.system.attributes.ncTotal // Le niveau des rencontre n'est pris en comtpe que pour les jet d'opposition
+          if (modificateur > 0) {
+            skillBonus += modificateur
+            skillBonusTooltip = Utils.getTooltip("Contact", modificateur)
+          } else if (modificateur < 0) {
+            skillMalus += modificateur
+            skillMalusTooltip = Utils.getTooltip("Contact", modificateur)
+          }
         } else if (item.system.isRanged) {
-          if (this.system.combat.ranged.value > 0) skillBonus += this.system.combat.ranged.value
-          else if (this.system.combat.ranged.value < 0) skillMalus += this.system.combat.ranged.value
+          let modificateur = this.system.combat.ranged.value - this.system.attributes.ncTotal // Le niveau des rencontre n'est pris en comtpe que pour les jet d'opposition
+          if (modificateur > 0) {
+            skillBonus += modificateur
+            skillBonusTooltip = Utils.getTooltip("Distant", modificateur)
+          } else if (modificateur < 0) {
+            skillMalus += modificateur
+            skillMalusTooltip = Utils.getTooltip("Distant", modificateur)
+          }
         } else if (item.system.isMagic) {
-          if (this.system.combat.magic.value > 0) skillBonus += this.system.combat.magic.value
-          else if (this.system.combat.magic.value < 0) skillMalus += this.system.combat.magic.value
+          let modificateur = this.system.combat.magic.value - this.system.attributes.ncTotal // Le niveau des rencontre n'est pris en comtpe que pour les jet d'opposition
+          if (modificateur > 0) {
+            skillBonus += modificateur
+            skillBonusTooltip = Utils.getTooltip("Magique", modificateur)
+          } else if (modificateur < 0) {
+            skillMalus += modificateur
+            skillMalusTooltip = Utils.getTooltip("Magique", modificateur)
+          }
         }
       }
     }
@@ -2046,6 +2065,8 @@ export default class COActor extends Actor {
       flavor: chatFlavor,
       skillBonus,
       skillMalus,
+      skillBonusTooltip,
+      skillMalusTooltip,
       damageBonus,
       damageMalus,
       critical,

@@ -157,6 +157,11 @@ export const MODIFIERS_TARGET = Object.freeze({
     label: "CO.label.long.movement",
     subtype: "attribute",
   },
+  nc: {
+    id: "nc",
+    label: "CO.label.long.nc",
+    subtype: "attribute",
+  },
   rp: {
     id: "rp",
     label: "CO.label.long.rp",
