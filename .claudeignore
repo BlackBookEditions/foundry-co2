@@ -1,0 +1,8 @@
+# Node modules
+node_modules/
+
+# Foundry VTT packs
+packs/
+
+# Git
+.git/
