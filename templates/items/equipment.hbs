@@ -48,12 +48,14 @@
                             value=systemSource.quantity.current
                             placeholder=0
                             localize=true
+                            disabled=locked
                             max=systemSource.quantity.max}}
                     {{else}}
                         {{formInput systemFields.quantity.fields.current
                             value=systemSource.quantity.current
                             placeholder=0
-                            localize=true}}
+                            localize=true
+                            disabled=locked}}
                     {{/if}}
                     /
                     {{formInput systemFields.quantity.fields.max value=systemSource.quantity.max placeholder=0 localize=true disabled=locked}}
@@ -143,19 +145,19 @@
                 <div class="flexrow">
                     {{#if (or isWeapon isArmor isShield isMisc)}}
                         <label>
-                            <input type="checkbox" name="system.properties.equipable" {{checked systemSource.properties.equipable}} {{#if @root.locked}}readonly{{/if}}/>
+                            <input type="checkbox" name="system.properties.equipable" {{checked systemSource.properties.equipable}} {{#if @root.locked}}class="disabled"{{/if}}/>
                             {{systemFields.properties.fields.equipable.label}}
                         </label>
                     {{/if}}
                     {{#if (or isWeapon isMisc)}}
                         <label>
-                            <input type="checkbox" name="system.properties.reloadable" {{checked systemSource.properties.reloadable}} {{#if @root.locked}}readonly{{/if}}/>
+                            <input type="checkbox" name="system.properties.reloadable" {{checked systemSource.properties.reloadable}} {{#if @root.locked}}class="disabled"{{/if}}/>
                             {{systemFields.properties.fields.reloadable.label}}
                         </label>
                     {{/if}}
                     {{#if (or isConsumable isMisc)}}
                         <label>
-                            <input type="checkbox" name="system.properties.stackable" {{checked systemSource.properties.stackable}} {{#if @root.locked}}readonly{{/if}}/>
+                            <input type="checkbox" name="system.properties.stackable" {{checked systemSource.properties.stackable}} {{#if @root.locked}}class="disabled"{{/if}}/>
                             {{systemFields.properties.fields.stackable.label}}
                         </label>
                     {{/if}}
@@ -168,11 +170,11 @@
                     <legend>{{localize "CO.ui.usage"}}</legend>
                     <div class="flexrow">
                         <label>
-                            <input type="checkbox" name="system.usage.oneHand" {{checked systemSource.usage.oneHand}} {{#if @root.locked}}readonly{{/if}}/>
+                            <input type="checkbox" name="system.usage.oneHand" {{checked systemSource.usage.oneHand}} {{#if @root.locked}}class="disabled"{{/if}}/>
                             {{systemFields.usage.fields.oneHand.label}}
                         </label>
                         <label>
-                            <input type="checkbox" name="system.usage.twoHand" {{checked systemSource.usage.twoHand}} {{#if @root.locked}}readonly{{/if}}/>
+                            <input type="checkbox" name="system.usage.twoHand" {{checked systemSource.usage.twoHand}} {{#if @root.locked}}class="disabled"{{/if}}/>
                             {{systemFields.usage.fields.twoHand.label}}
                         </label>
                     </div>
@@ -206,12 +208,14 @@
                                     value=systemSource.charges.current
                                     placeholder=0
                                     localize=true
+                                    disabled=locked
                                     max=systemSource.charges.max}}
                             {{else}}
                                 {{formInput systemFields.charges.fields.current
                                     value=systemSource.charges.current
                                     placeholder=0
-                                    localize=true}}
+                                    localize=true
+                                    disabled=locked}}
                             {{/if}}
                             /
                             {{formInput systemFields.charges.fields.max value=systemSource.charges.max placeholder=0 localize=true disabled=locked}}

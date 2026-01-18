@@ -35,10 +35,11 @@
   @import "./forms.less";
   @import "./applications/_index.less";
 
-  select.disabled {
+  select.disabled,
+  input[type="checkbox"].disabled,
+  label:has(input[type="checkbox"].disabled) {
     pointer-events: none;
     opacity: 0.6;
-    background-color: #847e87;
     cursor: not-allowed;
   }
 }

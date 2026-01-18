@@ -1,6 +1,6 @@
 <section class="tab standard-form actions{{#if tabs.actions.active}} active{{/if}}" data-group="primary" data-tab="actions">
     {{!log "Chroniques Oubliées | actions" this}}
-    <button type="button" class="fas fa-add action-button" data-action="addAction" data-tooltip="{{localize 'CO.ui.add'}}">{{localize "CO.ui.add"}}</button>
+    {{#if @root.unlocked}}<button type="button" class="fas fa-add action-button" data-action="addAction" data-tooltip="{{localize 'CO.ui.add'}}">{{localize "CO.ui.add"}}</button>{{/if}}
         
     <div class="actions">
 
@@ -35,7 +35,7 @@
                                 <div class="form-group">
                                     <label>{{localize "CO.ui.img"}}</label>
                                     <div class="form-fields">
-                                        <img src="{{action.img}}" class="action-icon" data-edit="system.actions.{{idx}}.img" data-action="selectActionIcon" />
+                                        <img src="{{action.img}}" class="action-icon" {{#if @root.unlocked}}data-edit="system.actions.{{idx}}.img" data-action="selectActionIcon"{{/if}} />
                                         <input class="field-value" readonly name="system.actions.{{idx}}.img" type="text" value="{{action.img}}" placeholder="{{localize 'CO.ui.img'}}" data-dtype="String" {{#if @root.locked}}readonly{{/if}}/>
                                         <button type="button" class="action-button file-picker" data-type="imagevideo" data-target="system.actions.{{idx}}.img" data-tooltip="Parcourir les fichiers" tabindex="-1" {{#if @root.locked}}disabled{{/if}}>
                                             <i class="fas fa-file-import fa-fw"></i>

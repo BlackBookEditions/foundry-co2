@@ -3057,10 +3057,11 @@ co-toggle-switch[checked] thumb {
 .co.application.sheet.actor.character-mini .window-content .mini-sidebar .fa-heart-broken {
   color: var(--color-damages);
 }
-.co select.disabled {
+.co select.disabled,
+.co input[type="checkbox"].disabled,
+.co label:has(input[type="checkbox"].disabled) {
   pointer-events: none;
   opacity: 0.6;
-  background-color: #847e87;
   cursor: not-allowed;
 }
 #interface {

@@ -25,7 +25,7 @@
             {{formGroup systemFields.maxDefenseArmor value=systemSource.maxDefenseArmor localize=true disabled=locked}}
 
             {{#if (isPathprestigious @root.system.subtype)}}
-                {{formGroup systemFields.pvByLevel value=systemSource.pvByLevel localize=true}}
+                {{formGroup systemFields.pvByLevel value=systemSource.pvByLevel localize=true disabled=locked}}
             {{/if}}
             </fieldSet> 
         </section>

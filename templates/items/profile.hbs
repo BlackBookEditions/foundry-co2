@@ -111,7 +111,7 @@
                             {{selectOptions @root.choiceModifierMalusDiceTargets selected=m.target localize=true}}
                         {{/if}} 
                     </select>
-                    <input name="system.modifiers.{{id}}.value" type="text" value="{{m.value}}" data-dtype="String" />
+                    <input name="system.modifiers.{{id}}.value" type="text" value="{{m.value}}" data-dtype="String" {{#if @root.locked}}readonly{{/if}}/>
                     {{#if @root.unlocked}}<button data-action="deleteModifier"><i class="fas fa-trash"></i></button>{{/if}}
                 </div>
             {{/each}}
@@ -158,7 +158,7 @@
                 <label>{{localize "CO.ui.weapons"}}</label>
                 <div class="grid grid-4col">
                     {{#each martialTrainingsWeapons as |training key|}}
-                        <label><input type="checkbox" readonly {{checked (lookup ../system.martialTrainingsWeapons training.key)}} />{{getMartialTrainingLabel training}}</label>
+                        <label><input type="checkbox" class="disabled" {{checked (lookup ../system.martialTrainingsWeapons training.key)}} />{{getMartialTrainingLabel training}}</label>
                     {{/each}}
                 </div>
             </div>
@@ -166,7 +166,7 @@
                 <label>{{localize "CO.ui.armors"}}</label>
                 <div class="grid grid-4col">
                     {{#each martialTrainingsArmors as |training key|}}
-                        <label><input type="checkbox" readonly name="system.martialTrainingsArmors.{{getKeyFromMartialTraining training}}" data-dtype="Boolean" {{checked (lookup ../system.martialTrainingsArmors training.key)}} />{{getMartialTrainingLabel training}}</label>
+                        <label><input type="checkbox" class="disabled" name="system.martialTrainingsArmors.{{getKeyFromMartialTraining training}}" data-dtype="Boolean" {{checked (lookup ../system.martialTrainingsArmors training.key)}} />{{getMartialTrainingLabel training}}</label>
                     {{/each}}
                 </div>
             </div>
@@ -174,7 +174,7 @@
                 <label>{{localize "CO.ui.shields"}}</label>
                 <div class="grid grid-4col">
                     {{#each martialTrainingsShields as |training key|}}
-                        <label><input type="checkbox" readonly name="system.martialTrainingsShields.{{getKeyFromMartialTraining training}}" data-dtype="Boolean" {{checked (lookup ../system.martialTrainingsShields training.key)}} />{{getMartialTrainingLabel training}}</label>
+                        <label><input type="checkbox" class="disabled" name="system.martialTrainingsShields.{{getKeyFromMartialTraining training}}" data-dtype="Boolean" {{checked (lookup ../system.martialTrainingsShields training.key)}} />{{getMartialTrainingLabel training}}</label>
                     {{/each}}
                 </div>
             </div>    

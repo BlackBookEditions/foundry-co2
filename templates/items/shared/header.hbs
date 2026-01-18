@@ -1,5 +1,5 @@
 <header class="sheet-header">
-  <img src="{{item.img}}" data-action="editImage" data-edit="img" data-tooltip="{{item.name}}" />
+  <img src="{{item.img}}" {{#if unlocked}}data-action="editImage" data-edit="img"{{/if}} data-tooltip="{{item.name}}" />
   <div class="name">
     <input class="flex1" name="name" type="text" value="{{item.name}}" placeholder="{{localize 'CO.ui.itemName'}}" spellcheck="false" data-dtype="String" {{#if locked}}readonly{{/if}} />
   </div>

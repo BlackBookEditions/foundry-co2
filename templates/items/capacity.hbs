@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <label>{{localize "CO.label.long.usageNumber"}}</label>
                         <div class="form-fields border-right">
-                            <input class="field-value" name="system.charges.current" type="number" value="{{system.charges.current}}" placeholder="{{localize 'CO.ui.current'}}" min="0" max="{{system.charges.max}}" data-dtype="Number"/>
+                            <input class="field-value" name="system.charges.current" type="number" value="{{system.charges.current}}" placeholder="{{localize 'CO.ui.current'}}" min="0" max="{{system.charges.max}}" data-dtype="Number" {{#if locked}}readonly{{/if}}/>
                                 /
                             <input class="field-value" name="system.charges.max" type="number" value="{{system.charges.max}}" placeholder="{{localize 'CO.ui.max'}}" data-dtype="Number"  {{#if locked}}readonly{{/if}}/>
                         </div>

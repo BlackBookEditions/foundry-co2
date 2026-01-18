@@ -6,6 +6,7 @@
 ## Corrections
 - Utilisation du point de chance sur un jet d'attaque
 - Corrige une erreur sur la résolution de type jet opposé
+- Mode Lecture des fiches d'objets : les champs de formulaire (input, select, checkbox) et les images sont maintenant correctement en lecture seule
 
 # 1.4.1
 
