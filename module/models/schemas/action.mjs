@@ -395,12 +395,16 @@ export class Action extends foundry.abstract.DataModel {
 
   /**
    * Serialize salient information about this Document when dragging it.
-   * @returns {object}  An object of drag data : type "co.action", source and indice
+   * @returns {object}  An object of drag data : type "co.action", source, indice, actionType, isTemporary, hasDamage
    */
   toDragData() {
     const dragData = { type: "co.action" }
     dragData.source = this.source
     dragData.indice = this.indice
+    dragData.actionType = this.type
+    dragData.isTemporary = this.properties.temporary
+    dragData.hasDamage = this.hasResolversWithDomage
+    dragData.isAutoAttack = this.autoAttack
     return dragData
   }
 

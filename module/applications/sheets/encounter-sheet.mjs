@@ -160,6 +160,12 @@ export default class COEncounterSheet extends COBaseActorSheet {
       dragData.type = "co.attack"
       dragData.name = item.name
       dragData.img = item.img
+      // Données de la première action pour la macro
+      if (item.system.actions?.length > 0) {
+        const action = item.system.actions[0]
+        dragData.hasDamage = action.hasResolversWithDomage
+        dragData.isAutoAttack = action.autoAttack
+      }
       event.dataTransfer.setData("text/plain", JSON.stringify(dragData))
       return
     }

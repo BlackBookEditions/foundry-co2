@@ -1,3 +1,16 @@
+#  1.4.3
+
+## Améliorations
+- Drop d'un action dans la hotbar : amélioration des différents raccourcis selon le type d'action
+| Type d'action                      │        Clic        │ Alt+Clic │ Ctrl+Clic │ Shift+Clic │
+│ Temporaire (activable/désactivable)│ Activer/Désactiver │ -        │ Chat      │ Fiche      │
+│ Attaque avec dommages (mêlée, distance, magique, sort)  │ Attaque            │ Dommages │ Chat      │ Fiche │
+│ Attaque sans dommages                                   │ Attaque            │ -        │ Chat      │ Fiche │
+│ Autres (soin, buff, debuff, consommable, auto)          │ Utiliser           │ -        │ Chat      │ Fiche |
+
+## Corrections
+- Mode Lecture des fiches d'objets : les champs de formulaire (input, select, checkbox) et les images sont maintenant correctement en lecture seule
+
 # 1.4.2
 
 ## Améliorations
@@ -6,7 +19,6 @@
 ## Corrections
 - Utilisation du point de chance sur un jet d'attaque
 - Corrige une erreur sur la résolution de type jet opposé
-- Mode Lecture des fiches d'objets : les champs de formulaire (input, select, checkbox) et les images sont maintenant correctement en lecture seule
 
 # 1.4.1
 
