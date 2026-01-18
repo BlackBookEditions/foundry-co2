@@ -144,6 +144,14 @@
     padding: 0 10px;
     border-radius: 10px 10px 0 0;
 
+    &.draggable {
+      cursor: grab;
+
+      &:active {
+        cursor: grabbing;
+      }
+    }
+
     //&:hover {
     //    background: color.adjust(dark.$color-blue, $lightness: 5%);
     //}

@@ -19,13 +19,13 @@
     <div class="{{#if (eq actor.type 'character')}}path-grid{{else}}path-encounter{{/if}}">
         {{#each pathGroups as |pg id|}}
             {{!log 'pathGroup' this}}
-            {{#if (or @root.unlocked pg.path.system.displayPath)}}                
+            {{#if (or @root.unlocked pg.path.system.displayPath)}}
                 <ol class="paths items-container" data-tab="features">
-                    <li class="items-container-header flexrow">
+                    <li class="items-container-header flexrow draggable" data-item-uuid="{{pg.path.uuid}}" data-item-id="{{pg.path.id}}" data-item-type="path">
                         <h4 class="item-name flexrow">
                             <a data-action="toggleSection" data-toggle-type="paths" data-slug="{{pg.path.system.slug}}">{{pg.path.name}} ({{pg.path.system.rank}})</a>
                         </h4>
-                        <div class="item-controls-3 item" data-item-uuid="{{pg.path.uuid}}" data-item-id="{{pg.path.id}}" data-item-type="path">
+                        <div class="item-controls-3 item">
                             {{#if ../unlocked}}
                                 <a class="edit" data-action="editItem" data-tooltip="{{localize 'CO.label.long.edit'}}"><i class="fas fa-fw fa-edit"></i></a>
                                 <a class="item-control" data-action="deleteItem" data-tooltip="{{localize 'CO.ui.remove'}}"><i class="fas fa-trash"></i></a>

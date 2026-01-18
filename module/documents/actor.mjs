@@ -145,11 +145,12 @@ export default class COActor extends Actor {
   }
 
   /**
-   * Retourne un tableau d'objets comprenant les voies et les capacités associées
+   * Retourne un tableau d'objets comprenant les voies et les capacités associées, triées par leur propriété sort
    */
   async getPathGroups() {
     let pathGroups = []
-    for (const path of this.paths) {
+    const sortedPaths = [...this.paths].sort((a, b) => (a.sort || 0) - (b.sort || 0))
+    for (const path of sortedPaths) {
       const capacitesId = path.system.capacities
         .map((uuid) => {
           return uuid ? foundry.utils.parseUuid(uuid).id : null

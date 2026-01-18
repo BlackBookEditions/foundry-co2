@@ -1241,6 +1241,12 @@ co-toggle-switch[checked] thumb {
   padding: 0 10px;
   border-radius: 10px 10px 0 0;
 }
+.co.application.sheet .items-container .items-container-header.draggable {
+  cursor: grab;
+}
+.co.application.sheet .items-container .items-container-header.draggable:active {
+  cursor: grabbing;
+}
 .co.application.sheet .items-container .items-container-header h4 {
   border: 0;
   font-size: 18px;
