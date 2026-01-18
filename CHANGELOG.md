@@ -7,6 +7,8 @@
 │ Attaque avec dommages (mêlée, distance, magique, sort)  │ Attaque            │ Dommages │ Chat      │ Fiche │
 │ Attaque sans dommages                                   │ Attaque            │ -        │ Chat      │ Fiche │
 │ Autres (soin, buff, debuff, consommable, auto)          │ Utiliser           │ -        │ Chat      │ Fiche |
+- Voies : possibilité de réorganiser l'ordre des voies par glisser-déposer dans l'onglet Voies
+- Chat : SHIFT+clic sur le bouton d'envoi au chat envoie le message en mode public (visible par tous) au lieu du mode privé (MJ uniquement)
 
 ## Corrections
 - Mode Lecture des fiches d'objets : les champs de formulaire (input, select, checkbox) et les images sont maintenant correctement en lecture seule

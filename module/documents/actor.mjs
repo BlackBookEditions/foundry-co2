@@ -2602,12 +2602,12 @@ export default class COActor extends Actor {
     }
   }
 
-  async sendItemToChat({ chatType, itemId, indice = null }) {
+  async sendItemToChat({ chatType, itemId, indice = null, isPublic = false }) {
     const item = this.items.get(itemId)
     if (!item) return
 
     let itemChatData = item.getChatData(item, this, chatType, indice)
-    new CoChat(this)
+    const chat = new CoChat(this)
       .withTemplate("systems/co2/templates/chat/item-card.hbs")
       .withData({
         actorId: this.id,
@@ -2620,8 +2620,13 @@ export default class COActor extends Actor {
         actions: itemChatData.actions,
       })
       .withMessageType("item")
-      .withWhisper(ChatMessage.getWhisperRecipients("GM").map((u) => u.id))
-      .create()
+
+    // En mode privé (par défaut), envoyer uniquement aux MJ
+    if (!isPublic) {
+      chat.withWhisper(ChatMessage.getWhisperRecipients("GM").map((u) => u.id))
+    }
+
+    chat.create()
   }
 
   // #endregion

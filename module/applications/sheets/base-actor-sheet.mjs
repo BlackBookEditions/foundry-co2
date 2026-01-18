@@ -424,6 +424,8 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     // Dataset has tooltip, chatType and if it's an action there are also indice and source
     const dataset = target.dataset
     const chatType = dataset.chatType
+    // SHIFT+clic = mode public (visible par tous)
+    const isPublic = event.shiftKey
 
     let itemId
     let indice = null
@@ -437,7 +439,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
 
     if (!itemId) return
 
-    await this.actor.sendItemToChat({ chatType, itemId, indice })
+    await this.actor.sendItemToChat({ chatType, itemId, indice, isPublic })
   }
 
   /**

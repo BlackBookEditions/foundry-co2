@@ -106,24 +106,16 @@ if (event.shiftKey) { game.system.api.macros.openSheet("${attackData.uuid}","${a
    * @param {string} itemUuid        Uuid of the item on the selected actor to trigger.
    * @param {string} itemName        Name of the item on the selected actor to trigger.
    * @param {int} indice             Indice of the action to display, null if it's the item
+   * @param {boolean} isPublic       If true, send to chat publicly (visible to all)
    * @returns {Promise<ChatMessage|object>}  Roll result.
    */
-  static async sendToChat(itemUuid, itemName, indice) {
+  static async sendToChat(itemUuid, itemName, indice, isPublic = false) {
     const { item, actor } = await Macros.getMacroTarget(itemUuid, itemName, "Item")
     if (item instanceof COItem) {
       if (indice === null) {
-        await actor.sendItemToChat({ chatType: "item", itemId: item.id, indice })
-        /*if (item.type === SYSTEM.ITEM_TYPE.capacity.id && !item.system.learned) return ui.notifications.warn(game.i18n.format("CO.macro.capacityNotLearned", { name: itemName }))
-        if (item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.properties.equipable && !item.system.equipped)
-          return ui.notifications.warn(game.i18n.format("CO.macro.itemNotEquipped", { name: itemName }))
-        */
+        await actor.sendItemToChat({ chatType: "item", itemId: item.id, indice, isPublic })
       } else {
-        await actor.sendItemToChat({ chatType: "action", itemId: item.id, indice })
-
-        /*if (item.type === SYSTEM.ITEM_TYPE.capacity.id && !item.system.learned) return ui.notifications.warn(game.i18n.format("CO.macro.capacityNotLearned", { name: itemName }))
-        if (item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.properties.equipable && !item.system.equipped)
-          return ui.notifications.warn(game.i18n.format("CO.macro.itemNotEquipped", { name: itemName }))
-        */
+        await actor.sendItemToChat({ chatType: "action", itemId: item.id, indice, isPublic })
       }
     }
   }
