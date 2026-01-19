@@ -157,6 +157,16 @@ export const MODIFIERS_TARGET = Object.freeze({
     label: "CO.label.long.movement",
     subtype: "attribute",
   },
+  recoveryFast: {
+    id: "recoveryFast",
+    label: "CO.label.long.recoveryFast",
+    subtype: "attribute",
+  },
+  recoveryFull: {
+    id: "recoveryFull",
+    label: "CO.label.long.recoveryFull",
+    subtype: "attribute",
+  },
   rp: {
     id: "rp",
     label: "CO.label.long.rp",

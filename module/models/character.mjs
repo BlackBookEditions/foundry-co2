@@ -827,7 +827,14 @@ export default class CharacterData extends ActorData {
 
       // Si on accepte on dépense d'un DR et récupération de PV
       const level = Math.round(this.attributes.level / 2) // +1/2 niveau
-      const formula = `${hd} + ${level}`
+
+      // Récupération des modificateurs de récupération rapide
+      const recoveryModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "recoveryFast", true)
+      let formula = `${hd} + ${level}`
+      if (recoveryModifiers.total !== 0 && recoveryModifiers.total !== "") {
+        formula = `${formula} + ${recoveryModifiers.total}`
+      }
+
       const labelTooltip = game.i18n.format("CO.ui.fastRestLabelTooltip", { formula: formula })
 
       //await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fastRest.title"), labelTooltip)
@@ -866,11 +873,17 @@ export default class CharacterData extends ActorData {
       if (proceedFullRestRollDice) {
         // Cas particulier : plus de DR avant la récupération
         const level = Math.round(this.attributes.level / 2) // +1/2 niveau
+
+        // Récupération des modificateurs de récupération complète
+        const recoveryModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "recoveryFull", true)
         let formula
         if (rp.max === 0) {
           formula = `${hd} + ${level}`
         } else {
           formula = `${this.hd.replace("d", "")} + ${level}`
+        }
+        if (recoveryModifiers.total !== 0 && recoveryModifiers.total !== "") {
+          formula = `${formula} + ${recoveryModifiers.total}`
         }
 
         const labelTooltip = game.i18n.format("CO.ui.fullRestLabelTooltip", { formula: formula })

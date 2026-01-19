@@ -39,6 +39,10 @@ export default class Utils {
     return [SYSTEM.MODIFIERS_TARGET.damMelee.id, SYSTEM.MODIFIERS_TARGET.damRanged.id, SYSTEM.MODIFIERS_TARGET.damMagic.id].includes(target)
   }
 
+  static isRecoveryType(target) {
+    return [SYSTEM.MODIFIERS_TARGET.recoveryFast.id, SYSTEM.MODIFIERS_TARGET.recoveryFull.id].includes(target)
+  }
+
   /**
    * Évalue un modificateur basé sur la formule fournie.
    *

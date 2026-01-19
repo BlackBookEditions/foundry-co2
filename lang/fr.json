@@ -462,6 +462,8 @@
         "fp": "Points de chance",
         "rp": "Dés de récupération",
         "mp": "Points de mana",
+        "recoveryFast": "Récupération rapide",
+        "recoveryFull": "Récupération complète",
         "type": "Type",
         "subtype": "Sous-type",
         "actionType": "Type d'action",

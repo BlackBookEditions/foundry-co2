@@ -104,4 +104,12 @@ export class Modifier extends foundry.abstract.DataModel {
   get isTargetDamage() {
     return Utils.isDamageType(this.target)
   }
+
+  get isTargetRecovery() {
+    return Utils.isRecoveryType(this.target)
+  }
+
+  get allowsDiceFormula() {
+    return this.isTargetDamage || this.isTargetRecovery
+  }
 }
