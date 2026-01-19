@@ -608,7 +608,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
       type: "image",
       redirectToRoot: img ? [img] : [],
       callback: (path) => {
-        this.document.update({ img: path })
+        this.document.update({ img: path, "prototypeToken.texture.src": path })
       },
       top: this.position.top + 40,
       left: this.position.left + 10,
