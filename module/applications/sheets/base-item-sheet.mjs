@@ -138,6 +138,26 @@ export default class COBaseItemSheet extends HandlebarsApplicationMixin(sheets.I
   }
 
   /** @override */
+  _prepareTabs(group) {
+    const tabs = super._prepareTabs(group)
+
+    // Ajouter le nombre d'actions au label de l'onglet "actions" si présent et > 0
+    if (group === "primary" && tabs.actions && this.document.system.actions) {
+      const actionsCount = this.document.system.actions.length
+      // Localiser le label
+      const localizedLabel = game.i18n.localize(tabs.actions.label)
+      // N'afficher le compteur que si > 0
+      if (actionsCount > 0) {
+        tabs.actions.label = `${localizedLabel} (${actionsCount})`
+      } else {
+        tabs.actions.label = localizedLabel
+      }
+    }
+
+    return tabs
+  }
+
+  /** @override */
   async _prepareContext() {
     const context = await super._prepareContext()
 

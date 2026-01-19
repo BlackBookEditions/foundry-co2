@@ -9,6 +9,7 @@
 │ Autres (soin, buff, debuff, consommable, auto)          │ Utiliser           │ -        │ Chat      │ Fiche |
 - Voies : possibilité de réorganiser l'ordre des voies par glisser-déposer dans l'onglet Voies
 - Chat : SHIFT+clic sur le bouton d'envoi au chat envoie le message en mode public (visible par tous) au lieu du mode privé (MJ uniquement)
+- Affichage du nombre d'actions configurées entre parenthèses dans l'onglet Actions/Effets des fiches d'objets (capacité, équipement, attaque). Le compteur ne s'affiche que si au moins une action est configurée.
 
 ## Corrections
 - Mode Lecture des fiches d'objets : les champs de formulaire (input, select, checkbox) et les images sont maintenant correctement en lecture seule
