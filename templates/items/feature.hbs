@@ -77,51 +77,64 @@
     </h4>
     <div class="modifiers-container foldable">
         {{#if modifiers}}
-            <div class="form-group-stacked like-grid">
-                <label>
-                    <span>{{localize "CO.ui.type"}}</span>
-                    <span>{{localize "CO.ui.subtype"}}</span>
-                    <span>{{localize "CO.ui.value"}}</span>
-                    <span></span>
-                </label>
             {{#each modifiers as |m id|}}
                 <input name="system.modifiers.{{id}}.type" type="hidden" value="{{m.type}}" data-dtype="String" {{#if @root.locked}}readonly{{/if}}/>
                 <input name="system.modifiers.{{id}}.source" type="hidden" value="{{m.source}}" data-dtype="String" {{#if @root.locked}}readonly{{/if}}/>
-                <div class="form-fields modifier flexrow" data-item-id="{{id}}" data-item-type="modifier">
-                    <select name="system.modifiers.{{id}}.subtype" data-type="String" {{#if @root.locked}}class="disabled"{{/if}}>
-                        {{selectOptions @root.choiceModifierSubtypes selected=m.subtype localize=true}}
-                    </select>
-                    <select name="system.modifiers.{{id}}.target" data-type="String" {{#if @root.locked}}class="disabled"{{/if}}>
-                        {{#if (eq m.subtype 'ability')}}
-                            {{selectOptions @root.choiceModifierAbilityTargets selected=m.target localize=true}}
-                        {{/if}}
-                        {{#if (eq m.subtype 'combat')}}
-                            {{selectOptions @root.choiceModifierCombatTargets selected=m.target localize=true}}
-                        {{/if}}
-                        {{#if (eq m.subtype 'attribute')}}
-                            {{selectOptions @root.choiceModifierAttributeTargets selected=m.target localize=true}}
-                        {{/if}}                        
-                        {{#if (eq m.subtype 'resource')}}
-                            {{selectOptions @root.choiceModifierResourceTargets selected=m.target localize=true}}
-                        {{/if}}                        
-                        {{#if (eq m.subtype 'skill')}}
-                            {{selectOptions @root.choiceModifierSkillTargets selected=m.target localize=true}}
-                        {{/if}}
-                        {{#if (eq m.subtype 'state')}}
-                            {{selectOptions @root.choiceModifierStateTargets selected=m.target localize=true}}
-                        {{/if}}
-                        {{#if (eq m.subtype 'bonusDice')}}
-                            {{selectOptions @root.choiceModifierBonusDiceTargets selected=m.target localize=true}}
-                        {{/if}}
-                        {{#if (eq m.subtype 'malusDice')}}
-                            {{selectOptions @root.choiceModifierMalusDiceTargets selected=m.target localize=true}}
-                        {{/if}}   
-                    </select>
-                    <input name="system.modifiers.{{id}}.value" type="text" value="{{m.value}}" data-dtype="String" {{#if @root.locked}}readonly{{/if}}/>
-                    {{#if @root.unlocked}}<button data-action="deleteModifier"><i class="fas fa-trash"></i></button>{{/if}}
+                <div class="modifier" data-item-id="{{id}}" data-item-type="modifier">
+                    <div class="form-group">
+                        <select name="system.modifiers.{{id}}.subtype" data-type="String" {{#if @root.locked}}class="disabled"{{/if}}>
+                            {{selectOptions @root.choiceModifierSubtypes selected=m.subtype localize=true}}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select name="system.modifiers.{{id}}.target" data-type="String" {{#if @root.locked}}class="disabled"{{/if}}>
+                            {{#if (eq m.subtype 'ability')}}
+                                {{selectOptions @root.choiceModifierAbilityTargets selected=m.target localize=true}}
+                            {{/if}}
+                            {{#if (eq m.subtype 'combat')}}
+                                {{selectOptions @root.choiceModifierCombatTargets selected=m.target localize=true}}
+                            {{/if}}
+                            {{#if (eq m.subtype 'attribute')}}
+                                {{selectOptions @root.choiceModifierAttributeTargets selected=m.target localize=true}}
+                            {{/if}}
+                            {{#if (eq m.subtype 'resource')}}
+                                {{selectOptions @root.choiceModifierResourceTargets selected=m.target localize=true}}
+                            {{/if}}
+                            {{#if (eq m.subtype 'skill')}}
+                                {{selectOptions @root.choiceModifierSkillTargets selected=m.target localize=true}}
+                            {{/if}}
+                            {{#if (eq m.subtype 'state')}}
+                                {{selectOptions @root.choiceModifierStateTargets selected=m.target localize=true}}
+                            {{/if}}
+                            {{#if (eq m.subtype 'bonusDice')}}
+                                {{selectOptions @root.choiceModifierBonusDiceTargets selected=m.target localize=true}}
+                            {{/if}}
+                            {{#if (eq m.subtype 'malusDice')}}
+                                {{selectOptions @root.choiceModifierMalusDiceTargets selected=m.target localize=true}}
+                            {{/if}}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input name="system.modifiers.{{id}}.value" data-filter-type="{{#if m.allowsDiceFormula}}dice-formula{{else}}no-dice-formula{{/if}}" type="text" value="{{m.value}}" data-dtype="String" {{#if @root.locked}}readonly{{/if}}/>
+                    </div>
+                    <div class="form-group">
+                        <label>{{localize "CO.ui.target"}}</label>
+                        <select name="system.modifiers.{{id}}.apply" data-type="String" {{#if @root.locked}}class="disabled"{{/if}}>
+                            {{selectOptions @root.choiceModifierApplies selected=m.apply localize=true}}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input name="system.modifiers.{{id}}.additionalInfos" type="text" value="{{m.additionalInfos}}" data-dtype="String" placeholder={{localize "CO.ui.notes"}} {{#if @root.locked}}readonly{{/if}}/>
+                    </div>
+                    {{#if @root.unlocked}}
+                        <button type="button" data-action="deleteModifier">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    {{else}}
+                        <div class="emptyButton"></div>
+                    {{/if}}
                 </div>
             {{/each}}
-            </div>            
         {{else}}
             <div class="empty">
                 <span>{{localize "CO.ui.noneModif"}}</span>

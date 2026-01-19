@@ -1,4 +1,5 @@
 import CoBaseItemSheet from "./base-item-sheet.mjs"
+import { SYSTEM } from "../../config/system.mjs"
 import Utils from "../../helpers/utils.mjs"
 
 export default class CoFeatureSheet extends CoBaseItemSheet {
@@ -26,6 +27,12 @@ export default class CoFeatureSheet extends CoBaseItemSheet {
       initial: "description",
       labelPrefix: "CO.sheet.tabs.feature",
     },
+  }
+
+  /** @inheritDoc */
+  async _onRender(context, options) {
+    await super._onRender(context, options)
+    this._filterInputDiceValue()
   }
 
   /** @override */
@@ -64,7 +71,17 @@ export default class CoFeatureSheet extends CoBaseItemSheet {
         // Select options
         context.choiceFeatureSubtypes = SYSTEM.FEATURE_SUBTYPE
         context.choiceModifierSubtypes = SYSTEM.MODIFIERS.MODIFIERS_SUBTYPE
-        context.choiceModifierTargets = SYSTEM.MODIFIERS.MODIFIERS_TARGET
+        context.choiceModifierAbilityTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "ability"))
+        context.choiceModifierCombatTargets = Object.fromEntries(
+          Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "combat" || value.subtype === "attack"),
+        )
+        context.choiceModifierAttributeTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "attribute"))
+        context.choiceModifierResourceTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "resource"))
+        context.choiceModifierSkillTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "ability"))
+        context.choiceModifierStateTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "state"))
+        context.choiceModifierBonusDiceTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "bonusDice"))
+        context.choiceModifierMalusDiceTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "malusDice"))
+        context.choiceModifierApplies = SYSTEM.MODIFIERS.MODIFIERS_APPLY
         break
     }
     return context

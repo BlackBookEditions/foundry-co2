@@ -81,7 +81,7 @@
                 <div class="bonus-item flexrow" data-value="{{bonus.value}}">
                   <span class="bonus-value flex0">{{numberFormat bonus.value decimals=0 sign=true}}</span>
                   <div class="bonus-description">
-                    <span class="bonus-name flex1">{{bonus.name}} ({{bonus.pathType}}) </span>
+                    <span class="bonus-name flex1">{{bonus.name}} {{#if bonus.hasPathName}}({{bonus.pathName}}){{/if}}</span>
                     <span class="bonus-name flex2">{{bonus.additionalInfos}}</span>
                   </div>
                 </div>

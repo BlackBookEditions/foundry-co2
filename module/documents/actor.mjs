@@ -573,7 +573,8 @@ export default class COActor extends Actor {
             sourceType: "CustomEffectData",
             name: customeffect.name,
             description: customeffect.name,
-            pathType: game.i18n.localize("CO.label.long.effects"),
+            pathName: game.i18n.localize("CO.label.long.effects"),
+            hasPathName: true,
             value: modifier.evaluate(this),
             additionalInfos: modifier.additionalInfos,
           })
@@ -584,7 +585,8 @@ export default class COActor extends Actor {
           sourceType: sourceInfos.sourceType,
           name: sourceInfos.name,
           description: sourceInfos.description,
-          pathType: sourceInfos.pathType,
+          pathName: sourceInfos.pathName,
+          hasPathName: sourceInfos.hasPathName,
           value: modifier.evaluate(this),
           additionalInfos: modifier.additionalInfos,
         })

@@ -713,4 +713,14 @@ export default class COBaseItemSheet extends HandlebarsApplicationMixin(sheets.I
   }
 
   // #endregion
+
+  _filterInputDiceValue() {
+    const inputFields = this.element?.querySelectorAll("input[data-filter-type]")
+
+    if (inputFields)
+      inputFields.forEach((input) => {
+        input.removeEventListener("input", this._applyInputFilter)
+        input.addEventListener("input", this._applyInputFilter)
+      })
+  }
 }

@@ -138,16 +138,6 @@ export default class CoEquipmentSheet extends CoBaseItemSheet {
     this.#actionTabSelected = tab
   }
 
-  _filterInputDiceValue() {
-    const inputFields = this.element?.querySelectorAll("input[data-filter-type]")
-
-    if (inputFields)
-      inputFields.forEach((input) => {
-        input.removeEventListener("input", this._applyInputFilter)
-        input.addEventListener("input", this._applyInputFilter)
-      })
-  }
-
   /**
    * Applies an input filter to remove unwanted patterns from user input.
    * Currently supports removing dice formula patterns (e.g., "2d6", "1D20") from input fields.

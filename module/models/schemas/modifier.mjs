@@ -67,6 +67,8 @@ export class Modifier extends foundry.abstract.DataModel {
    * Retrieves the source information for a given actor.
    * Pour un objet appartenant à un acteur, la source est l'id de l'objet (embedded item) ou du type Actor.id.Item.id
    * Retourne Le nom et la description de l'objet à l'origine du modifier
+   * Si le type d'objet est une capacité ou un équipement, la source est dans le parent
+   * Si le type d'bjet est un trait ou un profil, la source est dans l'objet lui même
    *
    * @param {Object} actor The actor object containing items.
    * @returns {Object|undefined} An object containing the name and description of the item, or undefined if the item is not found.
@@ -74,23 +76,28 @@ export class Modifier extends foundry.abstract.DataModel {
    * @property {string} description - The description of the item.
    */
   getSourceInfos(actor) {
-    const id = foundry.utils.parseUuid(this.parent.source)?.id
+    // Si le type d'objet est une capacité ou un équipement, la source est dans le parent
+    let sourceUuid
+    if (["capacity", "equipment"].includes(this.type)) sourceUuid = this.parent.source
+    else sourceUuid = this.source
+    const id = foundry.utils.parseUuid(sourceUuid)?.id
     if (!id) return
     let item = actor.items.get(id)
     if (!item) return
     const sourceType = item.type
     const name = item.name
     const description = item.system.description
-    let pathType = ""
+    let pathName = ""
     // Pour une capacité, remonte le type de voie
     if (item.type === SYSTEM.ITEM_TYPE.capacity.id) {
       const pathId = foundry.utils.parseUuid(item.system.path)?.id
       if (pathId) {
         const path = actor.items.get(pathId)
-        if (path) pathType = game.i18n.localize(SYSTEM.PATH_TYPES[path.system.subtype].label)
+        if (path) pathName = path.name
       }
     }
-    return { sourceType, name, description, pathType }
+    const hasPathName = pathName && pathName.length > 0
+    return { sourceType, name, description, pathName, hasPathName }
   }
 
   /**

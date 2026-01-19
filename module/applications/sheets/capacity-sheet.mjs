@@ -43,7 +43,7 @@ export default class CoCapacitySheet extends CoBaseItemSheet {
   /** @inheritDoc */
   async _onRender(context, options) {
     await super._onRender(context, options)
-    await this._filterInputDiceValue()
+    this._filterInputDiceValue()
   }
 
   /** @override */
@@ -102,16 +102,6 @@ export default class CoCapacitySheet extends CoBaseItemSheet {
   /* Sauvegarde l'onglet d'action sélectionné */
   #onChangeActionTab(tab) {
     this.#actionTabSelected = tab
-  }
-
-  _filterInputDiceValue() {
-    const inputFields = this.element?.querySelectorAll("input[data-filter-type]")
-
-    if (inputFields)
-      inputFields.forEach((input) => {
-        input.removeEventListener("input", this._applyInputFilter)
-        input.addEventListener("input", this._applyInputFilter)
-      })
   }
 
   /**
