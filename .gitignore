@@ -8,3 +8,4 @@ styles/**/*.css
 # Tools
 .claudeignore
 CLAUDE.md
+.claude/
