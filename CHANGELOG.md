@@ -12,7 +12,7 @@
 - Affichage du nombre d'actions configurées entre parenthèses dans l'onglet Actions/Effets des fiches d'objets (capacité, équipement, attaque). Le compteur ne s'affiche que si au moins une action est configurée.
 - Ajout de deux nouveaux types de modificateurs d'attributs : "Récupération rapide" et "Récupération complète". Ces modificateurs permettent d'ajouter des bonus ou malus (incluant des formules de dés comme 1d4 ou 1d°) aux tests de récupération des points de vigueur.
 - Changement d'image : lorsque l'image de base d'une fiche Personnage ou Rencontre est modifiée, l'image du token prototype est automatiquement mise à jour avec la même image.
-- Modificateurs des Traits : harmonisation de l'interface des modificateurs avec celle des capacités et équipement
+- Modificateurs des Traits et Profils : harmonisation de l'interface des modificateurs avec celle des capacités et équipement.
 
 ## Corrections
 - Mode Lecture des fiches d'objets : les champs de formulaire (input, select, checkbox) et les images sont maintenant correctement en lecture seule

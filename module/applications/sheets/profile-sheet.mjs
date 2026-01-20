@@ -1,4 +1,5 @@
 import CoBaseItemSheet from "./base-item-sheet.mjs"
+import { SYSTEM } from "../../config/system.mjs"
 import Utils from "../../helpers/utils.mjs"
 
 export default class CoProfileSheet extends CoBaseItemSheet {
@@ -26,6 +27,12 @@ export default class CoProfileSheet extends CoBaseItemSheet {
     },
   }
 
+  /** @inheritDoc */
+  async _onRender(context, options) {
+    await super._onRender(context, options)
+    this._filterInputDiceValue()
+  }
+
   /** @override */
   async _prepareContext() {
     const context = await super._prepareContext()
@@ -50,6 +57,18 @@ export default class CoProfileSheet extends CoBaseItemSheet {
 
     // Select options
     context.choiceProfileFamily = Object.fromEntries(Object.entries(SYSTEM.FAMILIES).map(([key, value]) => [key, value.label]))
+    context.choiceModifierSubtypes = SYSTEM.MODIFIERS.MODIFIERS_SUBTYPE
+    context.choiceModifierAbilityTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "ability"))
+    context.choiceModifierCombatTargets = Object.fromEntries(
+      Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "combat" || value.subtype === "attack"),
+    )
+    context.choiceModifierAttributeTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "attribute"))
+    context.choiceModifierResourceTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "resource"))
+    context.choiceModifierSkillTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "ability"))
+    context.choiceModifierStateTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "state"))
+    context.choiceModifierBonusDiceTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "bonusDice"))
+    context.choiceModifierMalusDiceTargets = Object.fromEntries(Object.entries(SYSTEM.MODIFIERS.MODIFIERS_TARGET).filter(([key, value]) => value.subtype === "malusDice"))
+    context.choiceModifierApplies = SYSTEM.MODIFIERS.MODIFIERS_APPLY
 
     if (CONFIG.debug.co2?.sheets) console.debug(Utils.log(`CoProfileSheet - context`), context)
     return context
