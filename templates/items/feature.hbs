@@ -119,8 +119,8 @@
                     </div>
                     <div class="form-group">
                         <label>{{localize "CO.ui.target"}}</label>
-                        <select name="system.modifiers.{{id}}.apply" data-type="String" {{#if @root.locked}}class="disabled"{{/if}}>
-                            {{selectOptions @root.choiceModifierApplies selected=m.apply localize=true}}
+                        <select name="system.modifiers.{{id}}.apply" data-type="String" class="disabled" disabled>
+                            <option value="self" selected>{{localize "CO.modifier.apply.self"}}</option>
                         </select>
                     </div>
                     <div class="form-group">
