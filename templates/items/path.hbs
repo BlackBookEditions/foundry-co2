@@ -21,8 +21,10 @@
                 </div>
             </div>
 
-            {{formGroup systemFields.rank value=system.rank localize=true disabled=locked}}
-            {{formGroup systemFields.maxDefenseArmor value=systemSource.maxDefenseArmor localize=true disabled=locked}}
+            {{#unless (eq system.subtype "encounter")}}
+                {{formGroup systemFields.rank value=system.rank localize=true disabled=locked}}
+                {{formGroup systemFields.maxDefenseArmor value=systemSource.maxDefenseArmor localize=true disabled=locked}}
+            {{/unless}}
 
             {{#if (isPathprestigious @root.system.subtype)}}
                 {{formGroup systemFields.pvByLevel value=systemSource.pvByLevel localize=true disabled=locked}}

@@ -108,20 +108,24 @@ export default class COEncounterSheet extends COBaseActorSheet {
    * @param {HTMLElement} target The capturing HTML element which defined a [data-action]
    */
   static async #onDeleteItem(event, target) {
+    // Vérification du droit Owner
+    if (!this.isEditable) return
+    event.preventDefault()
     const li = target.closest(".item")
+    if (!li) return
     const id = li.dataset.itemId
     const uuid = li.dataset.itemUuid
     const type = li.dataset.itemType
     if (!uuid) return
     switch (type) {
       case "path":
-        await this.document.deletePath(uuid)
+        await this.actor.deletePath(uuid)
         break
       case "capacity":
-        await this.document.deleteCapacity(uuid)
+        await this.actor.deleteCapacity(uuid)
         break
       default:
-        await this.document.deleteEmbeddedDocuments("Item", [id])
+        await this.actor.deleteEmbeddedDocuments("Item", [id])
     }
   }
 
@@ -259,6 +263,8 @@ export default class COEncounterSheet extends COBaseActorSheet {
     }
 
     switch (item.type) {
+      case SYSTEM.ITEM_TYPE.path.id:
+        return await this.actor.addPath(item)
       case SYSTEM.ITEM_TYPE.capacity.id:
         return await this.document.addCapacity(item, null)
       default:

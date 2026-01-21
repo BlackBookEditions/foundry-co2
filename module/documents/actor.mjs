@@ -89,6 +89,7 @@ export default class COActor extends Actor {
 
     if (this.type === "encounter") {
       rollData.niv = this.system.attributes.nc
+      rollData.nc = this.system.attributes.nc
       rollData.atm = this.system.magic
     }
 
@@ -856,7 +857,8 @@ export default class COActor extends Actor {
       if (!this.canLearnCapacity(capacity, path)) return
     }
 
-    if (!state && currentRank !== capacity.system.rank) {
+    // Désapprentissage d'une capacité : pour les personnages uniquement, vérifier qu'on désapprend dans l'ordre
+    if (!state && this.type === "character" && currentRank !== capacity.system.rank) {
       ui.notifications.warn(game.i18n.localize("CO.notif.warningTargetCapacityRankLowerThanPathRank").replace("{capacityName}", capacity.name))
       return
     }
@@ -886,6 +888,11 @@ export default class COActor extends Actor {
    * @param {PathData} path la voie de la capacité
    */
   canLearnCapacity(capacity, path) {
+    // Pour les encounters : pas de validation, toutes les capacités peuvent être apprises librement
+    if (this.type === "encounter") {
+      return true
+    }
+
     // RULE : Pour obtenir une capacité, il faut avoir un niveau minimal
     // Les capacités de rang 6 à 8 sont réservées aux voies de prestige
     const requiredLevel = SYSTEM.CAPACITY_MINIMUM_LEVEL[capacity.system.rank]
@@ -1278,6 +1285,13 @@ export default class COActor extends Actor {
    */
   async addPath(path, profile = null) {
     let itemData = path.toObject()
+
+    // Vérification du type de voie pour les encounters
+    if (this.type === "encounter" && itemData.system.subtype !== SYSTEM.PATH_TYPES.encounter.id) {
+      ui.notifications.warn(game.i18n.localize("CO.notif.warningEncounterPathOnly"))
+      return
+    }
+
     // If path creation is related to a profile creation
     // Update maxDefenseArmor
     if (profile !== null) {

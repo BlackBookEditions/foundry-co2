@@ -1,7 +1,8 @@
-{{!-- Character Paths Tab Template --}}
+{{!-- Character and Encounter Paths Tab Template --}}
 {{!log "Chroniques Oubliées | shared paths" this}}
 <section class="tab standard-form paths{{#if tabs.paths.active}} active{{/if}}" data-group="primary" data-tab="paths">
 
+    {{!-- Notifications XP : uniquement pour les personnages --}}
     {{#if (eq actor.type "character")}}
         {{#if (lt xpLeft 0)}}
             <div class="notification error permanent">
@@ -16,16 +17,18 @@
         {{/if}}
     {{/if}}
 
-    <div class="{{#if (eq actor.type 'character')}}path-grid{{else}}path-encounter{{/if}}">
+    <div class="{{#if pathGroups.length}}path-grid{{/if}}">
         {{#each pathGroups as |pg id|}}
             {{!log 'pathGroup' this}}
-            {{#if (or @root.unlocked pg.path.system.displayPath)}}
+            {{#if (or @root.unlocked (eq @root.actor.type "encounter") pg.path.system.displayPath)}}
                 <ol class="paths items-container" data-tab="features">
-                    <li class="items-container-header flexrow draggable" data-item-uuid="{{pg.path.uuid}}" data-item-id="{{pg.path.id}}" data-item-type="path">
+                    <li class="items-container-header item flexrow draggable" data-item-uuid="{{pg.path.uuid}}" data-item-id="{{pg.path.id}}" data-item-type="path">
                         <h4 class="item-name flexrow">
-                            <a data-action="toggleSection" data-toggle-type="paths" data-slug="{{pg.path.system.slug}}">{{pg.path.name}} ({{pg.path.system.rank}})</a>
+                            <a data-action="toggleSection" data-toggle-type="paths" data-slug="{{pg.path.system.slug}}">
+                                {{pg.path.name}} ({{pg.path.system.rank}})
+                            </a>
                         </h4>
-                        <div class="item-controls-3 item">
+                        <div class="item-controls-3">
                             {{#if ../unlocked}}
                                 <a class="edit" data-action="editItem" data-tooltip="{{localize 'CO.label.long.edit'}}"><i class="fas fa-fw fa-edit"></i></a>
                                 <a class="item-control" data-action="deleteItem" data-tooltip="{{localize 'CO.ui.remove'}}"><i class="fas fa-trash"></i></a>
@@ -100,9 +103,11 @@
 
         <!-- Capacités hors voies -->
         {{> "systems/co2/templates/actors/shared/capacities-nopath.hbs"}}
-        {{#if isCharacter}}
-        {{formGroup systemFields.otherCapacitiesPointsSpent value=system.otherCapacitiesPointsSpent disabled=locked}}
-    {{/if}}
+
+        {{!-- Compteur de points de capacité : uniquement pour les personnages --}}
+        {{#if (eq actor.type "character")}}
+            {{formGroup systemFields.otherCapacitiesPointsSpent value=system.otherCapacitiesPointsSpent disabled=locked}}
+        {{/if}}
     </div>
     
 </section>

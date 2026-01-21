@@ -91,6 +91,7 @@ export default class PathData extends ItemData {
    *                      - Le sous-type est `SYSTEM.PATH_TYPES.prestige.id` et le rang est supérieur à 3.
    *                      - Le sous-type est `SYSTEM.PATH_TYPES.profile.id` et le rang est supérieur à 0.
    *                      - Le sous-type est `SYSTEM.PATH_TYPES.people.id` et le rang est supérieur à 0.
+   *                      - Le sous-type est `SYSTEM.PATH_TYPES.encounter.id` (toujours affiché).
    *                      Sinon, retourne `false`.
    */
   get displayPath() {
@@ -101,6 +102,9 @@ export default class PathData extends ItemData {
       return true
     }
     if (this.subtype === SYSTEM.PATH_TYPES.people.id && this.rank > 0) {
+      return true
+    }
+    if (this.subtype === SYSTEM.PATH_TYPES.encounter.id) {
       return true
     }
     return false
