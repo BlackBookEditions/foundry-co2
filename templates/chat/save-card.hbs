@@ -10,15 +10,8 @@
     <section class="bloc-result">
       <section class="result">
         <div class="total-result">
-            <!--<button class="save-roll" data-save-target="{{targetUuid}}" data-save-ability="{{ability}}" data-save-difficulty="{{difficulty}}">
-              <div class="save-title">{{localize "CO.ui.saves"}}</div>
-              <div class="save-skill">{{getAbilityLabel ability}}</div>
-            </button>-->
-            {{#if (eq result "")}}
-            <i class="fa-solid fa-square-question"></i>
-            {{else}}
+             <!-- Mis à jour du total via le JS -->
             <div class="save-total"></div>
-            {{/if}}
         </div>
         <div class="lucky-points">
           <a class="lp-button-save">

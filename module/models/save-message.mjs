@@ -78,6 +78,10 @@ export default class SaveMessageData extends BaseMessageData {
 
     // Affiche le bouton de jet de sauvegarde
     if (this.showButton) {
+      const totalDiv = html.querySelector(".save-total")
+      if (totalDiv) {
+        totalDiv.innerHTML = `<i class="fa-solid fa-square-question"></i>`
+      }
       const footer = html.querySelector(".card-footer")
       if (footer) {
         footer.remove()
