@@ -336,6 +336,16 @@ export class Action extends foundry.abstract.DataModel {
   }
 
   /**
+   * Checks if the action has at least one resolver with an opposition in difficulty.
+   * Verifies that among all resolvers, at least one has a difficulty containing @oppose.
+   *
+   * @returns {boolean} True if there is at least one resolver with opposition, false otherwise.
+   */
+  get hasResolversWithOpposition() {
+    return this.hasResolvers && this.resolvers.some((resolver) => resolver.skill?.difficulty?.includes("@oppose"))
+  }
+
+  /**
    * Update the source of the action and of all the modifiers
    * @param {*} source UUID of the source
    */
@@ -451,25 +461,38 @@ export class Action extends foundry.abstract.DataModel {
       if (["melee", "ranged", "magical", "spell"].includes(this.type)) {
         // S'il y a des résolvers
         if (this.hasResolvers) {
-          // Bouton d'attaque, sauf si c'est une attaque automatique
-          if (!this.autoAttack) {
+          // Cas spécial : attaque avec opposition mais sans dégâts
+          if (this.hasResolversWithOpposition && !this.hasResolversWithDomage && !this.autoAttack) {
             icons.push({
-              icon: this.iconFA,
+              icon: "fa-solid fa-scale-balanced",
               iconClass: `${this.iconColor} toggle-action`,
-              tooltip: this.iconColor === "gray" ? "CO.label.long.needCharges" : "CO.label.long.attack",
+              tooltip: this.iconColor === "gray" ? "CO.label.long.needCharges" : "CO.label.long.opposedTest",
               actionType: "activate",
               type: "attack",
             })
           }
-          // Bouton de dégâts
-          if (this.hasResolversWithDomage) {
-            icons.push({
-              icon: "fa-solid fa-hand-fist",
-              iconClass: `${this.iconColor} toggle-action`,
-              tooltip: "CO.label.long.damage",
-              actionType: "activate",
-              type: "damage",
-            })
+          // Cas normal : attaque avec ou sans dégâts
+          else {
+            // Bouton d'attaque, sauf si c'est une attaque automatique
+            if (!this.autoAttack) {
+              icons.push({
+                icon: this.iconFA,
+                iconClass: `${this.iconColor} toggle-action`,
+                tooltip: this.iconColor === "gray" ? "CO.label.long.needCharges" : "CO.label.long.attack",
+                actionType: "activate",
+                type: "attack",
+              })
+            }
+            // Bouton de dégâts
+            if (this.hasResolversWithDomage) {
+              icons.push({
+                icon: "fa-solid fa-hand-fist",
+                iconClass: `${this.iconColor} toggle-action`,
+                tooltip: "CO.label.long.damage",
+                actionType: "activate",
+                type: "damage",
+              })
+            }
           }
         } else {
           icons.push({

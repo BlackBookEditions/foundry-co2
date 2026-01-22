@@ -426,6 +426,7 @@
         "customEffectInCombat": "Les effets périodiques ne fonctionnent que lors d'un combat",
         "attacks": "Attaques",
         "attack": "Attaque",
+        "opposedTest": "Test opposé",
         "damage": "Dommages",
         "damMelee": "Dommages de contact",
         "damRanged": "Dommages à distance",
