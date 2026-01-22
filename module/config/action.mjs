@@ -211,6 +211,7 @@ export const RESOLVER_SCOPE = Object.freeze({
  * @property {Object} always - Effect that always triggers
  * @property {Object} success - Effect that triggers on success
  * @property {Object} successTreshold - Effect that triggers when success meets threshold
+ * @property {Object} attackSuccessTreshold - Effect that triggers when dice result is between attackSuccessTreshold and 20.
  * @property {Object} critical - Effect that triggers on critical success
  * @property {Object} failure - Effect that triggers on failure
  * @property {Object} saveFailure - Effect that triggers on save failure
@@ -228,6 +229,10 @@ export const RESOLVER_RESULT = Object.freeze({
   successTreshold: {
     id: "successTreshold",
     label: "CO.resolver.additionalEffect.onSuccessTreshold",
+  },
+  attackSuccessTreshold: {
+    id: "attackSuccessTreshold",
+    label: "CO.resolver.additionalEffect.onAttackSuccessTreshold",
   },
   critical: {
     id: "critical",

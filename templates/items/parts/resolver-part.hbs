@@ -99,6 +99,25 @@
       </div>
     </div>
   {{/unless}}
+  {{! Seuil de succes auto}}
+  {{#if (eq r.type @root.choiceResolverTypes.attack.id)}}
+  <div class="form-group effects">
+      <label class="checkbox">
+        <input type="checkbox" name="system.actions.{{idx}}.resolvers.{{id}}.hasAttackSuccessThreshold" {{checked r.hasAttackSuccessThreshold}} {{#if @root.locked}}class="disabled"{{/if}}/>
+        {{localize "CO.resolver.hasAttackSuccessThreshold"}}
+      </label>
+       {{#if r.hasAttackSuccessThreshold}}
+          <input
+              class="field-value"
+              name="system.actions.{{idx}}.resolvers.{{id}}.attackSuccessThreshold"
+              type="text"
+              value="{{r.attackSuccessThreshold}}"
+              data-dtype="String"
+              {{#if @root.locked}}readonly{{/if}}
+          />
+       {{/if}}
+  </div>
+  {{/if}}
 {{! Additional effects }}
 {{#unless (eq r.type @root.choiceResolverTypes.consumable.id)}}
     <div class="form-group effects">
