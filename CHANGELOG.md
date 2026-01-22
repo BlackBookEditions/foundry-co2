@@ -1,4 +1,4 @@
-#  1.4.3
+#  1.5.0
 
 ## Améliorations
 - Drop d'un action dans la hotbar : amélioration des différents raccourcis selon le type d'action
@@ -12,11 +12,14 @@
 - Affichage du nombre d'actions configurées entre parenthèses dans l'onglet Actions/Effets des fiches d'objets (capacité, équipement, attaque). Le compteur ne s'affiche que si au moins une action est configurée.
 - Ajout de deux nouveaux types de modificateurs d'attributs : "Récupération rapide" et "Récupération complète". Ces modificateurs permettent d'ajouter des bonus ou malus (incluant des formules de dés comme 1d4 ou 1d°) aux tests de récupération des points de vigueur.
 - Changement d'image : lorsque l'image de base d'une fiche Personnage ou Rencontre est modifiée, l'image du token prototype est automatiquement mise à jour avec la même image.
-- Modificateurs des Traits et Profils : harmonisation de l'interface des modificateurs avec celle des capacités et équipement.
+- Modificateurs des Traits et Profils : harmonisation de l'interface des modificateurs avec celle des capacités et équipement. Les modificateurs ne s'appliquent qu'à soi-même.
+- Jet de sauvegarde : affichage d'un ? avant le jet
+- Onglet des actions : symbole d'une balance si c'est un test opposé (@oppose dans la difficulté)
 
 ## Corrections
 - Mode Lecture des fiches d'objets : les champs de formulaire (input, select, checkbox) et les images sont maintenant correctement en lecture seule
 - Jet de compétence : correction de l'affichage de la source des bonus pour les capacités. Affichage de la voie.
+- Un effet additionnel n'est créé que s'il est actif
 
 # 1.4.2
 
