@@ -159,7 +159,7 @@ export class Resolver extends foundry.abstract.DataModel {
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.successTreshold.id && result.isSuccess && result.total >= result.difficulty + additionalEffect.successThreshold)
       return true
     // Ajout des seuil de succès auto
-    if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.attackSuccessTreshold.id && result.isSuccess && result.isSuccessTreshold) {
+    if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.attackSuccessTreshold.id && result.isSuccess && result.isSuccessThreshold) {
       console.log("shouldManageAdditionalEffect:je renvoi true")
       return true
     }
