@@ -372,21 +372,34 @@ export class Resolver extends foundry.abstract.DataModel {
       return false
     }
 
-    const ce = await this._createCustomEffect(actor, item, action)
-
     // Application de l'effet en fonction de la gestion des cibles
     // Soi-même : le MJ ou un joueur peut appliquer l'effet
-    if (this.target.type === SYSTEM.RESOLVER_TARGET.self.id) await actor.applyCustomEffect(ce)
-    else {
+    if (this.target.type === SYSTEM.RESOLVER_TARGET.self.id) {
+      const ceSelf = await this._createCustomEffect(actor, item, action, true)
+      await actor.applyCustomEffect(ceSelf)
+    } else {
       // Aucune cible est considérée comme Unique cible
       let targetType = this.target.type
       if (this.target.type === SYSTEM.RESOLVER_TARGET.none.id) targetType = SYSTEM.RESOLVER_TARGET.single.id
       const targets = actor.acquireTargets(targetType, this.target.scope, this.target.number, action.name)
       const uuidList = targets.map((t) => t.uuid)
-      if (game.user.isGM) await Promise.all(targets.map((target) => target.actor.applyCustomEffect(ce)))
+
+      // Créer l'effet pour les autres
+      const ceOthers = await this._createCustomEffect(actor, item, action, false)
+
+      // Appliquer l'effet aux cibles
+      if (game.user.isGM) await Promise.all(targets.map((target) => target.actor.applyCustomEffect(ceOthers)))
       else {
-        await game.users.activeGM.query("co2.applyCustomEffect", { ce: ce, targets: uuidList })
+        await game.users.activeGM.query("co2.applyCustomEffect", { ce: ceOthers, targets: uuidList })
       }
+
+      // Vérifier si on a des modifiers avec apply="both" qui doivent aussi s'appliquer à soi-même
+      const hasBothModifiers = action.modifiers?.some((m) => m.apply === SYSTEM.MODIFIERS_APPLY.both.id)
+      if (hasBothModifiers) {
+        const ceSelf = await this._createCustomEffect(actor, item, action, true)
+        await actor.applyCustomEffect(ceSelf)
+      }
+
       // On affiche un message pour signaler
       const targetNames = targets ? targets.map((t) => t.name).join(", ") : ""
       const message = game.i18n.format("CO.notif.applyEffect", { actorName: actor.name, skillName: item.name, targetNames: targetNames })
@@ -395,7 +408,7 @@ export class Resolver extends foundry.abstract.DataModel {
     return true
   }
 
-  async _createCustomEffect(actor, item, action) {
+  async _createCustomEffect(actor, item, action, isSelfTarget = false) {
     if ((!game.combat || game.combat.round === null) && this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id) {
       ui.notifications.warn(game.i18n.localize("CO.label.long.customEffectInCombat"))
       return
@@ -429,10 +442,16 @@ export class Resolver extends foundry.abstract.DataModel {
       evaluatedFormula = Roll.replaceFormulaData(evaluatedFormula, actor.getRollData())
     }
 
-    // Les modifiers qui s'appliquent (avec apply égal à others ou both)
+    // Les modifiers qui s'appliquent selon la cible
     let modifiers = []
     if (action.modifiers?.length > 0) {
-      modifiers = action.modifiers.filter((m) => m.apply === SYSTEM.MODIFIERS_APPLY.others.id || m.apply === SYSTEM.MODIFIERS_APPLY.both.id)
+      if (isSelfTarget) {
+        // Pour "Soi-même" : inclure les modifiers avec apply="self" ou apply="both"
+        modifiers = action.modifiers.filter((m) => m.apply === SYSTEM.MODIFIERS_APPLY.self.id || m.apply === SYSTEM.MODIFIERS_APPLY.both.id)
+      } else {
+        // Pour "Les autres" : inclure les modifiers avec apply="others" ou apply="both"
+        modifiers = action.modifiers.filter((m) => m.apply === SYSTEM.MODIFIERS_APPLY.others.id || m.apply === SYSTEM.MODIFIERS_APPLY.both.id)
+      }
     }
 
     if (modifiers.length > 0) {
