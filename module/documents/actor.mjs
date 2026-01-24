@@ -719,7 +719,10 @@ export default class COActor extends Actor {
    * @param {*} shiftKey true if the shift key is pressed
    */
   async activateAction({ state, source, indice, type, shiftKey = null } = {}) {
-    const item = await fromUuid(source)
+    // Extraire l'ID de l'item depuis l'UUID source
+    // Fonctionne pour les tokens liés ET non-liés (syntheticActor)
+    const { id } = foundry.utils.parseUuid(source)
+    const item = this.items.get(id)
     if (!item) return
 
     if (CONFIG.debug.co2?.actions) console.debug(Utils.log(`COActor - activateAction`), state, source, indice, type, item)

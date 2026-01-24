@@ -1,3 +1,8 @@
+# 1.5.1
+
+## Corrections
+- Tokens non-liés : correction de l'activation des actions pour les tokens non-liés à un acteur (les actions utilisaient l'acteur de base au lieu du syntheticActor du token)
+
 # 1.5.0
 
 ## Améliorations
