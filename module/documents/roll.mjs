@@ -5,9 +5,11 @@ export class CORoll extends Roll {
   /**
    * Fonction qui va analyser les valeurs du jet de dé et indiquer s'il s'agit d'un succes ou non ainsi que les infos
    * @param {*} roll
-   * @returns { diceResult, total, isCritical, isFumble, difficulty, isSuccess, isFailure } ou {} si le roll n'est pas un COAttackRoll de type "attack" ou COSkillRoll
+   * @param {Boolean} hasAttackSuccessThreshold Indique si l'attaque avait un seuil de succès automatique
+   * @param {Number} attackSuccessThreshold Seuil à partir duquel on a un succès automatique
+   * @returns { diceResult, total, isCritical, isFumble, difficulty, isSuccess, isFailure, isSuccessThreshold } ou {} si le roll n'est pas un COAttackRoll de type "attack" ou COSkillRoll
    */
-  static analyseRollResult(roll) {
+  static analyseRollResult(roll, hasAttackSuccessThreshold = false, attackSuccessThreshold = 20) {
     let result = {}
 
     // Vérification du type de roll
@@ -24,6 +26,7 @@ export class CORoll extends Roll {
       let difficulty = roll.options.difficulty
       let isSuccess
       let isFailure
+      let isSuccessThreshold = false
       // Si on utilise une difficulté et qu'elle a été définie
       // Si elle n'est pas saisie dans la fenêtre de dialogue, difficulty vaut ""
       if (roll.options.useDifficulty && difficulty && difficulty !== "") {
@@ -36,9 +39,16 @@ export class CORoll extends Roll {
           isFailure = roll.total < difficulty
         }
       }
+
+      if (hasAttackSuccessThreshold && diceResult >= attackSuccessThreshold) {
+        isSuccess = true // Si on aun seuil de succès automatique et que le dé est au dessus alors on a un succès
+        isSuccessThreshold = true
+        isFailure = false
+      }
       if (isCritical) isSuccess = true
       if (isFumble) isFailure = true
-      result = { diceResult, total, isCritical, isFumble, difficulty, isSuccess, isFailure }
+
+      result = { diceResult, total, isCritical, isFumble, difficulty, isSuccess, isFailure, isSuccessThreshold }
     }
     return result
   }
@@ -461,6 +471,8 @@ export class COAttackRoll extends CORoll {
         tactical: withDialog ? rollContext.tactical : dialogContext.tactical,
         opposeResult: dialogContext.opposeResult,
         opposeTooltip: dialogContext.opposeTooltip,
+        hasAttackSuccessThreshold: dialogContext.hasAttackSuccessThreshold,
+        attackSuccessThreshold: dialogContext.attackSuccessThreshold,
         ...options,
       }
 
@@ -531,7 +543,7 @@ export class COAttackRoll extends CORoll {
    * @private
    */
   _getAttackChatCardData(flavor, isPrivate) {
-    const rollResults = CORoll.analyseRollResult(this)
+    const rollResults = CORoll.analyseRollResult(this, this.options.hasAttackSuccessThreshold, this.options.attackSuccessThreshold)
     if (CONFIG.debug.co2?.chat) console.debug(Utils.log(`COAttackRoll - _getAttackChatCardData options`), this.options)
 
     // Gestion des dés bonus/malus

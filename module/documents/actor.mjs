@@ -1841,6 +1841,8 @@ export default class COActor extends Actor {
       customEffect,
       additionalEffect,
       tactical = undefined, // Values : confident, precise, violent
+      hasAttackSuccessThreshold = false,
+      attackSuccessThreshold = undefined,
     } = {},
   ) {
     const options = {
@@ -1871,6 +1873,8 @@ export default class COActor extends Actor {
       customEffect,
       additionalEffect,
       tactical,
+      hasAttackSuccessThreshold,
+      attackSuccessThreshold,
     }
     /**
      * A hook event that fires before the roll is made.
@@ -2085,6 +2089,8 @@ export default class COActor extends Actor {
       hasLuckyPoints,
       opposeResult: opposeResult,
       opposeTooltip: opposeTooltip,
+      hasAttackSuccessThreshold: hasAttackSuccessThreshold,
+      attackSuccessThreshold: attackSuccessThreshold,
     }
 
     // Rolls contient le jet d'attaque et le jet de dommages si le type est "attack"
@@ -2102,7 +2108,7 @@ export default class COActor extends Actor {
      */
     if (Hooks.call("co.postRollAttack", item, options, rolls) === false) return
 
-    let results = rolls.map((roll) => CORoll.analyseRollResult(roll))
+    let results = rolls.map((roll) => CORoll.analyseRollResult(roll, hasAttackSuccessThreshold, attackSuccessThreshold))
     /**
      * A hook event that fires before the results of the roll.
      * @function co.resultRollAttack

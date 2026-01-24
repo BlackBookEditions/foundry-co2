@@ -43,6 +43,9 @@ export class Resolver extends foundry.abstract.DataModel {
       // Ajout de la possibilité de faire un jet de sauvegarde pour la cible et applique l'effet en cas d'échec ou de succès selon le "applyOn" (ajout de saveFailure et saveSuccess)
       saveAbility: new fields.StringField({ required: false, choices: SYSTEM.ABILITIES, initial: undefined }),
       saveDifficulty: new fields.StringField({ required: false, nullable: false, initial: undefined }), // Peut être une formule
+      // Ajout des seuils de succès automatiques
+      hasAttackSuccessThreshold: new fields.BooleanField({ initial: false }), // Si true alors on a un seuil de succès auto
+      attackSuccessThreshold: new fields.NumberField({ integer: true, positive: true }), // Le seuil minimum pour faire un succes auto (ex : 15 pour 15-20)
     }
   }
 
@@ -133,9 +136,10 @@ export class Resolver extends foundry.abstract.DataModel {
       malusDice: this.malusDiceAdd ? 1 : 0,
       customEffect,
       additionalEffect: this.additionalEffect,
+      hasAttackSuccessThreshold: this.hasAttackSuccessThreshold,
+      attackSuccessThreshold: this.attackSuccessThreshold,
     })
     if (!attack) return false
-
     // Gestion des effets supplémentaires
     if (this.additionalEffect.active && Resolver.shouldManageAdditionalEffect(attack[0], this.additionalEffect)) {
       await this._manageAdditionalEffect(actor, item, action)
@@ -149,6 +153,9 @@ export class Resolver extends foundry.abstract.DataModel {
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.success.id && result.isSuccess) return true
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.successTreshold.id && result.isSuccess && result.total >= result.difficulty + additionalEffect.successThreshold)
       return true
+    // Ajout des seuil de succès auto
+    if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.attackSuccessTreshold.id && result.isSuccess && result.isSuccessThreshold) return true
+
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.saveSuccess.id && result.isSuccess) return true
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.saveFailure.id && !result.isSuccess && result.total) return true
     if (additionalEffect.applyOn === SYSTEM.RESOLVER_RESULT.critical.id && result.isCritical) return true
@@ -461,7 +468,6 @@ export class Resolver extends foundry.abstract.DataModel {
       slug: effectName.slugify(),
     })
 
-    console.log("Created custom effect :", ce)
     return ce
   }
 

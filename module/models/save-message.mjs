@@ -202,19 +202,19 @@ export default class SaveMessageData extends BaseMessageData {
         event.stopPropagation()
         const messageId = event.currentTarget.closest(".message").dataset.messageId
         if (!messageId) {
-          console.log("Evenement de click sur le bouton de jet de sauvegarde : erreur dans la récupération de l'ID du message")
+          console.error("Evenement de click sur le bouton de jet de sauvegarde : erreur dans la récupération de l'ID du message")
           return
         }
         const message = game.messages.get(messageId)
         if (!message || !message.system) {
-          console.log("Evenement de click sur le bouton de jet de sauvegarde : erreur dans la récupération du message ou de son context")
+          console.error("Evenement de click sur le bouton de jet de sauvegarde : erreur dans la récupération du message ou de son context")
           return
         }
 
         const dataset = event.currentTarget.dataset
         const targetUuid = message.system.targets[0]
         if (!targetUuid) {
-          console.log("Evenement de click sur le bouton de jet de sauvegarde : erreur dans la récupération de l'UUID de la cible")
+          console.error("Evenement de click sur le bouton de jet de sauvegarde : erreur dans la récupération de l'UUID de la cible")
           return
         }
 
@@ -223,7 +223,7 @@ export default class SaveMessageData extends BaseMessageData {
 
         const targetActor = fromUuidSync(targetUuid)
         if (!targetActor) {
-          console.log("Evenement de click sur le bouton de jet de sauvegarde : erreur dans la récupération de l'acteur cible")
+          console.error("Evenement de click sur le bouton de jet de sauvegarde : erreur dans la récupération de l'acteur cible")
           return
         }
 
@@ -232,7 +232,6 @@ export default class SaveMessageData extends BaseMessageData {
         message.system.result = targetRollSkill.result
         message.system.linkedRoll = targetRollSkill.roll
         let opposeResultAnalyse = CORoll.analyseRollResult(targetRollSkill.roll)
-        console.log("result : ", targetRollSkill.result)
 
         let rolls = this.parent.rolls
         rolls[0] = targetRollSkill.roll
@@ -244,8 +243,6 @@ export default class SaveMessageData extends BaseMessageData {
         const customEffect = message.system.customEffect
         const additionalEffect = message.system.additionalEffect
         if (customEffect && additionalEffect && additionalEffect.active && Resolver.shouldManageAdditionalEffect(targetRollSkill.result, additionalEffect)) {
-          console.log("on va appliquer les effets", "customEffect : ", customEffect)
-
           if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
           else {
             await game.users.activeGM.query("co2.applyCustomEffect", { ce: customEffect, targets: [targetActor.uuid] })

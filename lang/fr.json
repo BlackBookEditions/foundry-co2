@@ -1094,12 +1094,14 @@
         "all": "Tout le monde",
         "title": "Catégorie"
       },
+      "hasAttackSuccessThreshold": "Seuil de succès automatique",
       "additionalEffect": {
         "active": "Effets supplémentaires",
         "applyOn": "s'applique",
         "onSuccess": "sur un succès",
         "onCritical": "sur un succès critique",
         "onSuccessTreshold": "à partir d'un succès + ",
+        "onAttackSuccessTreshold": "Entre le seuil et 20",
         "onFailure": "sur un échec",
         "always": "toujours",
         "onSaveFailure": "si échec de sauvegarde",
