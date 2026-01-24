@@ -446,6 +446,10 @@ export default class COActor extends Actor {
     return this.hasEffect("weakened")
   }
 
+  get isImmobilized() {
+    return this.hasEffect("immobilized")
+  }
+
   // #endregion
 
   // #region Méthodes publiques
@@ -1987,10 +1991,13 @@ export default class COActor extends Actor {
       if (this.system.hasMalusDiceForAttack(actionType)) malusDices += 1
     }
 
-    // Maitrise de l'arme : Si le personnage utilise une arme qu’il ne maîtrise pas, il subit un dé malus au test d’attaque.
+    // Maitrise de l'arme : Si le personnage utilise une arme qu'il ne maîtrise pas, il subit un dé malus au test d'attaque.
     if (item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.subtype === SYSTEM.EQUIPMENT_SUBTYPES.weapon.id) {
       if (!this.isTrainedWithWeapon(item.id)) malusDices += 1
     }
+
+    // Immobilisé : dé malus aux tests d'attaque
+    if (this.isImmobilized) malusDices += 1
 
     if (bonusDice) bonusDices += bonusDice
     if (malusDice) malusDices += malusDice

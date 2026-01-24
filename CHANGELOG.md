@@ -23,6 +23,7 @@
 - Mode Lecture des fiches d'objets : les champs de formulaire (input, select, checkbox) et les images sont maintenant correctement en lecture seule
 - Jet de compétence : correction de l'affichage de la source des bonus pour les capacités. Affichage de la voie.
 - Un effet additionnel n'est créé que s'il est actif
+- Statut Immobilisé : ajout du dé malus aux tests d'attaque (en plus du blocage du déplacement déjà géré)
 
 # 1.4.2
 
