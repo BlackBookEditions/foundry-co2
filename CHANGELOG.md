@@ -1,12 +1,13 @@
-#  1.5.0
+# 1.5.0
 
 ## Améliorations
+
 - Drop d'un action dans la hotbar : amélioration des différents raccourcis selon le type d'action
-| Type d'action                      │        Clic        │ Alt+Clic │ Ctrl+Clic │ Shift+Clic │
-│ Temporaire (activable/désactivable)│ Activer/Désactiver │ -        │ Chat      │ Fiche      │
-│ Attaque avec dommages (mêlée, distance, magique, sort)  │ Attaque            │ Dommages │ Chat      │ Fiche │
-│ Attaque sans dommages                                   │ Attaque            │ -        │ Chat      │ Fiche │
-│ Autres (soin, buff, debuff, consommable, auto)          │ Utiliser           │ -        │ Chat      │ Fiche |
+  | Type d'action │ Clic │ Alt+Clic │ Ctrl+Clic │ Shift+Clic │
+  │ Temporaire (activable/désactivable)│ Activer/Désactiver │ - │ Chat │ Fiche │
+  │ Attaque avec dommages (mêlée, distance, magique, sort) │ Attaque │ Dommages │ Chat │ Fiche │
+  │ Attaque sans dommages │ Attaque │ - │ Chat │ Fiche │
+  │ Autres (soin, buff, debuff, consommable, auto) │ Utiliser │ - │ Chat │ Fiche |
 - Voies : possibilité de réorganiser l'ordre des voies par glisser-déposer dans l'onglet Voies
 - Chat : SHIFT+clic sur le bouton d'envoi au chat envoie le message en mode public (visible par tous) au lieu du mode privé (MJ uniquement)
 - Affichage du nombre d'actions configurées entre parenthèses dans l'onglet Actions/Effets des fiches d'objets (capacité, équipement, attaque). Le compteur ne s'affiche que si au moins une action est configurée.
@@ -15,8 +16,10 @@
 - Modificateurs des Traits et Profils : harmonisation de l'interface des modificateurs avec celle des capacités et équipement. Les modificateurs ne s'appliquent qu'à soi-même.
 - Jet de sauvegarde : affichage d'un ? avant le jet
 - Onglet des actions : symbole d'une balance si c'est un test opposé (@oppose dans la difficulté)
+- Ajout d'une option de resolver : Seuil de succes pour gérer les cas de succès d'attaque automatique au delà d'une valeur de jet de dé. Ajout d'un declencheur de resolver si le resultat est au dessus du seuil de succes défini. Ajout d'une condition d'application d'effets supplémentaire via le dépassement du seuil de succes
 
 ## Corrections
+
 - Mode Lecture des fiches d'objets : les champs de formulaire (input, select, checkbox) et les images sont maintenant correctement en lecture seule
 - Jet de compétence : correction de l'affichage de la source des bonus pour les capacités. Affichage de la voie.
 - Un effet additionnel n'est créé que s'il est actif
@@ -24,15 +27,18 @@
 # 1.4.2
 
 ## Améliorations
+
 - Les dommages ne sont pas lancés si la formule vaut 0
 
 ## Corrections
+
 - Utilisation du point de chance sur un jet d'attaque
 - Corrige une erreur sur la résolution de type jet opposé
 
 # 1.4.1
 
 ## Corrections
+
 - Les dommages n'étaient plus lancés en cas de succès au jet d'attaque. Par contre, ils sont lancés même si la formule vaut 0 (comme 0+0).
 - Affichage du jet de sauvegarde avec le thème sombre
 
