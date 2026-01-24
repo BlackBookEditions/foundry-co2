@@ -39,9 +39,8 @@ export class CORoll extends Roll {
           isFailure = roll.total < difficulty
         }
       }
-      console.log("hasAttackSuccessThreshold", hasAttackSuccessThreshold, "attackSuccessThreshold", attackSuccessThreshold)
+
       if (hasAttackSuccessThreshold && diceResult >= attackSuccessThreshold) {
-        console.log("L'attaque a depassé le seuil de succès automatique", diceResult, attackSuccessThreshold)
         isSuccess = true // Si on aun seuil de succès automatique et que le dé est au dessus alors on a un succès
         isSuccessThreshold = true
         isFailure = false
