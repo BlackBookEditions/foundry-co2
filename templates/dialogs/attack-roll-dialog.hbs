@@ -101,6 +101,22 @@
     </fieldset>           
 {{/if}}     
 
+{{#if hasAvailableStatuses}}
+    <section class="additionalEffectStatuses">
+        <fieldset class="statusesBox">
+            <legend>{{localize "CO.ui.additionalEffectStatuses"}}</legend>
+            <div class="statuses-list">
+                {{#each availableStatuses as |status|}}
+                <div class="status-item">
+                    <input type="checkbox" name="selectedStatuses" id="status-{{status.id}}" value="{{status.id}}" checked />
+                    <label for="status-{{status.id}}">{{localize status.label}}</label>
+                </div>
+                {{/each}}
+            </div>
+        </fieldset>
+    </section>
+{{/if}}
+
 <section class="tacticalTargets">       
     <fieldset class="tacticalOptions">      
         <legend>{{localize "CO.ui.optionsTactiques"}}</legend>

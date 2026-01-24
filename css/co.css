@@ -115,7 +115,7 @@ co-toggle-switch {
   --toggle-switch-thumb-width: calc(var(--toggle-switch-height) - var(--toggle-switch-padding) * 2);
   --toggle-switch-thumb-height: var(--toggle-switch-thumb-width);
   --toggle-switch-transition-time: 250ms;
-  cursor: var(--cursor-pointer) !important;
+  cursor: var(--cursor-pointer);
   display: inline-block;
   width: var(--toggle-switch-width);
   height: var(--toggle-switch-height);
@@ -257,7 +257,7 @@ co-toggle-switch[checked] thumb {
 .co .form-group-stacked .form-fields:not(:has(> :only-child)) > *:has(+ button),
 .co .form-group .form-fields:not(:has(> :only-child)) > *:has(+ label),
 .co .form-group-stacked .form-fields:not(:has(> :only-child)) > *:has(+ label) {
-  border: 0 !important;
+  border: 0;
 }
 .co .form-group .form-fields label,
 .co .form-group-stacked .form-fields label {
@@ -1040,6 +1040,43 @@ co-toggle-switch[checked] thumb {
 .co.application.dialog.attack-roll .window-content .target {
   margin: 3px 8px;
 }
+.co.application.dialog.attack-roll .window-content .additionalEffectStatuses {
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+  border-bottom: 2px solid #ad0606;
+}
+.co.application.dialog.attack-roll .window-content .additionalEffectStatuses .statusesBox {
+  border: none;
+}
+.co.application.dialog.attack-roll .window-content .additionalEffectStatuses .statusesBox legend {
+  text-align: center;
+  padding-bottom: 3px;
+}
+.co.application.dialog.attack-roll .window-content .additionalEffectStatuses .statusesBox .statuses-list {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px 0;
+}
+.co.application.dialog.attack-roll .window-content .additionalEffectStatuses .statusesBox .statuses-list .status-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.co.application.dialog.attack-roll .window-content .additionalEffectStatuses .statusesBox .statuses-list .status-item input[type="checkbox"] {
+  margin: 0;
+  width: auto;
+  flex-shrink: 0;
+}
+.co.application.dialog.attack-roll .window-content .additionalEffectStatuses .statusesBox .statuses-list .status-item label {
+  margin: 0;
+  font-weight: normal;
+  cursor: pointer;
+}
 .theme-dark .co.application.dialog.attack-roll .window-content {
   color: #e7d1b1;
 }
@@ -1191,7 +1228,7 @@ co-toggle-switch[checked] thumb {
 }
 .co.application.sheet .items-container .attack .attack-body button,
 .co.application.sheet .item-list .attack .attack-body button {
-  width: auto !important;
+  width: auto;
   cursor: pointer;
   margin: 0;
   padding: 0 8px;

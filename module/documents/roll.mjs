@@ -316,7 +316,11 @@ export class COAttackRoll extends CORoll {
               if (CONFIG.debug.co2?.rolls) console.debug(Utils.log(`COAttackRoll prompt - Callback`), event, button, dialog)
               const output = Array.from(button.form.elements).reduce((obj, input) => {
                 if (input.name) {
-                  if (input.type === "checkbox") {
+                  // Gestion spéciale pour les checkboxes multi-sélection (selectedStatuses)
+                  if (input.type === "checkbox" && input.name === "selectedStatuses") {
+                    if (!obj.selectedStatuses) obj.selectedStatuses = []
+                    if (input.checked) obj.selectedStatuses.push(input.value)
+                  } else if (input.type === "checkbox") {
                     obj[input.name] = input.checked
                   } else if (input.type === "radio") {
                     // Only store the value if this radio button is checked
@@ -473,6 +477,7 @@ export class COAttackRoll extends CORoll {
         opposeTooltip: dialogContext.opposeTooltip,
         hasAttackSuccessThreshold: dialogContext.hasAttackSuccessThreshold,
         attackSuccessThreshold: dialogContext.attackSuccessThreshold,
+        selectedStatuses: withDialog ? rollContext.selectedStatuses : undefined,
         ...options,
       }
 

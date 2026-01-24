@@ -2064,6 +2064,17 @@ export default class COActor extends Actor {
     let opposeResult = ""
     let opposeTooltip = ""
 
+    // Préparation des statuts disponibles pour l'effet additionnel
+    let availableStatuses = []
+    let hasAvailableStatuses = false
+    if (additionalEffect?.active && additionalEffect?.statuses?.size > 0) {
+      availableStatuses = Array.from(additionalEffect.statuses).map((statusId) => ({
+        id: statusId,
+        label: SYSTEM.RESOLVER_ADDITIONAL_EFFECT_STATUS[statusId]?.label || statusId,
+      }))
+      hasAvailableStatuses = availableStatuses.length > 0
+    }
+
     const dialogContext = {
       rollMode,
       rollModes: CONFIG.Dice.rollModes,
@@ -2101,6 +2112,8 @@ export default class COActor extends Actor {
       opposeTooltip: opposeTooltip,
       hasAttackSuccessThreshold: hasAttackSuccessThreshold,
       attackSuccessThreshold: attackSuccessThreshold,
+      availableStatuses,
+      hasAvailableStatuses,
     }
 
     // Rolls contient le jet d'attaque et le jet de dommages si le type est "attack"
@@ -2138,6 +2151,14 @@ export default class COActor extends Actor {
     // Jet de dommages
     const linkedRoll = rolls.length > 1 ? rolls[1].toJSON() : null
 
+    // Récupérer les statuts sélectionnés depuis le roll et mettre à jour le customEffect
+    const selectedStatuses = rolls[0]?.options?.selectedStatuses
+    let effectiveCustomEffect = customEffect
+    if (customEffect && selectedStatuses && selectedStatuses.length > 0) {
+      // Créer une copie du customEffect avec les statuts sélectionnés
+      effectiveCustomEffect = { ...customEffect, statuses: new Set(selectedStatuses) }
+    }
+
     // Jet d'attaque
     if (type === "attack") {
       // Affichage du jet d'attaque
@@ -2146,7 +2167,7 @@ export default class COActor extends Actor {
           speaker,
           style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           type: "action",
-          system: { subtype: "attack", targets: targetsUuid, result: results[0], linkedRoll, customEffect, additionalEffect },
+          system: { subtype: "attack", targets: targetsUuid, result: results[0], linkedRoll, customEffect: effectiveCustomEffect, additionalEffect, selectedStatuses },
         },
         { rollMode: rolls[0].options.rollMode },
       )
@@ -2181,7 +2202,7 @@ export default class COActor extends Actor {
       await this.consumeAmmunition(item)
     }
 
-    return results
+    return { results, selectedStatuses }
   }
 
   /**

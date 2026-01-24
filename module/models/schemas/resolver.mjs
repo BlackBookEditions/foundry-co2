@@ -141,8 +141,8 @@ export class Resolver extends foundry.abstract.DataModel {
     })
     if (!attack) return false
     // Gestion des effets supplémentaires
-    if (this.additionalEffect.active && Resolver.shouldManageAdditionalEffect(attack[0], this.additionalEffect)) {
-      await this._manageAdditionalEffect(actor, item, action)
+    if (this.additionalEffect.active && Resolver.shouldManageAdditionalEffect(attack.results[0], this.additionalEffect)) {
+      await this._manageAdditionalEffect(actor, item, action, attack.selectedStatuses)
     }
 
     return true
@@ -364,7 +364,7 @@ export class Resolver extends foundry.abstract.DataModel {
    * // Exemple d'utilisation :
    * await _manageAdditionalEffect(actor, item, action);
    */
-  async _manageAdditionalEffect(actor, item, action) {
+  async _manageAdditionalEffect(actor, item, action, selectedStatuses = null) {
     // Si pas de combat, pas d'effet sur la durée
     if (
       (!game.combat || !game.combat.started) &&
@@ -379,7 +379,7 @@ export class Resolver extends foundry.abstract.DataModel {
     // Application de l'effet en fonction de la gestion des cibles
     // Soi-même : le MJ ou un joueur peut appliquer l'effet
     if (this.target.type === SYSTEM.RESOLVER_TARGET.self.id) {
-      const ceSelf = await this._createCustomEffect(actor, item, action, true)
+      const ceSelf = await this._createCustomEffect(actor, item, action, true, selectedStatuses)
       await actor.applyCustomEffect(ceSelf)
     } else {
       // Aucune cible est considérée comme Unique cible
@@ -389,7 +389,7 @@ export class Resolver extends foundry.abstract.DataModel {
       const uuidList = targets.map((t) => t.uuid)
 
       // Créer l'effet pour les autres
-      const ceOthers = await this._createCustomEffect(actor, item, action, false)
+      const ceOthers = await this._createCustomEffect(actor, item, action, false, selectedStatuses)
 
       // Appliquer l'effet aux cibles
       if (game.user.isGM) await Promise.all(targets.map((target) => target.actor.applyCustomEffect(ceOthers)))
@@ -400,7 +400,7 @@ export class Resolver extends foundry.abstract.DataModel {
       // Vérifier si on a des modifiers avec apply="both" qui doivent aussi s'appliquer à soi-même
       const hasBothModifiers = action.modifiers?.some((m) => m.apply === SYSTEM.MODIFIERS_APPLY.both.id)
       if (hasBothModifiers) {
-        const ceSelf = await this._createCustomEffect(actor, item, action, true)
+        const ceSelf = await this._createCustomEffect(actor, item, action, true, selectedStatuses)
         await actor.applyCustomEffect(ceSelf)
       }
 
@@ -413,7 +413,7 @@ export class Resolver extends foundry.abstract.DataModel {
     return true
   }
 
-  async _createCustomEffect(actor, item, action, isSelfTarget = false) {
+  async _createCustomEffect(actor, item, action, isSelfTarget = false, selectedStatuses = null) {
     if (
       (!game.combat || game.combat.round === null) &&
       this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id &&
@@ -480,11 +480,14 @@ export class Resolver extends foundry.abstract.DataModel {
 
     const effectName = `${actor.id}.${action.actionName}`
 
+    // Utiliser les statuts sélectionnés par l'utilisateur si disponibles, sinon les statuts configurés
+    const statusesToApply = selectedStatuses && selectedStatuses.length > 0 ? new Set(selectedStatuses) : this.additionalEffect.statuses
+
     // Création de l'effet
     ce = new CustomEffectData({
       name: action.actionName,
       source: item.uuid,
-      statuses: this.additionalEffect.statuses,
+      statuses: statusesToApply,
       unit: this.additionalEffect.unit,
       duration,
       startedAt: game.combat ? game.combat.round : 0,
