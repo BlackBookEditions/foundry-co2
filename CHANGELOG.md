@@ -16,7 +16,7 @@
 - Modificateurs des Traits et Profils : harmonisation de l'interface des modificateurs avec celle des capacités et équipement. Les modificateurs ne s'appliquent qu'à soi-même.
 - Jet de sauvegarde : affichage d'un ? avant le jet
 - Onglet des actions : symbole d'une balance si c'est un test opposé (@oppose dans la difficulté)
-- Ajout d'une option de resolver : Seuil de succes pour gérer les cas de succès d'attaque automatique au delà d'une valeur de jet de dé. Ajout d'un declencheur de resolver si le resultat est au dessus du seuil de succes défini. Ajout d'une condition d'application d'effets supplémentaire via le dépassement du seuil de succes
+- Ajout d'une option de resolver : Seuil de succès pour gérer les cas de succès d'attaque automatique au-delà d'une valeur de jet de dé. Ajout d'un déclencheur de resolver si le résultat est au-dessus du seuil de succès défini. Ajout d'une condition d'application d'effets supplémentaires via le dépassement du seuil de succès
 
 ## Corrections
 
