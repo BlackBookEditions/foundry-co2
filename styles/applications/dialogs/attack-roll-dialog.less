@@ -157,44 +157,82 @@
       margin: 3px 8px;
     }
 
-    .additionalEffectStatuses {
+    .additionalEffect {
       padding-bottom: 6px;
       margin-bottom: 8px;
       border-bottom: 2px solid #ad0606;
-
-      .statusesBox {
-        border: none;
-        
-        legend {
-          text-align: center;
-          padding-bottom: 3px;
+      display: grid;
+      grid-template-columns: 0.1fr 1fr;
+      .icone {
+        img {
+          height: 40px;
+          padding-left: 5px;
         }
+      }
+      legend {
+        text-align: left;
+        font-weight: bold;
+        padding-bottom: 3px;
+        font-size: 120%;
+      }
+      .additionalEffectStatuses {
+        //padding-bottom: 6px;
+        //margin-bottom: 8px;
+        //border-bottom: 2px solid #ad0606;
 
-        .statuses-list {
+        .statusesBox {
+          border: none;
           display: flex;
-          flex-flow: row wrap;
-          justify-content: flex-start;
+          flex-direction: row;
           align-items: center;
-          gap: 8px 16px;
-          padding: 8px 0;
 
-          .status-item {
+          label {
+            font-weight: bold;
+            margin-left: 20px;
+          }
+
+          .statuses-list {
             display: flex;
-            flex-direction: row;
+            flex-flow: row wrap;
+            justify-content: flex-start;
             align-items: center;
-            gap: 6px;
-            white-space: nowrap;
+            gap: 8px 16px;
 
-            input[type="checkbox"] {
-              margin: 0;
-              width: auto;
-              flex-shrink: 0;
-            }
-
-            label {
-              margin: 0;
-              font-weight: normal;
+            .status-item {
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              white-space: nowrap;
+              border-radius: 5px;
+              border: 2px solid grey;
+              padding: 5px 10px;
+              margin: 3px;
+              background-color: #ffffff57;
               cursor: pointer;
+              transition: all 0.15s ease;
+
+              &:has(input:checked) {
+                background-color: #5d142b;
+                border-color: #b3b4b5;
+                color: #b3b4b5;
+              }
+
+              input[type="checkbox"] {
+                appearance: none;
+                -webkit-appearance: none;
+                width: 0;
+                height: 0;
+                margin: 0;
+                padding: 0;
+                position: absolute;
+                opacity: 0;
+              }
+
+              label {
+                margin: 0;
+                font-weight: bold;
+                cursor: pointer;
+              }
             }
           }
         }
