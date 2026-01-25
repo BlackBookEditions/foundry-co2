@@ -2,13 +2,13 @@
 
 ## Améliorations
 
-- Ajout d'une durée 'instantanée' sur les effets supplémentaires pour appliquer un effet supplémentaire sans durée qui s'applique tout de suite. Attention : il convient pour des dommages ou des soins, mais si vous l'utilisez sur des statuts (ex : empoisonné) la durée ne sera plus gérée.
+- Ajout d'une durée 'instantanée' sur les effets supplémentaires pour appliquer un effet supplémentaire sans durée qui s'applique tout de suite. Attention : il convient pour des dommages ou des soins, mais si vous l'utilisez sur des statuts (ex : empoisonné) la durée ne sera plus gérée. Cette durée peut être activée hors combat.
 
 ## Corrections
 
 - Tokens non-liés : correction de l'activation des actions pour les tokens non-liés à un acteur (les actions utilisaient l'acteur de base au lieu du syntheticActor du token)
 - Resolver Buff/Debuff : correction du filtrage des modificateurs selon la cible. Les modificateurs avec apply="Soi-même" sont maintenant correctement appliqués quand la cible du Resolver est "Soi-même". Les modificateurs avec apply="Les Autres" ne s'appliquent plus à l'acteur source. Les modificateurs avec apply="Les Deux" s'appliquent correctement à la fois sur l'acteur source ET sur les cibles
-- Fix sur les durées instantannées pour permettre le hors combat (corrige un petit oubli)
+- Résolution avec effet supplémentaire : la sélection des statuts n'est plus perdu lors du passage en mode Edition
 
 # 1.5.0
 
