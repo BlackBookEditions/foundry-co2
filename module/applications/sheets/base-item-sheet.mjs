@@ -190,7 +190,10 @@ export default class COBaseItemSheet extends HandlebarsApplicationMixin(sheets.I
     context.choiceConditionPredicates = SYSTEM.CONDITION_PREDICATES
     context.choiceConditionTargets = SYSTEM.CONDITION_TARGETS
     context.choiceResolverTypes = SYSTEM.RESOLVER_TYPE
-    context.choiceResolverApplyOn = SYSTEM.RESOLVER_RESULT
+    context.choiceResolverApplyOn = Object.fromEntries(Object.entries(SYSTEM.RESOLVER_RESULT).filter(([key]) => key !== "saveFailure" && key !== "saveSuccess"))
+    context.choiceResolverApplyOnWithoutThreshold = Object.fromEntries(
+      Object.entries(SYSTEM.RESOLVER_RESULT).filter(([key]) => key !== "attackSuccessTreshold" && key !== "saveFailure" && key !== "saveSuccess"),
+    )
     context.choiceResolverApplyOnAlways = Object.fromEntries(Object.entries(SYSTEM.RESOLVER_RESULT).filter(([key, value]) => key === "always"))
     context.choiceResolverTargets = SYSTEM.RESOLVER_TARGET
     context.choiceResolverScopes = SYSTEM.RESOLVER_SCOPE

@@ -11,6 +11,46 @@ export default class COItem extends Item {
     super(...args)
   }
 
+  /**
+   * Pre-update hook to reset additionalEffect.applyOn to "success" when hasAttackSuccessThreshold is unchecked
+   * and the current applyOn value is "attackSuccessTreshold"
+   * @param {object} changed The differential data that is changed relative to the document's prior values
+   * @param {object} options Additional options which modify the update request
+   * @param {User} user The User requesting the document update
+   * @returns {Promise<boolean|void>} A return value of false indicates the update operation should be cancelled
+   * @protected
+   */
+  async _preUpdate(changed, options, user) {
+    await super._preUpdate(changed, options, user)
+
+    // Check if actions are being updated
+    if (changed.system?.actions) {
+      const currentActions = this.system.actions || []
+
+      for (let actionIdx = 0; actionIdx < changed.system.actions.length; actionIdx++) {
+        const changedAction = changed.system.actions[actionIdx]
+        if (!changedAction?.resolvers) continue
+
+        for (const [resolverId, changedResolver] of Object.entries(changedAction.resolvers)) {
+          // Check if hasAttackSuccessThreshold is being set to false
+          if (changedResolver.hasAttackSuccessThreshold === false) {
+            // Find the current resolver to check its applyOn value
+            const currentAction = currentActions[actionIdx]
+            const currentResolver = currentAction?.resolvers?.find((r) => r.id === resolverId)
+
+            if (currentResolver?.additionalEffect?.applyOn === SYSTEM.RESOLVER_RESULT.attackSuccessTreshold.id) {
+              // Reset applyOn to "success"
+              if (!changedResolver.additionalEffect) {
+                changedResolver.additionalEffect = {}
+              }
+              changedResolver.additionalEffect.applyOn = SYSTEM.RESOLVER_RESULT.success.id
+            }
+          }
+        }
+      }
+    }
+  }
+
   // #region accesseurs
   /**
    * Does it have modifiers ?

@@ -130,7 +130,11 @@
           <span>{{localize "CO.resolver.additionalEffect.applyOn"}}</span>
           <select name="system.actions.{{idx}}.resolvers.{{id}}.additionalEffect.applyOn" data-type="String" {{#if @root.locked}}class="disabled"{{/if}}>
             {{#if (eq r.type @root.choiceResolverTypes.attack.id)}}
-              {{selectOptions @root.choiceResolverApplyOn selected=r.additionalEffect.applyOn localize=true}}
+              {{#if r.hasAttackSuccessThreshold}}
+                {{selectOptions @root.choiceResolverApplyOn selected=r.additionalEffect.applyOn localize=true}}
+              {{else}}
+                {{selectOptions @root.choiceResolverApplyOnWithoutThreshold selected=r.additionalEffect.applyOn localize=true}}
+              {{/if}}
             {{else if (eq r.type @root.choiceResolverTypes.save.id)}}
               {{selectOptions @root.choiceResolverApplyOnSave selected=r.additionalEffect.applyOn localize=true}}
             {{else}}
