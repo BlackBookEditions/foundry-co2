@@ -1078,28 +1078,33 @@ co-toggle-switch[checked] thumb {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 2px;
   white-space: nowrap;
   border-radius: 5px;
-  padding: 2px 6px;
+  border: 2px solid grey;
+  padding: 5px 10px;
+  margin: 3px;
+  background-color: #ffffff57;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
-.theme-dark .co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox .statuses-list .status-item {
-  border: 1px solid #e7d1b1;
-  box-shadow: 2px 1px #e7d1b194;
-}
-.theme-light .co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox .statuses-list .status-item {
-  border: 1px solid #222;
-  box-shadow: 2px 1px #2222225c;
+.co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox .statuses-list .status-item:has(input:checked) {
+  background-color: #5d142b;
+  border-color: #b3b4b5;
+  color: #b3b4b5;
 }
 .co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox .statuses-list .status-item input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 0;
+  height: 0;
   margin: 0;
-  width: auto;
-  flex-shrink: 0;
+  padding: 0;
+  position: absolute;
+  opacity: 0;
 }
 .co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox .statuses-list .status-item label {
   margin: 0;
-  font-weight: normal;
+  font-weight: bold;
   cursor: pointer;
 }
 .theme-dark .co.application.dialog.attack-roll .window-content {
