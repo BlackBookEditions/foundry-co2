@@ -447,7 +447,7 @@ export default class CharacterData extends ActorData {
       this.attributes.hp.tooltip = tooltipBase.concat(` ${Utils.getAbilityName("con")} : `, constitutionBonus, hpMaxModifiers.tooltip, Utils.getTooltip("Bonus", hpMaxBonuses))
     }
 
-    if (this.attributes.hp.value > this.attributes.hp.max) this.attributes.hp.value = this.attributes.hp.max // on ne depasse pas le max
+    if (this.attributes.hp.value > this.attributes.hp.max) this.attributes.hp.value = this.attributes.hp.max // On ne depasse pas le max
   }
 
   _prepareMovement() {
@@ -643,7 +643,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.fp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
-    skill.value = Math.min(skill.max, skill.value) //on ne depasse pas le max
+    skill.value = Math.min(skill.max, skill.value) // On ne depasse pas le max
     skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
@@ -684,7 +684,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.mp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
-    skill.value = Math.min(skill.max, skill.value) //on ne depasse pas le max
+    skill.value = Math.min(skill.max, skill.value) // On ne depasse pas le max
     skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
@@ -716,7 +716,7 @@ export default class CharacterData extends ActorData {
 
     const resourceModifiers = this.computeTotalModifiersByTarget(this.resourceModifiers, SYSTEM.MODIFIERS_TARGET.rp.id)
     skill.max = skill.base + bonuses + resourceModifiers.total
-    skill.value = Math.min(skill.max, skill.value) //on ne depasse pas le max
+    skill.value = Math.min(skill.max, skill.value) // On ne depasse pas le max
     skill.tooltip = skill.tooltipBase.concat(resourceModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
   }
 
@@ -837,7 +837,7 @@ export default class CharacterData extends ActorData {
 
       const labelTooltip = game.i18n.format("CO.ui.fastRestLabelTooltip", { formula: formula })
 
-      //await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fastRest.title"), labelTooltip)
+      // Await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fastRest.title"), labelTooltip)
       await this.parent.rollHeal(null, { actionName: game.i18n.format("CO.ui.fastRest"), healFormula: formula, targetType: SYSTEM.RESOLVER_TARGET.self.id, targets: [this.parent] })
 
       // Récupération des charges des capacités
@@ -886,7 +886,7 @@ export default class CharacterData extends ActorData {
         }
 
         const labelTooltip = game.i18n.format("CO.ui.fullRestLabelTooltip", { formula: formula })
-        //await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fullRest.title"), labelTooltip)
+        // Await this._applyRecovery(hp, formula, game.i18n.localize("CO.dialogs.fullRest.title"), labelTooltip)
         await this.parent.rollHeal(null, {
           actionName: game.i18n.format("CO.ui.fullRest"),
           healFormula: formula,

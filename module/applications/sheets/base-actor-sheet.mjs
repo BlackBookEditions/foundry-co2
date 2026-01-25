@@ -256,7 +256,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
 
   /**
    * Applique le tri sélectionné sur les actions.
-   * @param {Array} actions - Tableau des actions à trier
+   * @param {Array} actions Tableau des actions à trier
    * @private
    */
   #applySorting(actions) {

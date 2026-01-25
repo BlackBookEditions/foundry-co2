@@ -2725,7 +2725,7 @@ export default class COActor extends Actor {
    * @private
    * @static
    * @async
-   * @param {Object} options - The damage query options
+   * @param {Object} options The damage query options
    * @param {string} options.fromActor Name of the source actor dealing the damage
    * @param {string[]} options.targets Array of UUIDs for target actors receiving damage
    * @param {number} options.damageAmount Amount of damage to apply to each target

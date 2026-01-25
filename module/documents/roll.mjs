@@ -5,8 +5,8 @@ export class CORoll extends Roll {
   /**
    * Fonction qui va analyser les valeurs du jet de dé et indiquer s'il s'agit d'un succes ou non ainsi que les infos
    * @param {*} roll
-   * @param {Boolean} hasAttackSuccessThreshold Indique si l'attaque avait un seuil de succès automatique
-   * @param {Number} attackSuccessThreshold Seuil à partir duquel on a un succès automatique
+   * @param {boolean} hasAttackSuccessThreshold Indique si l'attaque avait un seuil de succès automatique
+   * @param {number} attackSuccessThreshold Seuil à partir duquel on a un succès automatique
    * @returns { diceResult, total, isCritical, isFumble, difficulty, isSuccess, isFailure, isSuccessThreshold } ou {} si le roll n'est pas un COAttackRoll de type "attack" ou COSkillRoll
    */
   static analyseRollResult(roll, hasAttackSuccessThreshold = false, attackSuccessThreshold = 20) {
