@@ -2564,7 +2564,7 @@ export default class COActor extends Actor {
   }
 
   /**
-   * On applique les effets au moment ou ils se declenchent (instant = 1 seule fois et durée = au passage dans la boucle applyEffectOverTime)
+   * On applique les effets au moment où ils se déclenchent (instant = 1 seule fois et durée = au passage dans la boucle applyEffectOverTime)
    * @param {CustomEffectData} effect : Custom effect appliqué sur l'acteur
    */
   async applyEffect(effect) {
@@ -2572,7 +2572,7 @@ export default class COActor extends Actor {
     // Dé ou valeur fixe ou valeur vide (cas de l'action soutenir)
     if (effect.formula !== "") {
       const diceInclude = effect.formula.match("d[0-9]{1,}") || effect.formula.match("D[0-9]{1,}")
-      let formulaResult = effect.formula
+      let formulaResult
       if (diceInclude) {
         const roll = new Roll(effect.formula)
         await roll.evaluate()
@@ -2598,7 +2598,7 @@ export default class COActor extends Actor {
    */
   async applyEffectOverTime() {
     for (const effect of this.system.currentEffects) {
-      await applyEffect(effect)
+      await this.applyEffect(effect)
     }
   }
 

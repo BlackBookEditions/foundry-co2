@@ -2,7 +2,7 @@
 
 ## Améliorations
 
-- Ajout d'une durée 'instantanée' sur les effet supplémentaire pour appliquer un effet supplémentaire sans durée qui s'applique tout de suite. Attention : il conviens pour des degats ou des soins, mais si vous l'utilisez sur des status (ex : empoisonné) la durée ne sera plus gérée.
+- Ajout d'une durée 'instantanée' sur les effets supplémentaires pour appliquer un effet supplémentaire sans durée qui s'applique tout de suite. Attention : il convient pour des dommages ou des soins, mais si vous l'utilisez sur des statuts (ex : empoisonné) la durée ne sera plus gérée.
 
 ## Corrections
 
