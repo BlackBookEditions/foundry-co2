@@ -1,4 +1,8 @@
 export const COMBAT_UNITE = {
+  instant: {
+    id: "instant",
+    label: "CO.combatUnit.instant",
+  },
   unlimited: {
     id: "unlimited",
     label: "CO.combatUnit.unlimited",

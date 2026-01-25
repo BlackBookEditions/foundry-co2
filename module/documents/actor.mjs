@@ -2541,22 +2541,49 @@ export default class COActor extends Actor {
         if (result === false) return false // On applique pas l'effet s'il y a une immunité (cas d'un result === false)
       }
     }
+    // Soit on applique l'effet tout de suite soit on l'ajoute aux effets à appliquer pendant le combat
+    if (effect.unit === SYSTEM.COMBAT_UNITE.instant.id) {
+      await this.applyEffect(effect)
+    } else {
+      let existingEffectIndex = this.system.currentEffects.findIndex((e) => e.slug === effect.slug)
+      const newCurrentEffects = this.system.toObject().currentEffects
 
-    let existingEffectIndex = this.system.currentEffects.findIndex((e) => e.slug === effect.slug)
-    const newCurrentEffects = this.system.toObject().currentEffects
+      // CustomEffect déjà présent : on modifie startedAt et remainingTurn
+      if (existingEffectIndex !== -1) {
+        newCurrentEffects[existingEffectIndex].startedAt = effect.startedAt
+        newCurrentEffects[existingEffectIndex].remainingTurn = effect.remainingTurn
+      } else newCurrentEffects.push(effect)
 
-    // CustomEffect déjà présent : on modifie startedAt et remainingTurn
-    if (existingEffectIndex !== -1) {
-      newCurrentEffects[existingEffectIndex].startedAt = effect.startedAt
-      newCurrentEffects[existingEffectIndex].remainingTurn = effect.remainingTurn
-    } else newCurrentEffects.push(effect)
+      // Affichage de l'icône
+      await this.activateCOStatusEffect({ state: true, effectid: "customEffect" })
 
-    // Affichage de l'icône
-    await this.activateCOStatusEffect({ state: true, effectid: "customEffect" })
-
-    await this.update({ "system.currentEffects": newCurrentEffects })
+      await this.update({ "system.currentEffects": newCurrentEffects })
+    }
 
     return true
+  }
+
+  /**
+   * On applique les effets au moment où ils se déclenchent (instant = 1 seule fois et durée = au passage dans la boucle applyEffectOverTime)
+   * @param {CustomEffectData} effect : Custom effect appliqué sur l'acteur
+   */
+  async applyEffect(effect) {
+    // TODO Ici on devrait tenir compte du type d'energie (feu/glace etc) et d'eventuelle resistance/vulnerabilite à voir plus tard
+    // Dé ou valeur fixe ou valeur vide (cas de l'action soutenir)
+    if (effect.formula !== "") {
+      const diceInclude = effect.formula.match("d[0-9]{1,}") || effect.formula.match("D[0-9]{1,}")
+      let formulaResult
+      if (diceInclude) {
+        const roll = new Roll(effect.formula)
+        await roll.evaluate()
+        formulaResult = roll.total
+      } else {
+        const roll = new Roll(effect.formula)
+        formulaResult = roll.evaluateSync().total
+      }
+      if (effect.formulaType === "damage") await this.applyDamage({ damage: formulaResult })
+      if (effect.formulaType === "heal") await this.applyHeal({ heal: formulaResult })
+    }
   }
 
   /**
@@ -2571,22 +2598,7 @@ export default class COActor extends Actor {
    */
   async applyEffectOverTime() {
     for (const effect of this.system.currentEffects) {
-      // TODO Ici on devrait tenir compte du type d'energie (feu/glace etc) et d'eventuelle resistance/vulnerabilite à voir plus tard
-      // Dé ou valeur fixe ou valeur vide (cas de l'action soutenir)
-      if (effect.formula !== "") {
-        const diceInclude = effect.formula.match("d[0-9]{1,}") || effect.formula.match("D[0-9]{1,}")
-        let formulaResult = effect.formula
-        if (diceInclude) {
-          const roll = new Roll(effect.formula)
-          await roll.evaluate()
-          formulaResult = roll.total
-        } else {
-          const roll = new Roll(effect.formula)
-          formulaResult = roll.evaluateSync().total
-        }
-        if (effect.formulaType === "damage") await this.applyDamage({ damage: formulaResult })
-        if (effect.formulaType === "heal") await this.applyHeal({ heal: formulaResult })
-      }
+      await this.applyEffect(effect)
     }
   }
 

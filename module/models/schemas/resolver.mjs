@@ -366,7 +366,11 @@ export class Resolver extends foundry.abstract.DataModel {
    */
   async _manageAdditionalEffect(actor, item, action) {
     // Si pas de combat, pas d'effet sur la durée
-    if ((!game.combat || !game.combat.started) && this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id) {
+    if (
+      (!game.combat || !game.combat.started) &&
+      this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id &&
+      this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.instant.id
+    ) {
       // FIXME Debug pour l'instant, à supprimer
       ui.notifications.warn(game.i18n.localize("CO.label.long.customEffectInCombat"))
       return false
@@ -402,7 +406,8 @@ export class Resolver extends foundry.abstract.DataModel {
 
       // On affiche un message pour signaler
       const targetNames = targets ? targets.map((t) => t.name).join(", ") : ""
-      const message = game.i18n.format("CO.notif.applyEffect", { actorName: actor.name, skillName: item.name, targetNames: targetNames })
+      const skillName = item.name === action.actionName ? item.name : `${item.name} - ${action.actionName}`
+      const message = game.i18n.format("CO.notif.applyEffect", { actorName: actor.name, skillName: skillName, targetNames: targetNames })
       new CoChat(actor).withTemplate(SYSTEM.TEMPLATE.MESSAGE).withData({ message: message }).create()
     }
     return true
