@@ -180,13 +180,12 @@
         <label data-tooltip="{{localize 'CO.resolver.additionalEffect.statusAvailable'}}" data-tooltip-direction="UP">
           {{localize "CO.resolver.additionalEffect.statusAvailable"}}
         </label>
-        <div class="form-fields tags">
+        <div class="form-fields tags{{#if @root.locked}} locked{{/if}}">
           {{formGroup
             @root.resolverSystemFields.additionalEffect.fields.statuses
-            name=(concat "system.actions." idx ".resolvers." @index ".additionalEffect.statuses")
+            name=(concat "system.actions." idx ".resolvers." id ".additionalEffect.statuses")
             value=r.additionalEffect.statuses
             localize=true
-            disabled=@root.locked
           }}
         </div>
       </div>

@@ -98,6 +98,13 @@ multi-select .tags.input-element-tags .tag a.remove {
 .theme-light select option {
   background: inherit;
 }
+.form-fields.tags.locked multi-select {
+  pointer-events: none;
+  opacity: 0.8;
+}
+.form-fields.tags.locked multi-select .tags.input-element-tags .tag a.remove {
+  display: none;
+}
 co-toggle-switch {
   --toggle-switch-height: 20px;
   --toggle-switch-width: 36px;

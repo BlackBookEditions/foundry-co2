@@ -59,47 +59,14 @@ select {
   }
 }
 
-//multi-select {
+// En mode lecture, empêcher l'interaction avec le multi-select sans utiliser disabled
+.form-fields.tags.locked {
+  multi-select {
+    pointer-events: none;
+    opacity: 0.8;
 
-//    .tags.input-element-tags {
-//        position: absolute;
-//        display: flex;
-//        flex-flow: row wrap;
-//        left: 0;
-//        right: 0;
-//        height: 100%;
-//        justify-content: flex-start;
-//        align-items: stretch;
-//        pointer-events: none;
-
-//        .tag {
-//            overflow: hidden;
-//            max-width: 80px;
-//            max-height: calc(100% - 4px);
-//            margin: 2px;
-//            padding: 2px;
-
-//            span {
-//                text-overflow: ellipsis;
-//                white-space: nowrap;
-//                overflow: hidden;
-//            }
-
-//            a.remove {
-//                pointer-events: all;
-//            }
-//        }
-//    }
-
-//    >select {
-//        color: inherit;
-
-//        >option {
-//            color: inherit;
-
-//            &:disabled {
-//                color: rgba(0, 0, 0, 0.5);
-//            }
-//        }
-//    }
-//}
+    .tags.input-element-tags .tag a.remove {
+      display: none;
+    }
+  }
+}
