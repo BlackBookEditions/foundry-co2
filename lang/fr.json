@@ -392,7 +392,7 @@
       "attackActionLimit": "Une attaque de créature ne peut avoir qu'une seule action",
       "warningOnlyOneTarget": "Vous ne pouvez désigner qu'une cible pour l'action !",
       "warningNoTargetOrTooManyTargets": "Vous n'avez ciblé personne ou trop de cibles pour cette action !",
-      "applyEffect": "{actorName} a lancé {skillName} sur :  {targetNames}"
+      "applyEffect": "{actorName} : application de {skillName} sur {targetNames}"
     },
     "tooltip": {
       "formulaAttack": "Formule d'attaque (sans le dé)",
