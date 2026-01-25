@@ -1040,39 +1040,64 @@ co-toggle-switch[checked] thumb {
 .co.application.dialog.attack-roll .window-content .target {
   margin: 3px 8px;
 }
-.co.application.dialog.attack-roll .window-content .additionalEffectStatuses {
+.co.application.dialog.attack-roll .window-content .additionalEffect {
   padding-bottom: 6px;
   margin-bottom: 8px;
   border-bottom: 2px solid #ad0606;
+  display: grid;
+  grid-template-columns: 0.1fr 1fr;
 }
-.co.application.dialog.attack-roll .window-content .additionalEffectStatuses .statusesBox {
-  border: none;
+.co.application.dialog.attack-roll .window-content .additionalEffect .icone img {
+  height: 40px;
+  padding-left: 5px;
 }
-.co.application.dialog.attack-roll .window-content .additionalEffectStatuses .statusesBox legend {
-  text-align: center;
+.co.application.dialog.attack-roll .window-content .additionalEffect legend {
+  text-align: left;
+  font-weight: bold;
   padding-bottom: 3px;
+  font-size: 120%;
 }
-.co.application.dialog.attack-roll .window-content .additionalEffectStatuses .statusesBox .statuses-list {
+.co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox {
+  border: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox label {
+  font-weight: bold;
+  margin-left: 20px;
+}
+.co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox .statuses-list {
   display: flex;
   flex-flow: row wrap;
   justify-content: flex-start;
   align-items: center;
   gap: 8px 16px;
-  padding: 8px 0;
 }
-.co.application.dialog.attack-roll .window-content .additionalEffectStatuses .statusesBox .statuses-list .status-item {
+.co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox .statuses-list .status-item {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 6px;
+  margin-bottom: 2px;
   white-space: nowrap;
+  border-radius: 5px;
+  padding: 2px 6px;
 }
-.co.application.dialog.attack-roll .window-content .additionalEffectStatuses .statusesBox .statuses-list .status-item input[type="checkbox"] {
+.theme-dark .co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox .statuses-list .status-item {
+  border: 1px solid #e7d1b1;
+  box-shadow: 2px 1px #e7d1b194;
+}
+.theme-light .co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox .statuses-list .status-item {
+  border: 1px solid #222;
+  box-shadow: 2px 1px #2222225c;
+}
+.co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox .statuses-list .status-item input[type="checkbox"] {
   margin: 0;
   width: auto;
   flex-shrink: 0;
 }
-.co.application.dialog.attack-roll .window-content .additionalEffectStatuses .statusesBox .statuses-list .status-item label {
+.co.application.dialog.attack-roll .window-content .additionalEffect .additionalEffectStatuses .statusesBox .statuses-list .status-item label {
   margin: 0;
   font-weight: normal;
   cursor: pointer;
@@ -2883,6 +2908,9 @@ co-toggle-switch[checked] thumb {
 .co.application.sheet.actor.encounter .window-content .properties .notes {
   max-height: calc(100% - 20px);
   text-wrap: auto;
+  overflow-y: scroll;
+  scrollbar-color: var(--color-abilities) var(--color-scrollbar-track);
+  scrollbar-width: thin;
 }
 .co.application.sheet.actor.encounter .window-content .properties .notes .editor {
   margin: 8px;
