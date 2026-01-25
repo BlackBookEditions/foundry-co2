@@ -414,7 +414,11 @@ export class Resolver extends foundry.abstract.DataModel {
   }
 
   async _createCustomEffect(actor, item, action, isSelfTarget = false) {
-    if ((!game.combat || game.combat.round === null) && this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id) {
+    if (
+      (!game.combat || game.combat.round === null) &&
+      this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id &&
+      this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.instant.id
+    ) {
       ui.notifications.warn(game.i18n.localize("CO.label.long.customEffectInCombat"))
       return
     }
