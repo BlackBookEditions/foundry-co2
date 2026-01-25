@@ -366,7 +366,11 @@ export class Resolver extends foundry.abstract.DataModel {
    */
   async _manageAdditionalEffect(actor, item, action) {
     // Si pas de combat, pas d'effet sur la durée
-    if ((!game.combat || !game.combat.started) && this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id) {
+    if (
+      (!game.combat || !game.combat.started) &&
+      this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.unlimited.id &&
+      this.additionalEffect.unit !== SYSTEM.COMBAT_UNITE.instant.id
+    ) {
       // FIXME Debug pour l'instant, à supprimer
       ui.notifications.warn(game.i18n.localize("CO.label.long.customEffectInCombat"))
       return false

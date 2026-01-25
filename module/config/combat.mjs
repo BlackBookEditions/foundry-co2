@@ -15,4 +15,8 @@ export const COMBAT_UNITE = {
     id: "second",
     label: "CO.combatUnit.second",
   },
+  instant: {
+    id: "instant",
+    label: "CO.combatUnit.instant",
+  },
 }

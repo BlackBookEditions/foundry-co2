@@ -853,7 +853,8 @@
       "round": "round(s)",
       "second": "seconde(s)",
       "combat": "Combat",
-      "unlimited": "Illimitée"
+      "unlimited": "Illimitée",
+      "instant": "Instantané"
     },
     "resources": {
       "long": {
