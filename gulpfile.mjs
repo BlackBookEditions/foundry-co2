@@ -9,7 +9,8 @@ const CSS_DEST = "./css"
 const LESS_WATCH = ["./styles/**/*.less"]
 
 /**
- *
+ * Compiles LESS files from the source directory to the destination CSS directory.
+ * Handles errors during compilation and logs the file paths.
  */
 function compileLESS() {
   console.log("Compiling LESS files from:", LESS_SRC, "to:", CSS_DEST)
@@ -25,11 +26,8 @@ function compileLESS() {
 }
 const css = gulp.series(compileLESS)
 
-/* ----------------------------------------- */
-/*  Watch Updates
-/* ----------------------------------------- */
 /**
- *
+ * Watch for changes in LESS files and recompile on update.
  */
 function watchUpdates() {
   gulp.watch(LESS_WATCH, css)

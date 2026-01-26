@@ -1,5 +1,6 @@
 import { SYSTEM } from "../../config/system.mjs"
 import { Modifier } from "./modifier.mjs"
+import Utils from "../../helpers/utils.mjs"
 
 /**
  * Subtype : "customEffect"
@@ -74,6 +75,15 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
     }
   }
 
+  /**
+   * Résout l'acteur et l'objet (item) à partir du UUID source du CustomEffect.
+   * Prend en charge :
+   * - Acteur du monde (UUID commençant par "Actor")
+   * - Acteur d'un token de scène (UUID commençant par "Scene")
+   *
+   * @returns {{ actor: Actor|null, item: Item|null }} L'acteur et l'item résolus, ou null si introuvables.
+   * @see foundry.utils.parseUuid
+   */
   get sourceParts() {
     let actor
     let item
@@ -127,10 +137,10 @@ export default class CustomEffectData extends foundry.abstract.DataModel {
    */
   static async handle(data) {
     if (game.user.isGM) {
-      console.log("CustomEffectData - handle data", data)
+      if (CONFIG.debug.co2?.actions) console.debug(Utils.log(`CustomEffectData - handle data`), data)
       // Création de l'effet
       const ce = CustomEffectData.createFromCE(data.ce)
-      console.log("CustomEffectData - handle ce", ce)
+      if (CONFIG.debug.co2?.actions) console.debug(Utils.log(`CustomEffectData - handle ce`), ce)
       for (const target of data.targets) {
         const actor = fromUuidSync(target)
         await actor.applyCustomEffect(ce)
