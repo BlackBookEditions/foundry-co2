@@ -44,6 +44,59 @@ export default class Utils {
   }
 
   /**
+   * Retrieves the expanded state of a section from localStorage.
+   *
+   * @param {string} key The localStorage key (e.g. `co-${actorId}-paths-${slug}`).
+   * @param {boolean} [defaultValue=true] The default value if the key is not found or an error occurs.
+   * @returns {boolean} The expanded state.
+   */
+  static getExpandedState(key, defaultValue = true) {
+    try {
+      const stored = localStorage.getItem(key)
+      if (stored !== null) {
+        const parsedData = JSON.parse(stored)
+        return parsedData.expanded === true
+      }
+    } catch (e) {
+      // Ignore localStorage errors
+    }
+    return defaultValue
+  }
+
+  /**
+   * Toggles the expanded state of a section in localStorage.
+   *
+   * @param {string} key The localStorage key.
+   */
+  static toggleExpandedState(key) {
+    try {
+      const stored = localStorage.getItem(key)
+      if (stored !== null) {
+        const value = JSON.parse(stored)
+        value.expanded = !value.expanded
+        localStorage.setItem(key, JSON.stringify(value))
+      } else {
+        localStorage.setItem(key, JSON.stringify({ expanded: false }))
+      }
+    } catch (e) {
+      console.error(Utils.log(`Error updating localStorage for key ${key}`), e)
+    }
+  }
+
+  /**
+   * Removes an expanded state entry from localStorage.
+   *
+   * @param {string} key The localStorage key.
+   */
+  static removeExpandedState(key) {
+    try {
+      localStorage.removeItem(key)
+    } catch (e) {
+      // Ignore localStorage errors
+    }
+  }
+
+  /**
    * Évalue un modificateur basé sur la formule fournie.
    *
    * @param {Object} actor L'objet acteur contenant les données pertinentes.

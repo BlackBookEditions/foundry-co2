@@ -185,35 +185,11 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     }
     context.capacitiesOffPaths = capacitiesOffPaths
 
-    // Récupération du statut expanded depuis le localStorage
-    let offPathsExpanded = true
-    try {
-      const key = `co-${this.document.id}-paths-capacitiesOffPaths`
-      const stored = localStorage.getItem(key)
-      if (stored !== null) {
-        const parsedData = JSON.parse(stored)
-        offPathsExpanded = parsedData.expanded === true
-      }
-    } catch (e) {
-      offPathsExpanded = true
-    }
-    context.capacitiesOffPathsExpanded = offPathsExpanded
+    context.capacitiesOffPathsExpanded = Utils.getExpandedState(`co-${this.document.id}-paths-capacitiesOffPaths`)
     context.features = this.document.features
     context.actions = this.document.actions
     context.inventory = this.document.inventory
-    // Récupération du statut expanded depuis le localStorage
-    let currenciesExpanded = true
-    try {
-      const key = `co-${this.document.id}-currencies`
-      const stored = localStorage.getItem(key)
-      if (stored !== null) {
-        const parsedData = JSON.parse(stored)
-        currenciesExpanded = parsedData.expanded === true
-      }
-    } catch (e) {
-      currenciesExpanded = true
-    }
-    context.currenciesExpanded = currenciesExpanded
+    context.currenciesExpanded = Utils.getExpandedState(`co-${this.document.id}-currencies`)
 
     context.visibleActions = await this.document.getVisibleActions()
 
@@ -371,26 +347,10 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
       foldable = foldable.nextElementSibling
     }
     if (foldable) {
-      // Change value in local storage to remember the state
-      try {
-        let key
-        if (toggleType === "paths") {
-          key = `co-${this.document.id}-${toggleType}-${pathSlug}`
-        } else {
-          key = `co-${this.document.id}-${toggleType}`
-        }
-        let stored = localStorage.getItem(key)
-        if (stored !== null) {
-          let value = JSON.parse(stored)
-          value.expanded = !value.expanded
-          localStorage.setItem(key, JSON.stringify(value))
-        } else {
-          // Créer une nouvelle entrée si elle n'existe pas
-          localStorage.setItem(key, JSON.stringify({ expanded: true }))
-        }
-      } catch (e) {
-        console.error(Utils.log(`CoBaseActorSheet - Error updating localStorage for path slug ${pathSlug}`), e)
-      }
+      const key = toggleType === "paths"
+        ? `co-${this.document.id}-${toggleType}-${pathSlug}`
+        : `co-${this.document.id}-${toggleType}`
+      Utils.toggleExpandedState(key)
       slideToggle(foldable)
     }
     return true

@@ -178,22 +178,10 @@ export default class COActor extends Actor {
         }
       }
 
-      // Récupère l'état "expanded" depuis le localStorage pour chaque voie (path)
-      let expanded = true
-      try {
-        const key = `co-${this.id}-paths-${path.system.slug}`
-        const stored = localStorage.getItem(key)
-        if (stored !== null) {
-          const parsedData = JSON.parse(stored)
-          expanded = parsedData.expanded === true
-        }
-      } catch (e) {
-        expanded = true
-      }
       pathGroups.push({
         path: path,
         items: capacities,
-        expanded,
+        expanded: Utils.getExpandedState(`co-${this.id}-paths-${path.system.slug}`),
       })
     }
     return pathGroups
@@ -223,18 +211,7 @@ export default class COActor extends Actor {
     ]
 
     categories.forEach((category) => {
-      // Récupère l'état "expanded" depuis le localStorage pour chaque voie (path)
-      let expanded = true
-      try {
-        const key = `co-${this.id}-${category}`
-        const stored = localStorage.getItem(key)
-        if (stored !== null) {
-          const parsedData = JSON.parse(stored)
-          expanded = parsedData.expanded === true
-        }
-      } catch (e) {
-        expanded = true
-      }
+      const expanded = Utils.getExpandedState(`co-${this.id}-${category}`)
 
       // Trier selon la valeur de sort
       const items = this.equipments.filter((item) => item.system.subtype === category).sort((a, b) => a.sort - b.sort)
@@ -1524,11 +1501,7 @@ export default class COActor extends Actor {
     await this.deleteEmbeddedDocuments("Item", [path.id])
 
     // Suppression de la voie du local storage
-    const key = `co-${this.id}-paths-${path.system.slug}`
-    let stored = localStorage.getItem(key)
-    if (stored !== null) {
-      localStorage.removeItem(key)
-    }
+    Utils.removeExpandedState(`co-${this.id}-paths-${path.system.slug}`)
   }
 
   /**
