@@ -692,6 +692,8 @@
       "perUsage": "Par utilisation",
       "learned": "Apprise",
       "equipped": "Équipé",
+      "trained": "Maîtrise",
+      "notTrained": "Pas de maîtrise",
       "biography": "Biographie",
       "appearance": "Apparence",
       "size": "Taille",

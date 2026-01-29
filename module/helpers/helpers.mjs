@@ -46,16 +46,13 @@ export function registerHandlebarsHelpers() {
     return true
   })
   Handlebars.registerHelper("isTrainedWithWeapon", function (actor, itemId) {
-    if (actor.isTrainedWithWeapon(itemId)) return '<i class="fa-solid fa-circle-check" data-tooltip="Maitrise" data-tooltip-direction="UP"></i>'
-    return '<i class="fa-regular fa-circle-xmark" data-tooltip="Pas de maitrise" data-tooltip-direction="UP"></i>'
+    return actor.isTrainedWithWeapon(itemId)
   })
   Handlebars.registerHelper("isTrainedWithArmor", function (actor, itemId) {
-    if (actor.isTrainedWithArmor(itemId)) return '<i class="fa-solid fa-circle-check" data-tooltip="Maitrise" data-tooltip-direction="UP"></i>'
-    return '<i class="fa-regular fa-circle-xmark" data-tooltip="Pas de maitrise" data-tooltip-direction="UP"></i>'
+    return actor.isTrainedWithArmor(itemId)
   })
   Handlebars.registerHelper("isTrainedWithShield", function (actor, itemId) {
-    if (actor.isTrainedWithShield(itemId)) return '<i class="fa-solid fa-circle-check" data-tooltip="Maitrise" data-tooltip-direction="UP"></i>'
-    return '<i class="fa-regular fa-circle-xmark" data-tooltip="Pas de maitrise" data-tooltip-direction="UP"></i>'
+    return actor.isTrainedWithShield(itemId)
   })
   Handlebars.registerHelper("manaCostFromArmor", function (capacity, actor) {
     return capacity.system.getManaCostFromArmor(actor)
