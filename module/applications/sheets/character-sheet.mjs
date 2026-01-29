@@ -212,7 +212,7 @@ export default class COCharacterSheet extends COBaseActorSheet {
     // Vérification du droit Owner
     if (!this.isEditable) return
     event.preventDefault()
-    const itemId = $(target).parents(".item").data("itemId")
+    const itemId = target.closest(".item")?.dataset.itemId
     const bypassChecks = event.shiftKey
     await this.document.toggleEquipmentEquipped(itemId, bypassChecks)
   }
