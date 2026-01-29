@@ -265,9 +265,6 @@ export default class Utils {
           .map((n) => n)
           .slice(0, rank) // Prendre uniquement les rank premiers éléments
 
-        // Calculer la somme
-        const sum = numbers.reduce((acc, cur) => acc + cur, 0)
-
         // Valeur du rang
         return arrayValues[rank - 1]
       })
