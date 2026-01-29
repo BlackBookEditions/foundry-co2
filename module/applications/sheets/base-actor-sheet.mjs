@@ -31,7 +31,6 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
       activateDef: COBaseActorSheet.#onActivateDef,
       deactivateDef: COBaseActorSheet.#onDeactivateDef,
       toggleSection: COBaseActorSheet.#onSectionToggle,
-      changeSheetLock: COBaseActorSheet.#onSheetChangeLock,
       sendToChat: COBaseActorSheet.#onSendToChat,
       createItem: COBaseActorSheet.#onCreateItem,
       editItem: COBaseActorSheet.#onEditItem,
@@ -347,25 +346,11 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
       foldable = foldable.nextElementSibling
     }
     if (foldable) {
-      const key = toggleType === "paths"
-        ? `co-${this.document.id}-${toggleType}-${pathSlug}`
-        : `co-${this.document.id}-${toggleType}`
+      const key = toggleType === "paths" ? `co-${this.document.id}-${toggleType}-${pathSlug}` : `co-${this.document.id}-${toggleType}`
       Utils.toggleExpandedState(key)
       slideToggle(foldable)
     }
     return true
-  }
-
-  /**
-   * Manage the lock/unlock button on the sheet
-   * @param {PointerEvent} event   The originating click event
-   * @param {HTMLElement} target   The capturing HTML element which defined a [data-action]
-   */
-  static async #onSheetChangeLock(event, target) {
-    event.preventDefault()
-    const modes = this.constructor.SHEET_MODES
-    this._sheetMode = this.isEditMode ? modes.PLAY : modes.EDIT
-    this.render()
   }
 
   /**
@@ -636,15 +621,6 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     event.preventDefault()
     this.actionsSorting = "byActionType"
     this.render()
-  }
-
-  // #endregion
-
-  // #region Drag-and-Drop Workflow
-
-  /** @inheritDoc */
-  _onDragStart(event) {
-    super._onDragStart(event)
   }
 
   // #endregion

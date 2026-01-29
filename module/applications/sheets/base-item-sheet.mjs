@@ -32,7 +32,6 @@ export default class COBaseItemSheet extends HandlebarsApplicationMixin(sheets.I
     },
     actions: {
       toggleSection: COBaseItemSheet.#onSectionToggle,
-      changeSheetLock: COBaseItemSheet.#onSheetChangelock,
       selectStatus: COBaseItemSheet.#onSelectStatus,
       editItem: COBaseItemSheet.#onEditItem,
       deleteItem: COBaseItemSheet.#onDeleteItem,
@@ -522,18 +521,6 @@ export default class COBaseItemSheet extends HandlebarsApplicationMixin(sheets.I
     currentModifiers.splice(rowId, 1)
 
     return this.item.update({ "system.modifiers": currentModifiers })
-  }
-
-  /**
-   * Manage the lock/unlock button on the sheet
-   * @param {Event} event The event that triggered the action
-   * @param {COBaseItemSheet} sheet The sheet instance
-   */
-  static async #onSheetChangelock(event, sheet) {
-    event.preventDefault()
-    const modes = sheet.constructor.SHEET_MODES
-    sheet._sheetMode = sheet.isEditMode ? modes.PLAY : modes.EDIT
-    sheet.render()
   }
 
   static #onSelectActionIcon(event, target) {
