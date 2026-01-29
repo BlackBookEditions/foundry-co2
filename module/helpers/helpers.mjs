@@ -40,9 +40,6 @@ export function registerHandlebarsHelpers() {
     const actionableItemTypes = ["capacity", "equipment", "attack"]
     return actionableItemTypes.includes(itemType)
   })
-  Handlebars.registerHelper("isNegativeOrNull", function (value) {
-    return value >= 0
-  })
   Handlebars.registerHelper("isEnabled", function (configKey) {
     const value = game.settings.get("co2", configKey)
     if (value === false || value === "none") return false
