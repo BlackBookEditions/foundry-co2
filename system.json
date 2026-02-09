@@ -48,6 +48,7 @@
     },
     "ChatMessage": {
       "action": {},
+      "check": {},
       "skill": {},
       "item": {},
       "heal": {},

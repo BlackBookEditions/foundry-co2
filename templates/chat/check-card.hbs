@@ -1,0 +1,41 @@
+{{!-- Template pour les demandes de jet de caractéristique via enricher --}}
+<div class="co chat-card roll-card check-card">
+  <header class="card-header flexcol">
+    <div class="action-name">{{title}}</div>
+    {{#if skills}}
+      <div class="action-skills">{{skills}}</div>
+    {{/if}}
+  </header>
+
+  <div class="card-content">
+    <section class="bloc-result {{#unless difficulty}}no-difficulty{{/unless}}">
+      {{#if difficulty}}
+        <section class="result">
+          <div class="form-group diff-result">
+            <div data-tooltip="{{localize 'CO.ui.difficulty'}}" data-tooltip-direction="UP">{{difficulty}}</div>
+          </div>
+        </section>
+      {{/if}}
+      <section class="result-sentence">
+        <button class="roll-check-chat" data-ability="{{ability}}" {{#if difficulty}}data-difficulty="{{difficulty}}"{{/if}} {{#if skills}}data-skills="{{skills}}"{{/if}} {{#if successDamage}}data-success-damage="{{successDamage}}"{{/if}} {{#if failureDamage}}data-failure-damage="{{failureDamage}}"{{/if}} {{#if successStatuses}}data-success-statuses="{{successStatuses}}"{{/if}} {{#if failureStatuses}}data-failure-statuses="{{failureStatuses}}"{{/if}} {{#if rollOptions}}data-roll-options="{{rollOptions}}"{{/if}} data-tooltip="{{localize 'CO.dialogs.skillCheck'}}" data-tooltip-direction="UP">
+          <i class="fa-solid fa-dice-d20"></i>
+        </button>
+      </section>
+    </section>
+
+    {{#if (or onSuccess onFailure)}}
+      <section class="gm-only consequences">
+        {{#if onSuccess}}
+          <div class="consequence success">
+            <i class="fas fa-check"></i> {{onSuccess}}
+          </div>
+        {{/if}}
+        {{#if onFailure}}
+          <div class="consequence failure">
+            <i class="fas fa-times"></i> {{onFailure}}
+          </div>
+        {{/if}}
+      </section>
+    {{/if}}
+  </div>
+</div>

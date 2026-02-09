@@ -344,6 +344,7 @@ export class Resolver extends foundry.abstract.DataModel {
    * @param {Actor} actor L'acteur sur lequel l'effet sera appliqué.
    * @param {Item} item L'objet déclenchant l'effet supplémentaire.
    * @param {Object} action L'action contenant les modificateurs et autres données pertinentes.
+   * @param selectedStatuses {Array|null} Un tableau de statuts sélectionnés par l'utilisateur, ou null pour utiliser les statuts configurés.
    * @returns {Promise<bool>} Résout lorsque l'effet a été appliqué avec succès.
    *
    *
