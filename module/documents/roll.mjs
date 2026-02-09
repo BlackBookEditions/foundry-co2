@@ -236,6 +236,8 @@ export class COSkillRoll extends CORoll {
 
   async _prepareChatRenderContext({ flavor, isPrivate = false, ...options } = {}) {
     const rollResults = CORoll.analyseRollResult(this)
+    // On peut utiliser un point de chance si on en a et que ce n'est pas déjà un critique
+    const canUseLuckyPoints = this.options.hasLuckyPoints && !rollResults.isCritical
     return {
       formula: isPrivate ? "???" : this.formula,
       flavor: this.options.flavor,
@@ -252,6 +254,7 @@ export class COSkillRoll extends CORoll {
       isSuccess: rollResults.isSuccess,
       isFailure: rollResults.isFailure,
       hasLuckyPoints: this.options.hasLuckyPoints,
+      canUseLuckyPoints,
       skillUsed: this.options.skillUsed,
     }
   }
@@ -588,6 +591,9 @@ export class COAttackRoll extends CORoll {
     const displayDifficulty = game.settings.get("co2", "displayDifficulty")
     const showDifficuly = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
 
+    // On peut utiliser un point de chance si on en a et que ce n'est pas déjà un critique
+    const canUseLuckyPoints = this.options.hasLuckyPoints && !rollResults.isCritical
+
     return {
       formula: isPrivate ? "???" : this.formula,
       flavor: `${this.options.flavor}`,
@@ -605,6 +611,7 @@ export class COAttackRoll extends CORoll {
       oppositeTarget: this.options.oppositeTarget,
       oppositeValue: this.options.difficulty,
       hasLuckyPoints: this.options.hasLuckyPoints,
+      canUseLuckyPoints,
       difficulty: rollResults.difficulty,
       isCritical: rollResults.isCritical,
       isFumble: rollResults.isFumble,

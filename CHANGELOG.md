@@ -1,9 +1,14 @@
+# 1.5.2
+
+## Améliorations
+- Points de chance : le bouton pour utiliser un point de chance (+10) est maintenant affiché même lorsque la difficulté n'est pas gérée. Il suffit que le personnage ait des points de chance et que ce ne soit pas un critique.
+
 # 1.5.1
 
 ## Améliorations
-
 - Ajout d'une durée 'instantanée' sur les effets supplémentaires pour appliquer un effet supplémentaire sans durée qui s'applique tout de suite. Attention : il convient pour des dommages ou des soins, mais si vous l'utilisez sur des statuts (ex : empoisonné) la durée ne sera plus gérée. Cette durée peut être activée hors combat.
 - Effets supplémentaires : possibilité de choisir parmi les statuts à appliquer  (issue [#163](https://github.com/BlackBookEditions/foundry-co2/issues/163))
+
 
 ## Corrections
 

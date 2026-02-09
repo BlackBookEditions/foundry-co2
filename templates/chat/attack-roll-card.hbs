@@ -20,7 +20,7 @@
         <div class="form-group total-result">
           <div data-tooltip="{{localize 'CO.ui.total'}}" data-tooltip-direction="UP">{{total}}</div>
         </div>
-        {{#if (and isFailure hasLuckyPoints)}}
+        {{#if canUseLuckyPoints}}
           <div class="lucky-points">
             <a class="lp-button-attack">
               <i class="fa-regular fa-clover" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" data-tooltip-direction="UP"></i>

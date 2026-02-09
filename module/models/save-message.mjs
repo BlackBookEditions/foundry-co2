@@ -112,11 +112,12 @@ export default class SaveMessageData extends BaseMessageData {
         footerTooltip.innerHTML = this.parent.rolls[0].options.toolTip
       }
 
-      // Affichage de la div de gestion des points de chance si c'est un échec, et uniquement dans le cas d'un personnage
+      // Affichage de la div de gestion des points de chance si ce n'est pas un critique et uniquement dans le cas d'un personnage avec des points de chance
       const targetUuid = this.targets[0]
       const currentUserActor = game.user.character
       const currentUserActorUuid = currentUserActor ? currentUserActor.uuid : null
-      if (this.result.isCritical || this.result.isSuccess || currentUserActorUuid !== targetUuid || currentUserActor.type !== "character") {
+      const hasLuckyPoints = currentUserActor?.system?.resources?.fortune?.value > 0
+      if (this.result.isCritical || currentUserActorUuid !== targetUuid || currentUserActor?.type !== "character" || !hasLuckyPoints) {
         const luckyPointsDiv = html.querySelector(".lucky-points")
         if (luckyPointsDiv) {
           luckyPointsDiv.remove()
@@ -131,18 +132,16 @@ export default class SaveMessageData extends BaseMessageData {
    * @param {HTMLElement} html Élément HTML représentant le message à modifier.
    */
   async addListeners(html) {
-    // TODO Vérifier la gestion de la chance
-    // Click sur le bouton de chance si c'est un jet d'attaque raté
-    if (this.result.isFailure) {
-      const luckyButton = html.querySelector(".lp-button-save")
-      const targetUuid = this.targets[0]
-      const currentUserActor = game.user.character
-      const currentUserActorUuid = currentUserActor ? currentUserActor.uuid : null
+    // Click sur le bouton de chance (disponible même sans difficulté, sauf si critique)
+    const luckyButton = html.querySelector(".lp-button-save")
+    const targetUuid = this.targets[0]
+    const currentUserActor = game.user.character
+    const currentUserActorUuid = currentUserActor ? currentUserActor.uuid : null
 
-      const displayButton = game.user.isGM || currentUserActorUuid === targetUuid
+    const displayButton = game.user.isGM || currentUserActorUuid === targetUuid
 
-      if (luckyButton && displayButton) {
-        luckyButton.addEventListener("click", async (event) => {
+    if (luckyButton && displayButton && !this.result.isCritical) {
+      luckyButton.addEventListener("click", async (event) => {
           event.preventDefault()
           event.stopPropagation()
           const messageId = event.currentTarget.closest(".message").dataset.messageId
@@ -188,7 +187,6 @@ export default class SaveMessageData extends BaseMessageData {
             await game.users.activeGM.query("co2.updateMessageAfterLuck", { existingMessageId: message.id, rolls: rolls, result: newResult })
           }
         })
-      }
     }
 
     // Click sur le bouton de jet de sauvegarde
