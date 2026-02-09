@@ -1060,10 +1060,22 @@ export default class CharacterData extends ActorData {
     const roll = new Roll(formula)
     await roll.evaluate()
     const label = game.i18n.localize("CO.roll.fortune")
+    const tooltip = await roll.getTooltip()
 
-    await roll.toMessage({
+    const templateData = {
+      actorId: this.parent.id,
+      flavor: label,
+      formula: formula,
+      total: roll.total,
+      tooltip: tooltip,
+    }
+
+    const content = await foundry.applications.handlebars.renderTemplate("systems/co2/templates/chat/fortune-roll-card.hbs", templateData)
+
+    await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this.parent }),
-      flavor: `${label} : <strong>${formula}</strong>`,
+      content: content,
+      rolls: [roll],
       flags: { co: { type: "fortune-roll" } },
     })
   }

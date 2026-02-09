@@ -1,0 +1,26 @@
+{{!-- Template pour le jet de chance --}}
+<div class="co chat-card roll-card skill-card" data-actor-id="{{actorId}}">
+  <header class="card-header flexcol">
+    <div class="type-card"><label><i class="fa-regular fa-clover" data-tooltip="{{localize 'CO.roll.fortune'}}" data-tooltip-direction="LEFT"></i></label></div>
+    <div class="action-name" data-tooltip="{{flavor}}" data-tooltip-direction="LEFT">{{flavor}}</div>
+  </header>
+
+  <div class="card-content">
+    <section class="bloc-result">
+      <section class="result">
+        <div class="form-group total-result">
+          <div data-tooltip="{{localize 'CO.ui.total'}}" data-tooltip-direction="UP">{{total}}</div>
+        </div>
+      </section>
+    </section>
+  </div>
+
+  <footer class="card-footer">
+    <div class="dice-roll" data-action="expandRoll">
+      <div class="dice-result">
+        <div class="dice-formula">{{localize "CO.ui.formula"}} : {{formula}}</div>
+        {{{tooltip}}}
+      </div>
+    </div>
+  </footer>
+</div>
