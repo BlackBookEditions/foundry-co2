@@ -2260,6 +2260,8 @@ export default class COActor extends Actor {
           await game.users.activeGM.query("co2.actorHeal", { fromSource: actionName, fromActor: this.name, targets: targetUuids, healAmount: healAmount })
       }
     }
+
+    return true
   }
 
   async rollAskSave(

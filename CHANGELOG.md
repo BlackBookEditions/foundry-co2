@@ -4,6 +4,9 @@
 - Points de chance : le bouton pour utiliser un point de chance (+10) est maintenant affiché même lorsque la difficulté n'est pas gérée. Il suffit que le personnage ait des points de chance et que ce ne soit pas un critique.
 - Jet de chance : le message affiché dans le chat utilise maintenant la même mise en forme que les jets de caractéristique.
 
+## Corrections
+- Capacités de soin : correction de la consommation des points de mana qui n'était pas effectuée lors de l'activation d'un sort de soin
+
 # 1.5.1
 
 ## Améliorations
