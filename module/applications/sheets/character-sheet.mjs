@@ -323,6 +323,7 @@ export default class COCharacterSheet extends COBaseActorSheet {
       dragData.img = item.img
       dragData.actionName = item.actions[indice].actionName
       event.dataTransfer.setData("text/plain", JSON.stringify(dragData))
+      return
     }
     // Si c'est une caractéristique : dataset contient itemUuid et indice
     if (target.classList.contains("ability-id")) {
@@ -335,9 +336,21 @@ export default class COCharacterSheet extends COBaseActorSheet {
         rollTarget,
       }
       event.dataTransfer.setData("text/plain", JSON.stringify(dragData))
+      return
+    }
+    // Si c'est un item de l'inventaire, ajouter les informations de source pour le transfert
+    if (target.dataset.itemId) {
+      const item = this.actor.items.get(target.dataset.itemId)
+      if (item) {
+        dragData = item.toDragData()
+        dragData.sourceTransfer = "character"
+        dragData.sourceActorUuid = this.actor.uuid
+        event.dataTransfer.setData("text/plain", JSON.stringify(dragData))
+        return
+      }
     }
     // Sinon dataset contient itemUuid, itemId, itemType
-    else super._onDragStart(event)
+    super._onDragStart(event)
   }
 
   /** @override */
@@ -392,9 +405,13 @@ export default class COCharacterSheet extends COBaseActorSheet {
 
     if (data.type !== "Item") return
     // On récupère l'item de type COItem
-    const item = await Item.implementation.fromDropData(data)
+    let item = await Item.implementation.fromDropData(data)
 
-    // L'item vient d'une rencontre, on le supprime de l'inventaire de la rencontre
+    // Gestion du transfert partiel avec SHIFT pour les équipements empilables
+    const isShiftDrop = event.shiftKey
+    const isStackableEquipment = item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.properties?.stackable
+
+    // L'item vient d'une rencontre
     if (data?.sourceTransfer === "encounter") {
       // La variable primaryType est Scene si l'item vient d'un token d'une scène, Actor s'il vient d'un acteur
       // La variable id est l'id de l'item
@@ -411,7 +428,53 @@ export default class COCharacterSheet extends COBaseActorSheet {
         encounter = fromUuidSync(`Scene.${primaryId}.Token.${tokenId}`).actor
       }
       if (encounter) {
-        await encounter.deleteEmbeddedDocuments("Item", [id])
+        const sourceItem = encounter.items.get(id)
+        // SHIFT + drop : transfert partiel d'une unité pour les objets empilables
+        if (isShiftDrop && isStackableEquipment && sourceItem) {
+          // Cloner l'item avec 1 unité AVANT de modifier la source
+          item = item.clone({ "system.quantity.current": 1 }, { keepId: false })
+          const newQuantity = sourceItem.system.quantity.current - 1
+          if (newQuantity > 0) {
+            // Décrémenter la quantité sur la source
+            await sourceItem.update({ "system.quantity.current": newQuantity })
+          } else {
+            // Supprimer l'item si la quantité atteint 0
+            await encounter.deleteEmbeddedDocuments("Item", [id])
+          }
+        } else {
+          // Transfert complet : supprimer l'item de la source
+          await encounter.deleteEmbeddedDocuments("Item", [id])
+        }
+      }
+    }
+
+    // L'item vient d'un personnage
+    if (data?.sourceTransfer === "character" && data.sourceActorUuid) {
+      // Ne pas traiter si c'est le même acteur
+      if (data.sourceActorUuid !== this.actor.uuid) {
+        const sourceActor = await fromUuid(data.sourceActorUuid)
+        if (sourceActor) {
+          const { id } = foundry.utils.parseUuid(data.uuid)
+          const sourceItem = sourceActor.items.get(id)
+          if (sourceItem) {
+            // SHIFT + drop : transfert partiel d'une unité pour les objets empilables
+            if (isShiftDrop && isStackableEquipment) {
+              // Cloner l'item avec 1 unité AVANT de modifier la source
+              item = item.clone({ "system.quantity.current": 1 }, { keepId: false })
+              const newQuantity = sourceItem.system.quantity.current - 1
+              if (newQuantity > 0) {
+                // Décrémenter la quantité sur la source
+                await sourceItem.update({ "system.quantity.current": newQuantity })
+              } else {
+                // Supprimer l'item si la quantité atteint 0
+                await sourceActor.deleteEmbeddedDocuments("Item", [id])
+              }
+            } else {
+              // Transfert complet : supprimer l'item de la source
+              await sourceActor.deleteEmbeddedDocuments("Item", [id])
+            }
+          }
+        }
       }
     }
 

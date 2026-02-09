@@ -1,3 +1,8 @@
+# 1.5.3
+
+## Améliorations
+- Transfert d'objets empilables : SHIFT + glisser-déposer permet de transférer une seule unité d'un objet empilable entre personnages ou rencontres. La quantité est décrémentée sur l'acteur source et incrémentée sur l'acteur cible. Sans SHIFT, le comportement reste inchangé (transfert complet).
+
 # 1.5.2
 
 ## Améliorations

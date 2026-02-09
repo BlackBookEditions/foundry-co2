@@ -239,8 +239,8 @@ export default class COEncounterSheet extends COBaseActorSheet {
     if (allowed === false) return
 
     /**
-     * A hook event that fires when some useful data is dropped onto a CharacterSheet.
-     * @function dropCharacterSheetData
+     * A hook event that fires when some useful data is dropped onto an EncounterSheet.
+     * @function dropEncounterSheetData
      * @memberof hookEvents
      * @param {Actor} actor      The Actor
      * @param {ActorSheet} sheet The ActorSheet application
@@ -250,7 +250,41 @@ export default class COEncounterSheet extends COBaseActorSheet {
 
     if (data.type !== "Item") return
     // On récupère l'item de type COItem
-    const item = await Item.implementation.fromDropData(data)
+    let item = await Item.implementation.fromDropData(data)
+
+    // Gestion du transfert partiel avec SHIFT pour les équipements empilables venant d'un personnage
+    const isShiftDrop = event.shiftKey
+    const isStackableEquipment = item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.properties?.stackable
+
+    if (data?.sourceTransfer === "character" && data.sourceActorUuid) {
+      // Ne pas traiter si c'est le même acteur
+      if (data.sourceActorUuid !== this.actor.uuid) {
+        const sourceActor = await fromUuid(data.sourceActorUuid)
+        if (sourceActor) {
+          const { id } = foundry.utils.parseUuid(data.uuid)
+          const sourceItem = sourceActor.items.get(id)
+          if (sourceItem) {
+            // SHIFT + drop : transfert partiel d'une unité pour les objets empilables
+            if (isShiftDrop && isStackableEquipment) {
+              // Cloner l'item avec 1 unité AVANT de modifier la source
+              item = item.clone({ "system.quantity.current": 1 }, { keepId: false })
+              const newQuantity = sourceItem.system.quantity.current - 1
+              if (newQuantity > 0) {
+                // Décrémenter la quantité sur la source
+                await sourceItem.update({ "system.quantity.current": newQuantity })
+              } else {
+                // Supprimer l'item si la quantité atteint 0
+                await sourceActor.deleteEmbeddedDocuments("Item", [id])
+              }
+            } else {
+              // Transfert complet : supprimer l'item de la source
+              await sourceActor.deleteEmbeddedDocuments("Item", [id])
+            }
+          }
+        }
+      }
+    }
+
     return this._onDropItem(event, item)
   }
 
@@ -267,6 +301,20 @@ export default class COEncounterSheet extends COBaseActorSheet {
         return await this.actor.addPath(item)
       case SYSTEM.ITEM_TYPE.capacity.id:
         return await this.document.addCapacity(item, null)
+      case SYSTEM.ITEM_TYPE.equipment.id:
+        // Gestion des équipements empilables : fusionner si l'item existe déjà
+        if (item.system.properties?.stackable) {
+          const existingItem = this.actor.items.find((i) => i.system.slug === item.system.slug)
+          if (existingItem) {
+            let quantity = existingItem.system.quantity.current + item.system.quantity.current
+            if (existingItem.system.quantity.max) {
+              quantity = Math.min(quantity, existingItem.system.quantity.max)
+            }
+            await existingItem.update({ "system.quantity.current": quantity })
+            return existingItem
+          }
+        }
+        return await Item.implementation.create(item.toObject(), { parent: this.actor })
       default:
         return await Item.implementation.create(item.toObject(), { parent: this.actor })
     }
