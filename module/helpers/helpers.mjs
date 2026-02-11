@@ -60,7 +60,7 @@ export function setupTextEnrichers() {
         // Ability is required
         if (!ability || !SYSTEM.ABILITIES[ability]) return null
 
-        const label = game.i18n.localize(`CO.abilities.long.${ability}`)
+        const label = game.i18n.localize(`CO.abilities.short.${ability}`)
 
         const a = document.createElement("a")
         a.classList.add("roll-check-enricher")
@@ -120,7 +120,7 @@ export function setupTextEnrichers() {
     const skills = anchor.dataset.skills || undefined
     const onSuccess = anchor.dataset.onSuccess || undefined
     const onFailure = anchor.dataset.onFailure || undefined
-    const label = game.i18n.localize(`CO.abilities.long.${ability}`)
+    const label = game.i18n.localize(`CO.abilities.short.${ability}`)
 
     // French contraction: "de" → "d'" before vowels
     const vowels = "aeiouyàâéèêëïîôùûüAEIOUYÀÂÉÈÊËÏÎÔÙÛÜ"
