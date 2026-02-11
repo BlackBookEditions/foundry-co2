@@ -61,7 +61,7 @@
                     </div>               
                     <div class="cell right item item-controls" data-uuid="{{capacity.uuid}}" data-item-type="capacity" data-rank="{{#if (isPathprestigious @root.system.subtype)}}{{add id 4}}{{else}}{{add id 1}}{{/if}}">
                         {{#if (and @root.unlocked @root.isNotOwned)}}
-                            <button class="item-control" data-action="deleteItem"  data-tooltip="{{localize 'CO.label.long.deleteCapacity'}}" data-tooltip-direction="UP"><i class="fas fa-fw fa-trash"></i></button>
+                            <button type="button" class="item-control" data-action="deleteItem"  data-tooltip="{{localize 'CO.label.long.deleteCapacity'}}" data-tooltip-direction="UP"><i class="fas fa-fw fa-trash"></i></button>
                         {{/if}}
                     </div>                    
                 {{/each}}
