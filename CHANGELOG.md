@@ -1,6 +1,7 @@
 # 1.5.3
 
 ## Améliorations
+- Info-bulles des bonus : les info-bulles listant des bonus (caractéristiques, combat, initiative, défense, critique, RD, PV, ressources) sont maintenant affichées en colonne au lieu d'être en ligne, pour une meilleure lisibilité.
 - Transfert d'objets empilables : SHIFT + glisser-déposer permet de transférer une seule unité d'un objet empilable entre personnages ou rencontres. La quantité est décrémentée sur l'acteur source et incrémentée sur l'acteur cible. Sans SHIFT, le comportement reste inchangé (transfert complet).
 
 ## Corrections

@@ -408,8 +408,7 @@ export default class CharacterData extends ActorData {
       this.attributes.hp.base = 0
       this.attributes.hp.max = this.attributes.hp.base + constitutionBonus + hpMaxBonuses + hpMaxModifiers.total
       this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat(
-        ` ${Utils.getAbilityName("con")} : `,
-        constitutionBonus,
+        Utils.getTooltip(Utils.getAbilityName("con"), constitutionBonus),
         hpMaxModifiers.tooltip,
         Utils.getTooltip("Bonus", hpMaxBonuses),
       )
@@ -432,8 +431,7 @@ export default class CharacterData extends ActorData {
 
       this.attributes.hp.max = this.attributes.hp.base + constitutionBonus + hpMaxBonuses + hpMaxModifiers.total + currentprestigePV
       this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat(
-        ` ${Utils.getAbilityName("con")} : `,
-        constitutionBonus,
+        Utils.getTooltip(Utils.getAbilityName("con"), constitutionBonus),
         hpMaxModifiers.tooltip,
         Utils.getTooltip("Bonus", hpMaxBonuses),
       )
@@ -444,7 +442,7 @@ export default class CharacterData extends ActorData {
 
       this.attributes.hp.max = this.attributes.hp.base + constitutionBonus + hpMaxBonuses + hpMaxModifiers.total
 
-      this.attributes.hp.tooltip = tooltipBase.concat(` ${Utils.getAbilityName("con")} : `, constitutionBonus, hpMaxModifiers.tooltip, Utils.getTooltip("Bonus", hpMaxBonuses))
+      this.attributes.hp.tooltip = tooltipBase.concat(Utils.getTooltip(Utils.getAbilityName("con"), constitutionBonus), hpMaxModifiers.tooltip, Utils.getTooltip("Bonus", hpMaxBonuses))
     }
 
     if (this.attributes.hp.value > this.attributes.hp.max) this.attributes.hp.value = this.attributes.hp.max // On ne depasse pas le max
@@ -605,7 +603,7 @@ export default class CharacterData extends ActorData {
 
     if (critModifiers.total > 0) {
       this.combat.crit.value = Math.max(16, SYSTEM.BASE_CRITICAL - critModifiers.total)
-      this.combat.crit.tooltipValue += `<br />${Utils.getTooltip("Bonus", critModifiers.tooltip)}`
+      this.combat.crit.tooltipValue += Utils.getTooltip("Bonus", critModifiers.tooltip)
     } else {
       this.combat.crit.value = this.combat.crit.base
     }

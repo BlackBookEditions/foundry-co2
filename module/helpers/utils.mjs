@@ -10,7 +10,7 @@ export default class Utils {
    */
   static getTooltip(name, value) {
     if (name !== "" && value !== 0) {
-      return ` ${name} : ${value}`
+      return `${name} : ${value}<br />`
     }
     return ""
   }
