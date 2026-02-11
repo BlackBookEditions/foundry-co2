@@ -3544,6 +3544,72 @@ co-toggle-switch[checked] thumb {
   padding: 0px 5px;
   margin: 0;
 }
+#interface #sidebar .co.chat-card.roll-card.check-card .card-header,
+#interface #ui-right-column-1 .co.chat-card.roll-card.check-card .card-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid var(--color-chatSkill);
+  color: var(--color-chatSkill);
+  border-bottom: 1px dashed var(--color-chatSkill);
+}
+#interface #sidebar .co.chat-card.roll-card.check-card .card-header .action-name,
+#interface #ui-right-column-1 .co.chat-card.roll-card.check-card .card-header .action-name {
+  margin-left: 0;
+}
+#interface #sidebar .co.chat-card.roll-card.check-card .card-header .action-skills,
+#interface #ui-right-column-1 .co.chat-card.roll-card.check-card .card-header .action-skills {
+  font-size: var(--font-size-14);
+  font-style: italic;
+  opacity: 0.8;
+}
+#interface #sidebar .co.chat-card.roll-card.check-card .card-content .bloc-result,
+#interface #ui-right-column-1 .co.chat-card.roll-card.check-card .card-content .bloc-result {
+  padding: 8px 0;
+}
+#interface #sidebar .co.chat-card.roll-card.check-card .card-content .bloc-result.no-difficulty,
+#interface #ui-right-column-1 .co.chat-card.roll-card.check-card .card-content .bloc-result.no-difficulty {
+  display: flex;
+  justify-content: center;
+  grid-template-columns: unset;
+}
+#interface #sidebar .co.chat-card.roll-card.check-card .card-content .result-sentence,
+#interface #ui-right-column-1 .co.chat-card.roll-card.check-card .card-content .result-sentence {
+  margin: 0;
+}
+#interface #sidebar .co.chat-card.roll-card.check-card .card-content .result-sentence button,
+#interface #ui-right-column-1 .co.chat-card.roll-card.check-card .card-content .result-sentence button {
+  font-size: var(--font-size-24);
+  padding: 8px 16px;
+}
+#interface #sidebar .co.chat-card.roll-card.check-card .card-content .consequences,
+#interface #ui-right-column-1 .co.chat-card.roll-card.check-card .card-content .consequences {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--color-chatSkill);
+  font-size: var(--font-size-14);
+}
+#interface #sidebar .co.chat-card.roll-card.check-card .card-content .consequences .consequence,
+#interface #ui-right-column-1 .co.chat-card.roll-card.check-card .card-content .consequences .consequence {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 4px 0;
+}
+#interface #sidebar .co.chat-card.roll-card.check-card .card-content .consequences .consequence i,
+#interface #ui-right-column-1 .co.chat-card.roll-card.check-card .card-content .consequences .consequence i {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+#interface #sidebar .co.chat-card.roll-card.check-card .card-content .consequences .consequence.success i,
+#interface #ui-right-column-1 .co.chat-card.roll-card.check-card .card-content .consequences .consequence.success i {
+  color: green;
+}
+#interface #sidebar .co.chat-card.roll-card.check-card .card-content .consequences .consequence.failure i,
+#interface #ui-right-column-1 .co.chat-card.roll-card.check-card .card-content .consequences .consequence.failure i {
+  color: #c90000;
+}
 #interface #sidebar .co.chat-card.roll-card.damage-card .card-header,
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .card-header {
   display: flex;

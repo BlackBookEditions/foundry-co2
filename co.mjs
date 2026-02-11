@@ -64,6 +64,7 @@ Hooks.once("init", async function () {
   CONFIG.ChatMessage.dataModels = {
     base: models.BaseMessageData,
     action: models.ActionMessageData,
+    check: models.CheckMessageData,
     item: models.ItemMessageData,
     heal: models.HealMessageData,
     skill: models.SkillMessageData,
@@ -88,6 +89,7 @@ Hooks.once("init", async function () {
 
   helpers.registerHandlebarsHelpers()
   helpers.registerSystemSettings()
+  helpers.setupTextEnrichers()
 
   // Load Martial Training
   if (!game.system.CONST.martialTrainingsWeapons) {

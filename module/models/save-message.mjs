@@ -142,51 +142,51 @@ export default class SaveMessageData extends BaseMessageData {
 
     if (luckyButton && displayButton && !this.result.isCritical) {
       luckyButton.addEventListener("click", async (event) => {
-          event.preventDefault()
-          event.stopPropagation()
-          const messageId = event.currentTarget.closest(".message").dataset.messageId
-          if (!messageId) return
-          const message = game.messages.get(messageId)
+        event.preventDefault()
+        event.stopPropagation()
+        const messageId = event.currentTarget.closest(".message").dataset.messageId
+        if (!messageId) return
+        const message = game.messages.get(messageId)
 
-          let rolls = this.parent.rolls
-          rolls[0].options.bonus = String(parseInt(rolls[0].options.bonus) + 10)
-          rolls[0].options.hasLuckyPoints = false
-          rolls[0]._total = parseInt(rolls[0].total) + 10
+        let rolls = this.parent.rolls
+        rolls[0].options.bonus = String(parseInt(rolls[0].options.bonus) + 10)
+        rolls[0].options.hasLuckyPoints = false
+        rolls[0]._total = parseInt(rolls[0].total) + 10
 
-          let newResult = CORoll.analyseRollResult(rolls[0])
+        let newResult = CORoll.analyseRollResult(rolls[0])
 
-          // L'acteur consomme son point de chance
-          const actorId = rolls[0].options.actorId
-          const actor = game.actors.get(actorId)
-          if (actor.system.resources.fortune.value > 0) {
-            actor.system.resources.fortune.value -= 1
-            await actor.update({ "system.resources.fortune.value": actor.system.resources.fortune.value })
-          }
+        // L'acteur consomme son point de chance
+        const actorId = rolls[0].options.actorId
+        const actor = game.actors.get(actorId)
+        if (actor.system.resources.fortune.value > 0) {
+          actor.system.resources.fortune.value -= 1
+          await actor.update({ "system.resources.fortune.value": actor.system.resources.fortune.value })
+        }
 
-          // Gestion des custom effects
-          const customEffect = message.system.customEffect
-          const additionalEffect = message.system.additionalEffect
-          if (customEffect && additionalEffect && additionalEffect.active && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
-            const target = message.system.targets.length > 0 ? message.system.targets[0] : null
-            if (target) {
-              const targetActor = fromUuidSync(target)
-              if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
-              else {
-                await game.users.activeGM.query("co2.applyCustomEffect", { ce: customEffect, targets: [targetActor.uuid] })
-              }
+        // Gestion des custom effects
+        const customEffect = message.system.customEffect
+        const additionalEffect = message.system.additionalEffect
+        if (customEffect && additionalEffect && additionalEffect.active && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
+          const target = message.system.targets.length > 0 ? message.system.targets[0] : null
+          if (target) {
+            const targetActor = fromUuidSync(target)
+            if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
+            else {
+              await game.users.activeGM.query("co2.applyCustomEffect", { ce: customEffect, targets: [targetActor.uuid] })
             }
           }
+        }
 
-          // Mise à jour du message de chat
-          // Le MJ peut mettre à jour le message de chat
-          if (game.user.isGM) {
-            await message.update({ rolls: rolls, "system.result": newResult })
-          }
-          // Sinon on émet un message pour mettre à jour le message de chat
-          else {
-            await game.users.activeGM.query("co2.updateMessageAfterLuck", { existingMessageId: message.id, rolls: rolls, result: newResult })
-          }
-        })
+        // Mise à jour du message de chat
+        // Le MJ peut mettre à jour le message de chat
+        if (game.user.isGM) {
+          await message.update({ rolls: rolls, "system.result": newResult })
+        }
+        // Sinon on émet un message pour mettre à jour le message de chat
+        else {
+          await game.users.activeGM.query("co2.updateMessageAfterLuck", { existingMessageId: message.id, rolls: rolls, result: newResult })
+        }
+      })
     }
 
     // Click sur le bouton de jet de sauvegarde

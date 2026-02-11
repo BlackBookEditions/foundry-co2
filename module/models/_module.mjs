@@ -10,6 +10,7 @@ export { default as EncounterData } from "./encounter.mjs"
 
 export { default as BaseMessageData } from "./base-message.mjs"
 export { default as ActionMessageData } from "./action-message.mjs"
+export { default as CheckMessageData } from "./check-message.mjs"
 export { default as ItemMessageData } from "./item-message.mjs"
 export { default as HealMessageData } from "./heal-message.mjs"
 export { default as SkillMessageData } from "./skill-message.mjs"
