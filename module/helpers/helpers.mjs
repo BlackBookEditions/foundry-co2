@@ -84,18 +84,18 @@ export function setupTextEnrichers() {
           a.appendChild(document.createTextNode(` (${skills})`))
         }
         if (difficulty !== undefined) {
-          a.appendChild(document.createTextNode(` Difficulté ${difficulty}`))
+          a.appendChild(document.createTextNode(` difficulté ${difficulty}`))
         }
 
         // Build tooltip with GM-only information
         if (game.user.isGM) {
           const tooltipParts = []
           if (onSuccess) tooltipParts.push(`Succès : ${onSuccess}`)
-          if (successDamage) tooltipParts.push(`DM succès : ${successDamage}`)
-          if (successStatuses) tooltipParts.push(`Statuts succès : ${successStatuses}`)
+          if (successDamage) tooltipParts.push(`DM si succès : ${successDamage}`)
+          if (successStatuses) tooltipParts.push(`Statuts si succès : ${successStatuses}`)
           if (onFailure) tooltipParts.push(`Échec : ${onFailure}`)
-          if (failureDamage) tooltipParts.push(`DM échec : ${failureDamage}`)
-          if (failureStatuses) tooltipParts.push(`Statuts échec : ${failureStatuses}`)
+          if (failureDamage) tooltipParts.push(`DM si échec : ${failureDamage}`)
+          if (failureStatuses) tooltipParts.push(`Statuts si échec : ${failureStatuses}`)
           if (rollOptions) tooltipParts.push(`Options : ${rollOptions}`)
 
           if (tooltipParts.length > 0) {
