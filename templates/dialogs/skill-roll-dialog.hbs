@@ -73,7 +73,10 @@
 </section>
 
 <section class="skill-roll-3">
-    {{#if hasSkillBonuses}}      
+    {{#if skills}}
+    <div class="skill-roll-skills">{{skills}}</div>
+    {{/if}}
+    {{#if hasSkillBonuses}}
         <div class="form-fields skillBonuses">
             <div class="flex1 skill-bonuses" id="skill-bonuses">
             {{#each skillBonuses as |bonus id|}}

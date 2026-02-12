@@ -1579,6 +1579,7 @@ export default class COActor extends Actor {
       withDialog = true,
       targets = undefined,
       showResult = true,
+      skills = undefined,
     } = {},
   ) {
     const options = {
@@ -1710,6 +1711,14 @@ export default class COActor extends Actor {
     let hasLuckyPoints = false
     if (this.system.resources?.fortune && this.system.resources.fortune.value > 0) hasLuckyPoints = true
 
+    // Construction du titre avec le format "FORce", "AGIlité", etc.
+    const shortAbility = game.i18n.localize(`CO.abilities.short.${skillId}`)
+    const longAbility = game.i18n.localize(`CO.abilities.long.${skillId}`)
+    const emphasizedAbility = shortAbility + longAbility.slice(shortAbility.length)
+    const vowels = "aeiouyàâéèêëïîôùûüAEIOUYÀÂÉÈÊËÏÎÔÙÛÜ"
+    const preposition = vowels.includes(longAbility.charAt(0)) ? "d'" : "de "
+    const title = `Test ${preposition}${emphasizedAbility}`
+
     const dialogContext = {
       rollMode,
       rollModes: CONFIG.Dice.rollModes,
@@ -1718,7 +1727,7 @@ export default class COActor extends Actor {
       skillValue,
       actor: this,
       skillId,
-      title: `${game.i18n.localize("CO.dialogs.skillCheck")} ${game.i18n.localize(`CO.abilities.long.${skillId}`)}`,
+      title,
       flavor: chatFlavor,
       bonus,
       malus,
@@ -1733,6 +1742,7 @@ export default class COActor extends Actor {
       targets,
       hasTargets: targets?.length > 0,
       hasLuckyPoints,
+      skills,
       skillUsed: [], // Tableau de clef valeur pour stocker les noms des skill activés et leur bonus
     }
 

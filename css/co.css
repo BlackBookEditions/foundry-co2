@@ -772,6 +772,16 @@ co-toggle-switch[checked] thumb {
   border-bottom: 2px solid #5d142b;
   margin-bottom: 3px;
 }
+.co.application.dialog.skill-roll .window-content .skill-roll-3 .skill-roll-skills {
+  text-align: center;
+  font-size: 16px;
+  font-style: italic;
+  color: #5d142b;
+  padding: 4px 0;
+}
+.theme-dark .co.application.dialog.skill-roll .window-content .skill-roll-3 .skill-roll-skills {
+  color: #d33e6d;
+}
 .co.application.dialog.skill-roll .window-content .form-group {
   display: flex;
   flex-direction: column;
