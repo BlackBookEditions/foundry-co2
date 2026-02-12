@@ -3194,6 +3194,91 @@ co-toggle-switch[checked] thumb {
 .co.application.sheet.actor.character-mini .window-content .mini-sidebar .fa-heart-broken {
   color: var(--color-damages);
 }
+.co.party-sheet .window-content {
+  padding: 8px;
+}
+.co.party-sheet .party-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-13);
+}
+.co.party-sheet .party-table th,
+.co.party-sheet .party-table td {
+  padding: 4px 6px;
+  border: 1px solid var(--color-border-light-tertiary);
+}
+.co.party-sheet .party-table thead th {
+  background-color: var(--color-backgroundSkillDialog);
+  color: #5d142b;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+}
+.theme-dark .co.party-sheet .party-table thead th {
+  color: #e7d1b1;
+}
+.co.party-sheet .party-table tbody tr:nth-child(even) {
+  background-color: #0000000a;
+}
+.theme-dark .co.party-sheet .party-table tbody tr:nth-child(even) {
+  background-color: #ffffff0a;
+}
+.co.party-sheet .party-table tbody tr:hover {
+  background-color: #00000014;
+}
+.theme-dark .co.party-sheet .party-table tbody tr:hover {
+  background-color: #ffffff14;
+}
+.co.party-sheet .party-table .col-player {
+  white-space: nowrap;
+}
+.co.party-sheet .party-table .col-character {
+  white-space: nowrap;
+}
+.co.party-sheet .party-table .col-character a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.co.party-sheet .party-table .col-character a:hover {
+  text-shadow: 0 0 8px var(--color-shadow-primary);
+}
+.co.party-sheet .party-table .col-ability,
+.co.party-sheet .party-table .col-combat {
+  text-align: center;
+}
+.co.party-sheet .party-table .clickable {
+  cursor: pointer;
+}
+.co.party-sheet .party-table .clickable:hover {
+  text-shadow: 0 0 8px var(--color-shadow-primary);
+}
+.co.party-sheet .party-table .col-resource {
+  text-align: center;
+  white-space: nowrap;
+}
+.co.party-sheet .party-table .player-color {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+.co.party-sheet .party-table .actor-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: none;
+}
+.co.party-sheet .no-members {
+  text-align: center;
+  padding: 20px;
+  color: var(--color-text-subtle);
+  font-style: italic;
+}
 .co select.disabled,
 .co input[type="checkbox"].disabled,
 .co label:has(input[type="checkbox"].disabled) {

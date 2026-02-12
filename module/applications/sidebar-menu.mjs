@@ -31,6 +31,9 @@ export default class COSidebarMenu extends HandlebarsApplicationMixin(AbstractSi
       case "search":
         await new SearchDialog().render(true)
         break
+      case "party":
+        game.system.partySheet.render(true)
+        break
     }
   }
 

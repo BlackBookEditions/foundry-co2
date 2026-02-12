@@ -9,5 +9,6 @@ export { default as CharacterSheet } from "./sheets/character-sheet.mjs"
 export { default as EncounterSheet } from "./sheets/encounter-sheet.mjs"
 
 export { default as COSidebarMenu } from "./sidebar-menu.mjs"
+export { default as COPartySheet } from "./party-sheet.mjs"
 
 export * as hooks from "../hooks/_module.mjs"
