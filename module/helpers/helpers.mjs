@@ -167,41 +167,17 @@ export function registerHandlebarsHelpers() {
   Handlebars.registerHelper("isPathprestigious", function (value) {
     return value === SYSTEM.PATH_TYPES.prestige.id
   })
-  Handlebars.registerHelper("isPathProfile", function (value) {
-    return value === SYSTEM.PATH_TYPES.profile.id
-  })
-  Handlebars.registerHelper("isset", function (value) {
-    return value !== undefined
-  })
   Handlebars.registerHelper("isNotNull", function (value) {
     return value !== null
   })
   Handlebars.registerHelper("isNull", function (value) {
     return value === null
   })
-  Handlebars.registerHelper("sum", function (arr, init) {
-    return arr.reduce((previousValue, currentValue) => previousValue + currentValue, init)
-  })
   Handlebars.registerHelper("getKeyFromMartialTraining", function (training) {
     return training.key
   })
-  Handlebars.registerHelper("getValueFromMartialTraining", function (training) {
-    return training.label
-  })
   Handlebars.registerHelper("getMartialTrainingLabel", function (training) {
     return game.i18n.localize(training.label)
-  })
-  Handlebars.registerHelper("buildItemTemplatePath", function (root, itemType) {
-    return `${root}${itemType}-partial.hbs`
-  })
-  Handlebars.registerHelper("isActionable", function (itemType) {
-    const actionableItemTypes = ["capacity", "equipment", "attack"]
-    return actionableItemTypes.includes(itemType)
-  })
-  Handlebars.registerHelper("isEnabled", function (configKey) {
-    const value = game.settings.get("co2", configKey)
-    if (value === false || value === "none") return false
-    return true
   })
   Handlebars.registerHelper("isTrainedWithWeapon", function (actor, itemId) {
     return actor.isTrainedWithWeapon(itemId)
