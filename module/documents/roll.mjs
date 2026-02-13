@@ -22,7 +22,8 @@ export class CORoll extends Roll {
       const diceResult = roll.terms[0].results.find((r) => r.active).result
       const total = Math.ceil(roll.total)
       const isCritical = diceResult >= roll.options.critical
-      const isFumble = diceResult === 1
+      const luckyPointUsed = roll.options?.luckyPointUsed || false
+      const isFumble = diceResult === 1 && !luckyPointUsed
       let difficulty = roll.options.difficulty
       let isSuccess
       let isFailure
@@ -255,6 +256,7 @@ export class COSkillRoll extends CORoll {
       isFailure: rollResults.isFailure,
       hasLuckyPoints: this.options.hasLuckyPoints,
       canUseLuckyPoints,
+      hasPendingConsequences: this.options.hasPendingConsequences || false,
       skillUsed: this.options.skillUsed,
     }
   }

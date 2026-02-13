@@ -945,6 +945,7 @@
         "rollTitle": "Point de récupération"
       },
       "spendLuckyPoint": "Utiliser un point de chance",
+      "acceptResult": "Accepter le résultat",
       "fastRest": {
         "title": "Récupération rapide",
         "content": "Souhaitez-vous effectuer une récupération rapide ?"

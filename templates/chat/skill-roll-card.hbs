@@ -16,6 +16,11 @@
             <a class="lp-button-skill">
               <i class="fa-regular fa-clover" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" data-tooltip-direction="UP"></i>
             </a>
+            {{#if hasPendingConsequences}}
+              <a class="accept-result-button">
+                <i class="fa-solid fa-check" data-tooltip="{{localize 'CO.dialogs.acceptResult'}}" data-tooltip-direction="UP"></i>
+              </a>
+            {{/if}}
           </div>
         {{/if}}
 

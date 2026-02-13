@@ -3587,6 +3587,7 @@ co-toggle-switch[checked] thumb {
   align-items: center;
   margin-left: 5px;
   font-size: var(--font-size-20);
+  gap: 5px;
 }
 #interface #sidebar .chat-message .message-content .message-card p,
 #interface #ui-right-column-1 .chat-message .message-content .message-card p {
