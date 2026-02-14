@@ -107,12 +107,21 @@ export class COSkillRoll extends CORoll {
                 if (input.name) obj[input.name] = input.value
                 return obj
               }, {})
+              // Si jet opposé coché, on remplace la difficulté par @oppose.{ability}
+              const oppositeCheckbox = button.form.querySelector("#oppositeRoll")
+              if (oppositeCheckbox?.checked) {
+                output.difficulty = `@oppose.${output.oppositeAbility}`
+              }
               if (CONFIG.debug.co2?.rolls) console.debug(Utils.log(`COSkillRoll prompt - Output`), output)
               // Récupère tous les éléments bonus-item checked pour l'afficher en chat message apres
               const checkedBonuses = dialog.element.querySelectorAll(".bonus-item.checked")
               const skillUsed = Array.from(checkedBonuses).map((item) => {
+                const descriptions = item.querySelectorAll(".bonus-name")
+                const name = descriptions[0]?.textContent.trim() || ""
+                const description = descriptions[1]?.textContent.trim() || ""
                 return {
-                  name: item.querySelector(".bonus-name").textContent.trim(),
+                  name,
+                  description,
                   value: parseInt(item.dataset.value),
                 }
               })
@@ -144,6 +153,17 @@ export class COSkillRoll extends CORoll {
           if (inputs) {
             inputs.forEach((input) => {
               input.addEventListener("click", this._onToggleCheckSkillBonus.bind(this))
+            })
+          }
+          // Toggle jet opposé / difficulté standard
+          const oppositeCheck = dialog.element.querySelector("#oppositeRoll")
+          if (oppositeCheck) {
+            oppositeCheck.addEventListener("change", (event) => {
+              const checked = event.target.checked
+              const oppositeAbility = dialog.element.querySelector(".opposite-ability")
+              const standardDifficulty = dialog.element.querySelector(".standard-difficulty")
+              if (oppositeAbility) oppositeAbility.style.display = checked ? "" : "none"
+              if (standardDifficulty) standardDifficulty.style.display = checked ? "none" : ""
             })
           }
           const radios = dialog.element.querySelectorAll('input[name="dice"]')
@@ -200,6 +220,7 @@ export class COSkillRoll extends CORoll {
     const toolTip = await roll.getTooltip()
     roll.options = {
       actorId: dialogContext.actor.id,
+      actorName: dialogContext.actor.name,
       rollMode: withDialog ? rollContext.rollMode : dialogContext.rollMode,
       flavor: dialogContext.flavor,
       bonus: withDialog ? rollContext.bonus : dialogContext.bonus,
@@ -207,6 +228,7 @@ export class COSkillRoll extends CORoll {
       critical: withDialog ? rollContext.critical : dialogContext.critical,
       oppositeRoll: withDialog ? rollContext.difficulty?.includes("@oppose") : dialogContext.difficulty?.includes("@oppose"),
       oppositeTarget: dialogContext.targets?.length > 0 ? dialogContext.targets[0].uuid : null,
+      targetInfos: dialogContext.targets?.map((t) => ({ name: t.name, img: t.token?.document?.texture?.src || t.actor?.img })) || [],
       oppositeValue: withDialog ? rollContext.difficulty : dialogContext.difficulty,
       hasLuckyPoints: withDialog ? rollContext.hasLuckyPoints === "true" : dialogContext.hasLuckyPoints,
       useDifficulty: dialogContext.useDifficulty,
@@ -240,6 +262,9 @@ export class COSkillRoll extends CORoll {
     const rollResults = CORoll.analyseRollResult(this)
     // On peut utiliser un point de chance si on en a et que ce n'est pas déjà un critique
     const canUseLuckyPoints = this.options.hasLuckyPoints && !rollResults.isCritical
+    // Libellé de la caractéristique opposée (ex : "Constitution")
+    const oppositeAbilityId = this.options.oppositeValue?.startsWith("@oppose.") ? this.options.oppositeValue.replace("@oppose.", "") : null
+    const oppositeAbilityLabel = oppositeAbilityId ? game.i18n.localize(`CO.abilities.long.${oppositeAbilityId}`) : null
     return {
       formula: isPrivate ? "???" : this.formula,
       flavor: this.options.flavor,
@@ -247,9 +272,15 @@ export class COSkillRoll extends CORoll {
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
       actor: this.options.actor,
+      actorName: this.options.actorName,
       speaker: ChatMessage.getSpeaker({ actor: this.options.actor, scene: canvas.scene }),
       useDifficulty: this.options.useDifficulty,
       showDifficulty: this.options.showDifficulty,
+      oppositeRoll: this.options.oppositeRoll,
+      oppositeTarget: this.options.oppositeTarget,
+      targetInfos: this.options.targetInfos,
+      oppositeValue: this.options.oppositeValue,
+      oppositeAbilityLabel,
       difficulty: rollResults.difficulty,
       isCritical: rollResults.isCritical,
       isFumble: rollResults.isFumble,
@@ -260,6 +291,14 @@ export class COSkillRoll extends CORoll {
       hasPendingConsequences: this.options.hasPendingConsequences || false,
       skills: this.options.skills,
       skillUsed: this.options.skillUsed,
+      opposeResult: this.options.opposeResult,
+      opposeTooltip: this.options.opposeTooltip,
+      opposeSkillUsed: this.options.opposeSkillUsed,
+      opposeFlavor: this.options.opposeFlavor,
+      opposeActorName: this.options.opposeActorName,
+      opposeActorId: this.options.opposeActorId,
+      opposeHasLuckyPoints: this.options.opposeHasLuckyPoints,
+      opposeCanUseLuckyPoints: this.options.opposeHasLuckyPoints && !rollResults.isCritical,
     }
   }
 }

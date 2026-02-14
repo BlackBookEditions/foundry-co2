@@ -88,6 +88,33 @@
   }
   .diffGroup {
     padding-right: 30px;
+    .opposite-check {
+      label {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 2px;
+        cursor: pointer;
+        input[type="checkbox"] {
+          margin: 0;
+        }
+      }
+    }
+    .opposite-ability {
+      select {
+        width: 100%;
+      }
+    }
+    .standard-difficulty {
+      display: flex;
+      align-items: center;
+      justify-items: center;
+      gap: 4px;
+      label {
+        margin: 0;
+        white-space: nowrap;
+      }
+    }
   }
 
   .form-group.rollMode {

@@ -1635,7 +1635,7 @@ export default class COActor extends Actor {
     // Si la difficulté dépend de la cible unique
     if (oppositeRoll && useDifficulty && targets === undefined) {
       if (difficulty && difficulty.includes("@cible")) {
-        targets = this.acquireTargets("single", "all", 1, actionName)
+        targets = this.acquireTargets("multiple", "all", 10, actionName)
         if (targets.length === 0) {
           difficulty = null
         }
@@ -1648,7 +1648,7 @@ export default class COActor extends Actor {
 
       // Si l'attaque demande un jet opposé contre la cible
       else if (difficulty && difficulty.includes("@oppose")) {
-        targets = this.acquireTargets("single", "all", 1, actionName)
+        targets = this.acquireTargets("multiple", "all", 10, actionName)
         if (targets.length === 0) {
           difficulty = null
         }
@@ -1742,12 +1742,22 @@ export default class COActor extends Actor {
       targets,
       hasTargets: targets?.length > 0,
       hasLuckyPoints,
+      abilities: SYSTEM.ABILITIES,
       skills,
       skillUsed: [], // Tableau de clef valeur pour stocker les noms des skill activés et leur bonus
     }
 
     let roll = await COSkillRoll.prompt(dialogContext, { withDialog: withDialog })
     if (!roll) return null
+
+    // Si le jet opposé a été activé depuis le dialogue, on acquiert les cibles maintenant
+    if (roll.options.oppositeRoll && !targets?.length) {
+      targets = this.acquireTargets("multiple", "all", 10, chatFlavor)
+      if (targets.length > 0) {
+        roll.options.oppositeTarget = targets[0].uuid
+        roll.options.targetInfos = targets.map((t) => ({ name: t.name, img: t.token?.document?.texture?.src || t.actor?.img }))
+      }
+    }
 
     /**
      * A hook event that fires after the roll is made.
