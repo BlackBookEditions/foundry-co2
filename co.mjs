@@ -209,5 +209,8 @@ Hooks.once("ready", async function () {
   // Statistics
   registerWorldCount("co2")
 
+  // Party Sheet
+  game.system.partySheet = new applications.COPartySheet()
+
   console.info(helpers.Utils.log(game.i18n.localize("CO.notif.ready")))
 })

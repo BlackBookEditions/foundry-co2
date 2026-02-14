@@ -945,6 +945,7 @@
         "rollTitle": "Point de récupération"
       },
       "spendLuckyPoint": "Utiliser un point de chance",
+      "acceptResult": "Accepter le résultat",
       "fastRest": {
         "title": "Récupération rapide",
         "content": "Souhaitez-vous effectuer une récupération rapide ?"
@@ -1293,6 +1294,12 @@
       }
     },
     "SheetModeEdit": "Basculer entre le mode édition et le mode visualisation",
+    "party": {
+      "title": "Groupe de joueurs",
+      "player": "Joueur",
+      "character": "Personnage",
+      "noMembers": "Aucun joueur connecté avec un personnage assigné"
+    },
     "Sidebar": {
       "title": "Chroniques Oubliées<br>2e édition",
       "support": "Support",

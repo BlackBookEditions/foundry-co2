@@ -1,0 +1,60 @@
+{{#if members.length}}
+<table class="party-table">
+  <thead>
+    <tr>
+      <th class="col-player">{{localize "CO.party.player"}}</th>
+      <th class="col-character">{{localize "CO.party.character"}}</th>
+      <th class="col-ability clickable" data-action="rollAbilityAll" data-ability="agi">{{localize "CO.abilities.short.agi"}}</th>
+      <th class="col-ability clickable" data-action="rollAbilityAll" data-ability="con">{{localize "CO.abilities.short.con"}}</th>
+      <th class="col-ability clickable" data-action="rollAbilityAll" data-ability="for">{{localize "CO.abilities.short.for"}}</th>
+      <th class="col-ability clickable" data-action="rollAbilityAll" data-ability="per">{{localize "CO.abilities.short.per"}}</th>
+      <th class="col-ability clickable" data-action="rollAbilityAll" data-ability="cha">{{localize "CO.abilities.short.cha"}}</th>
+      <th class="col-ability clickable" data-action="rollAbilityAll" data-ability="int">{{localize "CO.abilities.short.int"}}</th>
+      <th class="col-ability clickable" data-action="rollAbilityAll" data-ability="vol">{{localize "CO.abilities.short.vol"}}</th>
+      <th class="col-combat">{{localize "CO.combat.short.melee"}}</th>
+      <th class="col-combat">{{localize "CO.combat.short.ranged"}}</th>
+      <th class="col-combat">{{localize "CO.combat.short.magic"}}</th>
+      <th class="col-combat">{{localize "CO.combat.short.init"}}</th>
+      <th class="col-combat">{{localize "CO.combat.short.def"}}</th>
+      <th class="col-resource">{{localize "CO.label.short.hp"}}</th>
+      <th class="col-resource">{{localize "CO.resources.short.fortune"}}</th>
+      <th class="col-resource">{{localize "CO.resources.short.recovery"}}</th>
+      <th class="col-resource">{{localize "CO.resources.short.mana"}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each members}}
+    <tr>
+      <td class="col-player">
+        <span class="player-color" style="background-color: {{this.userColor}}"></span>
+        {{this.userName}}
+      </td>
+      <td class="col-character">
+        <a data-action="openSheet" data-actor-id="{{this.actor.id}}">
+          <img class="actor-img" src="{{this.img}}" alt="{{this.name}}">
+          {{this.name}}
+        </a>
+      </td>
+      <td class="col-ability clickable" data-action="rollAbility" data-ability="agi" data-user-id="{{this.userId}}">{{this.abilities.agi.value}}</td>
+      <td class="col-ability clickable" data-action="rollAbility" data-ability="con" data-user-id="{{this.userId}}">{{this.abilities.con.value}}</td>
+      <td class="col-ability clickable" data-action="rollAbility" data-ability="for" data-user-id="{{this.userId}}">{{this.abilities.for.value}}</td>
+      <td class="col-ability clickable" data-action="rollAbility" data-ability="per" data-user-id="{{this.userId}}">{{this.abilities.per.value}}</td>
+      <td class="col-ability clickable" data-action="rollAbility" data-ability="cha" data-user-id="{{this.userId}}">{{this.abilities.cha.value}}</td>
+      <td class="col-ability clickable" data-action="rollAbility" data-ability="int" data-user-id="{{this.userId}}">{{this.abilities.int.value}}</td>
+      <td class="col-ability clickable" data-action="rollAbility" data-ability="vol" data-user-id="{{this.userId}}">{{this.abilities.vol.value}}</td>
+      <td class="col-combat">{{this.combat.melee.value}}</td>
+      <td class="col-combat">{{this.combat.ranged.value}}</td>
+      <td class="col-combat">{{this.combat.magic.value}}</td>
+      <td class="col-combat">{{this.combat.init.value}}</td>
+      <td class="col-combat">{{this.combat.def.value}}</td>
+      <td class="col-resource">{{this.hp.value}} / {{this.hp.max}}</td>
+      <td class="col-resource">{{this.fortune.value}} / {{this.fortune.max}}</td>
+      <td class="col-resource">{{this.recovery.value}} / {{this.recovery.max}}</td>
+      <td class="col-resource">{{this.mana.value}} / {{this.mana.max}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+{{else}}
+<p class="no-members">{{localize "CO.party.noMembers"}}</p>
+{{/if}}
