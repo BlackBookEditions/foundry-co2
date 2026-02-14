@@ -6,6 +6,16 @@
     {{#if skills}}
       <div class="action-skills">{{skills}}</div>
     {{/if}}
+    {{#if targetInfos.length}}
+      <div class="card-targets">
+        {{#each targetInfos as |target|}}
+          <div class="card-target">
+            <img src="{{target.img}}" alt="{{target.name}}" />
+            <span>{{target.name}}</span>
+          </div>
+        {{/each}}
+      </div>
+    {{/if}}
   </header>
 
   <div class="card-content">
@@ -42,7 +52,7 @@
       </section>
       <section class="result-sentence">
         {{#if oppositeRoll}}
-          <button class="opposite-roll" data-opposite-value="{{difficulty}}" data-opposite-target="{{oppositeTarget}}">{{localize "CO.ui.oppositeRoll"}}</button>
+          <button class="opposite-roll" data-opposite-value="{{difficulty}}" data-opposite-target="{{oppositeTarget}}">{{localize "CO.ui.oppositeRoll"}}{{#if oppositeAbilityLabel}}<br /><span class="opposite-ability-label">{{oppositeAbilityLabel}}</span>{{/if}}</button>
         {{else}}
           {{#if showDifficulty}}
             {{#if isFumble}}
@@ -70,22 +80,75 @@
         {{/if}}
       </section>
     </section>
-    {{#if skillUsed}}
-      <div class="skill-used">
-        <div class="skill-used-title">{{localize "CO.ui.skillUsed"}} :</div>
-        {{#each skillUsed as |skill id|}}
-          <span class="skill-used-bonus">{{numberFormat skill.value decimals=0 sign=true}}</span><span> : {{skill.name}}</span><br />
-        {{/each}}
+    {{#if opposeActorName}}
+      {{! Bloc J1 }}
+      <div class="player-block">
+        <div class="player-block-name">{{actorName}}</div>
+        <div class="player-block-ability">{{flavor}}</div>
+        {{#if skillUsed}}
+          <div class="skill-used">
+            {{#each skillUsed as |skill id|}}
+              <span class="skill-used-bonus" {{#if skill.description}}data-tooltip="{{skill.description}}"{{/if}}>{{numberFormat skill.value decimals=0 sign=true}}</span><span {{#if skill.description}}data-tooltip="{{skill.description}}"{{/if}}> : {{skill.name}}</span><br />
+            {{/each}}
+          </div>
+        {{/if}}
+        <div class="dice-roll" data-action="expandRoll">
+          <div class="dice-result">
+            <div class="dice-formula">{{localize "CO.ui.formula"}} : {{formula}}</div>
+            {{{tooltip}}}
+          </div>
+        </div>
       </div>
+      {{! Bloc J2 }}
+      <div class="player-block">
+        <div class="player-block-name">
+          {{opposeActorName}}
+          {{#if opposeCanUseLuckyPoints}}
+            <a class="lp-button-oppose">
+              <i class="fa-regular fa-clover" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" data-tooltip-direction="UP"></i>
+            </a>
+          {{/if}}
+        </div>
+        {{#if opposeFlavor}}
+          <div class="player-block-ability">{{opposeFlavor}}</div>
+        {{/if}}
+        {{#if opposeSkillUsed}}
+          <div class="skill-used">
+            {{#each opposeSkillUsed as |skill id|}}
+              <span class="skill-used-bonus" {{#if skill.description}}data-tooltip="{{skill.description}}"{{/if}}>{{numberFormat skill.value decimals=0 sign=true}}</span><span {{#if skill.description}}data-tooltip="{{skill.description}}"{{/if}}> : {{skill.name}}</span><br />
+            {{/each}}
+          </div>
+        {{/if}}
+        {{#if opposeResult}}
+          <div class="dice-roll" data-action="expandRoll">
+            <div class="dice-result">
+              <div class="dice-formula">{{localize "CO.ui.formula"}} : {{opposeResult}}</div>
+              {{{opposeTooltip}}}
+            </div>
+          </div>
+        {{/if}}
+      </div>
+    {{else}}
+      {{#if skillUsed}}
+        <div class="skill-used">
+          <div class="skill-used-title">{{localize "CO.ui.skillUsed"}} :</div>
+          {{#each skillUsed as |skill id|}}
+            <span class="skill-used-bonus">{{numberFormat skill.value decimals=0 sign=true}}</span><span {{#if skill.name}}data-tooltip="{{skill.name}}"{{/if}}> : {{skill.name}}</span><br />
+          {{/each}}
+        </div>
+      {{/if}}
     {{/if}}
   </div>
 
-  <footer class="card-footer">
-    <div class="dice-roll" data-action="expandRoll">
-      <div class="dice-result">
-        <div class="dice-formula" style>{{localize "CO.ui.formula"}} : {{formula}}</div>
-        {{{tooltip}}}
+  {{! Footer classique si pas de jet opposé résolu }}
+  {{#unless opposeActorName}}
+    <footer class="card-footer">
+      <div class="dice-roll" data-action="expandRoll">
+        <div class="dice-result">
+          <div class="dice-formula" style>{{localize "CO.ui.formula"}} : {{formula}}</div>
+          {{{tooltip}}}
+        </div>
       </div>
-    </div>
-  </footer>
+    </footer>
+  {{/unless}}
 </div>

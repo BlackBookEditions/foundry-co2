@@ -1,6 +1,7 @@
 import BaseMessageData from "./base-message.mjs"
 import { CORoll } from "../documents/roll.mjs"
 import { applyCheckConsequences } from "./check-message.mjs"
+import Utils from "../helpers/utils.mjs"
 
 export default class SkillMessageData extends BaseMessageData {
   static defineSchema() {
@@ -97,7 +98,8 @@ export default class SkillMessageData extends BaseMessageData {
 
     // Click sur le bouton de jet opposé
     const oppositeButton = html.querySelector(".opposite-roll")
-    const displayOppositeButton = game.user.isGM || this.isActorTargeted
+    const hasTargets = this.targets?.length > 0
+    const displayOppositeButton = game.user.isGM || !hasTargets || this.isActorTargeted
 
     if (oppositeButton && displayOppositeButton) {
       oppositeButton.addEventListener("click", async (event) => {
@@ -111,20 +113,60 @@ export default class SkillMessageData extends BaseMessageData {
         const oppositeValue = dataset.oppositeValue
         const oppositeTarget = dataset.oppositeTarget
 
-        const targetActor = fromUuidSync(oppositeTarget)
+        const targetActor = oppositeTarget ? fromUuidSync(oppositeTarget) : game.user.character
         if (!targetActor) return
-        const value = Utils.evaluateOppositeFormula(oppositeValue, targetActor)
-
-        const formula = value ? `1d20 + ${value}` : `1d20`
-        const roll = await new Roll(formula).roll()
-        const difficulty = roll.total
 
         let rolls = message.rolls
-        rolls[0].options.oppositeRoll = false
-        rolls[0].options.difficulty = difficulty
+        let opposeResultAnalyse = null
+
+        // Vérifie si oppositeValue est une ability valide pour ouvrir le dialogue complet
+        const abilityId = oppositeValue?.startsWith("@oppose.") ? oppositeValue.replace("@oppose.", "") : null
+        const isSkillRoll = abilityId && Object.keys(SYSTEM.ABILITIES).includes(abilityId)
+
+        if (isSkillRoll) {
+          // Ouvre la fenêtre de rollSkill avec le dialogue complet
+          const targetRollSkill = await targetActor.rollSkill(abilityId, { difficulty: rolls[0].total, showResult: false })
+          if (!targetRollSkill) return
+          opposeResultAnalyse = CORoll.analyseRollResult(targetRollSkill.roll)
+          rolls[0].options.oppositeRoll = false
+          rolls[0].options.difficulty = targetRollSkill.roll.total
+          rolls[0].options.opposeResult = targetRollSkill.roll.result
+          rolls[0].options.opposeTooltip = await targetRollSkill.roll.getTooltip()
+          rolls[0].options.opposeSkillUsed = targetRollSkill.roll.options.skillUsed
+          rolls[0].options.opposeFlavor = targetRollSkill.roll.options.flavor
+          rolls[0].options.opposeActorName = targetActor.name
+          rolls[0].options.opposeActorId = targetActor.id
+          rolls[0].options.opposeHasLuckyPoints = targetActor.system.resources?.fortune?.value > 0
+        } else {
+          // Fallback : jet simple avec evaluateOppositeFormula
+          const value = Utils.evaluateOppositeFormula(oppositeValue, targetActor)
+          const formula = value ? `1d20 + ${value}` : `1d20`
+          const roll = await new Roll(formula).roll()
+          opposeResultAnalyse = CORoll.analyseRollResult(roll)
+          rolls[0].options.oppositeRoll = false
+          rolls[0].options.difficulty = roll.total
+          rolls[0].options.opposeResult = roll.result
+          rolls[0].options.opposeTooltip = await roll.getTooltip()
+          rolls[0].options.opposeActorName = targetActor.name
+          rolls[0].options.opposeActorId = targetActor.id
+          rolls[0].options.opposeHasLuckyPoints = targetActor.system.resources?.fortune?.value > 0
+        }
 
         let newResult = CORoll.analyseRollResult(rolls[0])
-        if (newResult.isSuccess) {
+
+        // Gestion des critiques/fumbles de l'opposition
+        if (opposeResultAnalyse.isCritical && !newResult.isCritical) {
+          newResult.isSuccess = false
+          newResult.isFailure = true
+        } else if (opposeResultAnalyse.isFumble && rolls[0].product > 1) {
+          newResult.isSuccess = true
+          newResult.isFailure = false
+        } else if (!opposeResultAnalyse.isCritical && rolls[0].product === 20) {
+          newResult.isSuccess = true
+          newResult.isFailure = false
+        }
+
+        if (newResult.isSuccess && message.system.linkedRoll) {
           const damageRoll = Roll.fromData(message.system.linkedRoll)
           await damageRoll.toMessage(
             { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },
@@ -149,6 +191,41 @@ export default class SkillMessageData extends BaseMessageData {
         }
         // Sinon on émet un message pour mettre à jour le message de chat
         else {
+          await game.users.activeGM.query("co2.updateMessageAfterOpposedRoll", { existingMessageId: message.id, rolls: rolls, result: newResult })
+        }
+      })
+    }
+
+    // Click sur le bouton de chance de PJ2 (jet opposé)
+    const opposeLuckyButton = html.querySelector(".lp-button-oppose")
+    if (opposeLuckyButton) {
+      opposeLuckyButton.addEventListener("click", async (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        const messageId = event.currentTarget.closest(".message").dataset.messageId
+        const message = game.messages.get(messageId)
+
+        let rolls = message.rolls
+        const opposeActorId = rolls[0].options.opposeActorId
+        const opposeActor = game.actors.get(opposeActorId)
+        if (!opposeActor) return
+
+        // +10 sur la difficulté (= total de PJ2)
+        rolls[0].options.difficulty = parseInt(rolls[0].options.difficulty) + 10
+        rolls[0].options.opposeHasLuckyPoints = false
+
+        // L'acteur PJ2 consomme son point de chance
+        if (opposeActor.system.resources.fortune.value > 0) {
+          opposeActor.system.resources.fortune.value -= 1
+          await opposeActor.update({ "system.resources.fortune.value": opposeActor.system.resources.fortune.value })
+        }
+
+        let newResult = CORoll.analyseRollResult(rolls[0])
+
+        // Mise à jour du message de chat
+        if (game.user.isGM) {
+          await message.update({ rolls: rolls, "system.result": newResult })
+        } else {
           await game.users.activeGM.query("co2.updateMessageAfterOpposedRoll", { existingMessageId: message.id, rolls: rolls, result: newResult })
         }
       })

@@ -21,9 +21,26 @@
   {{#if showDifficulty}}
       <div class="icone"><i class="fas fa-fw fa-shield-alt"></i></div>
       <div class="form-group diffGroup">
-        <label class="near textCenter">{{localize "CO.label.long.difficulty"}}</label>
-        <div class="form-fields">
-          <input class="field-value textCenter" id="difficulty" name="difficulty" type="text" value="{{difficulty}}" data-dtype="Number" />
+        <div class="opposite-check">
+          <label>
+            <input type="checkbox" name="oppositeRoll" id="oppositeRoll" />
+            {{localize "CO.ui.oppositeRoll"}}
+          </label>
+        </div>
+        <div class="opposite-ability" style="display:none">
+          <div class="form-fields">
+            <select name="oppositeAbility" id="oppositeAbility">
+              {{#each abilities as |ability key|}}
+                <option value="{{key}}">{{localize ability.label}}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+        <div class="standard-difficulty">
+          <label class="textCenter">{{localize "CO.label.long.difficulty"}}</label>
+          <div class="form-fields">
+            <input class="field-value textCenter" id="difficulty" name="difficulty" type="text" value="{{difficulty}}" data-dtype="Number" />
+          </div>
         </div>
       </div>
   {{/if}}
