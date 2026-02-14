@@ -1,10 +1,12 @@
-# 1.5.3
+# 1.6.0
 
 ## Améliorations
 - Info-bulles des bonus : les info-bulles listant des bonus (caractéristiques, combat, initiative, défense, critique, RD, PV, ressources) sont maintenant affichées en colonne au lieu d'être en ligne, pour une meilleure lisibilité.
 - Transfert d'objets empilables : SHIFT + glisser-déposer permet de transférer une seule unité d'un objet empilable entre personnages ou rencontres. La quantité est décrémentée sur l'acteur source et incrémentée sur l'acteur cible. Sans SHIFT, le comportement reste inchangé (transfert complet).
 - Nettoyage : suppression de 7 helpers Handlebars inutilisés (isPathProfile, isset, sum, getValueFromMartialTraining, buildItemTemplatePath, isActionable, isEnabled)
 - Enricher @Test : dans le message de résultat du jet, les compétences demandées par le test (ex : histoire) sont maintenant affichées sous le nom de la caractéristique dans l'en-tête, au lieu d'être mélangées avec les compétences bonus sélectionnées dans la fenêtre de dialogue.
+- Possibilité de faire un jet opposé depuis le dialogue de test de caractéristique. Un seul opposant pour l'instant. Si pas de cibles, tout le monde peut participer, sinon seuls les cibles le peuvent.
+- Tooltip des bonus : les bonus de compétences utilisés dans le message de chat affichent le nom complet en info-bulle.
 
 ## Corrections
 - Fiche d'objet : correction d'un bug où appuyer sur ENTER après avoir modifié le nom d'un équipement supprimait la résolution de l'action
