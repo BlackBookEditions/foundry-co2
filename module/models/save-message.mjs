@@ -226,7 +226,7 @@ export default class SaveMessageData extends BaseMessageData {
         }
 
         // L'acteur cible effectue son jet de compétence et retourne {roll, result}
-        const targetRollSkill = await targetActor.rollSkill(saveAbility, { difficulty: difficulty, showResult: false })
+        const targetRollSkill = await targetActor.rollSkill(saveAbility, { difficulty: difficulty, showResult: false, showOppositeRoll: false })
         message.system.result = targetRollSkill.result
         message.system.linkedRoll = targetRollSkill.roll
         let opposeResultAnalyse = CORoll.analyseRollResult(targetRollSkill.roll)

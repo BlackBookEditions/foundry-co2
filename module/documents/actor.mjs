@@ -1580,6 +1580,7 @@ export default class COActor extends Actor {
       targets = undefined,
       showResult = true,
       skills = undefined,
+      showOppositeRoll = true,
     } = {},
   ) {
     const options = {
@@ -1745,6 +1746,7 @@ export default class COActor extends Actor {
       abilities: SYSTEM.ABILITIES,
       skills,
       skillUsed: [], // Tableau de clef valeur pour stocker les noms des skill activés et leur bonus
+      showOppositeRoll,
     }
 
     let roll = await COSkillRoll.prompt(dialogContext, { withDialog: withDialog })

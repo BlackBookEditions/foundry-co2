@@ -218,7 +218,7 @@ export default class ActionMessageData extends BaseMessageData {
 
           if (isSkillRoll) {
             // On ouvre la fenêtre de rollSkill et on récupère le résultat
-            const targetRollSkill = await targetActor.rollSkill(abilityId, { difficulty: rolls[0].total, showResult: false })
+            const targetRollSkill = await targetActor.rollSkill(abilityId, { difficulty: rolls[0].total, showResult: false, showOppositeRoll: false })
             opposeResultAnalyse = CORoll.analyseRollResult(targetRollSkill.roll)
             rolls[0].options.oppositeRoll = false
             rolls[0].options.difficulty = targetRollSkill.roll.total
