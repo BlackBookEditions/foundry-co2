@@ -2,6 +2,7 @@
   .card-header {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
     border-top: 1px solid var(--color-chatSkill);
@@ -10,6 +11,13 @@
     label {
       color: var(--color-chatSkill);
       text-shadow: 0 0px 2px var(--color-chatShadow);
+    }
+    .action-skills {
+      width: 100%;
+      font-size: var(--font-size-14);
+      font-style: italic;
+      opacity: 0.8;
+      padding-left: 15px;
     }
   }
   .card-content {

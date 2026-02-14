@@ -213,6 +213,7 @@ export class COSkillRoll extends CORoll {
       showDifficulty: dialogContext.showDifficulty,
       difficulty: withDialog ? rollContext.difficulty : dialogContext.difficulty,
       toolTip,
+      skills: dialogContext.skills,
       skillUsed: dialogContext.skillUsed,
       ...options,
     }
@@ -257,6 +258,7 @@ export class COSkillRoll extends CORoll {
       hasLuckyPoints: this.options.hasLuckyPoints,
       canUseLuckyPoints,
       hasPendingConsequences: this.options.hasPendingConsequences || false,
+      skills: this.options.skills,
       skillUsed: this.options.skillUsed,
     }
   }

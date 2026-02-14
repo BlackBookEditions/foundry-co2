@@ -3927,6 +3927,7 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-header {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
   border-top: 1px solid var(--color-chatSkill);
@@ -3937,6 +3938,14 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-header label {
   color: var(--color-chatSkill);
   text-shadow: 0 0px 2px var(--color-chatShadow);
+}
+#interface #sidebar .co.chat-card.roll-card.skill-card .card-header .action-skills,
+#interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-header .action-skills {
+  width: 100%;
+  font-size: var(--font-size-14);
+  font-style: italic;
+  opacity: 0.8;
+  padding-left: 15px;
 }
 #interface #sidebar .co.chat-card.roll-card.skill-card .card-content .skill-used,
 #interface #ui-right-column-1 .co.chat-card.roll-card.skill-card .card-content .skill-used {

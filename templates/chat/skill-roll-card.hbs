@@ -3,6 +3,9 @@
   <header class="card-header flexcol">
     <div class="type-card"><label><i class="fa-solid fa-dice-d6" data-tooltip="{{localize 'CO.dialogs.skillCheck'}}" data-tooltip-direction="LEFT"></i></label></div>
     <div class="action-name" data-tooltip="{{flavor}}" data-tooltip-direction="LEFT">{{flavor}}</div>
+    {{#if skills}}
+      <div class="action-skills">{{skills}}</div>
+    {{/if}}
   </header>
 
   <div class="card-content">
