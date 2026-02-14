@@ -272,16 +272,20 @@ export default class EncounterData extends ActorData {
    * @param {Array} modifiers An array of modifier objects.
    * @param {SYSTEM.MODIFIERS.MODIFIER_TARGET} target The target for which the modifiers are filtered.
    **/
-  computeTotalModifiersByTarget(modifiers, target) {
+  computeTotalModifiersByTarget(modifiers, target, withDice = false) {
     if (!modifiers) return { total: 0, tooltip: "" }
 
     let modifiersByTarget = modifiers.filter((m) => m.target === target)
 
-    let total = modifiersByTarget.map((m) => m.evaluate(this.parent)).reduce((acc, curr) => acc + curr, 0)
+    let total = 0
+    if (modifiersByTarget && modifiersByTarget.length > 0) {
+      let evaluatedModifiers = modifiersByTarget.map((m) => m.evaluate(this.parent, withDice))
+      total = withDice ? evaluatedModifiers.join(" ") : evaluatedModifiers.reduce((acc, curr) => acc + curr, 0)
+    }
 
     let tooltip = ""
     for (const modifier of modifiersByTarget) {
-      let partialTooltip = modifier.getTooltip(this.parent)
+      let partialTooltip = modifier.getTooltip(this.parent, withDice)
       if (partialTooltip !== null) tooltip += partialTooltip
     }
 
