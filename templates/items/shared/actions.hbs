@@ -87,19 +87,21 @@
                                         {{/if}}
                                     </div>
                                 </fieldSet>
+                                {{#if @root.debugMode}}
                                 <fieldSet>
                                     <legend>{{localize "CO.label.long.properties"}} (DEBUG)</legend>
                                     <div class="flexrow">
                                         <label>
-                                            <input type="checkbox" name="{{concat 'system.actions.' idx '.properties.visible'}}" {{checked action.properties.visible}} {{#if (or @root.locked @root.notDebugMode)}}class="disabled"{{/if}}/>
+                                            <input type="checkbox" name="{{concat 'system.actions.' idx '.properties.visible'}}" {{checked action.properties.visible}} {{#if @root.locked}}class="disabled"{{/if}}/>
                                             {{action.schema.fields.properties.fields.visible.label}}
                                         </label>
                                         <label>
-                                            <input type="checkbox" name="{{concat 'system.actions.' idx '.properties.enabled'}}" {{checked action.properties.enabled}} {{#if (or @root.locked @root.notDebugMode)}}class="disabled"{{/if}} />
+                                            <input type="checkbox" name="{{concat 'system.actions.' idx '.properties.enabled'}}" {{checked action.properties.enabled}} {{#if @root.locked}}class="disabled"{{/if}} />
                                             {{action.schema.fields.properties.fields.enabled.label}}
-                                        </label>                                        
+                                        </label>
                                     </div>
-                                </fieldSet>                                
+                                </fieldSet>
+                                {{/if}}                                
                             </section>
                         
                             <section class="panel4">

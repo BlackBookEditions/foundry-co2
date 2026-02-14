@@ -9,6 +9,7 @@
 ## Corrections
 - Fiche d'objet : correction d'un bug où appuyer sur ENTER après avoir modifié le nom d'un équipement supprimait la résolution de l'action
 - Rencontres : correction des modificateurs de dommages avec formule de dés (ex : +1d6) qui étaient ignorés pour les attaques de rencontre (retournaient 0 au lieu de la formule)
+- Fiche d'objet : la section "Propriétés (DEBUG)" dans l'onglet Actions/Effets n'est maintenant visible que si l'option DEBUG du système est activée
 
 # 1.5.2
 
