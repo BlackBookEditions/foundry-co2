@@ -7,6 +7,7 @@
 - Enricher @Test : dans le message de résultat du jet, les compétences demandées par le test (ex : histoire) sont maintenant affichées sous le nom de la caractéristique dans l'en-tête, au lieu d'être mélangées avec les compétences bonus sélectionnées dans la fenêtre de dialogue.
 - Possibilité de faire un jet opposé depuis le dialogue de test de caractéristique. Un seul opposant pour l'instant. Si pas de cibles, tout le monde peut participer, sinon seuls les cibles le peuvent.
 - Tooltip des bonus : les bonus de compétences utilisés dans le message de chat affichent le nom complet en info-bulle.
+- Ajout d'un menu Groupe de joueurs pour visualiser les personnages des joueurs connectés. Un clic sur une entête de caractéristique demander un jet à tout le monde. un clic sur la valeur d'une caractéristique d'un personnage lui demande un jet.
 
 ## Corrections
 - Fiche d'objet : correction d'un bug où appuyer sur ENTER après avoir modifié le nom d'un équipement supprimait la résolution de l'action
