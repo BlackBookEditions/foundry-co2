@@ -25,14 +25,10 @@ export default class COSidebarMenu extends HandlebarsApplicationMixin(AbstractSi
 
   static async #onOpenApp(event) {
     switch (event.target.dataset.app) {
-      case "gmmanager":
-        if (!foundry.applications.instances.has("cthack-application-manager")) game.system.applicationManager.render({ force: true })
-        break
-      case "search":
-        await new SearchDialog().render(true)
-        break
       case "party":
-        game.system.partySheet.render(true)
+        if (!foundry.applications.instances.has("co-party-sheet")) {
+          game.system.partySheet.render({ force: true })
+        }
         break
     }
   }

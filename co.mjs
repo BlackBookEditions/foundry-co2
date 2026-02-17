@@ -211,6 +211,9 @@ Hooks.once("ready", async function () {
 
   // Party Sheet
   game.system.partySheet = new applications.COPartySheet()
+  if (game.user.isGM) {
+    game.system.partySheet.render({ force: true })
+  }
 
   console.info(helpers.Utils.log(game.i18n.localize("CO.notif.ready")))
 })

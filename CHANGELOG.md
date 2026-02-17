@@ -1,3 +1,8 @@
+# 1.6.1
+
+## Corrections
+- Le Groupe de joueurs est maintenant accessible uniquement au MJ
+
 # 1.6.0
 
 ## Améliorations
