@@ -5,7 +5,7 @@
                 {{!log (concat "Chroniques Oubliées | action " id) action}}
                 <li class="item flexrow draggable action {{#if action.properties.temporary}}{{#unless action.properties.enabled}}deactivated{{/unless}}{{/if}}" data-item-uuid="{{action.source}}" data-indice="{{action.indice}}">
                     <div class="item-name flexrow">
-                        <a class="item-img" data-action="editItem" style="background-image: url('{{{actionImg}}}')" data-tooltip="{{action.parent.description}}"></a>
+                        <a class="item-img" data-action="editItem" style="background-image: url('{{{actionImg}}}')" data-tooltip="{{action.enrichedTooltip}}"></a>
                         <div class="actionRow">
                             <!-- Action Type : celui de l'action si défini sinon celui de la capacité -->
                             <div class="actionColumn" data-tooltip="{{action.actionTypeLongLabel}}">{{action.actionTypeShortLabel}}</div>

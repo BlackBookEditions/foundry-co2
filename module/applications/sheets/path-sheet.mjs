@@ -31,6 +31,12 @@ export default class CoPathSheet extends CoBaseItemSheet {
 
     context.capacities = await this.item.system.getCapacities()
 
+    // Enrichir les descriptions des capacités pour les tooltips
+    const enrichHTML = foundry.applications.ux.TextEditor.implementation.enrichHTML
+    for (const capacity of context.capacities) {
+      capacity.enrichedTooltip = await enrichHTML(capacity.system.description ?? "")
+    }
+
     // Select options
     context.choicePathSubtypes = SYSTEM.PATH_TYPES
 

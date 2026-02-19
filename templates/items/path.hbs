@@ -56,7 +56,7 @@
                         </a>
                     </div>
                     <div class="cell left">
-                        <div class="field-label ellipse" data-tooltip="{{capacity.system.description}}" data-tooltip-direction="UP">{{capacity.name}}
+                        <div class="field-label ellipse" data-tooltip="{{capacity.enrichedTooltip}}" data-tooltip-direction="UP">{{capacity.name}}
                         {{#if capacity.system.isSpell}} * {{/if}}{{#if capacity.system.hasActionType}} ({{capacity.system.actionTypeShortLabel}}){{/if}}</div>
                     </div>               
                     <div class="cell right item item-controls" data-uuid="{{capacity.uuid}}" data-item-type="capacity" data-rank="{{#if (isPathprestigious @root.system.subtype)}}{{add id 4}}{{else}}{{add id 1}}{{/if}}">

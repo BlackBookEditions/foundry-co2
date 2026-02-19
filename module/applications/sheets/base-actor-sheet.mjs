@@ -184,16 +184,41 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     }
     context.capacitiesOffPaths = capacitiesOffPaths
 
+    // Enrichir les descriptions pour les tooltips (conversion @UUID → liens HTML)
+    const enrichHTML = foundry.applications.ux.TextEditor.implementation.enrichHTML
+    for (const pg of context.pathGroups) {
+      for (const capacity of pg.items) {
+        capacity.enrichedTooltip = await enrichHTML(capacity.system.description ?? "")
+        if (capacity.linkedCapacityItem) {
+          capacity.enrichedLinkedTooltip = await enrichHTML(capacity.linkedCapacityItem.system.description ?? "")
+        }
+      }
+    }
+    for (const capacity of capacitiesOffPaths) {
+      capacity.enrichedTooltip = await enrichHTML(capacity.system.description ?? "")
+      if (capacity.linkedCapacityItem) {
+        capacity.enrichedLinkedTooltip = await enrichHTML(capacity.linkedCapacityItem.system.description ?? "")
+      }
+    }
+
     context.capacitiesOffPathsExpanded = Utils.getExpandedState(`co-${this.document.id}-paths-capacitiesOffPaths`)
     context.features = this.document.features
     context.actions = this.document.actions
     context.inventory = this.document.inventory
+    for (const group of context.inventory) {
+      for (const item of group.items) {
+        item.enrichedTooltip = await enrichHTML(item.system.description ?? "")
+      }
+    }
     context.currenciesExpanded = Utils.getExpandedState(`co-${this.document.id}-currencies`)
 
     context.visibleActions = await this.document.getVisibleActions()
 
     // Actions activables affichées dans l'onglet Principal
     context.visibleActivableActions = await this.document.getVisibleActivableActions()
+    for (const action of context.visibleActivableActions) {
+      action.enrichedTooltip = await enrichHTML(action.parent?.description ?? "")
+    }
     context.actionsSorting = this.actionsSorting
     context.isActionsSortedByDefault = this.actionsSorting === "default"
     context.isActionsSortedByRank = this.actionsSorting === "byRank"

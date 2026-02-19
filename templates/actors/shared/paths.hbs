@@ -43,7 +43,7 @@
                                 <li class="item flexrow draggable" data-item-uuid="{{capacity.uuid}}" data-item-id="{{capacity._id}}" data-item-type="capacity">
                                     <div class="item-detail rank">{{capacity.system.rank}}</div>
                                     <div class="item-name flexrow">
-                                        <a class="item-img" data-action="editItem" style="background-image: url('{{capacity.img}}')" data-tooltip="{{capacity.system.description}}"></a>
+                                        <a class="item-img" data-action="editItem" style="background-image: url('{{capacity.img}}')" data-tooltip="{{capacity.enrichedTooltip}}"></a>
                                         <h4>{{capacity.name}}{{#if capacity.system.isSpell}} * {{/if}}</h4>
                                     </div>
                                     <div class="item-controls-3">
@@ -60,7 +60,7 @@
                                             <li class="item flexrow" {{#if (isNotNull capacity.system.linkedCapacity)}} data-item-uuid="{{capacity.system.linkedCapacity}}" data-item-id="{{capacity._id}}" data-item-type="capacity" {{/if}}>
                                                 {{#if (and (isNotNull capacity.system.linkedCapacity) (isNotNull capacity.linkedCapacityItem))}}
                                                     <div class="item-name flexrow">                                            
-                                                            <a class="item-img" data-action="editItem" style="background-image: url('{{capacity.linkedCapacityImg}}')" data-tooltip="{{capacity.linkedCapacityItem.system.description}}"></a>
+                                                            <a class="item-img" data-action="editItem" style="background-image: url('{{capacity.linkedCapacityImg}}')" data-tooltip="{{capacity.enrichedLinkedTooltip}}"></a>
                                                             <h4>{{capacity.linkedCapacityItem.name}}{{#if capacity.linkedCapacityItem.system.isSpell}} * {{/if}}{{#if capacity.linkedCapacityItem.system.hasActionType}} ({{capacity.linkedCapacityItem.system.actionTypeShortLabel}}){{/if}}</h4>
                                                     </div>
                                                     <div class="item-controls-3">
@@ -84,7 +84,7 @@
                                     <li class="item flexrow" data-item-uuid="{{capacity.uuid}}" data-item-id="{{capacity._id}}" data-item-type="capacity" style="opacity: 40% ; font-style: Italic">
                                         <div class="item-detail rank">{{capacity.system.rank}}</div>
                                         <div class="item-name flexrow">
-                                            <a class="item-img" data-action="editItem" style="background-image: url('{{capacity.img}}')" data-tooltip="{{capacity.system.description}}"></a>
+                                            <a class="item-img" data-action="editItem" style="background-image: url('{{capacity.img}}')" data-tooltip="{{capacity.enrichedTooltip}}"></a>
                                             <h4 data-tooltip="{{localize 'CO.notif.unknownCapacity'}}">{{capacity.name}}{{#if capacity.system.isSpell}} * {{/if}}{{#if capacity.system.hasActionType}} ({{capacity.system.actionTypeShortLabel}}){{/if}}</h4>
                                         </div>
                                         <div class="item-controls-2">

@@ -39,7 +39,7 @@
         {{!log 'Character inventory item' item}}
         <li class="item flexrow draggable" data-item-uuid="{{item.uuid}}" data-item-id="{{item._id}}" data-item-type="{{item.type}}">
           <div class="item-name flexrow">
-            <a class="item-img" data-action="editItem" style="background-image: url('{{item.img}}')"></a>
+            <a class="item-img" data-action="editItem" style="background-image: url('{{item.img}}')" data-tooltip="{{item.enrichedTooltip}}"></a>
             <h4>{{item.name}}
                 {{#if item.system.isWeapon}}
                   {{#if (isTrainedWithWeapon @root.actor item._id)}}
