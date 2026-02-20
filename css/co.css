@@ -2851,8 +2851,11 @@ co-toggle-switch[checked] thumb {
 .co.application.sheet.actor.character .features-container .item-list {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  padding: 5px 10px 0px 10px;
-  column-gap: 20px;
+  padding: 0px 10px 0px 10px;
+  column-gap: 10px;
+}
+.co.application.sheet.actor.character .features-container.items-container {
+  margin-bottom: 2px;
 }
 .co.application.sheet.actor.character .features.section-container {
   margin: 0;
@@ -2879,6 +2882,23 @@ co-toggle-switch[checked] thumb {
 .co.application.sheet.actor.character section.biography .bio.folded,
 .co.application.sheet.actor.character section.biography .appearance.folded {
   display: none;
+}
+.co.application.sheet.actor.character .notes-section {
+  border-top: 1px dashed var(--color-abilities);
+}
+.co.application.sheet.actor.character .tab.standard-form.biography.active {
+  gap: 0;
+}
+.co.application.sheet.actor.character .bio-misc {
+  display: grid;
+  grid-template-columns: 0.4fr 1fr;
+  column-gap: 10px;
+}
+.co.application.sheet.actor.character .bio-languages {
+  margin-right: 5px;
+}
+.co.application.sheet.actor.character .bio-languages label {
+  flex: 0;
 }
 .co.application.sheet.actor.character .btn-sort-items-default,
 .co.application.sheet.actor.character .btn-sort-items-rank,

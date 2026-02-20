@@ -43,9 +43,13 @@
   .item-list {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    padding: 5px 10px 0px 10px;
-    column-gap: 20px;
+    padding: 0px 10px 0px 10px;
+    column-gap: 10px;
   }
+}
+
+.features-container.items-container {
+  margin-bottom: 2px;
 }
 
 .features.section-container {
@@ -78,6 +82,25 @@ section.biography {
     &.folded {
       display: none;
     }
+  }
+}
+.notes-section {
+  border-top: 1px dashed var(--color-abilities);
+}
+
+.tab.standard-form.biography.active {
+  gap: 0;
+}
+.bio-misc {
+  display: grid;
+  grid-template-columns: 0.4fr 1fr;
+  column-gap: 10px;
+}
+
+.bio-languages {
+  margin-right: 5px;
+  label {
+    flex: 0;
   }
 }
 

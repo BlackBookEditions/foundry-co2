@@ -42,44 +42,9 @@
             </div>
         </div>
     {{/unless}}
-    {{#if viewLimited}}
-        <div class="form-group">
-            <label>{{localize "CO.ui.size"}}</label>
-            <div class="form-fields">
-                <select data-action="sizeChange" name="system.details.size" data-type="String" {{#unless unlocked}}disabled{{/unless}} style="width:100%" >
-                    {{selectOptions choiceSize selected=details.size localize=true}}
-                </select>
-            </div>
-        </div>    
-    {{else}}
-        <h4 class="form-header"><a data-action="toggleSection" data-toggle-type="biography-misc">{{localize "CO.ui.misc"}}</a></h4>
-        <div class="misc foldable {{ifThen biographyMiscExpanded 'expanded' 'folded'}}">
-            <div class="form-group">
-                <label>{{localize "CO.ui.size"}}</label>
-                <div class="form-fields">
-                    <select data-action="sizeChange" name="system.details.size" data-type="String" class="{{#unless unlocked}}disabled{{/unless}}" style="width:100%" >
-                        {{selectOptions choiceSize selected=details.size localize=true}}
-                    </select>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>{{localize "CO.ui.languages"}}</label>
-                <div class="form-fields">
-                <input
-                    class="field-value"
-                    name="system.details.languages"
-                    type="text"
-                    value="{{system.details.languages}}"
-                    placeholder="{{localize 'CO.ui.languages'}}"
-                    data-dtype="String"
-                    {{#unless unlocked}}readonly{{/unless}}
-                />
-                </div>
-            </div>
-        </div>
-    {{/if}}
 
-    <h4 class="form-header"><a data-action="toggleSection" data-toggle-type="biography-bio">{{localize "CO.ui.biography"}}</a></h4>
+
+    <h4 class="form-header bio-notes-section"><a data-action="toggleSection" data-toggle-type="biography-bio"><i class="fa-solid fa-book-user"></i> {{localize "CO.ui.biography"}}</a></h4>
     <div class="bio notes foldable {{ifThen biographyBioExpanded 'expanded' 'folded'}}">
         <div class="notes-section">
             <label class="details-label">{{localize "CO.ui.public"}}</label>
@@ -97,7 +62,7 @@
         {{/if}}
     </div>
 
-    <h4 class="form-header"><a data-action="toggleSection" data-toggle-type="biography-appearance">{{localize "CO.ui.appearance"}}</a></h4>
+    <h4 class="form-header bio-appearance-section"><a data-action="toggleSection" data-toggle-type="biography-appearance"><i class="fa-solid fa-user-tie"></i> {{localize "CO.ui.appearance"}}</a></h4>
     <div class="appearance notes foldable {{ifThen biographyAppearanceExpanded 'expanded' 'folded'}}">
         <div class="notes-section">
             <label class="details-label">{{localize "CO.ui.public"}}</label>
@@ -114,4 +79,41 @@
             </div>
         {{/if}}
     </div>
+
+    {{#if viewLimited}}
+        <div class="form-group bio-size">
+            <label>{{localize "CO.ui.size"}}</label>
+            <div class="form-fields">
+                <select data-action="sizeChange" name="system.details.size" data-type="String" {{#unless unlocked}}disabled{{/unless}} style="width:100%" >
+                    {{selectOptions choiceSize selected=details.size localize=true}}
+                </select>
+            </div>
+        </div>    
+    {{else}}
+        <h4 class="form-header"><a data-action="toggleSection" data-toggle-type="biography-misc"><i class="fa-solid fa-person"></i> {{localize "CO.ui.misc"}}</a></h4>
+        <div class="misc foldable bio-misc {{ifThen biographyMiscExpanded 'expanded' 'folded'}}">
+            <div class="form-group bio-size">
+                <label>{{localize "CO.ui.size"}}</label>
+                <div class="form-fields">
+                    <select data-action="sizeChange" name="system.details.size" data-type="String" class="{{#unless unlocked}}disabled{{/unless}}" style="width:100%" >
+                        {{selectOptions choiceSize selected=details.size localize=true}}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group bio-languages">
+                <label>{{localize "CO.ui.languages"}}</label>
+                <div class="form-fields">
+                <input
+                    class="field-value"
+                    name="system.details.languages"
+                    type="text"
+                    value="{{system.details.languages}}"
+                    placeholder="{{localize 'CO.ui.languages'}}"
+                    data-dtype="String"
+                    {{#unless unlocked}}readonly{{/unless}}
+                />
+                </div>
+            </div>
+        </div>
+    {{/if}}
 </section>
