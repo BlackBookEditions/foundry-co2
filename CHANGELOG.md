@@ -1,3 +1,11 @@
+# 1.6.2
+
+## Améliorations
+- Fiche Personnage et Rencontre : ajout d'un bouton sur le portrait pour partager l'image avec tous les joueurs connectés (visible au survol)
+- Fiche Personnage : les icônes de Peuple et de Profil dans l'en-tête sont cliquables pour ouvrir la fiche de l'objet correspondant, en mode Lecture comme en Écriture
+- Fiche Personnage - Biographie : Taille et Langages sont affichés sur la même ligne dans la section Divers
+- Fiche Personnage - Biographie : en mode Lecture, les blocs Publique et Privée de Biographie et Apparence ne sont affichés que s'ils contiennent du texte
+
 # 1.6.1
 
 ## Corrections
