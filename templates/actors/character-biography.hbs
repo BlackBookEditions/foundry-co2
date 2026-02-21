@@ -46,34 +46,36 @@
         <div class="form-group">
             <label>{{localize "CO.ui.size"}}</label>
             <div class="form-fields">
-                <select data-action="sizeChange" name="system.details.size" data-type="String" {{#unless unlocked}}disabled{{/unless}} style="width:100%" >
+                <select data-action="sizeChange" name="system.details.size" data-type="String" disabled style="width:100%">
                     {{selectOptions choiceSize selected=details.size localize=true}}
                 </select>
             </div>
-        </div>    
+        </div>
     {{else}}
         <h4 class="form-header"><a data-action="toggleSection" data-toggle-type="biography-misc">{{localize "CO.ui.misc"}}</a></h4>
         <div class="misc foldable {{ifThen biographyMiscExpanded 'expanded' 'folded'}}">
-            <div class="form-group">
-                <label>{{localize "CO.ui.size"}}</label>
-                <div class="form-fields">
-                    <select data-action="sizeChange" name="system.details.size" data-type="String" class="{{#unless unlocked}}disabled{{/unless}}" style="width:100%" >
-                        {{selectOptions choiceSize selected=details.size localize=true}}
-                    </select>
+            <div class="biography-details">
+                <div class="form-group size-group">
+                    <label>{{localize "CO.ui.size"}}</label>
+                    <div class="form-fields">
+                        <select data-action="sizeChange" name="system.details.size" data-type="String" class="{{#unless unlocked}}disabled{{/unless}}">
+                            {{selectOptions choiceSize selected=details.size localize=true}}
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label>{{localize "CO.ui.languages"}}</label>
-                <div class="form-fields">
-                <input
-                    class="field-value"
-                    name="system.details.languages"
-                    type="text"
-                    value="{{system.details.languages}}"
-                    placeholder="{{localize 'CO.ui.languages'}}"
-                    data-dtype="String"
-                    {{#unless unlocked}}readonly{{/unless}}
-                />
+                <div class="form-group">
+                    <label>{{localize "CO.ui.languages"}}</label>
+                    <div class="form-fields">
+                        <input
+                            class="field-value"
+                            name="system.details.languages"
+                            type="text"
+                            value="{{system.details.languages}}"
+                            placeholder="{{localize 'CO.ui.languages'}}"
+                            data-dtype="String"
+                            {{#unless unlocked}}readonly{{/unless}}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
@@ -81,37 +83,45 @@
 
     <h4 class="form-header"><a data-action="toggleSection" data-toggle-type="biography-bio">{{localize "CO.ui.biography"}}</a></h4>
     <div class="bio notes foldable {{ifThen biographyBioExpanded 'expanded' 'folded'}}">
+        {{#if (or unlocked hasBiographyPublic)}}
         <div class="notes-section">
             <label class="details-label">{{localize "CO.ui.public"}}</label>
             <div class="notes-text">
                 {{formInput systemFields.details.fields.biography.fields.public enriched=enrichedBiographyPublic value=system.details.biography.public name="system.details.biography.public" toggled=true}}
             </div>
         </div>
+        {{/if}}
         {{#if editable}}
+            {{#if (or unlocked hasBiographyPrivate)}}
             <div class="notes-section">
                 <label class="details-label">{{localize "CO.ui.private"}}</label>
                 <div class="notes-text">
                     {{formInput systemFields.details.fields.biography.fields.private enriched=enrichedBiographyPrivate value=system.details.biography.private name="system.details.biography.private" toggled=true}}
                 </div>
             </div>
+            {{/if}}
         {{/if}}
     </div>
 
     <h4 class="form-header"><a data-action="toggleSection" data-toggle-type="biography-appearance">{{localize "CO.ui.appearance"}}</a></h4>
     <div class="appearance notes foldable {{ifThen biographyAppearanceExpanded 'expanded' 'folded'}}">
+        {{#if (or unlocked hasAppearancePublic)}}
         <div class="notes-section">
             <label class="details-label">{{localize "CO.ui.public"}}</label>
             <div class="notes-text">
                  {{formInput systemFields.details.fields.appearance.fields.public enriched=enrichedAppearancePublic value=system.details.appearance.public name="system.details.appearance.public" toggled=true}}
             </div>
         </div>
-         {{#if editable}}
+        {{/if}}
+        {{#if editable}}
+            {{#if (or unlocked hasAppearancePrivate)}}
             <div class="notes-section">
                 <label class="details-label">{{localize "CO.ui.private"}}</label>
                 <div class="notes-text">
                     {{formInput systemFields.details.fields.appearance.fields.private enriched=enrichedAppearancePrivate value=system.details.appearance.private name="system.details.appearance.private" toggled=true}}
                 </div>
             </div>
+            {{/if}}
         {{/if}}
     </div>
 </section>

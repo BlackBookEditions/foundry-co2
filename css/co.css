@@ -2879,9 +2879,23 @@ co-toggle-switch[checked] thumb {
   box-shadow: 2px 2px var(--color-abilities);
   height: 25px;
 }
-.co.application.sheet.actor.character section.biography .misc.folded,
-.co.application.sheet.actor.character section.biography .bio.folded,
-.co.application.sheet.actor.character section.biography .appearance.folded {
+.co.application.sheet.actor.character section.standard-form.biography .biography-details {
+  display: flex;
+  gap: 16px;
+}
+.co.application.sheet.actor.character section.standard-form.biography .biography-details .form-group > label {
+  width: auto;
+  flex: 0 0 auto;
+}
+.co.application.sheet.actor.character section.standard-form.biography .biography-details .size-group {
+  flex: 0 0 175px;
+}
+.co.application.sheet.actor.character section.standard-form.biography .biography-details .form-group:not(.size-group) {
+  flex: 1 1 auto;
+}
+.co.application.sheet.actor.character section.standard-form.biography .misc.folded,
+.co.application.sheet.actor.character section.standard-form.biography .bio.folded,
+.co.application.sheet.actor.character section.standard-form.biography .appearance.folded {
   display: none;
 }
 .co.application.sheet.actor.character .btn-sort-items-default,

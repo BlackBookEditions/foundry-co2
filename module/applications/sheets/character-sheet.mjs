@@ -96,6 +96,11 @@ export default class COCharacterSheet extends COBaseActorSheet {
     context.enrichedAppearancePublic = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.document.system.details.appearance.public, { async: true })
     context.enrichedAppearancePrivate = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.document.system.details.appearance.private, { async: true })
 
+    context.hasBiographyPublic = !!this.document.system.details.biography.public?.trim()
+    context.hasBiographyPrivate = !!this.document.system.details.biography.private?.trim()
+    context.hasAppearancePublic = !!this.document.system.details.appearance.public?.trim()
+    context.hasAppearancePrivate = !!this.document.system.details.appearance.private?.trim()
+
     context.biographyMiscExpanded = Utils.getExpandedState(`co-${this.document.id}-biography-misc`)
     context.biographyBioExpanded = Utils.getExpandedState(`co-${this.document.id}-biography-bio`)
     context.biographyAppearanceExpanded = Utils.getExpandedState(`co-${this.document.id}-biography-appearance`)

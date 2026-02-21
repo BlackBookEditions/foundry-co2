@@ -71,7 +71,25 @@
   }
 }
 
-section.biography {
+section.standard-form.biography {
+  .biography-details {
+    display: flex;
+    gap: 16px;
+
+    .form-group > label {
+      width: auto;
+      flex: 0 0 auto;
+    }
+
+    .size-group {
+      flex: 0 0 175px;
+    }
+
+    .form-group:not(.size-group) {
+      flex: 1 1 auto;
+    }
+  }
+
   .misc,
   .bio,
   .appearance {
