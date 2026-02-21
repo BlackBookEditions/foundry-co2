@@ -45,6 +45,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
       sortActionsByRank: COBaseActorSheet.#onSortActionsByRank,
       sortActionsByType: COBaseActorSheet.#onSortActionsByType,
       sortActionsByActionType: COBaseActorSheet.#onSortActionsByActionType,
+      shareImage: COBaseActorSheet.#onShareImage,
     },
   }
 
@@ -646,6 +647,17 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     event.preventDefault()
     this.actionsSorting = "byActionType"
     this.render()
+  }
+
+  /**
+   * Affiche l'image de l'acteur dans un popout partagé.
+   * @param {PointerEvent} event The originating click event
+   * @param {HTMLElement} target The capturing HTML element which defined a [data-action]
+   */
+  static #onShareImage(event, target) {
+    event.preventDefault()
+    game.socket.emit("shareImage", { image: this.actor.img, title: this.actor.name })
+    ui.notifications.info("Image affichée à tous les joueurs")
   }
 
   // #endregion

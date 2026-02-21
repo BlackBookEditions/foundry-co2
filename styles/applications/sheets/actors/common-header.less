@@ -18,12 +18,16 @@
     align-content: center;
 
     .hover-icon {
-      color: var(--color-light-3);
+      visibility: hidden;
+      color: black;
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      text-align: center;
+      top: 4px;
+      left: 4px;
+      font-size: var(--font-size-16);
+      cursor: pointer;
+    }
+    &:hover .hover-icon {
+      visibility: visible;
     }
     .actor-img {
       max-height: 150px;

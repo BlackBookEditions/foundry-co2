@@ -2445,12 +2445,16 @@ co-toggle-switch[checked] thumb {
   align-content: center;
 }
 .co.application.sheet.actor .window-content .sheet-header .image-container .hover-icon {
-  color: var(--color-light-3);
+  visibility: hidden;
+  color: black;
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  text-align: center;
+  top: 4px;
+  left: 4px;
+  font-size: var(--font-size-16);
+  cursor: pointer;
+}
+.co.application.sheet.actor .window-content .sheet-header .image-container:hover .hover-icon {
+  visibility: visible;
 }
 .co.application.sheet.actor .window-content .sheet-header .image-container .actor-img {
   max-height: 150px;

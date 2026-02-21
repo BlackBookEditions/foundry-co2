@@ -2,6 +2,7 @@
 <header class="sheet-header">
   <div class="image-container">
     <img class="actor-img {{#if unlocked}}resetImage{{/if}}" src="{{actor.img}}" {{#if unlocked}}data-action="editImage" data-edit="img"{{/if}} data-tooltip="{{actor.name}}" />
+    <a class="hover-icon" data-action="shareImage" data-tooltip="{{localize 'CO.ui.shareImage'}}"><i class="fas fa-image fa-fw"></i></a>
   </div>
   {{#if unlocked}}
     <input class="name" name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'CO.label.long.name'}}" spellcheck="false" />
