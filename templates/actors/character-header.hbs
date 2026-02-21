@@ -24,19 +24,19 @@
   <div class="traits">
     <div class="species">
       {{#if (gt features.length 0)}}
-        <a class="item-img" style="background-image: url('{{features.[0].img}}')"></a>
+        <a class="item-img item" data-item-uuid="{{features.[0].uuid}}" data-action="editItem" style="background-image: url('{{features.[0].img}}')"></a>
         <span>{{features.[0].name}}</span>
       {{/if}}
     </div>
-    {{#unless viewLimited}} 
+    {{#unless viewLimited}}
     <div class="profiles">
       {{#if (gt profiles.length 0)}}
-        <a class="item-img" style="background-image: url('{{profiles.[0].img}}')"></a>
+        <a class="item-img item" data-item-uuid="{{profiles.[0].uuid}}" data-action="editItem" style="background-image: url('{{profiles.[0].img}}')"></a>
         <span>{{profiles.[0].name}}</span>
       {{/if}}
       {{#if (gt profiles.length 1)}}
         <span class="slash">/</span>
-        <a class="item-img" style="background-image: url('{{profiles.[1].img}}')"></a>
+        <a class="item-img item" data-item-uuid="{{profiles.[1].uuid}}" data-action="editItem" style="background-image: url('{{profiles.[1].img}}')"></a>
         <span>{{profiles.[1].name}}</span>
       {{/if}}
     </div>
