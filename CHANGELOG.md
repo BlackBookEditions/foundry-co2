@@ -6,6 +6,9 @@
 - Fiche Personnage - Biographie : Taille et Langages sont affichés sur la même ligne dans la section Divers
 - Fiche Personnage - Biographie : en mode Lecture, les blocs Publique et Privée de Biographie et Apparence ne sont affichés que s'ils contiennent du texte
 
+## Corrections
+- Conditions des actions d'équipement : les conditions (est possédé, est équipé, etc.) définies sur les actions d'un équipement sont maintenant évaluées lors de la collecte des modificateurs. Auparavant, seul le flag `enabled` était vérifié et les conditions étaient ignorées, ce qui empêchait les bonus conditionnels de s'appliquer aux jets de compétences.
+
 # 1.6.1
 
 ## Corrections

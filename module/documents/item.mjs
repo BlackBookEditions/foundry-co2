@@ -1,5 +1,6 @@
 import { Action } from "../models/schemas/action.mjs"
 import { SYSTEM } from "../config/system.mjs"
+import RulesEngine from "../helpers/rules-engine.mjs"
 /**
  * Extend the base Item entity
  * @extends {Item}
@@ -68,7 +69,7 @@ export default class COItem extends Item {
   get modifiers() {
     // For Equipement or Capacity Item, the modifiers are in the actions
     if ([SYSTEM.ITEM_TYPE.equipment.id, SYSTEM.ITEM_TYPE.capacity.id].includes(this.type)) {
-      return this.getModifiersFromActions(true)
+      return this.getModifiersFromActions()
     }
     // For Feature or Profile, the modifiers are in the item
     if ([SYSTEM.ITEM_TYPE.feature.id, SYSTEM.ITEM_TYPE.profile.id].includes(this.type)) {
@@ -78,13 +79,21 @@ export default class COItem extends Item {
   }
 
   /**
-   * Returns an array of modifiers from the actions, with an optional filter for enabled actions.
+   * Returns an array of modifiers from enabled actions.
+   * If an action has conditions, they are evaluated synchronously via RulesEngine.
+   * Otherwise the enabled flag is used.
    *
-   * @param {boolean} [filterEnabled=false] If true, only enabled actions will be considered.
    * @returns {Array} An array of modifiers from the actions.
    */
-  getModifiersFromActions(filterEnabled = false) {
-    const filteredActions = filterEnabled ? this.actions.filter((action) => action.properties.enabled) : this.actions
+  getModifiersFromActions() {
+    const filteredActions = this.actions.filter((action) => {
+      if (action.hasConditions) {
+        const actor = this.actor
+        if (actor) return action.conditions.every((condition) => RulesEngine.evaluate(condition, this, actor))
+        return false
+      }
+      return action.properties.enabled
+    })
     let modifiers = []
     for (const action of filteredActions) {
       modifiers.push(...action.modifiers)
@@ -92,16 +101,6 @@ export default class COItem extends Item {
     return modifiers
   }
 
-  /**
-   * Return an array of enabled Modifiers
-   * If the item has actions, only enabled actions are taken into account
-   */
-  get enabledModifiers() {
-    // For Equipement or Capacity Item, the modifiers are in enabled actions
-    if ([SYSTEM.ITEM_TYPE.equipment.id, SYSTEM.ITEM_TYPE.capacity.id].includes(this.type)) return this.getModifiersFromActions(true)
-    // For Feature or Profile, the modifiers are in the item and are all considered as enabled
-    else return this.modifiers
-  }
 
   get tags() {
     return this.system.tags

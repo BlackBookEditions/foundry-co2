@@ -116,7 +116,7 @@ export default class ActorData extends foundry.abstract.TypeDataModel {
       let items = this.parent[source]
       if (items) {
         let allModifiers = items
-          .reduce((mods, item) => mods.concat(item.enabledModifiers), [])
+          .reduce((mods, item) => mods.concat(item.modifiers), [])
           .filter((m) => m.subtype === subtype && (m.apply === SYSTEM.MODIFIERS_APPLY.self.id || m.apply === SYSTEM.MODIFIERS_APPLY.both.id))
         modifiersArray.push(...allModifiers)
       }
