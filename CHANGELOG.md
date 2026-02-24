@@ -1,3 +1,8 @@
+# 1.6.3
+
+## Corrections
+- Modificateurs des actions activables avec conditions : pour les actions activables (temporaires ou non) possédant des conditions (ex : `isLearned`), les modificateurs n'étaient vérifiés que sur les conditions et ignoraient le flag `enabled`. Cela provoquait l'application permanente des bonus dès l'acquisition de la capacité (ex : bonus d'attaque et DM de Feinte actifs en permanence). Les conditions contrôlent désormais la visibilité du bouton, et `enabled` contrôle l'activation effective des modificateurs.
+
 # 1.6.2
 
 ## Améliorations

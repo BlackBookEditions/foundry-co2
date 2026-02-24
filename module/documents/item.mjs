@@ -89,8 +89,12 @@ export default class COItem extends Item {
     const filteredActions = this.actions.filter((action) => {
       if (action.hasConditions) {
         const actor = this.actor
-        if (actor) return action.conditions.every((condition) => RulesEngine.evaluate(condition, this, actor))
-        return false
+        if (!actor) return false
+        const conditionsMet = action.conditions.every((condition) => RulesEngine.evaluate(condition, this, actor))
+        if (!conditionsMet) return false
+        // Si l'action est activable, les conditions ne suffisent pas : il faut aussi que enabled soit true
+        if (action.properties.activable) return action.properties.enabled
+        return true
       }
       return action.properties.enabled
     })
