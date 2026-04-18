@@ -17,18 +17,7 @@
                     <label for="dice">{{localize 'CO.ui.rollBonus'}}</label>
                 </div>
             </div>
-        </div>         
-        <div class="icone"><i class="fas fa-fw fa-shield-alt"></i></div>
-        <div class="form-group diffGroup">
-            <label class="textCenter near">{{localize 'CO.label.long.difficulty'}}</label> 
-            <div class="form-fields" style="{{#if showDifficulty}}visibility:visible;{{else}}visibility:collapse;{{/if}}" >                                               
-                {{#if showDifficulty}}
-                    <input class="field-value textCenter" id="difficulty" name="difficulty" type="text" value="{{difficulty}}" data-dtype="String" data-tooltip="{{difficultyTooltip}}" {{#if auto}}readonly{{/if}}/>
-                {{else}}
-                    <input class="field-value textCenter" id="difficulty" name="difficulty" type="hidden" value="{{difficulty}}" data-dtype="String"/>
-                {{/if}}
-            </div>
-        </div>        
+        </div>
     {{/if}}
     <div class="icone"><i class="fa-solid fa-user-secret"></i></div>  
     <div class="form-group rollMode">
@@ -40,6 +29,10 @@
         </div>
     </div>
 </section>
+
+{{#if (eq type 'attack')}}
+    <input id="difficulty" name="difficulty" type="hidden" value="{{difficulty}}" data-dtype="String" />
+{{/if}}
 
 {{#if (eq type 'attack')}}
     <fieldset class="attack-roll-2">      
@@ -154,6 +147,9 @@
             {{#each targets as |target id|}}
             <div class="target">
                 <img class="actor-image" src="{{token.document.texture.src}}" data-tooltip="{{target.name}}" height="50px" width="50px" data-id="{{actor.id}}" data-uuid="{{uuid}}"/>
+                {{#unless (eq previewDifficulty null)}}
+                    <div class="target-preview-difficulty">{{previewDifficulty}}</div>
+                {{/unless}}
             </div> 
             {{/each}}
         </div>

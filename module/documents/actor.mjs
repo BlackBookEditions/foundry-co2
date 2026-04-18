@@ -1839,6 +1839,7 @@ export default class COActor extends Actor {
       skillFormulaTooltip = "",
       damageFormula = undefined,
       damageFormulaTooltip = "",
+      targetType = SYSTEM.RESOLVER_TARGET.none.id,
       targets = undefined,
       customEffect,
       additionalEffect,
@@ -1871,6 +1872,7 @@ export default class COActor extends Actor {
       skillFormulaTooltip,
       damageFormula,
       damageFormulaTooltip,
+      targetType,
       targets,
       customEffect,
       additionalEffect,
@@ -1938,14 +1940,20 @@ export default class COActor extends Actor {
       }
     }
     // Si la difficulté dépend de la cible unique
-    if (!auto && useDifficulty && targets === undefined) {
+    if (!auto && useDifficulty) {
+      const optionalTargetCount = canvas.tokens?.placeables?.length ?? 999
       if (difficulty && difficulty?.includes("@cible")) {
-        targets = this.acquireTargets("single", "all", 1, actionName)
+        if (targets === undefined || targets.length === 0) {
+          if (targetType === SYSTEM.RESOLVER_TARGET.none.id) {
+            targets = this.acquireTargets(SYSTEM.RESOLVER_TARGET.multiple.id, SYSTEM.RESOLVER_SCOPE.all.id, optionalTargetCount, actionName)
+          } else {
+            targets = this.acquireTargets("single", "all", 1, actionName)
+          }
+        }
         if (targets.length === 0) {
           difficulty = null
-        }
-        if (targets.length > 0) {
-          // Enlève le cible. de la difficulté
+        } else {
+          // Enlève le cible. de la difficulté (résolu contre la première cible pour le résultat global)
           difficulty = difficulty.replace(/@.*\./, "@")
           difficulty = CORoll.replaceFormulaData(difficulty, targets[0].actor.getRollData())
         }
@@ -1954,7 +1962,13 @@ export default class COActor extends Actor {
       // Si l'attaque demande un jet opposé contre la cible
       else if (difficulty && difficulty.includes("@oppose")) {
         oppositeRoll = true
-        targets = this.acquireTargets("single", "all", 1, actionName)
+        if (targets === undefined || targets.length === 0) {
+          if (targetType === SYSTEM.RESOLVER_TARGET.none.id) {
+            targets = this.acquireTargets(SYSTEM.RESOLVER_TARGET.multiple.id, SYSTEM.RESOLVER_SCOPE.all.id, optionalTargetCount, actionName)
+          } else {
+            targets = this.acquireTargets("single", "all", 1, actionName)
+          }
+        }
         if (targets.length === 0) {
           difficulty = null
         }
@@ -2072,6 +2086,15 @@ export default class COActor extends Actor {
     let opposeResult = ""
     let opposeTooltip = ""
 
+    let dialogTargets = targets
+    if (type === "attack" && targets?.length > 0 && useDifficulty && showDifficulty) {
+      const targetDifficultyPreview = Utils.computeTargetResults(targets, difficultyTooltip, 0, {})
+      dialogTargets = targets.map((target, index) => ({
+        ...target,
+        previewDifficulty: targetDifficultyPreview[index]?.difficulty ?? null,
+      }))
+    }
+
     // Préparation des statuts disponibles pour l'effet additionnel
     let availableStatuses = []
     let hasAvailableStatuses = false
@@ -2091,6 +2114,8 @@ export default class COActor extends Actor {
       type,
       dice,
       useComboRolls,
+      itemName: item.name,
+      itemImg: item.img,
       actionName: actionName,
       title: `${item.name} ${actionName}`,
       flavor: chatFlavor,
@@ -2110,8 +2135,8 @@ export default class COActor extends Actor {
       formulaAttackTooltip: skillFormulaTooltip,
       formulaDamage: damageFormula,
       formulaDamageTooltip: damageFormulaTooltip,
-      targets,
-      hasTargets: targets?.length > 0,
+      targets: dialogTargets,
+      hasTargets: dialogTargets?.length > 0,
       tempDamage,
       canBeTempDamage,
       tactical,
@@ -2151,6 +2176,29 @@ export default class COActor extends Actor {
      */
     if (Hooks.call("co.resultRollAttack", item, options, rolls, results) === false) return
 
+    // Calcul des résultats par cible (une ligne par cible sur la carte de chat)
+    let targetResults = []
+    if (targets && targets.length > 0) {
+      if (type === "attack") {
+        targetResults = Utils.computeTargetResults(targets, difficultyTooltip, rolls[0].total, results[0])
+        rolls[0].options.targetResults = targetResults
+        if (rolls[1]) rolls[1].options.targetResults = targetResults
+      } else if (type === "damage") {
+        targetResults = targets.map((target) => ({
+          uuid: target.uuid,
+          name: target.name,
+          img: target.token?.document?.texture?.src ?? target.actor?.img ?? null,
+          difficulty: null,
+          isSuccess: false,
+          isFailure: false,
+          isCritical: false,
+          isFumble: false,
+          needsOppositeRoll: false,
+        }))
+        rolls[0].options.targetResults = targetResults
+      }
+    }
+
     // Prépare le message de résultat
     const speaker = ChatMessage.getSpeaker({ actor: this, scene: canvas.scene })
 
@@ -2175,7 +2223,7 @@ export default class COActor extends Actor {
           speaker,
           style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           type: "action",
-          system: { subtype: "attack", targets: targetsUuid, result: results[0], linkedRoll, customEffect: effectiveCustomEffect, additionalEffect, selectedStatuses },
+          system: { subtype: "attack", targets: targetsUuid, targetResults, result: results[0], linkedRoll, customEffect: effectiveCustomEffect, additionalEffect, selectedStatuses },
         },
         { messageMode: rolls[0].options.rollMode },
       )
@@ -2189,7 +2237,7 @@ export default class COActor extends Actor {
         ) {
           if (rolls[1]) {
             await rolls[1].toMessage(
-              { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid }, speaker },
+              { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid, targetResults }, speaker },
               { messageMode: rolls[1].options.rollMode },
             )
           }
@@ -2200,7 +2248,7 @@ export default class COActor extends Actor {
     // Jet de dommages
     else if (type === "damage") {
       await rolls[0].toMessage(
-        { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid }, speaker },
+        { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid, targetResults }, speaker },
         { messageMode: rolls[0].options.rollMode },
       )
     }

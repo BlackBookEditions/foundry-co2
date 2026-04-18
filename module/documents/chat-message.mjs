@@ -72,10 +72,13 @@ export default class COChatMessage extends ChatMessage {
    * @static
    * @async
    */
-  static async _handleQueryUpdateMessageAfterLuck({ existingMessageId, rolls, result } = {}) {
+  static async _handleQueryUpdateMessageAfterLuck({ existingMessageId, rolls, result, targetResults } = {}) {
     const message = game.messages.get(existingMessageId)
     if (!message) return
-    await message.update({ rolls: rolls, "system.result": result })
+    const updateData = { rolls: rolls }
+    if (result !== undefined && result !== null) updateData["system.result"] = result
+    if (targetResults !== undefined) updateData["system.targetResults"] = targetResults
+    await message.update(updateData)
   }
 
   /**
@@ -90,10 +93,13 @@ export default class COChatMessage extends ChatMessage {
    * @static
    * @async
    */
-  static async _handleQueryUpdateMessageAfterOpposedRoll({ existingMessageId, rolls, result } = {}) {
+  static async _handleQueryUpdateMessageAfterOpposedRoll({ existingMessageId, rolls, result, targetResults } = {}) {
     const message = game.messages.get(existingMessageId)
     if (!message) return
-    await message.update({ rolls: rolls, "system.result": result })
+    const updateData = { rolls: rolls }
+    if (result !== undefined && result !== null) updateData["system.result"] = result
+    if (targetResults !== undefined) updateData["system.targetResults"] = targetResults
+    await message.update(updateData)
   }
 
   /**

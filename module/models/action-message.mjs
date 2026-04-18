@@ -16,6 +16,20 @@ export default class ActionMessageData extends BaseMessageData {
         initial: SYSTEM.CHAT_MESSAGE_TYPES.UNKNOWN,
       }),
       result: new fields.ObjectField(),
+      targetResults: new fields.ArrayField(
+        new fields.SchemaField({
+          uuid: new fields.StringField({ required: false, nullable: true, blank: true }),
+          name: new fields.StringField({ required: false, nullable: true, blank: true }),
+          img: new fields.StringField({ required: false, nullable: true, blank: true }),
+          difficulty: new fields.NumberField({ required: false, nullable: true, integer: true }),
+          isSuccess: new fields.BooleanField({ initial: false }),
+          isFailure: new fields.BooleanField({ initial: false }),
+          isCritical: new fields.BooleanField({ initial: false }),
+          isFumble: new fields.BooleanField({ initial: false }),
+          needsOppositeRoll: new fields.BooleanField({ initial: false }),
+        }),
+        { required: false, initial: [] },
+      ),
       linkedRoll: new fields.ObjectField(),
       customEffect: new fields.EmbeddedDataField(CustomEffectData),
       additionalEffect: new fields.SchemaField({
@@ -59,29 +73,31 @@ export default class ActionMessageData extends BaseMessageData {
       const targetsSection = html.querySelector(".targets")
       if (!targetsSection) return
 
-      const targetActors = Array.from(message.system.targets)
-      if (targetActors.length > 0) {
-        const targetList = document.createElement("ul")
-        targetList.classList.add("target-list")
-        targetActors.forEach((actorUuid) => {
-          const actor = fromUuidSync(actorUuid)
-          if (!actor) return
-          const listItem = document.createElement("li")
-          // Ajouter l'image de l'acteur avant le nom
-          const img = document.createElement("img")
-          img.src = actor.img
-          img.classList.add("target-actor-img")
-          listItem.appendChild(img)
-          // Ajouter le nom de l'acteur après l'image
-          const name = document.createElement("span")
-          name.textContent = actor.name
-          name.classList.add("name-stacked")
-          listItem.appendChild(name)
-
-          // ----- on insère le <li> dans la <ul> -----
-          targetList.appendChild(listItem)
-        })
-        targetsSection.appendChild(targetList)
+      const hasTargetResults = message.system.targetResults?.length > 0
+      // Rendu legacy : si on n'a pas de targetResults (anciens messages), on injecte la liste portrait+nom en JS
+      if (!hasTargetResults) {
+        const targetActors = Array.from(message.system.targets)
+        if (targetActors.length > 0) {
+          const targetList = document.createElement("ul")
+          targetList.classList.add("target-list")
+          targetActors.forEach((actorUuid) => {
+            const actor = fromUuidSync(actorUuid)
+            if (!actor) return
+            const listItem = document.createElement("li")
+            listItem.classList.add("target-row")
+            listItem.dataset.targetUuid = actorUuid
+            const img = document.createElement("img")
+            img.src = actor.img
+            img.classList.add("target-actor-img")
+            listItem.appendChild(img)
+            const name = document.createElement("span")
+            name.textContent = actor.name
+            name.classList.add("target-name")
+            listItem.appendChild(name)
+            targetList.appendChild(listItem)
+          })
+          targetsSection.appendChild(targetList)
+        }
       }
 
       // Affiche ou non la difficulté
@@ -144,11 +160,23 @@ export default class ActionMessageData extends BaseMessageData {
               await actor.update({ "system.resources.fortune.value": actor.system.resources.fortune.value })
             }
 
-            // Si l'option Jet combinée est activée et le jet est un succès, on lance les dommages
-            if (game.settings.get("co2", "useComboRolls") && newResult.isSuccess && message.system.linkedRoll && Object.keys(message.system.linkedRoll).length > 0) {
+            // Recalcul des résultats par cible avec le nouveau total
+            const currentTargetResults = message.system.targetResults ?? []
+            let newTargetResults = currentTargetResults
+            if (currentTargetResults.length > 0) {
+              newTargetResults = Utils.recomputeTargetResults(currentTargetResults, rolls[0].total, newResult)
+              rolls[0].options.targetResults = newTargetResults
+            }
+
+            // Si l'option Jet combinée est activée et au moins une cible (ou le jet global) est un succès, on lance les dommages
+            const anyRowSuccess = newTargetResults.some((tr) => tr.isSuccess)
+            const shouldTriggerDamage = currentTargetResults.length > 0 ? anyRowSuccess : newResult.isSuccess
+            if (game.settings.get("co2", "useComboRolls") && shouldTriggerDamage && message.system.linkedRoll && Object.keys(message.system.linkedRoll).length > 0) {
               const damageRoll = Roll.fromData(message.system.linkedRoll)
+              const damageSystem = { subtype: "damage" }
+              if (currentTargetResults.length > 0) damageSystem.targetResults = newTargetResults.filter((tr) => tr.isSuccess)
               await damageRoll.toMessage(
-                { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },
+                { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: damageSystem, speaker: message.speaker },
                 { messageMode: rolls[0].options.rollMode },
               )
             }
@@ -168,119 +196,206 @@ export default class ActionMessageData extends BaseMessageData {
             }
 
             // Mise à jour du message de chat
-            // Le MJ peut mettre à jour le message de chat
+            const updateData = { rolls: rolls, "system.result": newResult }
+            if (currentTargetResults.length > 0) updateData["system.targetResults"] = newTargetResults
+
             if (game.user.isGM) {
-              await message.update({ rolls: rolls, "system.result": newResult })
-            }
-            // Sinon on émet un message pour mettre à jour le message de chat
-            else {
-              await game.users.activeGM.query("co2.updateMessageAfterLuck", { existingMessageId: message.id, rolls: rolls, result: newResult })
+              await message.update(updateData)
+            } else {
+              await game.users.activeGM.query("co2.updateMessageAfterLuck", {
+                existingMessageId: message.id,
+                rolls: rolls,
+                result: newResult,
+                targetResults: currentTargetResults.length > 0 ? newTargetResults : undefined,
+              })
             }
           })
         }
       }
 
-      // Click sur le bouton de jet opposé
-      const oppositeButton = html.querySelector(".opposite-roll")
+      // Click sur le(s) bouton(s) de jet opposé
+      const oppositeButtons = html.querySelectorAll(".opposite-roll")
       const displayOppositeButton = game.user.isGM || this.isActorTargeted
 
-      if (oppositeButton && displayOppositeButton) {
-        oppositeButton.addEventListener("click", async (event) => {
-          event.preventDefault()
-          event.stopPropagation()
-          const messageId = event.currentTarget.closest(".message").dataset.messageId
-          if (!messageId) return
-          const message = game.messages.get(messageId)
+      if (oppositeButtons.length > 0 && displayOppositeButton) {
+        oppositeButtons.forEach((oppositeButton) => {
+          oppositeButton.addEventListener("click", async (event) => {
+            event.preventDefault()
+            event.stopPropagation()
+            const messageId = event.currentTarget.closest(".message").dataset.messageId
+            if (!messageId) return
+            const message = game.messages.get(messageId)
 
-          const dataset = event.currentTarget.dataset
-          const oppositeValue = dataset.oppositeValue
-          const oppositeTarget = dataset.oppositeTarget
+            const dataset = event.currentTarget.dataset
+            const oppositeValue = dataset.oppositeValue
+            const oppositeTarget = dataset.oppositeTarget
 
-          const targetActor = fromUuidSync(oppositeTarget)
-          if (!targetActor) return
+            const targetActor = fromUuidSync(oppositeTarget)
+            if (!targetActor) return
 
-          // Gestion de la fenêtre de skill en cas d'attaque opposé à une ability
-          // Vérifie que oppositeValue commence par "oppose." sinon ben on a rien à faire ici !
-          if (!oppositeValue.startsWith("@oppose.")) {
-            console.warn("On clique sur un bouton d'opposition qui n'a pas le terme oppose : ", oppositeValue)
-            return
-          }
-
-          // Extrait la partie après "oppose."
-          const abilityId = oppositeValue.replace("@oppose.", "")
-
-          // Vérifie si abilityId est une clé valide dans ABILITIES
-          let isSkillRoll = Object.keys(SYSTEM.ABILITIES).includes(abilityId)
-          let value = 0
-          let rolls = message.rolls
-
-          let opposeResultAnalyse = null
-
-          if (isSkillRoll) {
-            // On ouvre la fenêtre de rollSkill et on récupère le résultat
-            const targetRollSkill = await targetActor.rollSkill(abilityId, { difficulty: rolls[0].total, showResult: false, showOppositeRoll: false })
-            opposeResultAnalyse = CORoll.analyseRollResult(targetRollSkill.roll)
-            rolls[0].options.oppositeRoll = false
-            rolls[0].options.difficulty = targetRollSkill.roll.total
-            rolls[0].options.opposeResult = targetRollSkill.roll.result
-            rolls[0].options.opposeTooltip = await targetRollSkill.roll.getTooltip()
-          } else {
-            value = Utils.evaluateOppositeFormula(oppositeValue, targetActor)
-            const formula = value ? `1d20 + ${value}` : `1d20`
-            const roll = await new Roll(formula).roll()
-            const difficulty = roll.total
-            opposeResultAnalyse = CORoll.analyseRollResult(roll)
-            rolls[0].options.oppositeRoll = false
-            rolls[0].options.difficulty = difficulty
-            rolls[0].options.opposeResult = roll.result
-            rolls[0].options.opposeTooltip = await roll.getTooltip()
-          }
-
-          let newResult = CORoll.analyseRollResult(rolls[0])
-
-          // Attention il est aussi possible que le jet de l'opposant soit un critique ou un fumble il faut le gérer
-          if (opposeResultAnalyse.isCritical && !newResult.isCritical) {
-            newResult.isSuccess = false
-            newResult.isFailure = true
-          } else if (opposeResultAnalyse.isFumble && rolls[0].product > 1) {
-            // Si l'opposition fait un fumble et l'attaque n'en fait pas
-            newResult.isSuccess = true
-            newResult.isFailure = false
-          } else if (!opposeResultAnalyse.isCritical && rolls[0].product === 20) {
-            // Si l'attaquand fait un 20 naturel mais pas le defense c'est un succès
-            // Si l'opposition fait un fumble et l'attaque n'en fait pas
-            newResult.isSuccess = true
-            newResult.isFailure = false
-          }
-
-          // Le jet est un succès
-          if (newResult.isSuccess && message.system.linkedRoll && Object.keys(message.system.linkedRoll).length > 0) {
-            const damageRoll = Roll.fromData(message.system.linkedRoll)
-            await damageRoll.toMessage(
-              { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },
-              { messageMode: rolls[0].options.rollMode },
-            )
-          }
-
-          // Gestion des custom effects
-          const customEffect = message.system.customEffect
-          const additionalEffect = message.system.additionalEffect
-          if (customEffect && additionalEffect && additionalEffect.active && Resolver.shouldManageAdditionalEffect(newResult, additionalEffect)) {
-            if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
-            else {
-              await game.users.activeGM.query("co2.applyCustomEffect", { ce: customEffect, targets: [targetActor.uuid] })
+            // Gestion de la fenêtre de skill en cas d'attaque opposé à une ability
+            if (!oppositeValue.startsWith("@oppose.")) {
+              console.warn("On clique sur un bouton d'opposition qui n'a pas le terme oppose : ", oppositeValue)
+              return
             }
-          }
 
-          // Mise à jour du message de chat
-          // Le MJ peut mettre à jour le message de chat
-          if (game.user.isGM) {
-            await message.update({ rolls: rolls, "system.result": newResult })
-          }
-          // Sinon on émet un message pour mettre à jour le message de chat
-          else {
-            await game.users.activeGM.query("co2.updateMessageAfterOpposedRoll", { existingMessageId: message.id, rolls: rolls, result: newResult })
-          }
+            const abilityId = oppositeValue.replace("@oppose.", "")
+            const isSkillRoll = Object.keys(SYSTEM.ABILITIES).includes(abilityId)
+            let value = 0
+            let rolls = message.rolls
+            let opposeResultAnalyse = null
+            let rowDifficulty = null
+            let opposeResultStr = ""
+            let opposeTooltipStr = ""
+
+            if (isSkillRoll) {
+              const targetRollSkill = await targetActor.rollSkill(abilityId, { difficulty: rolls[0].total, showResult: false, showOppositeRoll: false })
+              opposeResultAnalyse = CORoll.analyseRollResult(targetRollSkill.roll)
+              rowDifficulty = targetRollSkill.roll.total
+              opposeResultStr = targetRollSkill.roll.result
+              opposeTooltipStr = await targetRollSkill.roll.getTooltip()
+            } else {
+              value = Utils.evaluateOppositeFormula(oppositeValue, targetActor)
+              const formula = value ? `1d20 + ${value}` : `1d20`
+              const roll = await new Roll(formula).roll()
+              rowDifficulty = roll.total
+              opposeResultAnalyse = CORoll.analyseRollResult(roll)
+              opposeResultStr = roll.result
+              opposeTooltipStr = await roll.getTooltip()
+            }
+
+            // Calcul du résultat pour CETTE cible
+            let localResult = CORoll.analyseRollResult(rolls[0])
+            let rowSuccess = rolls[0].total >= rowDifficulty
+            let rowFailure = !rowSuccess
+
+            if (opposeResultAnalyse.isCritical && !localResult.isCritical) {
+              rowSuccess = false
+              rowFailure = true
+            } else if (opposeResultAnalyse.isFumble && rolls[0].product > 1) {
+              rowSuccess = true
+              rowFailure = false
+            } else if (!opposeResultAnalyse.isCritical && rolls[0].product === 20) {
+              rowSuccess = true
+              rowFailure = false
+            }
+            if (localResult.isCritical) {
+              rowSuccess = true
+              rowFailure = false
+            }
+            if (localResult.isFumble) {
+              rowSuccess = false
+              rowFailure = true
+            }
+
+            // Mise à jour de targetResults (par cible) ou fallback legacy (system.result)
+            const currentTargetResults = message.system.targetResults ?? []
+            const hasTargetResults = currentTargetResults.length > 0
+            let newTargetResults = currentTargetResults
+            let newGlobalResult = null
+
+            if (hasTargetResults) {
+              newTargetResults = currentTargetResults.map((tr) => {
+                if (tr.uuid !== oppositeTarget) return tr
+                return {
+                  ...tr,
+                  difficulty: rowDifficulty,
+                  isSuccess: rowSuccess,
+                  isFailure: rowFailure,
+                  needsOppositeRoll: false,
+                }
+              })
+              // Synchronise aussi rolls[0].options.targetResults pour que le re-render du template voit la màj
+              rolls[0].options.targetResults = newTargetResults
+            } else {
+              // Fallback legacy : on écrase system.result comme avant
+              rolls[0].options.oppositeRoll = false
+              rolls[0].options.difficulty = rowDifficulty
+              rolls[0].options.opposeResult = opposeResultStr
+              rolls[0].options.opposeTooltip = opposeTooltipStr
+              newGlobalResult = { ...localResult, isSuccess: rowSuccess, isFailure: rowFailure, difficulty: rowDifficulty }
+            }
+
+            // Le jet est un succès : déclenche le jet de dommages lié
+            if (rowSuccess && message.system.linkedRoll && Object.keys(message.system.linkedRoll).length > 0) {
+              const damageRoll = Roll.fromData(message.system.linkedRoll)
+              await damageRoll.toMessage(
+                { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker: message.speaker },
+                { messageMode: rolls[0].options.rollMode },
+              )
+            }
+
+            // Gestion des custom effects (appliqués uniquement à la cible qui fait le jet opposé)
+            const customEffect = message.system.customEffect
+            const additionalEffect = message.system.additionalEffect
+            const rowResultForEffect = { ...localResult, isSuccess: rowSuccess, isFailure: rowFailure }
+            if (customEffect && additionalEffect && additionalEffect.active && Resolver.shouldManageAdditionalEffect(rowResultForEffect, additionalEffect)) {
+              if (game.user.isGM) await targetActor.applyCustomEffect(customEffect)
+              else {
+                await game.users.activeGM.query("co2.applyCustomEffect", { ce: customEffect, targets: [targetActor.uuid] })
+              }
+            }
+
+            // Mise à jour du message de chat
+            const updateData = { rolls: rolls }
+            if (hasTargetResults) updateData["system.targetResults"] = newTargetResults
+            else updateData["system.result"] = newGlobalResult
+
+            if (game.user.isGM) {
+              await message.update(updateData)
+            } else {
+              await game.users.activeGM.query("co2.updateMessageAfterOpposedRoll", {
+                existingMessageId: message.id,
+                rolls: rolls,
+                result: newGlobalResult,
+                targetResults: hasTargetResults ? newTargetResults : undefined,
+              })
+            }
+          })
+        })
+      }
+
+      const associatedActor = this.parent.getAssociatedActor?.()
+      const canInteractWithTargets = game.user.isGM || this.parent.isAuthor || associatedActor?.isOwner
+      let highlightedTargetToken = null
+      const targetRows = html.querySelectorAll(".target-row[data-target-uuid]")
+      if (targetRows.length > 0) {
+        targetRows.forEach((targetRow) => {
+          if (!canInteractWithTargets) return
+
+          targetRow.classList.add("is-interactive")
+
+          targetRow.addEventListener("click", async (event) => {
+            event.preventDefault()
+            event.stopPropagation()
+
+            const targetReference = Utils.resolveChatTargetReference(event.currentTarget.dataset.targetUuid)
+            const targetToken = targetReference?.token
+            if (!targetReference?.canLocate || !targetToken || !canvas?.ready) return
+
+            if (targetReference.canControl) {
+              targetToken.control({ releaseOthers: !event.shiftKey })
+            }
+            await canvas.animatePan(targetToken.center)
+          })
+
+          targetRow.addEventListener("pointerover", (event) => {
+            const targetReference = Utils.resolveChatTargetReference(event.currentTarget.dataset.targetUuid)
+            const targetToken = targetReference?.token
+            if (!targetReference?.canLocate || !targetToken?.isVisible || targetToken.controlled) return
+
+            targetToken._onHoverIn(event, { hoverOutOthers: true })
+            highlightedTargetToken = targetToken
+          })
+
+          targetRow.addEventListener("pointerout", (event) => {
+            const targetReference = Utils.resolveChatTargetReference(event.currentTarget.dataset.targetUuid)
+            const targetToken = targetReference?.token
+            if (!targetToken || highlightedTargetToken !== targetToken) return
+
+            targetToken._onHoverOut(event)
+            highlightedTargetToken = null
+          })
         })
       }
     }
@@ -301,8 +416,13 @@ export default class ActionMessageData extends BaseMessageData {
               const dmg = parseInt(dataset.total)
               const tempDamage = html.querySelector("#tempDm").checked
               const drChecked = html.querySelector("#dr").checked
-              const rolls = this.parent.rolls
-              Hitpoints.applyToTargets({ fromActor: actorId, source: sourceLabel, type, amount: dmg, drChecked, tempDamage })
+              const targetUuid = dataset.targetUuid
+              if (targetUuid) {
+                const targetActor = fromUuidSync(targetUuid)
+                Hitpoints.applyToSingleTarget({ targetActor, fromActor: actorId, source: sourceLabel, type, amount: dmg, drChecked, tempDamage })
+              } else {
+                Hitpoints.applyToTargets({ fromActor: actorId, source: sourceLabel, type, amount: dmg, drChecked, tempDamage })
+              }
             })
           })
         }

@@ -500,6 +500,9 @@ export class COAttackRoll extends CORoll {
         actorId: dialogContext.actor.id,
         rollMode: withDialog ? rollContext.rollMode : dialogContext.rollMode,
         type: "attack",
+        itemName: dialogContext.itemName,
+        itemImg: dialogContext.itemImg,
+        actionName: dialogContext.actionName,
         flavor: dialogContext.flavor,
         dice: withDialog ? rollContext.dice : dialogContext.dice,
         formulaAttack: withDialog ? rollContext.formulaAttack : dialogContext.formulaAttack,
@@ -636,7 +639,8 @@ export class COAttackRoll extends CORoll {
 
     // Affichage de la difficulté
     const displayDifficulty = game.settings.get("co2", "displayDifficulty")
-    const showDifficuly = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
+    const viewerCanSeeDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
+    const showDifficulty = !!this.options.useDifficulty && viewerCanSeeDifficulty
 
     // On peut utiliser un point de chance si on en a et que ce n'est pas déjà un critique
     const canUseLuckyPoints = this.options.hasLuckyPoints && !rollResults.isCritical
@@ -644,6 +648,9 @@ export class COAttackRoll extends CORoll {
     return {
       formula: isPrivate ? "???" : this.formula,
       flavor: `${this.options.flavor}`,
+      itemName: this.options.itemName || this.options.flavor,
+      itemImg: this.options.itemImg || null,
+      actionName: this.options.actionName || "",
       user: game.user.id,
       tooltip: isPrivate ? "" : this.options.tooltip,
       total: isPrivate ? "?" : Math.ceil(this.total),
@@ -653,7 +660,7 @@ export class COAttackRoll extends CORoll {
       hasDice,
       diceType,
       useDifficulty: this.options.useDifficulty,
-      showDifficulty: showDifficuly,
+      showDifficulty,
       oppositeRoll: this.options.oppositeRoll,
       oppositeTarget: this.options.oppositeTarget,
       oppositeValue: this.options.difficulty,
@@ -671,6 +678,8 @@ export class COAttackRoll extends CORoll {
       opposeTooltip: this.options.opposeTooltip,
       formulaAttackTooltip: isPrivate ? "" : this.options.formulaAttackTooltip || "",
       formulaDamageTooltip: isPrivate ? "" : this.options.formulaDamageTooltip || "",
+      targetResults: this.options.targetResults ?? [],
+      hasTargetResults: (this.options.targetResults?.length ?? 0) > 0,
     }
   }
 
@@ -696,6 +705,8 @@ export class COAttackRoll extends CORoll {
       speaker: ChatMessage.getSpeaker({ actor: this.options.actorId, scene: canvas.scene }),
       tempDamage: this.options.tempDamage,
       formulaDamageTooltip: isPrivate ? "" : this.options.formulaDamageTooltip || "",
+      targetResults: this.options.targetResults ?? [],
+      hasTargetResults: (this.options.targetResults?.length ?? 0) > 0,
     }
   }
 

@@ -15,6 +15,11 @@
   .damage-part {
     margin: 0 0 0 10px;
   }
+  .damage-options {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
   .damage-buttons {
     display: grid;
     grid-template-columns: repeat(4, 37px);
@@ -27,10 +32,61 @@
       text-shadow: 0px 0px 2px var(--color-chatDamages);
     }
   }
-  .temp-dm {
-    grid-column: 1/3;
+  .targets-header {
+    font-size: var(--font-size-12);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 0 2px;
+    border-top: 1px solid var(--color-border-light-2);
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-chatDamages);
+    i {
+      font-size: var(--font-size-11);
+    }
   }
+  .damage-target-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .damage-target-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 4px;
+    border-bottom: 1px solid var(--color-border-light-tertiary);
+    &:last-child {
+      border-bottom: none;
+    }
+    .target-portrait {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: none;
+    }
+    .target-name {
+      flex: 1;
+      font-weight: bold;
+      font-size: var(--font-size-14);
+    }
+    .damage-buttons {
+      grid-template-rows: 30px;
+      grid-template-columns: repeat(4, 30px);
+      padding-left: 6px;
+      .fas {
+        font-size: 18px;
+      }
+    }
+  }
+  .temp-dm,
   .dr {
-    grid-column: 3/5;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 }

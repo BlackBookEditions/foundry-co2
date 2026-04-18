@@ -79,6 +79,33 @@ export class Resolver extends foundry.abstract.DataModel {
     }
   }
 
+  hasOptionalTargets() {
+    return (
+      this.target.type === SYSTEM.RESOLVER_TARGET.none.id ||
+      ((this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id) && this.target.number === 0)
+    )
+  }
+
+  getOptionalTargetCount() {
+    return canvas.tokens?.placeables?.length ?? 999
+  }
+
+  getResolverTargets(actor, actionName, { allowTargetDependentDifficulty = false, difficultyFormula = "" } = {}) {
+    const hasOptionalTargets = this.hasOptionalTargets()
+    const hasTargetDependentDifficulty =
+      allowTargetDependentDifficulty && typeof difficultyFormula === "string" && (difficultyFormula.includes("@cible") || difficultyFormula.includes("@oppose"))
+
+    if (hasOptionalTargets && hasTargetDependentDifficulty) {
+      return actor.acquireTargets(SYSTEM.RESOLVER_TARGET.multiple.id, SYSTEM.RESOLVER_SCOPE.all.id, this.getOptionalTargetCount(), actionName)
+    }
+
+    return actor.acquireTargets(this.target.type, this.target.scope, this.target.number, actionName)
+  }
+
+  shouldWarnMissingTargets(targets) {
+    return !this.hasOptionalTargets() && targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)
+  }
+
   /**
    * Resolver pour les actions de type Attaque
    * @param {COActor} actor : l'acteur pour lequel s'applique l'action
@@ -107,13 +134,13 @@ export class Resolver extends foundry.abstract.DataModel {
 
     // Gestion des cibles
     let targets = []
-    // Si le type de cible est none et que la formule de la difficulté contient @cible, on considère que c'est une unique cible
-    if (this.target.type === SYSTEM.RESOLVER_TARGET.none.id && this.skill.difficulty.includes("@cible")) {
-      targets = actor.acquireTargets(SYSTEM.RESOLVER_TARGET.single.id, SYSTEM.RESOLVER_SCOPE.all.id, 1, action.actionName)
-    } else {
-      targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
-    }
-    if (targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)) {
+    const hasOptionalTargets = this.hasOptionalTargets()
+    const effectiveTargetType = hasOptionalTargets ? SYSTEM.RESOLVER_TARGET.none.id : this.target.type
+
+    // Pour une action sans cible imposée, on autorise librement 0 à x cibles sélectionnées par l'utilisateur.
+    targets = this.getResolverTargets(actor, action.actionName, { allowTargetDependentDifficulty: true, difficultyFormula: this.skill.difficulty })
+
+    if (this.shouldWarnMissingTargets(targets)) {
       ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
       return false
     }
@@ -138,6 +165,8 @@ export class Resolver extends foundry.abstract.DataModel {
       additionalEffect: this.additionalEffect,
       hasAttackSuccessThreshold: this.hasAttackSuccessThreshold,
       attackSuccessThreshold: this.attackSuccessThreshold,
+      targetType: effectiveTargetType,
+      targets: targets,
     })
     if (!attack) return false
     // Gestion des effets supplémentaires
@@ -180,8 +209,8 @@ export class Resolver extends foundry.abstract.DataModel {
     // Gestion des dommages automatiques uniquement si la formule est définie
     if (this.dmg.formula && this.dmg.formula !== "" && this.dmg.formula !== "0") {
       // Gestion des cibles
-      const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
-      if (targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)) {
+      const targets = this.getResolverTargets(actor, action.actionName)
+      if (this.shouldWarnMissingTargets(targets)) {
         ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
         return false
       }
@@ -196,7 +225,7 @@ export class Resolver extends foundry.abstract.DataModel {
         damageFormulaTooltip,
         bonusDice: this.bonusDiceAdd === true ? 1 : 0,
         malusDice: this.malusDiceAdd === true ? 1 : 0,
-        targetType: this.target.type,
+        targetType: this.hasOptionalTargets() ? SYSTEM.RESOLVER_TARGET.none.id : this.target.type,
         targets: targets,
       })
       if (!attack) return false
@@ -224,8 +253,8 @@ export class Resolver extends foundry.abstract.DataModel {
     let healFormulaEvaluated = Roll.replaceFormulaData(healFormula, actor.getRollData())
 
     // Gestion des cibles
-    const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
-    if (targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)) {
+    const targets = this.getResolverTargets(actor, action.actionName)
+    if (this.shouldWarnMissingTargets(targets)) {
       ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
       return false
     }
@@ -235,7 +264,7 @@ export class Resolver extends foundry.abstract.DataModel {
     const heal = await actor.rollHeal(item, {
       actionName: action.label,
       healFormula: healFormulaEvaluated,
-      targetType: this.target.type,
+      targetType: this.hasOptionalTargets() ? SYSTEM.RESOLVER_TARGET.none.id : this.target.type,
       targets: targets,
     })
     if (!heal) return false
@@ -276,8 +305,8 @@ export class Resolver extends foundry.abstract.DataModel {
     }
 
     // Gestion des cibles
-    const targets = actor.acquireTargets(this.target.type, this.target.scope, this.target.number, action.actionName)
-    if (targets.length === 0 && (this.target.type === SYSTEM.RESOLVER_TARGET.single.id || this.target.type === SYSTEM.RESOLVER_TARGET.multiple.id)) {
+    const targets = this.getResolverTargets(actor, action.actionName)
+    if (this.shouldWarnMissingTargets(targets)) {
       ui.notifications.warn(game.i18n.localize("CO.notif.warningNoTargetOrTooManyTargets"))
       return false
     }
@@ -289,7 +318,7 @@ export class Resolver extends foundry.abstract.DataModel {
       ability: saveAbility,
       difficulty: difficultyFormulaEvaluated,
       showDifficulty,
-      targetType: this.target.type,
+      targetType: this.hasOptionalTargets() ? SYSTEM.RESOLVER_TARGET.none.id : this.target.type,
       targets: targets,
       customEffect,
       additionalEffect: this.additionalEffect,
@@ -344,7 +373,7 @@ export class Resolver extends foundry.abstract.DataModel {
    * @param {Actor} actor L'acteur sur lequel l'effet sera appliqué.
    * @param {Item} item L'objet déclenchant l'effet supplémentaire.
    * @param {Object} action L'action contenant les modificateurs et autres données pertinentes.
-   * @param selectedStatuses {Array|null} Un tableau de statuts sélectionnés par l'utilisateur, ou null pour utiliser les statuts configurés.
+   * @param {Array|null} selectedStatuses Un tableau de statuts sélectionnés par l'utilisateur, ou null pour utiliser les statuts configurés.
    * @returns {Promise<bool>} Résout lorsque l'effet a été appliqué avec succès.
    *
    *

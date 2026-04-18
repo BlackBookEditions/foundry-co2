@@ -97,6 +97,78 @@ export default class Utils {
   }
 
   /**
+   * Résout une référence de cible de chat vers les objets Foundry utiles.
+   *
+   * Priorité de résolution : Token de scène exact, puis acteur, puis token actif de l'acteur.
+   * Retourne `null` si la cible ne peut pas être résolue.
+   *
+   * @param {string} targetUuid UUID de la cible stocké dans le message.
+  * @returns {{uuid: string, document: Document|null, actor: Actor|null, tokenDocument: TokenDocument|null, token: Token|null, scene: Scene|null, canObserve: boolean, canLocate: boolean, canControl: boolean}|null}
+   */
+  static resolveChatTargetReference(targetUuid) {
+    if (!targetUuid) return null
+
+    let document = null
+    let tokenDocument = null
+    let actor = null
+    let scene = null
+
+    try {
+      document = fromUuidSync(targetUuid)
+    } catch (error) {
+      document = null
+    }
+
+    if (document?.documentName === "Token") {
+      tokenDocument = document
+      scene = tokenDocument.parent ?? null
+      actor = tokenDocument.actor ?? null
+    } else if (document?.documentName === "Actor") {
+      actor = document
+    }
+
+    if (!tokenDocument) {
+      try {
+        const parsedUuid = foundry.utils.parseUuid(targetUuid)
+        if (parsedUuid?.primaryType === "Scene" && parsedUuid?.type === "Token") {
+          scene = game.scenes.get(parsedUuid.primaryId) ?? null
+          tokenDocument = scene?.tokens.get(parsedUuid.id) ?? null
+          actor = tokenDocument?.actor ?? actor
+        }
+      } catch (error) {
+        // Ignore malformed UUIDs and keep fallback resolution below.
+      }
+    }
+
+    let token = tokenDocument?.object ?? null
+    if (!token && actor) {
+      const activeTokens = actor.getActiveTokens?.() ?? []
+      token = activeTokens.find((candidate) => candidate.scene === canvas?.scene) ?? activeTokens[0] ?? null
+      tokenDocument = token?.document ?? tokenDocument
+      scene = tokenDocument?.parent ?? scene
+    }
+
+    if (!actor && token?.actor) actor = token.actor
+    if (!document) document = tokenDocument ?? actor ?? null
+
+    const canObserve = actor ? actor.testUserPermission(game.user, "OBSERVER") : false
+    const canLocate = !!token && (game.user.isGM || token.isVisible || canObserve)
+    const canControl = !!tokenDocument?.testUserPermission?.(game.user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER)
+
+    return {
+      uuid: targetUuid,
+      document,
+      actor,
+      tokenDocument,
+      token,
+      scene,
+      canObserve,
+      canLocate,
+      canControl,
+    }
+  }
+
+  /**
    * Évalue un modificateur basé sur la formule fournie.
    *
    * @param {Object} actor L'objet acteur contenant les données pertinentes.
@@ -415,5 +487,102 @@ export default class Utils {
       return foundry.utils.getProperty(rollData, result)
     }
     return undefined
+  }
+
+  /**
+   * Calcule un résultat de jet d'attaque par cible.
+   *
+   * @param {Array} targets Cibles acquises (format { token, actor, uuid, name }).
+   * @param {string} rawDifficulty Formule brute de la difficulté (ex: "10 + @cible.con", "@oppose.int").
+   * @param {number} rollTotal Total du jet d'attaque.
+   * @param {Object} attackResult Résultat analysé du jet (isCritical, isFumble, isSuccessThreshold).
+   * @returns {Array} Un tableau d'objets { uuid, name, img, difficulty, isSuccess, isFailure, isCritical, isFumble, needsOppositeRoll }.
+   */
+  static computeTargetResults(targets, rawDifficulty, rollTotal, attackResult = {}) {
+    return targets.map((target) => {
+      const uuid = target.uuid
+      const name = target.name
+      const img = target.token?.document?.texture?.src ?? target.actor?.img ?? null
+      if (rawDifficulty && rawDifficulty.includes("@oppose")) {
+        return {
+          uuid,
+          name,
+          img,
+          difficulty: null,
+          isSuccess: false,
+          isFailure: false,
+          isCritical: false,
+          isFumble: false,
+          needsOppositeRoll: true,
+        }
+      }
+      let evaluatedDifficulty = null
+      if (rawDifficulty) {
+        try {
+          let formula = rawDifficulty.replace(/@cible\./g, "@")
+          formula = Roll.replaceFormulaData(formula, target.actor.getRollData())
+          const evalResult = eval(formula)
+          evaluatedDifficulty = parseInt(evalResult)
+          if (isNaN(evaluatedDifficulty)) evaluatedDifficulty = null
+        } catch (e) {
+          evaluatedDifficulty = null
+        }
+      }
+      return {
+        uuid,
+        name,
+        img,
+        ...Utils._computeOutcome(evaluatedDifficulty, rollTotal, attackResult),
+        needsOppositeRoll: false,
+      }
+    })
+  }
+
+  /**
+   * Recalcule isSuccess/isFailure/isCritical/isFumble pour chaque entrée targetResults
+   * en conservant les `difficulty` déjà évaluées (utilisé après un point de chance).
+   * Les entrées `needsOppositeRoll` sont laissées inchangées.
+   *
+   * @param {Array} targetResults Résultats par cible déjà calculés.
+   * @param {number} rollTotal Nouveau total du jet.
+   * @param {Object} attackResult Résultat analysé du jet.
+   * @returns {Array} Un nouveau tableau de targetResults.
+   */
+  static recomputeTargetResults(targetResults, rollTotal, attackResult = {}) {
+    return targetResults.map((tr) => {
+      if (tr.needsOppositeRoll) return tr
+      return {
+        ...tr,
+        ...Utils._computeOutcome(tr.difficulty, rollTotal, attackResult),
+      }
+    })
+  }
+
+  static _computeOutcome(difficulty, rollTotal, attackResult) {
+    let isSuccess = false
+    let isFailure = false
+    if (difficulty !== null && difficulty !== undefined) {
+      isSuccess = rollTotal >= difficulty
+      isFailure = !isSuccess
+    }
+    if (attackResult.isCritical) {
+      isSuccess = true
+      isFailure = false
+    }
+    if (attackResult.isFumble) {
+      isSuccess = false
+      isFailure = true
+    }
+    if (attackResult.isSuccessThreshold) {
+      isSuccess = true
+      isFailure = false
+    }
+    return {
+      difficulty,
+      isSuccess,
+      isFailure,
+      isCritical: !!attackResult.isCritical,
+      isFumble: !!attackResult.isFumble,
+    }
   }
 }
