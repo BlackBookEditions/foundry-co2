@@ -1,92 +1,228 @@
 .co.chat-card.roll-card.damage-card {
   .card-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    border-top: 1px solid var(--color-chatDamages);
-    color: var(--color-chatDamages);
-    border-bottom: 1px dashed var(--color-chatDamages);
-    label {
+    border-top: none;
+    color: inherit;
+    padding: 2px 0 4px;
+
+    .damage-item-card {
+      border-color: color-mix(in srgb, var(--color-chatDamages) 60%, #8f7656);
+    }
+  }
+
+  .card-content {
+    .result {
+      width: 100%;
+      gap: 10px;
+    }
+
+    .damage-total-group {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+
+      .total-result {
+        margin: 0;
+      }
+
+      .damage-options {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .temp-dm,
+      .dr {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+
+        label {
+          font-size: var(--font-size-12);
+          font-weight: bold;
+        }
+
+        input[type="checkbox"] {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  // --- Targets section uses common .targets-collapsible / .targets-header ---
+  section.targets {
+    .targets-header {
       color: var(--color-chatDamages);
-      text-shadow: 0 0px 2px var(--color-chatShadow);
+    }
+
+    .apply-content {
+      padding: 4px 0;
+    }
+
+    .apply-source-control {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 6px;
+
+      .apply-mode-btn {
+        padding: 2px 4px;
+        font-size: var(--font-size-11);
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        border: none;
+        background: transparent;
+        color: var(--color-text-light-6);
+        cursor: pointer;
+        transition: color 0.15s ease;
+
+        i {
+          font-size: var(--font-size-11);
+          margin-right: 2px;
+        }
+
+        &:hover {
+          color: var(--color-chatDamages);
+        }
+
+        &.active {
+          color: var(--color-chatDamages);
+        }
+      }
     }
   }
-  .damage-part {
-    margin: 0 0 0 10px;
-  }
-  .damage-options {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 6px;
-  }
-  .damage-buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 37px);
-    grid-template-rows: 30px 30px;
-    justify-items: center;
-    border-left: 2px solid var(--color-chatDamages);
-    padding-left: 10px;
-    .fas {
-      font-size: 25px;
-      text-shadow: 0px 0px 2px var(--color-chatDamages);
-    }
-  }
-  .targets-header {
-    font-size: var(--font-size-12);
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 4px 0 2px;
-    border-top: 1px solid var(--color-border-light-2);
-    margin-top: 4px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    color: var(--color-chatDamages);
-    i {
-      font-size: var(--font-size-11);
-    }
-  }
-  .damage-target-list {
+
+  // --- Liste des cibles ---
+  .apply-target-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
+    min-height: 28px;
   }
-  .damage-target-row {
+
+  .apply-target-row {
     display: flex;
-    align-items: center;
-    gap: 6px;
+    flex-direction: column;
     padding: 3px 4px;
     border-bottom: 1px solid var(--color-border-light-tertiary);
+
     &:last-child {
       border-bottom: none;
     }
+
+    .target-info {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .target-portrait {
       width: 28px;
       height: 28px;
+      flex: 0 0 28px;
       border-radius: 50%;
       object-fit: cover;
       border: none;
     }
+
     .target-name {
       flex: 1;
       font-weight: bold;
-      font-size: var(--font-size-14);
+      font-size: var(--font-size-13);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &.empty-message {
+        font-weight: normal;
+        font-style: italic;
+        font-size: var(--font-size-11);
+        opacity: 0.7;
+      }
     }
-    .damage-buttons {
-      grid-template-rows: 30px;
-      grid-template-columns: repeat(4, 30px);
-      padding-left: 6px;
-      .fas {
-        font-size: 18px;
+
+    .target-damage {
+      font-weight: bold;
+      font-size: var(--font-size-14);
+      min-width: 32px;
+      text-align: right;
+      color: var(--color-chatDamages);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .target-controls {
+      display: flex;
+      align-items: center;
+      margin-top: 2px;
+    }
+  }
+
+  // --- Boutons multiplicateurs ---
+  .damage-multipliers {
+    display: flex;
+    flex: 1;
+    gap: 2px;
+
+    .multiplier-btn {
+      flex: 1;
+      height: 22px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--font-size-12);
+      font-weight: bold;
+      border: 1px solid var(--color-border-light-2);
+      border-radius: 3px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        background: color-mix(in srgb, var(--color-chatDamages) 12%, transparent);
+        border-color: var(--color-chatDamages);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+
+      &.active {
+        background: var(--color-chatDamages);
+        border-color: var(--color-chatDamages);
+        color: white;
+        box-shadow: 0 1px 3px color-mix(in srgb, var(--color-chatDamages) 40%, transparent);
       }
     }
   }
-  .temp-dm,
-  .dr {
+
+  // --- Bouton Appliquer ---
+  .apply-damage-btn {
     display: flex;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: 6px;
+    padding: 5px 10px;
+    font-size: var(--font-size-12);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border: 1px solid var(--color-chatDamages);
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--color-chatDamages) 12%, transparent);
+    color: var(--color-chatDamages);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background: color-mix(in srgb, var(--color-chatDamages) 25%, transparent);
+    }
+
+    i {
+      font-size: var(--font-size-11);
+    }
   }
 }

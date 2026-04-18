@@ -241,11 +241,11 @@
     .total-result,
     .diff-result,
     .vs {
-      font-size: var(--font-size-32);
+      font-size: var(--font-size-24);
       font-weight: bold;
       text-align: center;
       label {
-        font-size: var(--font-size-15);
+        font-size: var(--font-size-16);
         vertical-align: middle;
       }
     }
@@ -339,5 +339,95 @@
   .dice-formula {
     margin-bottom: 2px;
     font-size: var(--font-size-14);
+  }
+}
+
+// --- Styles partagés d'en-tête item card (attaque / dommages) ---
+.co.chat-card.roll-card .card-header {
+  .attack-item-card {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    min-height: 56px;
+    padding: 8px 11px;
+    border: 1px solid #8f7656;
+    border-radius: 3px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.62) 0%, rgba(241, 234, 224, 0.92) 44%, rgba(223, 211, 195, 0.95) 100%),
+      linear-gradient(90deg, rgba(124, 89, 47, 0.05) 0%, rgba(124, 89, 47, 0) 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      inset 0 -1px 0 rgba(128, 99, 63, 0.28),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.24),
+      0 1px 2px rgba(45, 29, 12, 0.14);
+  }
+
+  .attack-item-image {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    object-fit: cover;
+    padding: 2px;
+    border: 1px solid rgba(94, 70, 42, 0.45);
+    border-radius: 2px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(223, 212, 198, 0.9) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 1px 1px rgba(56, 35, 14, 0.08);
+  }
+
+  .attack-item-text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    justify-content: center;
+  }
+
+  .attack-item-name {
+    color: #31261a;
+    font-size: 1.18rem;
+    font-weight: bold;
+    line-height: 1.1;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .attack-item-subtitle {
+    color: #655846;
+    font-size: var(--font-size-11);
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .theme-dark & {
+    .attack-item-card {
+      border-color: #7f6748;
+      background: linear-gradient(180deg, rgba(91, 72, 50, 0.78) 0%, rgba(63, 48, 34, 0.9) 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+        0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .attack-item-image {
+      border-color: rgba(193, 163, 124, 0.35);
+      background: linear-gradient(180deg, rgba(95, 79, 61, 0.92) 0%, rgba(68, 53, 38, 0.96) 100%);
+    }
+
+    .attack-item-name {
+      color: #f0e4d4;
+      text-shadow: none;
+    }
+
+    .attack-item-subtitle {
+      color: #cebda5;
+    }
   }
 }

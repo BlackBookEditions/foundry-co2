@@ -110,13 +110,11 @@ export default class ActionMessageData extends BaseMessageData {
     }
     // Message de dommages
     else {
-      // Affiche ou non les boutons d'application des dommages
-      // Boutons visibles uniquement par le MJ ou l'auteur du message si l'option est activée
-      // FIXME : ne pas afficher pour tous les joueurs, mais uniquement pour le joueur à l'origine du message
+      // Affiche ou non le panneau d'application des dommages
+      // Visible uniquement par le MJ ou l'auteur du message si l'option est activée
       if (!game.settings.get("co2", "displayChatDamageButtonsToAll") && !game.user.isGM) {
-        html.querySelectorAll(".apply-dmg").forEach((btn) => {
-          btn.style.display = "none"
-        })
+        const applyCollapsible = html.querySelector(".apply-collapsible")
+        if (applyCollapsible) applyCollapsible.style.display = "none"
         html.querySelectorAll(".dr-checkbox").forEach((btn) => {
           btn.style.display = "none"
         })
@@ -401,32 +399,177 @@ export default class ActionMessageData extends BaseMessageData {
     }
     // Message de dommages
     else {
-      // Click sur les boutons d'application des dommages
+      // Gestion des boutons d'application des dommages
       if ((game.settings.get("co2", "displayChatDamageButtonsToAll") && this.parent.isAuthor) || game.user.isGM) {
-        const damageButtons = html.querySelectorAll(".apply-dmg")
-        if (damageButtons) {
-          damageButtons.forEach((btn) => {
-            btn.addEventListener("click", async (event) => {
-              event.preventDefault()
-              event.stopPropagation()
-              const dataset = event.currentTarget.dataset
-              const type = dataset.apply // Values : full, half, double, heal
-              const actorId = dataset.actorId
-              const sourceLabel = dataset.sourceLabel || null
-              const dmg = parseInt(dataset.total)
-              const tempDamage = html.querySelector("#tempDm").checked
-              const drChecked = html.querySelector("#dr").checked
-              const targetUuid = dataset.targetUuid
-              if (targetUuid) {
-                const targetActor = fromUuidSync(targetUuid)
-                Hitpoints.applyToSingleTarget({ targetActor, fromActor: actorId, source: sourceLabel, type, amount: dmg, drChecked, tempDamage })
+        const damageCard = html.querySelector(".damage-card")
+        if (!damageCard) return
+        const total = parseInt(damageCard.dataset.total) || 0
+        const actorId = damageCard.dataset.actorId
+        const flavor = damageCard.querySelector(".attack-item-name")?.textContent || ""
+        const targetList = html.querySelector(".apply-target-list")
+        const applyBtn = html.querySelector(".apply-damage-btn")
+
+        // --- Mode tabs: Ciblé / Sélectionné ---
+        // Hook controlToken : mise à jour en direct de la liste "Sélectionné"
+        let controlTokenHookId = null
+        const rebuildDebounced = foundry.utils.debounce(() => this._rebuildSelectedTargets(targetList, total), 50)
+
+        const registerControlTokenHook = () => {
+          if (controlTokenHookId !== null) return
+          controlTokenHookId = Hooks.on("controlToken", rebuildDebounced)
+        }
+        const unregisterControlTokenHook = () => {
+          if (controlTokenHookId === null) return
+          Hooks.off("controlToken", controlTokenHookId)
+          controlTokenHookId = null
+        }
+
+        const modeBtns = html.querySelectorAll(".apply-mode-btn")
+        modeBtns.forEach((btn) => {
+          btn.addEventListener("click", (event) => {
+            event.preventDefault()
+            modeBtns.forEach((b) => b.classList.remove("active"))
+            btn.classList.add("active")
+            const mode = btn.dataset.mode
+            if (targetList) {
+              targetList.dataset.activeMode = mode
+              if (mode === "selected") {
+                this._rebuildSelectedTargets(targetList, total)
+                registerControlTokenHook()
               } else {
-                Hitpoints.applyToTargets({ fromActor: actorId, source: sourceLabel, type, amount: dmg, drChecked, tempDamage })
+                unregisterControlTokenHook()
+                // Afficher les cibles du message, masquer les sélectionnées
+                targetList.querySelectorAll(".apply-target-row").forEach((row) => {
+                  row.style.display = row.dataset.source === "targeted" ? "" : "none"
+                })
               }
-            })
+            }
+          })
+        })
+
+        // Si le mode initial est "selected" (pas de cibles ciblées), enregistrer le hook et construire la liste
+        if (targetList?.dataset.activeMode === "selected") {
+          this._rebuildSelectedTargets(targetList, total)
+          registerControlTokenHook()
+        }
+
+        // --- Multiplier buttons ---
+        html.querySelectorAll(".multiplier-btn").forEach((btn) => {
+          btn.addEventListener("click", (event) => {
+            event.preventDefault()
+            const row = btn.closest(".apply-target-row")
+            row.querySelectorAll(".multiplier-btn").forEach((b) => b.classList.remove("active"))
+            btn.classList.add("active")
+            const multiplier = parseFloat(btn.dataset.multiplier)
+            const dmgDisplay = row.querySelector(".target-damage")
+            if (dmgDisplay) {
+              const computed = Math.ceil(Math.abs(total * multiplier))
+              if (multiplier < 0) dmgDisplay.textContent = `+${computed}`
+              else if (multiplier === 0) dmgDisplay.textContent = "0"
+              else dmgDisplay.textContent = `-${computed}`
+              dmgDisplay.dataset.multiplier = multiplier
+            }
+          })
+        })
+
+        // --- Apply button ---
+        if (applyBtn) {
+          applyBtn.addEventListener("click", async (event) => {
+            event.preventDefault()
+            const tempDamage = html.querySelector("#tempDm")?.checked ?? false
+            const drChecked = html.querySelector("#dr")?.checked ?? true
+            const rows = targetList.querySelectorAll(".apply-target-row")
+            for (const row of rows) {
+              if (row.style.display === "none") continue
+              const targetUuid = row.dataset.targetUuid
+              if (!targetUuid) continue
+              const activeBtn = row.querySelector(".multiplier-btn.active")
+              const multiplier = activeBtn ? parseFloat(activeBtn.dataset.multiplier) : 1
+              if (multiplier === 0) continue
+
+              let type
+              if (multiplier === 2) type = "double"
+              else if (multiplier === 0.5) type = "half"
+              else if (multiplier < 0) type = "heal"
+              else type = "full"
+
+              const targetActor = fromUuidSync(targetUuid)
+              if (targetActor) {
+                await Hitpoints.applyToSingleTarget({ targetActor, fromActor: actorId, source: flavor, type, amount: total, drChecked, tempDamage })
+              }
+            }
           })
         }
       }
+    }
+  }
+
+  /**
+   * Reconstruit la liste des tokens sélectionnés (controlled) sur le canvas
+   * @param {HTMLElement} targetList Conteneur de la liste des cibles
+   * @param {number} total Montant total de dommages
+   */
+  _rebuildSelectedTargets(targetList, total) {
+    // Supprimer les anciennes cibles "selected"
+    targetList.querySelectorAll('.apply-target-row[data-source="selected"]').forEach((row) => row.remove())
+    // Masquer les cibles "targeted"
+    targetList.querySelectorAll('.apply-target-row[data-source="targeted"]').forEach((row) => (row.style.display = "none"))
+
+    const targets = canvas.tokens?.controlled ?? []
+    if (targets.length === 0) {
+      const emptyRow = document.createElement("div")
+      emptyRow.classList.add("apply-target-row", "apply-empty-row")
+      emptyRow.dataset.source = "selected"
+      emptyRow.innerHTML = `<span class="target-name empty-message">${game.i18n.localize("CO.notif.warningApplyDamageNoTarget")}</span>`
+      targetList.appendChild(emptyRow)
+      return
+    }
+
+    for (const target of targets) {
+      const actor = target.actor
+      if (!actor) continue
+      const row = document.createElement("div")
+      row.classList.add("apply-target-row")
+      row.dataset.targetUuid = actor.uuid
+      row.dataset.source = "selected"
+
+      const img = target.document?.texture?.src ?? actor.img
+      row.innerHTML = `
+        <div class="target-info">
+          ${img ? `<img class="target-portrait" src="${img}" alt="${actor.name}" height="28" width="28" />` : ""}
+          <span class="target-name">${actor.name}</span>
+          <span class="target-damage" data-multiplier="1">-${total}</span>
+        </div>
+        <div class="target-controls">
+          <span class="multiplier-label">&times;</span>
+          <div class="damage-multipliers">
+            <button type="button" class="multiplier-btn" data-multiplier="-1" data-tooltip="${game.i18n.localize("CO.ui.applyHealing")}" data-tooltip-direction="UP">-1</button>
+            <button type="button" class="multiplier-btn" data-multiplier="0" data-tooltip="${game.i18n.localize("CO.ui.noDamage")}" data-tooltip-direction="UP">0</button>
+            <button type="button" class="multiplier-btn" data-multiplier="0.5" data-tooltip="${game.i18n.localize("CO.ui.applyHalfDamage")}" data-tooltip-direction="UP">&frac12;</button>
+            <button type="button" class="multiplier-btn active" data-multiplier="1" data-tooltip="${game.i18n.localize("CO.ui.applyDamage")}" data-tooltip-direction="UP">1</button>
+            <button type="button" class="multiplier-btn" data-multiplier="2" data-tooltip="${game.i18n.localize("CO.ui.applyDoubleDamage")}" data-tooltip-direction="UP">2</button>
+          </div>
+        </div>
+      `
+      targetList.appendChild(row)
+
+      // Ajouter les listeners de multiplicateur pour les nouvelles lignes
+      row.querySelectorAll(".multiplier-btn").forEach((btn) => {
+        btn.addEventListener("click", (event) => {
+          event.preventDefault()
+          row.querySelectorAll(".multiplier-btn").forEach((b) => b.classList.remove("active"))
+          btn.classList.add("active")
+          const multiplier = parseFloat(btn.dataset.multiplier)
+          const dmgDisplay = row.querySelector(".target-damage")
+          if (dmgDisplay) {
+            const computed = Math.ceil(Math.abs(total * multiplier))
+            if (multiplier < 0) dmgDisplay.textContent = `+${computed}`
+            else if (multiplier === 0) dmgDisplay.textContent = "0"
+            else dmgDisplay.textContent = `-${computed}`
+            dmgDisplay.dataset.multiplier = multiplier
+          }
+        })
+      })
     }
   }
 }

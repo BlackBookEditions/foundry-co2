@@ -1,17 +1,25 @@
 {{log "Chroniques Oubliées | hbs | damage-card" this}}
-<div class="co chat-card roll-card damage-card" data-actor-id="{{actorId}}">
+<div class="co chat-card roll-card damage-card" data-actor-id="{{actorId}}" data-total="{{total}}">
   <header class="card-header flexcol">
-    <div class="type-card"><label><i class="fa-solid fa-raindrops" data-tooltip="{{localize 'CO.label.long.damage'}}" data-tooltip-direction="LEFT"></i></label></div>
-    <div class="action-name" data-tooltip="{{flavor}}" data-tooltip-direction="LEFT">{{flavor}}</div>
+    <div class="attack-item-card damage-item-card" data-tooltip="{{flavor}}" data-tooltip-direction="LEFT">
+      {{#if itemImg}}
+        <img class="attack-item-image" src="{{itemImg}}" alt="{{itemName}}" />
+      {{/if}}
+      <div class="attack-item-text">
+        <div class="attack-item-name">{{itemName}}</div>
+        {{#if actionName}}
+          <div class="attack-item-subtitle">{{actionName}}</div>
+        {{/if}}
+      </div>
+    </div>
   </header>
 
   <div class="card-content">
     <section class="result">
-      <div class="form-group total-result">
-
-        <div>{{total}} <label>DM</label></div>
-      </div>
-      <div class="damage-part">
+      <div class="damage-total-group">
+        <div class="form-group total-result">
+          <div>{{total}} DM</div>
+        </div>
         <div class="damage-options">
           <div class="temp-dm">
             <label for="tempDm" class="temp-dm-checkbox" data-tooltip="{{localize 'CO.ui.tempText'}}" data-tooltip-direction="UP">{{localize 'CO.ui.temp'}}</label>
@@ -22,69 +30,57 @@
             <input type="checkbox" id="dr" name="dr" class="dr-checkbox" checked />
           </div>
         </div>
-        {{#if hasTargetResults}}
-          <details class="targets-collapsible" open>
-            <summary class="targets-header"><i class="fa-solid fa-bullseye-arrow"></i> {{localize "CO.ui.targets"}}</summary>
-            <div class="damage-target-list">
-              {{#each targetResults as |target|}}
-                <div class="damage-target-row" data-target-uuid="{{target.uuid}}">
-                  {{#if target.img}}
-                    <img class="target-portrait" src="{{target.img}}" data-tooltip="{{target.name}}" height="32" width="32" />
-                  {{/if}}
-                  <span class="target-name">{{target.name}}</span>
-                  <div class="damage-buttons">
-                    <a class="btn apply-dmg" data-actor-id="{{../actorId}}" data-target-uuid="{{target.uuid}}" data-source-label="{{../flavor}}" data-apply="full" data-total="{{../total}}" data-tempdamage={{../tempDamage}}>
-                      <i class="fas fa-user-minus" data-tooltip="{{localize 'CO.ui.applyDamage'}}" data-tooltip-direction="UP"></i>
-                    </a>
-                    <a class="btn apply-dmg" data-actor-id="{{../actorId}}" data-target-uuid="{{target.uuid}}" data-source-label="{{../flavor}}" data-apply="half" data-total="{{../total}}" data-tempdamage={{../tempDamage}}>
-                      <i class="fas fa-user-shield" data-tooltip="{{localize 'CO.ui.applyHalfDamage'}}" data-tooltip-direction="UP"></i>
-                    </a>
-                    <a class="btn apply-dmg" data-actor-id="{{../actorId}}" data-target-uuid="{{target.uuid}}" data-source-label="{{../flavor}}" data-apply="double" data-total="{{../total}}" data-tempdamage={{../tempDamage}}>
-                      <i class="fas fa-user-injured" data-tooltip="{{localize 'CO.ui.applyDoubleDamage'}}" data-tooltip-direction="UP"></i>
-                    </a>
-                    <a class="btn apply-dmg" data-actor-id="{{../actorId}}" data-target-uuid="{{target.uuid}}" data-source-label="{{../flavor}}" data-apply="heal" data-total="{{../total}}">
-                      <i class="fas fa-user-plus" data-tooltip="{{localize 'CO.ui.applyHealing'}}" data-tooltip-direction="UP"></i>
-                    </a>
-                  </div>
-                </div>
-              {{/each}}
-            </div>
-          </details>
-        {{else}}
-          <div class="damage-buttons">
-            <div>
-              <a class="btn apply-dmg" data-actor-id="{{actorId}}" data-source-label="{{flavor}}" data-apply="full" data-total="{{total}}" data-tempdamage={{tempDamage}}>
-                <i class="fas fa-user-minus" data-tooltip="{{localize 'CO.ui.applyDamage'}}" data-tooltip-direction="UP"></i>
-              </a>
-            </div>
-            <div>
-              <a class="btn apply-dmg" data-actor-id="{{actorId}}" data-source-label="{{flavor}}" data-apply="half" data-total="{{total}}" data-tempdamage={{tempDamage}}>
-                <i class="fas fa-user-shield" data-tooltip="{{localize 'CO.ui.applyHalfDamage'}}" data-tooltip-direction="UP"></i>
-              </a>
-            </div>
-            <div>
-              <a class="btn apply-dmg" data-actor-id="{{actorId}}" data-source-label="{{flavor}}" data-apply="double" data-total="{{total}}" data-tempdamage={{tempDamage}}>
-                <i class="fas fa-user-injured" data-tooltip="{{localize 'CO.ui.applyDoubleDamage'}}" data-tooltip-direction="UP"></i>
-              </a>
-            </div>
-            <div>
-              <a class="btn apply-dmg" data-actor-id="{{actorId}}" data-source-label="{{flavor}}" data-apply="heal" data-total="{{total}}">
-                <i class="fas fa-user-plus" data-tooltip="{{localize 'CO.ui.applyHealing'}}" data-tooltip-direction="UP"></i>
-              </a>
-            </div>
-          </div>
-        {{/if}}
       </div>
     </section>
-  </div>
-
-  <footer class="card-footer">
     <div class="dice-roll" data-action="expandRoll">
       <div class="dice-result">
         <div class="dice-formula" data-tooltip="{{formulaDamageTooltip}}" data-tooltip-direction="UP">{{localize "CO.ui.formula"}} : {{formula}}</div>
         {{{tooltip}}}
       </div>
     </div>
+    <section class="targets">
+      <details class="targets-collapsible apply-collapsible">
+        <summary class="targets-header apply-header"><i class="fa-solid fa-heart"></i> {{localize "CO.ui.apply"}}</summary>
+        <div class="apply-content">
+          <div class="apply-source-control">
+            {{#if hasTargetResults}}
+              <button type="button" class="apply-mode-btn active" data-mode="targeted"><i class="fa-solid fa-bullseye"></i> {{localize "CO.ui.targeted"}}</button>
+            {{/if}}
+            <button type="button" class="apply-mode-btn {{#unless hasTargetResults}}active{{/unless}}" data-mode="selected"><i class="fa-solid fa-expand"></i> {{localize "CO.ui.selected"}}</button>
+          </div>
+
+          <div class="apply-target-list" data-active-mode="{{#if hasTargetResults}}targeted{{else}}selected{{/if}}">
+            {{#if hasTargetResults}}
+              {{#each targetResults as |target|}}
+                <div class="apply-target-row" data-target-uuid="{{target.uuid}}" data-source="targeted">
+                  <div class="target-info">
+                    {{#if target.img}}
+                      <img class="target-portrait" src="{{target.img}}" alt="{{target.name}}" height="28" width="28" />
+                    {{/if}}
+                    <span class="target-name">{{target.name}}</span>
+                    <span class="target-damage" data-multiplier="{{#if target.isFailure}}0{{else}}1{{/if}}">{{#if target.isFailure}}0{{else}}-{{../total}}{{/if}}</span>
+                  </div>
+                  <div class="target-controls">
+                    <div class="damage-multipliers">
+                      <button type="button" class="multiplier-btn" data-multiplier="-1" data-tooltip="{{localize 'CO.ui.applyHealing'}}" data-tooltip-direction="DOWN">-1</button>
+                      <button type="button" class="multiplier-btn {{#if target.isFailure}}active{{/if}}" data-multiplier="0" data-tooltip="{{localize 'CO.ui.noDamage'}}" data-tooltip-direction="DOWN">0</button>
+                      <button type="button" class="multiplier-btn" data-multiplier="0.5" data-tooltip="{{localize 'CO.ui.applyHalfDamage'}}" data-tooltip-direction="DOWN">&frac12;</button>
+                      <button type="button" class="multiplier-btn {{#unless target.isFailure}}active{{/unless}}" data-multiplier="1" data-tooltip="{{localize 'CO.ui.applyDamage'}}" data-tooltip-direction="DOWN">1</button>
+                      <button type="button" class="multiplier-btn" data-multiplier="2" data-tooltip="{{localize 'CO.ui.applyDoubleDamage'}}" data-tooltip-direction="DOWN">2</button>
+                    </div>
+                  </div>
+                </div>
+              {{/each}}
+            {{/if}}
+          </div>
+
+          <button type="button" class="apply-damage-btn">{{localize "CO.ui.apply"}}</button>
+        </div>
+      </details>
+    </section>
+  </div>
+
+  <footer class="card-footer">
   </footer>
 
 </div>
