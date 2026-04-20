@@ -1,6 +1,7 @@
 export * from "./helpers.mjs"
 export * from "./settings.mjs"
 export { default as HitPoints } from "./hitpoints.mjs"
+export { default as OpposedRollHandler } from "./opposed-roll.mjs"
 export { default as Macros } from "./macros.mjs"
 export { default as RulesEngine } from "./rules-engine.mjs"
 export { default as Utils } from "./utils.mjs"

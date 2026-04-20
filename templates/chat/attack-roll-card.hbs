@@ -124,6 +124,15 @@
                   {{#if @root.showDifficulty}}
                     <span class="target-difficulty display-difficulty" data-tooltip="{{localize 'CO.label.long.difficulty'}}" data-tooltip-direction="UP"><i class="fas fa-shield-halved"></i> {{target.difficulty}}</span>
                   {{/if}}
+                  {{#if target.opposeHasLuckyPoints}}
+                    {{#if target.isSuccess}}
+                      {{#unless target.isCritical}}
+                        <a class="lp-button-oppose-target" data-target-uuid="{{target.uuid}}" data-actor-id="{{target.opposeActorId}}">
+                          <i class="fa-regular fa-clover" data-tooltip="{{localize 'CO.dialogs.spendLuckyPoint'}}" data-tooltip-direction="UP"></i>
+                        </a>
+                      {{/unless}}
+                    {{/if}}
+                  {{/if}}
                 {{/if}}
               </li>
             {{/each}}

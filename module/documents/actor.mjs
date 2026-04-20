@@ -2223,7 +2223,7 @@ export default class COActor extends Actor {
           speaker,
           style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           type: "action",
-          system: { subtype: "attack", targets: targetsUuid, targetResults, result: results[0], linkedRoll, customEffect: effectiveCustomEffect, additionalEffect, selectedStatuses },
+          system: { subtype: "attack", targets: targetsUuid, targetResults, result: results[0], linkedRoll, customEffect: effectiveCustomEffect, additionalEffect, selectedStatuses, oppositeValue: oppositeRoll ? difficultyTooltip : null },
         },
         { messageMode: rolls[0].options.rollMode },
       )
