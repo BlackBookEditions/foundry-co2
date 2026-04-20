@@ -116,7 +116,7 @@ export default class ActionMessageData extends BaseMessageData {
     else {
       // Affiche ou non le panneau d'application des dommages
       // Visible uniquement par le MJ ou l'auteur du message si l'option est activée
-      if (!game.settings.get("co2", "displayChatDamageButtonsToAll") && !game.user.isGM) {
+      if (!game.settings.get("co2", "allowPlayersToModifyTargets") && !game.user.isGM) {
         const applyCollapsible = html.querySelector(".apply-collapsible")
         if (applyCollapsible) applyCollapsible.style.display = "none"
         html.querySelectorAll(".dr-checkbox").forEach((btn) => {
@@ -378,7 +378,7 @@ export default class ActionMessageData extends BaseMessageData {
     // Message de dommages
     else {
       // Gestion des boutons d'application des dommages
-      if ((game.settings.get("co2", "displayChatDamageButtonsToAll") && this.parent.isAuthor) || game.user.isGM) {
+      if ((game.settings.get("co2", "allowPlayersToModifyTargets") && this.parent.isAuthor) || game.user.isGM) {
         const damageCard = html.querySelector(".damage-card")
         if (!damageCard) return
         const total = parseInt(damageCard.dataset.total) || 0
