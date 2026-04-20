@@ -1618,19 +1618,9 @@ export default class COActor extends Actor {
     // Gestion de la difficulté
     const difficultyTooltip = difficulty
     const displayDifficulty = game.settings.get("co2", "displayDifficulty")
-    if (useDifficulty === undefined) {
-      if (displayDifficulty === "none") {
-        useDifficulty = false
-      } else {
-        useDifficulty = true
-        if (showDifficulty === undefined) {
-          showDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
-        }
-      }
-    } else {
-      if (showDifficulty === undefined) {
-        showDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
-      }
+    if (useDifficulty === undefined) useDifficulty = true
+    if (showDifficulty === undefined) {
+      showDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
     }
 
     // Si la difficulté dépend de la cible unique
@@ -1924,20 +1914,10 @@ export default class COActor extends Actor {
     // Gestion de la difficulté
     const difficultyTooltip = difficulty
     let oppositeRoll = false
-    if (!auto && useDifficulty === undefined) {
-      const displayDifficulty = game.settings.get("co2", "displayDifficulty")
-      if (displayDifficulty === "none") {
-        useDifficulty = false
-      } else {
-        useDifficulty = true
-        if (showDifficulty === undefined) {
-          showDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
-        }
-      }
-    } else {
-      if (!auto && showDifficulty === undefined) {
-        showDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
-      }
+    const displayDifficulty = game.settings.get("co2", "displayDifficulty")
+    if (!auto && useDifficulty === undefined) useDifficulty = true
+    if (!auto && showDifficulty === undefined) {
+      showDifficulty = displayDifficulty === "all" || (displayDifficulty === "gm" && game.user.isGM)
     }
     // Si la difficulté dépend de la cible unique
     if (!auto && useDifficulty) {
@@ -2230,11 +2210,7 @@ export default class COActor extends Actor {
 
       // Affichage du jet de dommages dans le cas d'un jet combiné, si ce n'est pas un jet opposé et si l'attaque est un succès
       if (game.settings.get("co2", "useComboRolls")) {
-        // Option de la difficulté activée
-        if (
-          game.settings.get("co2", "displayDifficulty") === "none" ||
-          (game.settings.get("co2", "displayDifficulty") !== "none" && !rolls[0].options.oppositeRoll && results[0].isSuccess)
-        ) {
+        if (!rolls[0].options.oppositeRoll && results[0].isSuccess) {
           if (rolls[1]) {
             await rolls[1].toMessage(
               { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid, targetResults }, speaker },

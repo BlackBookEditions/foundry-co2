@@ -206,6 +206,11 @@ Hooks.once("ready", async function () {
       }
   }
 
+  // Migration : suppression de l'option "none" pour displayDifficulty
+  if (game.user.isGM && game.settings.get("co2", "displayDifficulty") === "none") {
+    await game.settings.set("co2", "displayDifficulty", "gm")
+  }
+
   // Statistics
   registerWorldCount("co2")
 

@@ -30,10 +30,9 @@ export function registerSystemSettings() {
     hint: "CO.settings.displayDifficulty.hint",
     scope: "world",
     config: true,
-    default: "none",
+    default: "gm",
     type: String,
     choices: {
-      none: "CO.settings.displayDifficulty.none",
       all: "CO.settings.displayDifficulty.all",
       gm: "CO.settings.displayDifficulty.gm",
     },

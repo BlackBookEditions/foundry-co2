@@ -147,9 +147,9 @@
             {{#each targets as |target id|}}
             <div class="target">
                 <img class="actor-image" src="{{token.document.texture.src}}" data-tooltip="{{target.name}}" height="50px" width="50px" data-id="{{actor.id}}" data-uuid="{{uuid}}"/>
-                {{#unless (eq previewDifficulty null)}}
+                {{#if previewDifficulty}}
                     <div class="target-preview-difficulty">{{previewDifficulty}}</div>
-                {{/unless}}
+                {{/if}}
             </div> 
             {{/each}}
         </div>

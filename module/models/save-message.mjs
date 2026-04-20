@@ -69,7 +69,7 @@ export default class SaveMessageData extends BaseMessageData {
 
     // Affiche ou non la difficulté
     const displayDifficulty = game.settings.get("co2", "displayDifficulty")
-    if (displayDifficulty === "none" || (displayDifficulty === "gm" && !game.user.isGM)) {
+    if (displayDifficulty === "gm" && !game.user.isGM) {
       const element = html.querySelector(".display-difficulty")
       if (element) {
         element.remove()
