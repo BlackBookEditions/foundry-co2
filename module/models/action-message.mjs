@@ -30,6 +30,7 @@ export default class ActionMessageData extends BaseMessageData {
           needsOppositeRoll: new fields.BooleanField({ initial: false }),
           opposeActorId: new fields.StringField({ required: false, nullable: true, blank: true }),
           opposeHasLuckyPoints: new fields.BooleanField({ initial: false }),
+          appliedMultiplier: new fields.NumberField({ required: false, nullable: true, initial: null }),
         }),
         { required: false, initial: [] },
       ),
@@ -123,6 +124,26 @@ export default class ActionMessageData extends BaseMessageData {
           btn.style.display = "none"
         })
       }
+
+      // Restaure les multiplicateurs persistés après un re-render
+      const total = parseInt(html.querySelector(".damage-card")?.dataset.total) || 0
+      const damageTargetResults = message.system.targetResults ?? []
+      damageTargetResults.forEach((tr) => {
+        if (tr.appliedMultiplier === null || tr.appliedMultiplier === undefined) return
+        const row = html.querySelector(`.apply-target-row[data-target-uuid="${tr.uuid}"][data-source="targeted"]`)
+        if (!row) return
+        row.querySelectorAll(".multiplier-btn").forEach((btn) => {
+          btn.classList.toggle("active", parseFloat(btn.dataset.multiplier) === tr.appliedMultiplier)
+        })
+        const dmgDisplay = row.querySelector(".target-damage")
+        if (dmgDisplay) {
+          const computed = Math.ceil(Math.abs(total * tr.appliedMultiplier))
+          if (tr.appliedMultiplier < 0) dmgDisplay.textContent = `+${computed}`
+          else if (tr.appliedMultiplier === 0) dmgDisplay.textContent = "0"
+          else dmgDisplay.textContent = `-${computed}`
+          dmgDisplay.dataset.multiplier = tr.appliedMultiplier
+        }
+      })
     }
   }
 
