@@ -651,8 +651,9 @@ export class COAttackRoll extends CORoll {
     const showDifficulty = !!this.options.useDifficulty && viewerCanSeeDifficulty
 
     // On peut utiliser un point de chance si on en a et que ce n'est pas déjà un critique
-    // Si la difficulté est visible par tous, on n'affiche le bouton que sur un échec
-    const canUseLuckyPoints = this.options.hasLuckyPoints && !rollResults.isCritical && (displayDifficulty === "gm" || rollResults.isFailure)
+    // Si la difficulté est visible par tous, on n'affiche le bouton que sur un échec (global ou par cible)
+    const anyTargetFailure = this.options.targetResults?.some((tr) => tr.isFailure) ?? false
+    const canUseLuckyPoints = this.options.hasLuckyPoints && !rollResults.isCritical && (displayDifficulty === "gm" || rollResults.isFailure || anyTargetFailure)
 
     return {
       formula: isPrivate ? "???" : this.formula,

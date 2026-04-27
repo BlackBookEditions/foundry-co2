@@ -169,7 +169,8 @@ export default class ActionMessageData extends BaseMessageData {
       // Click sur le bouton de chance si c'est un jet d'attaque raté
       // Si la difficulté n'est visible que par le MJ, le joueur ne connaît pas le résultat : on active le bouton dans tous les cas
       const displayDifficulty = game.settings.get("co2", "displayDifficulty")
-      if (this.isFailure || displayDifficulty === "gm") {
+      const anyTargetFailure = this.targetResults.some((tr) => tr.isFailure)
+      if (this.isFailure || anyTargetFailure || displayDifficulty === "gm") {
         const luckyButton = html.querySelector(".lp-button-attack")
         const displayButton = game.user.isGM || this.parent.isAuthor
 
@@ -204,19 +205,45 @@ export default class ActionMessageData extends BaseMessageData {
               rolls[0].options.targetResults = newTargetResults
             }
 
-            // Si l'option Jet combinée est activée et au moins une cible (ou le jet global) est un succès, on lance les dommages
-            // Sauf si la difficulté n'est visible que par le MJ : les dommages ont déjà été affichés au lancement du jet
+            // Gestion du message de dommages combiné après le point de chance
             const displayDifficulty = game.settings.get("co2", "displayDifficulty")
             const anyRowSuccess = newTargetResults.some((tr) => tr.isSuccess)
             const shouldTriggerDamage = currentTargetResults.length > 0 ? anyRowSuccess : newResult.isSuccess
-            if (game.settings.get("co2", "useComboRolls") && displayDifficulty !== "gm" && shouldTriggerDamage && message.system.linkedRoll && Object.keys(message.system.linkedRoll).length > 0) {
-              const damageRoll = Roll.fromData(message.system.linkedRoll)
-              const damageSystem = { subtype: "damage" }
-              if (currentTargetResults.length > 0) damageSystem.targetResults = newTargetResults.filter((tr) => tr.isSuccess)
-              await damageRoll.toMessage(
-                { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: damageSystem, speaker: message.speaker },
-                { messageMode: rolls[0].options.rollMode },
-              )
+            if (game.settings.get("co2", "useComboRolls") && message.system.linkedRoll && Object.keys(message.system.linkedRoll).length > 0) {
+              // Un message de dommages existe déjà si la difficulté est masquée (MJ) ou si le résultat global était un succès
+              const damageMessageExists = displayDifficulty === "gm" || this.result?.isSuccess
+
+              if (damageMessageExists && currentTargetResults.length > 0) {
+                // Mise à jour du message de dommages existant
+                const allMessages = game.messages.contents
+                const attackIdx = allMessages.indexOf(message)
+                if (attackIdx >= 0) {
+                  const damageMessage = allMessages.slice(attackIdx + 1).find((m) => m.system?.subtype === "damage")
+                  if (damageMessage) {
+                    const updatedDamageTargetResults = (damageMessage.system.targetResults ?? []).map((dtr) => {
+                      const match = newTargetResults.find((ntr) => ntr.uuid === dtr.uuid)
+                      if (match && match.isSuccess !== dtr.isSuccess) {
+                        return { ...dtr, isSuccess: match.isSuccess, isFailure: match.isFailure, isCritical: match.isCritical, isFumble: match.isFumble, appliedMultiplier: null }
+                      }
+                      return dtr
+                    })
+                    if (game.user.isGM) {
+                      await damageMessage.update({ "system.targetResults": updatedDamageTargetResults })
+                    } else {
+                      await game.users.activeGM.query("co2.updateTargetResults", { existingMessageId: damageMessage.id, targetResults: updatedDamageTargetResults })
+                    }
+                  }
+                }
+              } else if (shouldTriggerDamage) {
+                // Création d'un nouveau message de dommages
+                const damageRoll = Roll.fromData(message.system.linkedRoll)
+                const damageSystem = { subtype: "damage" }
+                if (currentTargetResults.length > 0) damageSystem.targetResults = newTargetResults.filter((tr) => tr.isSuccess)
+                await damageRoll.toMessage(
+                  { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: damageSystem, speaker: message.speaker },
+                  { messageMode: rolls[0].options.rollMode },
+                )
+              }
             }
 
             // Gestion des custom effects
