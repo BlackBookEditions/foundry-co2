@@ -35,6 +35,7 @@ export default class ActionMessageData extends BaseMessageData {
         }),
         { required: false, initial: [] },
       ),
+      appliedTempDamage: new fields.BooleanField({ required: false, nullable: true, initial: null }),
       linkedRoll: new fields.ObjectField(),
       oppositeValue: new fields.StringField({ required: false, nullable: true, blank: true }),
       customEffect: new fields.EmbeddedDataField(CustomEffectData),
@@ -121,6 +122,12 @@ export default class ActionMessageData extends BaseMessageData {
       if (!game.settings.get("co2", "allowPlayersToModifyTargets") && !game.user.isGM) {
         const applyCollapsible = html.querySelector(".apply-collapsible")
         if (applyCollapsible) applyCollapsible.style.display = "none"
+      }
+
+      // Restaure l'état de la checkbox DM temporaires
+      const tempDmCheckbox = html.querySelector("#tempDm")
+      if (tempDmCheckbox && message.system.appliedTempDamage !== null) {
+        tempDmCheckbox.checked = message.system.appliedTempDamage
       }
 
       // Restaure l'état persisté (multiplicateurs et RD) et calcule les dommages ajustés pour chaque cible
@@ -495,6 +502,17 @@ export default class ActionMessageData extends BaseMessageData {
           registerControlTokenHook()
         }
 
+        // --- Temp damage checkbox ---
+        const tempDmCheckbox = html.querySelector("#tempDm")
+        if (tempDmCheckbox) {
+          tempDmCheckbox.addEventListener("change", async () => {
+            const message = this.parent
+            if (game.user.isGM) {
+              await message.update({ "system.appliedTempDamage": tempDmCheckbox.checked })
+            }
+          })
+        }
+
         // --- Multiplier buttons ---
         html.querySelectorAll(".multiplier-btn").forEach((btn) => {
           btn.addEventListener("click", (event) => {
@@ -578,9 +596,11 @@ export default class ActionMessageData extends BaseMessageData {
                 }
               }
             }
+            if (message.system.appliedTempDamage !== tempDamage) changed = true
             if (changed) {
+              const updateData = { "system.targetResults": targetResults, "system.appliedTempDamage": tempDamage }
               if (game.user.isGM) {
-                await message.update({ "system.targetResults": targetResults })
+                await message.update(updateData)
               } else {
                 await game.users.activeGM.query("co2.updateTargetResults", { existingMessageId: message.id, targetResults })
               }

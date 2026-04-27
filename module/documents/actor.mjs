@@ -2434,7 +2434,9 @@ export default class COActor extends Actor {
     if (isTemporaryDamage) {
       const currentMaxHp = this.system.attributes.hp.max
       const currentTempDamage = this.system.attributes.tempDm
-      const newTempDamage = Math.min(currentTempDamage + finalDamage, currentMaxHp)
+      const targetFor = this.system.abilities.for.value
+      const amountTempDamage = Math.max(0, finalDamage - targetFor)
+      const newTempDamage = Math.min(currentTempDamage + amountTempDamage, currentMaxHp)
       await this.update({ "system.attributes.tempDm": newTempDamage })
     }
     // Gestion des dommages normaux
