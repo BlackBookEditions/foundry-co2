@@ -559,6 +559,7 @@ export class COAttackRoll extends CORoll {
         const damageRollTooltip = await damageRoll.getTooltip()
         damageRoll.options = {
           actorId: dialogContext.actor.id,
+          rollMode: rolls[0].options.rollMode,
           type: "damage",
           flavor: dialogContext.flavor,
           itemName: dialogContext.itemName,
@@ -582,6 +583,7 @@ export class COAttackRoll extends CORoll {
       const tooltip = await roll.getTooltip()
       roll.options = {
         actorId: dialogContext.actor.id,
+        rollMode: withDialog ? rollContext.rollMode : dialogContext.rollMode,
         type: dialogContext.type,
         flavor: dialogContext.flavor,
         itemName: dialogContext.itemName,
