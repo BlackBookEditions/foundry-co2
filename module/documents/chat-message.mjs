@@ -119,4 +119,21 @@ export default class COChatMessage extends ChatMessage {
     if (!message) return
     await message.update({ rolls: rolls, "system.result": result, "system.showButton": false })
   }
+
+  /**
+   * Met à jour les targetResults d'un message (ex : persistance des multiplicateurs de dommages)
+   *
+   * @param {Object} options
+   * @param {string} options.existingMessageId L'ID du message à mettre à jour
+   * @param {Array} options.targetResults Les targetResults mis à jour
+   * @returns {Promise<void>}
+   * @private
+   * @static
+   * @async
+   */
+  static async _handleQueryUpdateTargetResults({ existingMessageId, targetResults } = {}) {
+    const message = game.messages.get(existingMessageId)
+    if (!message) return
+    await message.update({ "system.targetResults": targetResults })
+  }
 }

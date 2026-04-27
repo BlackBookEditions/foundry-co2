@@ -261,7 +261,9 @@ export class COSkillRoll extends CORoll {
   async _prepareChatRenderContext({ flavor, isPrivate = false, ...options } = {}) {
     const rollResults = CORoll.analyseRollResult(this)
     // On peut utiliser un point de chance si on en a et que ce n'est pas déjà un critique
-    const canUseLuckyPoints = this.options.hasLuckyPoints && !rollResults.isCritical
+    // Si la difficulté est visible par tous, on n'affiche le bouton que sur un échec
+    const displayDifficulty = game.settings.get("co2", "displayDifficulty")
+    const canUseLuckyPoints = this.options.hasLuckyPoints && !rollResults.isCritical && (displayDifficulty === "gm" || rollResults.isFailure)
     // Libellé de la caractéristique opposée (ex : "Constitution")
     const oppositeAbilityId = this.options.oppositeValue?.startsWith("@oppose.") ? this.options.oppositeValue.replace("@oppose.", "") : null
     const oppositeAbilityLabel = oppositeAbilityId ? game.i18n.localize(`CO.abilities.long.${oppositeAbilityId}`) : null
@@ -649,7 +651,8 @@ export class COAttackRoll extends CORoll {
     const showDifficulty = !!this.options.useDifficulty && viewerCanSeeDifficulty
 
     // On peut utiliser un point de chance si on en a et que ce n'est pas déjà un critique
-    const canUseLuckyPoints = this.options.hasLuckyPoints && !rollResults.isCritical
+    // Si la difficulté est visible par tous, on n'affiche le bouton que sur un échec
+    const canUseLuckyPoints = this.options.hasLuckyPoints && !rollResults.isCritical && (displayDifficulty === "gm" || rollResults.isFailure)
 
     return {
       formula: isPrivate ? "???" : this.formula,

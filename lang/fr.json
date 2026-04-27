@@ -1273,10 +1273,10 @@
         "hint": "Le résultat d’un d6 explosif (ajout et relance sur 6) est ajouté à l'initiative."
       },
       "displayDifficulty": {
-        "name": "Visibilité de la difficulté",
-        "hint": "Contrôle qui peut voir la difficulté sur les jets de compétences/attributs et d'armes.",
-        "all": "Afficher la difficulté pour tout le monde",
-        "gm": "Afficher la difficulté uniquement au MJ"
+        "name": "Afficher la difficulté",
+        "hint": "Détermine qui peut voir la difficulté sur les jets de compétences, d'attributs et d'attaques.",
+        "all": "Pour tout le monde",
+        "gm": "Uniquement au MJ"
       },
       "useComboRolls": {
         "name": "Activer les jets combinés attaque et dommages",

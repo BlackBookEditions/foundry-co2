@@ -156,7 +156,9 @@ export default class ActionMessageData extends BaseMessageData {
     // Message d'attaque
     if (this.isAttack) {
       // Click sur le bouton de chance si c'est un jet d'attaque raté
-      if (this.isFailure) {
+      // Si la difficulté n'est visible que par le MJ, le joueur ne connaît pas le résultat : on active le bouton dans tous les cas
+      const displayDifficulty = game.settings.get("co2", "displayDifficulty")
+      if (this.isFailure || displayDifficulty === "gm") {
         const luckyButton = html.querySelector(".lp-button-attack")
         const displayButton = game.user.isGM || this.parent.isAuthor
 
@@ -192,9 +194,11 @@ export default class ActionMessageData extends BaseMessageData {
             }
 
             // Si l'option Jet combinée est activée et au moins une cible (ou le jet global) est un succès, on lance les dommages
+            // Sauf si la difficulté n'est visible que par le MJ : les dommages ont déjà été affichés au lancement du jet
+            const displayDifficulty = game.settings.get("co2", "displayDifficulty")
             const anyRowSuccess = newTargetResults.some((tr) => tr.isSuccess)
             const shouldTriggerDamage = currentTargetResults.length > 0 ? anyRowSuccess : newResult.isSuccess
-            if (game.settings.get("co2", "useComboRolls") && shouldTriggerDamage && message.system.linkedRoll && Object.keys(message.system.linkedRoll).length > 0) {
+            if (game.settings.get("co2", "useComboRolls") && displayDifficulty !== "gm" && shouldTriggerDamage && message.system.linkedRoll && Object.keys(message.system.linkedRoll).length > 0) {
               const damageRoll = Roll.fromData(message.system.linkedRoll)
               const damageSystem = { subtype: "damage" }
               if (currentTargetResults.length > 0) damageSystem.targetResults = newTargetResults.filter((tr) => tr.isSuccess)
@@ -495,6 +499,28 @@ export default class ActionMessageData extends BaseMessageData {
               const targetActor = fromUuidSync(targetUuid)
               if (targetActor) {
                 await Hitpoints.applyToSingleTarget({ targetActor, fromActor: actorId, source: flavor, type, amount: total, drChecked, tempDamage })
+              }
+            }
+
+            // Persistance des multiplicateurs choisis pour les cibles issues du jet
+            const message = this.parent
+            const targetResults = foundry.utils.deepClone(message.system.targetResults ?? [])
+            let changed = false
+            for (const row of targetList.querySelectorAll('.apply-target-row[data-source="targeted"]')) {
+              const uuid = row.dataset.targetUuid
+              const activeBtn = row.querySelector(".multiplier-btn.active")
+              const mult = activeBtn ? parseFloat(activeBtn.dataset.multiplier) : 1
+              const tr = targetResults.find((t) => t.uuid === uuid)
+              if (tr && tr.appliedMultiplier !== mult) {
+                tr.appliedMultiplier = mult
+                changed = true
+              }
+            }
+            if (changed) {
+              if (game.user.isGM) {
+                await message.update({ "system.targetResults": targetResults })
+              } else {
+                await game.users.activeGM.query("co2.updateTargetResults", { existingMessageId: message.id, targetResults })
               }
             }
           })

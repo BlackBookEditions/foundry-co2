@@ -2208,9 +2208,11 @@ export default class COActor extends Actor {
         { messageMode: rolls[0].options.rollMode },
       )
 
-      // Affichage du jet de dommages dans le cas d'un jet combiné, si ce n'est pas un jet opposé et si l'attaque est un succès
+      // Affichage du jet de dommages dans le cas d'un jet combiné, si ce n'est pas un jet opposé
+      // Si la difficulté n'est visible que par le MJ, on affiche systématiquement les dommages pour ne pas révéler le résultat au joueur
       if (game.settings.get("co2", "useComboRolls")) {
-        if (!rolls[0].options.oppositeRoll && results[0].isSuccess) {
+        const displayDifficulty = game.settings.get("co2", "displayDifficulty")
+        if (!rolls[0].options.oppositeRoll && (displayDifficulty === "gm" || results[0].isSuccess)) {
           if (rolls[1]) {
             await rolls[1].toMessage(
               { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage", targets: targetsUuid, targetResults }, speaker },
