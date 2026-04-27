@@ -31,6 +31,7 @@ export default class ActionMessageData extends BaseMessageData {
           opposeActorId: new fields.StringField({ required: false, nullable: true, blank: true }),
           opposeHasLuckyPoints: new fields.BooleanField({ initial: false }),
           appliedMultiplier: new fields.NumberField({ required: false, nullable: true, initial: null }),
+          appliedDrChecked: new fields.BooleanField({ initial: true }),
         }),
         { required: false, initial: [] },
       ),
@@ -120,28 +121,38 @@ export default class ActionMessageData extends BaseMessageData {
       if (!game.settings.get("co2", "allowPlayersToModifyTargets") && !game.user.isGM) {
         const applyCollapsible = html.querySelector(".apply-collapsible")
         if (applyCollapsible) applyCollapsible.style.display = "none"
-        html.querySelectorAll(".dr-checkbox").forEach((btn) => {
-          btn.style.display = "none"
-        })
       }
 
-      // Restaure les multiplicateurs persistés après un re-render
+      // Restaure l'état persisté (multiplicateurs et RD) et calcule les dommages ajustés pour chaque cible
       const total = parseInt(html.querySelector(".damage-card")?.dataset.total) || 0
       const damageTargetResults = message.system.targetResults ?? []
       damageTargetResults.forEach((tr) => {
-        if (tr.appliedMultiplier === null || tr.appliedMultiplier === undefined) return
         const row = html.querySelector(`.apply-target-row[data-target-uuid="${tr.uuid}"][data-source="targeted"]`)
         if (!row) return
-        row.querySelectorAll(".multiplier-btn").forEach((btn) => {
-          btn.classList.toggle("active", parseFloat(btn.dataset.multiplier) === tr.appliedMultiplier)
-        })
+
+        // RD de la cible
+        const targetActor = fromUuidSync(tr.uuid)
+        const targetDr = targetActor?.system?.combat?.dr?.value ?? 0
+        row.dataset.targetDr = targetDr
+
+        // Restaure le multiplicateur persisté
+        if (tr.appliedMultiplier !== null && tr.appliedMultiplier !== undefined) {
+          row.querySelectorAll(".multiplier-btn").forEach((btn) => {
+            btn.classList.toggle("active", parseFloat(btn.dataset.multiplier) === tr.appliedMultiplier)
+          })
+        }
+
+        // Restaure l'état de la case RD
+        const drCheckbox = row.querySelector(".target-dr")
+        if (drCheckbox) drCheckbox.checked = tr.appliedDrChecked
+
+        // Recalcul de l'affichage des dommages
+        const activeBtn = row.querySelector(".multiplier-btn.active")
+        const multiplier = activeBtn ? parseFloat(activeBtn.dataset.multiplier) : 1
+        const drChecked = drCheckbox?.checked ?? true
         const dmgDisplay = row.querySelector(".target-damage")
         if (dmgDisplay) {
-          const computed = Math.ceil(Math.abs(total * tr.appliedMultiplier))
-          if (tr.appliedMultiplier < 0) dmgDisplay.textContent = `+${computed}`
-          else if (tr.appliedMultiplier === 0) dmgDisplay.textContent = "0"
-          else dmgDisplay.textContent = `-${computed}`
-          dmgDisplay.dataset.multiplier = tr.appliedMultiplier
+          ActionMessageData.updateDamageDisplay(dmgDisplay, total, multiplier, drChecked, targetDr)
         }
       })
     }
@@ -464,13 +475,26 @@ export default class ActionMessageData extends BaseMessageData {
             row.querySelectorAll(".multiplier-btn").forEach((b) => b.classList.remove("active"))
             btn.classList.add("active")
             const multiplier = parseFloat(btn.dataset.multiplier)
+            const drCheckbox = row.querySelector(".target-dr")
+            const drChecked = drCheckbox?.checked ?? true
+            const targetDr = parseInt(row.dataset.targetDr) || 0
             const dmgDisplay = row.querySelector(".target-damage")
             if (dmgDisplay) {
-              const computed = Math.ceil(Math.abs(total * multiplier))
-              if (multiplier < 0) dmgDisplay.textContent = `+${computed}`
-              else if (multiplier === 0) dmgDisplay.textContent = "0"
-              else dmgDisplay.textContent = `-${computed}`
-              dmgDisplay.dataset.multiplier = multiplier
+              ActionMessageData.updateDamageDisplay(dmgDisplay, total, multiplier, drChecked, targetDr)
+            }
+          })
+        })
+
+        // --- DR checkboxes ---
+        html.querySelectorAll(".target-dr").forEach((checkbox) => {
+          checkbox.addEventListener("change", () => {
+            const row = checkbox.closest(".apply-target-row")
+            const activeBtn = row.querySelector(".multiplier-btn.active")
+            const multiplier = activeBtn ? parseFloat(activeBtn.dataset.multiplier) : 1
+            const targetDr = parseInt(row.dataset.targetDr) || 0
+            const dmgDisplay = row.querySelector(".target-damage")
+            if (dmgDisplay) {
+              ActionMessageData.updateDamageDisplay(dmgDisplay, total, multiplier, checkbox.checked, targetDr)
             }
           })
         })
@@ -480,7 +504,6 @@ export default class ActionMessageData extends BaseMessageData {
           applyBtn.addEventListener("click", async (event) => {
             event.preventDefault()
             const tempDamage = html.querySelector("#tempDm")?.checked ?? false
-            const drChecked = html.querySelector("#dr")?.checked ?? true
             const rows = targetList.querySelectorAll(".apply-target-row")
             for (const row of rows) {
               if (row.style.display === "none") continue
@@ -496,13 +519,16 @@ export default class ActionMessageData extends BaseMessageData {
               else if (multiplier < 0) type = "heal"
               else type = "full"
 
+              const drCheckbox = row.querySelector(".target-dr")
+              const drChecked = drCheckbox?.checked ?? true
+
               const targetActor = fromUuidSync(targetUuid)
               if (targetActor) {
                 await Hitpoints.applyToSingleTarget({ targetActor, fromActor: actorId, source: flavor, type, amount: total, drChecked, tempDamage })
               }
             }
 
-            // Persistance des multiplicateurs choisis pour les cibles issues du jet
+            // Persistance des choix (multiplicateurs et RD) pour les cibles issues du jet
             const message = this.parent
             const targetResults = foundry.utils.deepClone(message.system.targetResults ?? [])
             let changed = false
@@ -510,10 +536,18 @@ export default class ActionMessageData extends BaseMessageData {
               const uuid = row.dataset.targetUuid
               const activeBtn = row.querySelector(".multiplier-btn.active")
               const mult = activeBtn ? parseFloat(activeBtn.dataset.multiplier) : 1
+              const drCheckbox = row.querySelector(".target-dr")
+              const drChecked = drCheckbox?.checked ?? true
               const tr = targetResults.find((t) => t.uuid === uuid)
-              if (tr && tr.appliedMultiplier !== mult) {
-                tr.appliedMultiplier = mult
-                changed = true
+              if (tr) {
+                if (tr.appliedMultiplier !== mult) {
+                  tr.appliedMultiplier = mult
+                  changed = true
+                }
+                if (tr.appliedDrChecked !== drChecked) {
+                  tr.appliedDrChecked = drChecked
+                  changed = true
+                }
               }
             }
             if (changed) {
@@ -527,6 +561,25 @@ export default class ActionMessageData extends BaseMessageData {
         }
       }
     }
+  }
+
+  /**
+   * Met à jour l'affichage des dommages d'une cible en tenant compte du multiplicateur, de la RD et de son état coché.
+   * @param {HTMLElement} dmgDisplay L'élément `.target-damage`
+   * @param {number} total Total brut des dommages
+   * @param {number} multiplier Multiplicateur actif (-1, 0, 0.5, 1, 2)
+   * @param {boolean} drChecked La case RD est cochée
+   * @param {number} targetDr Valeur de RD de la cible
+   */
+  static updateDamageDisplay(dmgDisplay, total, multiplier, drChecked, targetDr) {
+    if (multiplier === 0) {
+      dmgDisplay.textContent = "0"
+    } else {
+      let computed = Math.ceil(Math.abs(total * multiplier))
+      if (drChecked) computed = Math.max(multiplier > 0 ? 1 : 0, computed - targetDr)
+      dmgDisplay.textContent = multiplier < 0 ? `+${computed}` : `-${computed}`
+    }
+    dmgDisplay.dataset.multiplier = multiplier
   }
 
   /**
@@ -557,13 +610,22 @@ export default class ActionMessageData extends BaseMessageData {
       row.classList.add("apply-target-row")
       row.dataset.targetUuid = actor.uuid
       row.dataset.source = "selected"
+      const targetDr = actor.system?.combat?.dr?.value ?? 0
+      row.dataset.targetDr = targetDr
 
       const img = target.document?.texture?.src ?? actor.img
+      const drLabel = game.i18n.localize("CO.ui.dr")
+      const drTooltip = game.i18n.localize("CO.ui.drText")
+      const initialDamage = Math.max(1, total - targetDr)
       row.innerHTML = `
         <div class="target-info">
           ${img ? `<img class="target-portrait" src="${img}" alt="${actor.name}" height="28" width="28" />` : ""}
           <span class="target-name">${actor.name}</span>
-          <span class="target-damage" data-multiplier="1">-${total}</span>
+          <label class="target-dr-label" data-tooltip="${drTooltip}" data-tooltip-direction="UP">
+            ${drLabel}
+            <input type="checkbox" class="target-dr" checked />
+          </label>
+          <span class="target-damage" data-multiplier="1">-${initialDamage}</span>
         </div>
         <div class="target-controls">
           <span class="multiplier-label">&times;</span>
@@ -578,23 +640,33 @@ export default class ActionMessageData extends BaseMessageData {
       `
       targetList.appendChild(row)
 
-      // Ajouter les listeners de multiplicateur pour les nouvelles lignes
+      // Ajouter les listeners de multiplicateur et de RD pour les nouvelles lignes
       row.querySelectorAll(".multiplier-btn").forEach((btn) => {
         btn.addEventListener("click", (event) => {
           event.preventDefault()
           row.querySelectorAll(".multiplier-btn").forEach((b) => b.classList.remove("active"))
           btn.classList.add("active")
           const multiplier = parseFloat(btn.dataset.multiplier)
+          const drCheckbox = row.querySelector(".target-dr")
+          const drChecked = drCheckbox?.checked ?? true
           const dmgDisplay = row.querySelector(".target-damage")
           if (dmgDisplay) {
-            const computed = Math.ceil(Math.abs(total * multiplier))
-            if (multiplier < 0) dmgDisplay.textContent = `+${computed}`
-            else if (multiplier === 0) dmgDisplay.textContent = "0"
-            else dmgDisplay.textContent = `-${computed}`
-            dmgDisplay.dataset.multiplier = multiplier
+            ActionMessageData.updateDamageDisplay(dmgDisplay, total, multiplier, drChecked, targetDr)
           }
         })
       })
+
+      const drCheckbox = row.querySelector(".target-dr")
+      if (drCheckbox) {
+        drCheckbox.addEventListener("change", () => {
+          const activeBtn = row.querySelector(".multiplier-btn.active")
+          const multiplier = activeBtn ? parseFloat(activeBtn.dataset.multiplier) : 1
+          const dmgDisplay = row.querySelector(".target-damage")
+          if (dmgDisplay) {
+            ActionMessageData.updateDamageDisplay(dmgDisplay, total, multiplier, drCheckbox.checked, targetDr)
+          }
+        })
+      }
     }
   }
 }

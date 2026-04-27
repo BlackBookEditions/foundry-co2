@@ -25,10 +25,6 @@
             <label for="tempDm" class="temp-dm-checkbox" data-tooltip="{{localize 'CO.ui.tempText'}}" data-tooltip-direction="UP">{{localize 'CO.ui.temp'}}</label>
             <input type="checkbox" id="tempDm" name="tempDm" class="temp-dm-checkbox" {{checked tempDamage}} />
           </div>
-          <div class="dr">
-            <label for="dr" class="dr-checkbox" data-tooltip="{{localize 'CO.ui.drText'}}" data-tooltip-direction="UP">{{localize "CO.ui.dr"}}</label>
-            <input type="checkbox" id="dr" name="dr" class="dr-checkbox" checked />
-          </div>
         </div>
       </div>
     </section>
@@ -58,6 +54,10 @@
                       <img class="target-portrait" src="{{target.img}}" alt="{{target.name}}" height="28" width="28" />
                     {{/if}}
                     <span class="target-name">{{target.name}}</span>
+                    <label class="target-dr-label" data-tooltip="{{localize 'CO.ui.drText'}}" data-tooltip-direction="UP">
+                      {{localize "CO.ui.dr"}}
+                      <input type="checkbox" class="target-dr" checked />
+                    </label>
                     <span class="target-damage" data-multiplier="{{#if target.isFailure}}0{{else}}1{{/if}}">{{#if target.isFailure}}0{{else}}-{{../total}}{{/if}}</span>
                   </div>
                   <div class="target-controls">
