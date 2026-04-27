@@ -145,7 +145,7 @@ jobs:
         id: deploy_release
         uses: fjogeleit/http-request-action@v1
         with:
-          url: 'https://api.foundryvtt.com/_api/packages/release_version'
+          url: 'https://foundryvtt.com/_api/packages/release_version'
           method: 'POST'
           contentType: 'application/json'
           customHeaders: '{"Authorization": "${{ secrets.FVTT_PACKAGE_RELEASE_TOKEN }}"}'
