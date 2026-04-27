@@ -535,7 +535,7 @@ export default class Utils {
         ...Utils._computeOutcome(evaluatedDifficulty, rollTotal, attackResult),
         needsOppositeRoll: false,
       }
-    })
+    }).sort((a, b) => (b.difficulty ?? 0) - (a.difficulty ?? 0))
   }
 
   /**

@@ -1,28 +1,54 @@
 {{log "Chroniques Oubliées | hbs | attack-card" this}}
 <div class="co chat-card roll-card attack-card" data-actor-id="{{actorId}}">
   <header class="card-header flexcol">
-    <div class="attack-item-card" data-tooltip="{{flavor}}" data-tooltip-direction="LEFT">
-      {{#if itemImg}}
-        <img class="attack-item-image" src="{{itemImg}}" alt="{{itemName}}" />
-      {{/if}}
-      <div class="attack-item-text">
-        <div class="attack-item-name">{{itemName}}</div>
-        {{#if actionName}}
-          <div class="attack-item-subtitle">{{actionName}}</div>
-        {{/if}}
+    <details class="attack-details">
+      <summary>
+        <div class="attack-item-card" data-tooltip="{{flavor}}" data-tooltip-direction="LEFT">
+          {{#if itemImg}}
+            <img class="attack-item-image" src="{{itemImg}}" alt="{{itemName}}" />
+          {{/if}}
+          <div class="attack-item-text">
+            <div class="attack-item-name">{{itemName}}</div>
+            {{#if actionName}}
+              <div class="attack-item-subtitle">{{actionName}}</div>
+            {{/if}}
+          </div>
+          {{#if hasDice}}
+            <span class="attack-item-icon" data-tooltip="{{diceType}}" data-tooltip-direction="UP"><i class="fa-solid fa-dice"></i></span>
+          {{/if}}
+          {{#if hasTactical}}
+            <span class="attack-item-icon" data-tooltip="{{tactical}}" data-tooltip-direction="UP"><i class="fa-solid fa-sliders-up"></i></span>
+          {{/if}}
+        </div>
+      </summary>
+      <div class="attack-details-content">
+        <section class="options">
+          {{#if hasDice}}
+            <strong class="display-dice-type"><i class="fa-solid fa-dice"></i> {{diceType}}&nbsp;&nbsp;</strong>
+          {{/if}}
+          {{#if hasTactical}}
+            <strong class="display-tactical"><i class="fa-solid fa-sliders-up"></i> {{tactical}}</strong>
+          {{/if}}
+        </section>
+        <div class="dice-roll" data-action="expandRoll">
+          <div class="dice-result">
+            <div class="dice-formula" data-tooltip="{{formulaAttackTooltip}}" data-tooltip-direction="UP">{{localize "CO.ui.formula"}} : {{formula}}</div>
+            {{{tooltip}}}
+          </div>
+          {{#if showDifficulty}}
+            {{#if opposeResult}}
+              <div class="dice-result">
+                <div class="dice-formula">{{localize "CO.ui.oppositeFormula"}} : {{opposeResult}}</div>
+                {{{opposeTooltip}}}
+              </div>
+            {{/if}}
+          {{/if}}
+        </div>
       </div>
-    </div>
+    </details>
   </header>
 
   <div class="card-content">
-    <section class="options">
-      {{#if hasDice}}
-        <strong class="display-dice-type"><i class="fa-solid fa-dice"></i> {{diceType}}&nbsp;&nbsp;</strong>
-      {{/if}}
-      {{#if hasTactical}}
-        <strong class="display-tactical"><i class="fa-solid fa-sliders-up"></i> {{tactical}}</strong>
-      {{/if}}
-    </section>
     <section class="bloc-result{{#if hasTargetResults}} has-target-results{{/if}}">
       <section class="result">
         <div class="attack-total-group">
@@ -78,23 +104,9 @@
         </section>
       {{/unless}}
     </section>
-    <div class="dice-roll" data-action="expandRoll">
-      <div class="dice-result">
-        <div class="dice-formula" data-tooltip="{{formulaAttackTooltip}}" data-tooltip-direction="UP">{{localize "CO.ui.formula"}} : {{formula}}</div>
-        {{{tooltip}}}
-      </div>
-      {{#if showDifficulty}}
-        {{#if opposeResult}}
-          <div class="dice-result">
-            <div class="dice-formula">{{localize "CO.ui.oppositeFormula"}} : {{opposeResult}}</div>
-            {{{opposeTooltip}}}
-          </div>
-        {{/if}}
-      {{/if}}
-    </div>    
     <section class="targets">
       {{#if hasTargetResults}}
-        <details class="targets-collapsible" open>
+        <details class="targets-collapsible">
           <summary class="targets-header"><i class="fa-solid fa-bullseye-arrow"></i> {{localize "CO.ui.targets"}}</summary>
           <ul class="target-list">
             {{#each targetResults as |target|}}

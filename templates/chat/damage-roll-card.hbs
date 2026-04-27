@@ -1,17 +1,29 @@
 {{log "Chroniques Oubliées | hbs | damage-card" this}}
 <div class="co chat-card roll-card damage-card" data-actor-id="{{actorId}}" data-total="{{total}}">
   <header class="card-header flexcol">
-    <div class="attack-item-card damage-item-card" data-tooltip="{{flavor}}" data-tooltip-direction="LEFT">
-      {{#if itemImg}}
-        <img class="attack-item-image" src="{{itemImg}}" alt="{{itemName}}" />
-      {{/if}}
-      <div class="attack-item-text">
-        <div class="attack-item-name">{{itemName}}</div>
-        {{#if actionName}}
-          <div class="attack-item-subtitle">{{actionName}}</div>
-        {{/if}}
+    <details class="attack-details damage-details">
+      <summary>
+        <div class="attack-item-card damage-item-card" data-tooltip="{{flavor}}" data-tooltip-direction="LEFT">
+          {{#if itemImg}}
+            <img class="attack-item-image" src="{{itemImg}}" alt="{{itemName}}" />
+          {{/if}}
+          <div class="attack-item-text">
+            <div class="attack-item-name">{{itemName}}</div>
+            {{#if actionName}}
+              <div class="attack-item-subtitle">{{actionName}}</div>
+            {{/if}}
+          </div>
+        </div>
+      </summary>
+      <div class="attack-details-content">
+        <div class="dice-roll" data-action="expandRoll">
+          <div class="dice-result">
+            <div class="dice-formula" data-tooltip="{{formulaDamageTooltip}}" data-tooltip-direction="UP">{{localize "CO.ui.formula"}} : {{formula}}</div>
+            {{{tooltip}}}
+          </div>
+        </div>
       </div>
-    </div>
+    </details>
   </header>
 
   <div class="card-content">
@@ -28,12 +40,6 @@
         </div>
       </div>
     </section>
-    <div class="dice-roll" data-action="expandRoll">
-      <div class="dice-result">
-        <div class="dice-formula" data-tooltip="{{formulaDamageTooltip}}" data-tooltip-direction="UP">{{localize "CO.ui.formula"}} : {{formula}}</div>
-        {{{tooltip}}}
-      </div>
-    </div>
     <section class="targets">
       <details class="targets-collapsible apply-collapsible">
         <summary class="targets-header apply-header"><i class="fa-solid fa-heart"></i> {{localize "CO.ui.apply"}}</summary>
@@ -58,15 +64,15 @@
                       {{localize "CO.ui.dr"}}
                       <input type="checkbox" class="target-dr" checked />
                     </label>
-                    <span class="target-damage" data-multiplier="{{#if target.isFailure}}0{{else}}1{{/if}}">{{#if target.isFailure}}0{{else}}-{{../total}}{{/if}}</span>
+                    <span class="target-damage" data-multiplier="{{#if target.isFailure}}0{{else if target.isCritical}}2{{else}}1{{/if}}">{{#if target.isFailure}}0{{else}}-{{../total}}{{/if}}</span>
                   </div>
                   <div class="target-controls">
                     <div class="damage-multipliers">
                       <button type="button" class="multiplier-btn" data-multiplier="-1" data-tooltip="{{localize 'CO.ui.applyHealing'}}" data-tooltip-direction="DOWN">-1</button>
                       <button type="button" class="multiplier-btn {{#if target.isFailure}}active{{/if}}" data-multiplier="0" data-tooltip="{{localize 'CO.ui.noDamage'}}" data-tooltip-direction="DOWN">0</button>
                       <button type="button" class="multiplier-btn" data-multiplier="0.5" data-tooltip="{{localize 'CO.ui.applyHalfDamage'}}" data-tooltip-direction="DOWN">&frac12;</button>
-                      <button type="button" class="multiplier-btn {{#unless target.isFailure}}active{{/unless}}" data-multiplier="1" data-tooltip="{{localize 'CO.ui.applyDamage'}}" data-tooltip-direction="DOWN">1</button>
-                      <button type="button" class="multiplier-btn" data-multiplier="2" data-tooltip="{{localize 'CO.ui.applyDoubleDamage'}}" data-tooltip-direction="DOWN">2</button>
+                      <button type="button" class="multiplier-btn {{#if target.isCritical}}{{else}}{{#unless target.isFailure}}active{{/unless}}{{/if}}" data-multiplier="1" data-tooltip="{{localize 'CO.ui.applyDamage'}}" data-tooltip-direction="DOWN">1</button>
+                      <button type="button" class="multiplier-btn {{#if target.isCritical}}active{{/if}}" data-multiplier="2" data-tooltip="{{localize 'CO.ui.applyDoubleDamage'}}" data-tooltip-direction="DOWN">2</button>
                     </div>
                   </div>
                 </div>

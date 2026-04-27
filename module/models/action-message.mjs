@@ -135,12 +135,12 @@ export default class ActionMessageData extends BaseMessageData {
         const targetDr = targetActor?.system?.combat?.dr?.value ?? 0
         row.dataset.targetDr = targetDr
 
-        // Restaure le multiplicateur persisté
-        if (tr.appliedMultiplier !== null && tr.appliedMultiplier !== undefined) {
-          row.querySelectorAll(".multiplier-btn").forEach((btn) => {
-            btn.classList.toggle("active", parseFloat(btn.dataset.multiplier) === tr.appliedMultiplier)
-          })
-        }
+        // Restaure le multiplicateur : appliedMultiplier si défini, sinon défaut basé sur le résultat (x0 échec, x2 critique, x1 sinon)
+        const defaultMultiplier = tr.isFailure ? 0 : tr.isCritical ? 2 : 1
+        const effectiveMultiplier = (tr.appliedMultiplier !== null && tr.appliedMultiplier !== undefined) ? tr.appliedMultiplier : defaultMultiplier
+        row.querySelectorAll(".multiplier-btn").forEach((btn) => {
+          btn.classList.toggle("active", parseFloat(btn.dataset.multiplier) === effectiveMultiplier)
+        })
 
         // Restaure l'état de la case RD
         const drCheckbox = row.querySelector(".target-dr")
@@ -185,6 +185,7 @@ export default class ActionMessageData extends BaseMessageData {
             let rolls = this.parent.rolls
             rolls[0].options.bonus = String(parseInt(rolls[0].options.bonus) + 10)
             rolls[0].options.hasLuckyPoints = false
+            rolls[0].options.luckyPointUsed = true
             rolls[0]._total = parseInt(rolls[0].total) + 10
 
             let newResult = CORoll.analyseRollResult(rolls[0])
@@ -238,7 +239,7 @@ export default class ActionMessageData extends BaseMessageData {
                 // Création d'un nouveau message de dommages
                 const damageRoll = Roll.fromData(message.system.linkedRoll)
                 const damageSystem = { subtype: "damage" }
-                if (currentTargetResults.length > 0) damageSystem.targetResults = newTargetResults.filter((tr) => tr.isSuccess)
+                if (currentTargetResults.length > 0) damageSystem.targetResults = newTargetResults
                 await damageRoll.toMessage(
                   { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: damageSystem, speaker: message.speaker },
                   { messageMode: rolls[0].options.rollMode },

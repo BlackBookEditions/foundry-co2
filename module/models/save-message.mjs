@@ -151,6 +151,7 @@ export default class SaveMessageData extends BaseMessageData {
         let rolls = this.parent.rolls
         rolls[0].options.bonus = String(parseInt(rolls[0].options.bonus) + 10)
         rolls[0].options.hasLuckyPoints = false
+        rolls[0].options.luckyPointUsed = true
         rolls[0]._total = parseInt(rolls[0].total) + 10
 
         let newResult = CORoll.analyseRollResult(rolls[0])
