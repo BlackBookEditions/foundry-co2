@@ -82,7 +82,7 @@
       {{#unless hasTargetResults}}
         <section class="result-sentence">
           {{#if oppositeRoll}}
-            <button class="opposite-roll" data-opposite-value="{{difficulty}}" data-opposite-target="{{oppositeTarget}}">{{localize "CO.ui.oppositeRoll"}}</button>
+            <button class="opposite-roll" data-opposite-value="{{difficulty}}" data-opposite-target="{{oppositeTarget}}" data-tooltip="{{localize 'CO.ui.oppositeRoll'}}{{#if oppositeAbilityLabel}} : {{oppositeAbilityLabel}}{{/if}}" data-tooltip-direction="UP">{{localize "CO.ui.oppositeRoll"}}</button>
           {{else}}
             {{#if showDifficulty}}
               {{#if isSuccess}}
@@ -131,7 +131,7 @@
                 {{/if}}
                 <span class="target-name">{{target.name}}</span>
                 {{#if target.needsOppositeRoll}}
-                  <button class="opposite-roll" data-opposite-value="{{../oppositeValue}}" data-opposite-target="{{target.uuid}}">{{localize "CO.ui.oppositeRoll"}}</button>
+                  <button class="opposite-roll" data-opposite-value="{{../oppositeValue}}" data-opposite-target="{{target.uuid}}" data-tooltip="{{localize 'CO.ui.oppositeRoll'}}{{#if @root.oppositeAbilityLabel}} : {{@root.oppositeAbilityLabel}}{{/if}}" data-tooltip-direction="UP">{{localize "CO.ui.oppositeRoll"}}</button>
                 {{else}}
                   {{#if @root.showDifficulty}}
                     <span class="target-difficulty display-difficulty" data-tooltip="{{localize 'CO.label.long.difficulty'}}" data-tooltip-direction="UP"><i class="fas fa-shield-halved"></i> {{target.difficulty}}</span>

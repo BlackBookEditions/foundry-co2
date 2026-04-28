@@ -37,6 +37,7 @@ export default class ActionMessageData extends BaseMessageData {
       ),
       appliedTempDamage: new fields.BooleanField({ required: false, nullable: true, initial: null }),
       linkedRoll: new fields.ObjectField(),
+      linkedDamageMessageId: new fields.StringField({ required: false, nullable: true, blank: true }),
       oppositeValue: new fields.StringField({ required: false, nullable: true, blank: true }),
       customEffect: new fields.EmbeddedDataField(CustomEffectData),
       additionalEffect: new fields.SchemaField({
@@ -352,13 +353,21 @@ export default class ActionMessageData extends BaseMessageData {
               newGlobalResult = { ...attackerResult, isSuccess: outcome.isSuccess, isFailure: outcome.isFailure, difficulty: opposed.total }
             }
 
-            // Le jet est un succès : déclenche le jet de dommages lié
-            if (outcome.isSuccess) {
+            // Gestion du message de dommages (création ou mise à jour)
+            let damageMessageId = null
+            if (hasTargetResults) {
+              damageMessageId = await OpposedRollHandler.createOrUpdateDamageMessage({
+                linkedRoll: message.system.linkedRoll,
+                linkedDamageMessageId: message.system.linkedDamageMessageId,
+                speaker: message.speaker,
+                rollMode: rolls[0].options.rollMode,
+                targetResults: newTargetResults,
+              })
+            } else if (outcome.isSuccess) {
               await OpposedRollHandler.triggerLinkedDamage({
                 linkedRoll: message.system.linkedRoll,
                 speaker: message.speaker,
                 rollMode: rolls[0].options.rollMode,
-                targetResults: hasTargetResults ? newTargetResults : undefined,
               })
             }
 
@@ -375,6 +384,9 @@ export default class ActionMessageData extends BaseMessageData {
             const updateData = { rolls }
             if (hasTargetResults) updateData["system.targetResults"] = newTargetResults
             else updateData["system.result"] = newGlobalResult
+            if (damageMessageId && damageMessageId !== message.system.linkedDamageMessageId) {
+              updateData["system.linkedDamageMessageId"] = damageMessageId
+            }
 
             await OpposedRollHandler.updateMessage({ message, updateData })
           })

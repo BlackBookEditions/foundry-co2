@@ -93,12 +93,13 @@ export default class COChatMessage extends ChatMessage {
    * @static
    * @async
    */
-  static async _handleQueryUpdateMessageAfterOpposedRoll({ existingMessageId, rolls, result, targetResults } = {}) {
+  static async _handleQueryUpdateMessageAfterOpposedRoll({ existingMessageId, rolls, result, targetResults, linkedDamageMessageId } = {}) {
     const message = game.messages.get(existingMessageId)
     if (!message) return
     const updateData = { rolls: rolls }
     if (result !== undefined && result !== null) updateData["system.result"] = result
     if (targetResults !== undefined) updateData["system.targetResults"] = targetResults
+    if (linkedDamageMessageId) updateData["system.linkedDamageMessageId"] = linkedDamageMessageId
     await message.update(updateData)
   }
 

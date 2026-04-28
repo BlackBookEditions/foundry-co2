@@ -91,22 +91,72 @@ export default class OpposedRollHandler {
   }
 
   /**
-   * Déclenche le jet de dommages lié si le jet opposé est un succès.
+   * Déclenche le jet de dommages lié si le jet opposé est un succès (cas legacy sans targetResults).
    * @param {object} params
    * @param {object} params.linkedRoll Données sérialisées du jet de dommages
    * @param {object} params.speaker Speaker du message de chat
    * @param {string} params.rollMode Mode de visibilité du jet
-   * @param {Array} [params.targetResults] Résultats par cible (filtré sur les succès)
    */
-  static async triggerLinkedDamage({ linkedRoll, speaker, rollMode, targetResults }) {
+  static async triggerLinkedDamage({ linkedRoll, speaker, rollMode }) {
     if (!linkedRoll || Object.keys(linkedRoll).length === 0) return
     const damageRoll = Roll.fromData(linkedRoll)
-    const damageSystem = { subtype: "damage" }
-    if (targetResults?.length > 0) damageSystem.targetResults = targetResults.filter((tr) => tr.isSuccess)
     await damageRoll.toMessage(
+      { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: { subtype: "damage" }, speaker },
+      { messageMode: rollMode },
+    )
+  }
+
+  /**
+   * Crée ou met à jour le message de dommages lié à un jet opposé multi-cibles.
+   * @param {object} params
+   * @param {object} params.linkedRoll Données sérialisées du jet de dommages
+   * @param {string|null} params.linkedDamageMessageId ID du message de dommages existant
+   * @param {object} params.speaker Speaker du message de chat
+   * @param {string} params.rollMode Mode de visibilité du jet
+   * @param {Array} params.targetResults Résultats par cible (toutes les cibles)
+   * @returns {Promise<string|null>} L'ID du message de dommages créé ou existant
+   */
+  static async createOrUpdateDamageMessage({ linkedRoll, linkedDamageMessageId, speaker, rollMode, targetResults }) {
+    if (!linkedRoll || Object.keys(linkedRoll).length === 0) return null
+
+    const resolvedTargets = targetResults?.filter((tr) => !tr.needsOppositeRoll) ?? []
+    const hasAnySuccess = resolvedTargets.some((tr) => tr.isSuccess)
+
+    if (linkedDamageMessageId) {
+      await this.updateDamageMessageTargets({ linkedDamageMessageId, targetResults })
+      return linkedDamageMessageId
+    }
+
+    if (!hasAnySuccess) return null
+
+    const damageRoll = Roll.fromData(linkedRoll)
+    const damageSystem = { subtype: "damage" }
+    if (resolvedTargets.length > 0) damageSystem.targetResults = resolvedTargets
+    const msg = await damageRoll.toMessage(
       { style: CONST.CHAT_MESSAGE_STYLES.OTHER, type: "action", system: damageSystem, speaker },
       { messageMode: rollMode },
     )
+    return msg.id
+  }
+
+  /**
+   * Met à jour les targetResults du message de dommages lié.
+   * @param {object} params
+   * @param {string} params.linkedDamageMessageId ID du message de dommages
+   * @param {Array} params.targetResults Résultats par cible (toutes les cibles)
+   */
+  static async updateDamageMessageTargets({ linkedDamageMessageId, targetResults }) {
+    if (!linkedDamageMessageId) return
+    const resolvedTargets = targetResults.filter((tr) => !tr.needsOppositeRoll)
+    if (game.user.isGM) {
+      const damageMessage = game.messages.get(linkedDamageMessageId)
+      if (damageMessage) await damageMessage.update({ "system.targetResults": resolvedTargets })
+    } else {
+      await game.users.activeGM.query("co2.updateTargetResults", {
+        existingMessageId: linkedDamageMessageId,
+        targetResults: resolvedTargets,
+      })
+    }
   }
 
   /**
@@ -141,6 +191,7 @@ export default class OpposedRollHandler {
         rolls: updateData.rolls,
         result: updateData["system.result"],
         targetResults: updateData["system.targetResults"],
+        linkedDamageMessageId: updateData["system.linkedDamageMessageId"],
       })
     }
   }
@@ -174,6 +225,7 @@ export default class OpposedRollHandler {
         return { ...tr, difficulty: newDifficulty, isSuccess, isFailure, opposeHasLuckyPoints: false }
       })
       rolls[0].options.targetResults = newTargetResults
+      await this.updateDamageMessageTargets({ linkedDamageMessageId: message.system.linkedDamageMessageId, targetResults: newTargetResults })
       await OpposedRollHandler.updateMessage({ message, updateData: { rolls, "system.targetResults": newTargetResults } })
     } else {
       rolls[0].options.difficulty = parseInt(rolls[0].options.difficulty) + 10
