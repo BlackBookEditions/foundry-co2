@@ -613,6 +613,8 @@ export class COAttackRoll extends CORoll {
   _getAttackChatCardData(flavor, isPrivate) {
     const rollResults = CORoll.analyseRollResult(this, this.options.hasAttackSuccessThreshold, this.options.attackSuccessThreshold)
     if (CONFIG.debug.co2?.chat) console.debug(Utils.log(`COAttackRoll - _getAttackChatCardData options`), this.options)
+    const oppositeAbilityId = this.options.difficulty?.startsWith("@oppose.") ? this.options.difficulty.replace("@oppose.", "") : null
+    const oppositeAbilityLabel = oppositeAbilityId ? game.i18n.localize(`CO.abilities.long.${oppositeAbilityId}`) : null
 
     // Gestion des dés bonus/malus
     const hasDice = this.options.dice === "bonus" || this.options.dice === "malus"
@@ -676,6 +678,7 @@ export class COAttackRoll extends CORoll {
       oppositeRoll: this.options.oppositeRoll,
       oppositeTarget: this.options.oppositeTarget,
       oppositeValue: this.options.difficulty,
+      oppositeAbilityLabel,
       hasLuckyPoints: this.options.hasLuckyPoints,
       canUseLuckyPoints,
       difficulty: rollResults.difficulty,

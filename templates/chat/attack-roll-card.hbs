@@ -113,7 +113,7 @@
               <li class="target-row" data-target-uuid="{{target.uuid}}">
                 {{#if @root.showDifficulty}}
                   {{#if target.needsOppositeRoll}}
-                    <span class="target-outcome pending" data-tooltip="{{localize 'CO.ui.oppositeRoll'}}" data-tooltip-direction="LEFT"><i class="fas fa-question"></i></span>
+                    <span class="target-outcome pending" data-tooltip="{{localize 'CO.ui.oppositeRoll'}}{{#if @root.oppositeAbilityLabel}} : {{@root.oppositeAbilityLabel}}{{/if}}" data-tooltip-direction="LEFT"><i class="fas fa-question"></i></span>
                   {{else}}
                       {{#if target.isCritical}}
                         <span class="target-outcome success critical" data-tooltip="{{localize 'CO.roll.critical'}}" data-tooltip-direction="LEFT"><i class="fas fa-check-double"></i></span>
