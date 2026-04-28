@@ -23,10 +23,16 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 20px;
 
       .total-result {
         margin: 0;
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+      }
+      .dm-text {
+        font-size: var(--font-size-18);
       }
 
       .damage-options {
@@ -69,8 +75,10 @@
       margin-bottom: 6px;
 
       .apply-mode-btn {
+        --button-size: 1rem;
+        height: 20px;
         padding: 2px 4px;
-        font-size: var(--font-size-11);
+        font-size: var(--font-size-12);
         font-weight: bold;
         text-transform: uppercase;
         letter-spacing: 0.3px;
@@ -107,8 +115,9 @@
   .apply-target-row {
     display: flex;
     flex-direction: column;
-    padding: 3px 4px;
-    border-bottom: 1px solid var(--color-border-light-tertiary);
+    padding: 1px 4px;
+    border-bottom: 1px solid #8888889c;
+    margin-top: 2px;
 
     &:last-child {
       border-bottom: none;
@@ -121,18 +130,20 @@
     }
 
     .target-portrait {
-      width: 28px;
-      height: 28px;
-      flex: 0 0 28px;
+      width: 40px;
+      height: 40px;
+      flex: 0 0 40px;
       border-radius: 50%;
       object-fit: cover;
       border: none;
+      position: relative;
+      top: 10px;
     }
 
     .target-name {
       flex: 1;
       font-weight: bold;
-      font-size: var(--font-size-13);
+      font-size: var(--font-size-14);
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -154,6 +165,7 @@
       font-weight: bold;
       white-space: nowrap;
       cursor: pointer;
+      margin-right: 15px;
 
       input[type="checkbox"] {
         margin: 0;
@@ -162,7 +174,7 @@
 
     .target-damage {
       font-weight: bold;
-      font-size: var(--font-size-14);
+      font-size: var(--font-size-20);
       min-width: 32px;
       text-align: right;
       color: var(--color-chatDamages);
@@ -172,7 +184,8 @@
     .target-controls {
       display: flex;
       align-items: center;
-      margin-top: 2px;
+      margin-top: -8px;
+      padding-bottom: 3px;
     }
   }
 
@@ -181,22 +194,29 @@
     display: flex;
     flex: 1;
     gap: 2px;
+    margin-left: 44px;
+    margin-right: 0px;
 
     .multiplier-btn {
       flex: 1;
-      height: 22px;
+      --button-size: 1rem;
+      height: 20px;
       padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: var(--font-size-12);
+      font-size: var(--font-size-14);
       font-weight: bold;
       border: 1px solid var(--color-border-light-2);
       border-radius: 3px;
-      background: transparent;
+      background: #88888857;
       color: inherit;
       cursor: pointer;
-      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+      transition:
+        background-color 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease,
+        box-shadow 0.15s ease;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 
       &:hover {
@@ -211,6 +231,12 @@
         color: white;
         box-shadow: 0 1px 3px color-mix(in srgb, var(--color-chatDamages) 40%, transparent);
       }
+    }
+    .btn-heal.active {
+      background: var(--color-chatHeal);
+      border-color: var(--color-chatHeal);
+      color: white;
+      box-shadow: 0 1px 3px color-mix(in srgb, var(--color-chatHeal) 40%, transparent);
     }
   }
 

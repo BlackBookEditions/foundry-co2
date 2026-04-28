@@ -13,12 +13,14 @@
               <div class="attack-item-subtitle">{{actionName}}</div>
             {{/if}}
           </div>
-          {{#if hasDice}}
-            <span class="attack-item-icon" data-tooltip="{{diceType}}" data-tooltip-direction="UP"><i class="fa-solid fa-dice"></i></span>
-          {{/if}}
-          {{#if hasTactical}}
-            <span class="attack-item-icon" data-tooltip="{{tactical}}" data-tooltip-direction="UP"><i class="fa-solid fa-sliders-up"></i></span>
-          {{/if}}
+          <div class="attack-item-icon-block">
+            {{#if hasDice}}
+              <span class="attack-item-icon" data-tooltip="{{diceType}}" data-tooltip-direction="UP"><i class="fa-solid fa-dice"></i></span>
+            {{/if}}
+            {{#if hasTactical}}
+              <span class="attack-item-icon" data-tooltip="{{tactical}}" data-tooltip-direction="UP"><i class="fa-solid fa-sliders-up"></i></span>
+            {{/if}}
+          </div>
         </div>
       </summary>
       <div class="attack-details-content">
@@ -52,6 +54,9 @@
     <section class="bloc-result{{#if hasTargetResults}} has-target-results{{/if}}">
       <section class="result">
         <div class="attack-total-group">
+          <div class="form-group total-text">
+            <div>{{localize 'CO.ui.total'}} : </div>
+          </div>
           <div class="form-group total-result">
             <div data-tooltip="{{localize 'CO.ui.total'}}" data-tooltip-direction="UP">{{total}}</div>
           </div>

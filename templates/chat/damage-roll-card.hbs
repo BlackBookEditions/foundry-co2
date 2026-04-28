@@ -30,7 +30,7 @@
     <section class="result">
       <div class="damage-total-group">
         <div class="form-group total-result">
-          <div>{{total}} DM</div>
+          <div>{{total}}</div><div class="dm-text"> DM</div>
         </div>
         <div class="damage-options">
           <div class="temp-dm">
@@ -60,19 +60,21 @@
                       <img class="target-portrait" src="{{target.img}}" alt="{{target.name}}" height="28" width="28" />
                     {{/if}}
                     <span class="target-name">{{target.name}}</span>
-                    <label class="target-dr-label" data-tooltip="{{localize 'CO.ui.drText'}}" data-tooltip-direction="UP">
-                      {{localize "CO.ui.dr"}}
-                      <input type="checkbox" class="target-dr" checked />
-                    </label>
+                    
                     <span class="target-damage" data-multiplier="{{#if target.isFailure}}0{{else if target.isCritical}}2{{else}}1{{/if}}">{{#if target.isFailure}}0{{else}}-{{../total}}{{/if}}</span>
                   </div>
                   <div class="target-controls">
+
                     <div class="damage-multipliers">
-                      <button type="button" class="multiplier-btn" data-multiplier="-1" data-tooltip="{{localize 'CO.ui.applyHealing'}}" data-tooltip-direction="DOWN">-1</button>
+                      <label class="target-dr-label" data-tooltip="{{localize 'CO.ui.drText'}}" data-tooltip-direction="UP">
+                        {{localize "CO.ui.dr"}}
+                        <input type="checkbox" class="target-dr" checked />
+                      </label>
+                      <button type="button" class="multiplier-btn btn-heal" data-multiplier="-1" data-tooltip="{{localize 'CO.ui.applyHealing'}}" data-tooltip-direction="DOWN"><i class="fa-solid fa-heart"></i></button>
                       <button type="button" class="multiplier-btn {{#if target.isFailure}}active{{/if}}" data-multiplier="0" data-tooltip="{{localize 'CO.ui.noDamage'}}" data-tooltip-direction="DOWN">0</button>
-                      <button type="button" class="multiplier-btn" data-multiplier="0.5" data-tooltip="{{localize 'CO.ui.applyHalfDamage'}}" data-tooltip-direction="DOWN">&frac12;</button>
-                      <button type="button" class="multiplier-btn {{#if target.isCritical}}{{else}}{{#unless target.isFailure}}active{{/unless}}{{/if}}" data-multiplier="1" data-tooltip="{{localize 'CO.ui.applyDamage'}}" data-tooltip-direction="DOWN">1</button>
-                      <button type="button" class="multiplier-btn {{#if target.isCritical}}active{{/if}}" data-multiplier="2" data-tooltip="{{localize 'CO.ui.applyDoubleDamage'}}" data-tooltip-direction="DOWN">2</button>
+                      <button type="button" class="multiplier-btn" data-multiplier="0.5" data-tooltip="{{localize 'CO.ui.applyHalfDamage'}}" data-tooltip-direction="DOWN">x&frac12;</button>
+                      <button type="button" class="multiplier-btn {{#if target.isCritical}}{{else}}{{#unless target.isFailure}}active{{/unless}}{{/if}}" data-multiplier="1" data-tooltip="{{localize 'CO.ui.applyDamage'}}" data-tooltip-direction="DOWN">x1</button>
+                      <button type="button" class="multiplier-btn {{#if target.isCritical}}active{{/if}}" data-multiplier="2" data-tooltip="{{localize 'CO.ui.applyDoubleDamage'}}" data-tooltip-direction="DOWN">x2</button>
                     </div>
                   </div>
                 </div>

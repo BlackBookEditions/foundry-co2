@@ -1084,15 +1084,16 @@ co-toggle-switch[checked] thumb {
 }
 .co.application.dialog.attack-roll .window-content .target-preview-difficulty {
   min-width: 28px;
-  padding: 1px 6px;
+  padding: 2px 5px;
   border: 2px solid #4a4a4a;
   border-radius: 999px;
   background: #ffffffd9;
   color: #222;
-  font-size: var(--font-size-18);
+  font-size: var(--font-size-15);
   font-weight: bold;
   line-height: 1.1;
   text-align: center;
+  margin-top: -15px;
 }
 .co.application.dialog.attack-roll .window-content .additionalEffect {
   padding-bottom: 6px;
@@ -3579,8 +3580,7 @@ co-toggle-switch[checked] thumb {
 #interface #sidebar .chat-message .message-content .card-content section.targets .target-list .target-row,
 #interface #ui-right-column-1 .chat-message .message-content .card-content section.targets .target-list .target-row {
   gap: 6px;
-  padding: 3px 4px;
-  border-bottom: 1px solid var(--color-border-light-tertiary);
+  padding: 1px 4px;
   transition: background-color 0.15s ease, box-shadow 0.15s ease;
 }
 #interface #sidebar .chat-message .message-content .card-content section.targets .target-list .target-row:last-child,
@@ -3622,12 +3622,11 @@ co-toggle-switch[checked] thumb {
 }
 #interface #sidebar .chat-message .message-content .card-content section.targets .target-list .target-row .target-difficulty i,
 #interface #ui-right-column-1 .chat-message .message-content .card-content section.targets .target-list .target-row .target-difficulty i {
-  font-size: var(--font-size-14);
   opacity: 0.7;
 }
 #interface #sidebar .chat-message .message-content .card-content section.targets .target-list .target-row .target-outcome,
 #interface #ui-right-column-1 .chat-message .message-content .card-content section.targets .target-list .target-row .target-outcome {
-  font-size: var(--font-size-18);
+  font-size: var(--font-size-20);
   min-width: 24px;
   text-align: center;
   display: inline-flex;
@@ -3659,7 +3658,9 @@ co-toggle-switch[checked] thumb {
 #interface #sidebar .chat-message .message-content .card-content section.targets .target-list .target-row button.opposite-roll,
 #interface #ui-right-column-1 .chat-message .message-content .card-content section.targets .target-list .target-row button.opposite-roll {
   margin-left: auto;
-  font-size: var(--font-size-12);
+  font-size: var(--font-size-13);
+  height: 26px;
+  --button-size: 1rem;
 }
 #interface #sidebar .chat-message .message-content .card-content .bloc-result,
 #interface #ui-right-column-1 .chat-message .message-content .card-content .bloc-result {
@@ -3687,7 +3688,7 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .chat-message .message-content .diff-result,
 #interface #sidebar .chat-message .message-content .vs,
 #interface #ui-right-column-1 .chat-message .message-content .vs {
-  font-size: var(--font-size-24);
+  font-size: var(--font-size-28);
   font-weight: bold;
   text-align: center;
 }
@@ -3806,7 +3807,7 @@ co-toggle-switch[checked] thumb {
   gap: 9px;
   width: 100%;
   min-height: 56px;
-  padding: 8px 11px;
+  padding: 5px 8px;
   border: 1px solid #8f7656;
   border-radius: 3px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.62) 0%, rgba(241, 234, 224, 0.92) 44%, rgba(223, 211, 195, 0.95) 100%), linear-gradient(90deg, rgba(124, 89, 47, 0.05) 0%, rgba(124, 89, 47, 0) 100%);
@@ -3818,11 +3819,13 @@ co-toggle-switch[checked] thumb {
   height: 42px;
   flex: 0 0 42px;
   object-fit: cover;
-  padding: 2px;
-  border: 1px solid rgba(94, 70, 42, 0.45);
-  border-radius: 2px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(223, 212, 198, 0.9) 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 1px 1px rgba(56, 35, 14, 0.08);
+  /*padding: 2px;
+    border: 1px solid rgba(94, 70, 42, 0.45);
+    border-radius: 2px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(223, 212, 198, 0.9) 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.85),
+      0 1px 1px rgba(56, 35, 14, 0.08);*/
 }
 #interface #sidebar .co.chat-card.roll-card .card-header .attack-item-text,
 #interface #ui-right-column-1 .co.chat-card.roll-card .card-header .attack-item-text {
@@ -3831,6 +3834,7 @@ co-toggle-switch[checked] thumb {
   flex-direction: column;
   gap: 1px;
   justify-content: center;
+  width: stretch;
 }
 #interface #sidebar .co.chat-card.roll-card .card-header .attack-item-name,
 #interface #ui-right-column-1 .co.chat-card.roll-card .card-header .attack-item-name {
@@ -3846,7 +3850,7 @@ co-toggle-switch[checked] thumb {
 #interface #sidebar .co.chat-card.roll-card .card-header .attack-item-subtitle,
 #interface #ui-right-column-1 .co.chat-card.roll-card .card-header .attack-item-subtitle {
   color: #655846;
-  font-size: var(--font-size-11);
+  font-size: var(--font-size-14);
   line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3895,9 +3899,13 @@ co-toggle-switch[checked] thumb {
 #interface #sidebar .co.chat-card.roll-card .card-header .attack-details .attack-item-icon,
 #interface #ui-right-column-1 .co.chat-card.roll-card .card-header .attack-details .attack-item-icon {
   margin-left: auto;
-  font-size: var(--font-size-14);
+  font-size: var(--font-size-15);
   opacity: 0.7;
-  flex-shrink: 0;
+}
+#interface #sidebar .co.chat-card.roll-card .card-header .attack-details .attack-item-icon-block,
+#interface #ui-right-column-1 .co.chat-card.roll-card .card-header .attack-details .attack-item-icon-block {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
 }
 #interface #sidebar .co.chat-card.roll-card .card-header .attack-details[open] .attack-item-icon,
 #interface #ui-right-column-1 .co.chat-card.roll-card .card-header .attack-details[open] .attack-item-icon {
@@ -3916,6 +3924,12 @@ co-toggle-switch[checked] thumb {
   display: flex;
   flex-direction: row;
   margin-bottom: 4px;
+}
+#interface #sidebar .co.chat-card.roll-card .card-header .attack-details .attack-details-content section.options .display-dice-type,
+#interface #ui-right-column-1 .co.chat-card.roll-card .card-header .attack-details .attack-details-content section.options .display-dice-type,
+#interface #sidebar .co.chat-card.roll-card .card-header .attack-details .attack-details-content section.options .display-tactical,
+#interface #ui-right-column-1 .co.chat-card.roll-card .card-header .attack-details .attack-details-content section.options .display-tactical {
+  font-size: var(--font-size-14);
 }
 #interface #sidebar .co.chat-card.roll-card .card-header .attack-details .attack-details-content .dice-roll,
 #interface #ui-right-column-1 .co.chat-card.roll-card .card-header .attack-details .attack-details-content .dice-roll {
@@ -4085,11 +4099,18 @@ co-toggle-switch[checked] thumb {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 20px;
 }
 #interface #sidebar .co.chat-card.roll-card.damage-card .card-content .damage-total-group .total-result,
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .card-content .damage-total-group .total-result {
   margin: 0;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+#interface #sidebar .co.chat-card.roll-card.damage-card .card-content .damage-total-group .dm-text,
+#interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .card-content .damage-total-group .dm-text {
+  font-size: var(--font-size-18);
 }
 #interface #sidebar .co.chat-card.roll-card.damage-card .card-content .damage-total-group .damage-options,
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .card-content .damage-total-group .damage-options {
@@ -4129,8 +4150,10 @@ co-toggle-switch[checked] thumb {
 }
 #interface #sidebar .co.chat-card.roll-card.damage-card section.targets .apply-source-control .apply-mode-btn,
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card section.targets .apply-source-control .apply-mode-btn {
+  --button-size: 1rem;
+  height: 20px;
   padding: 2px 4px;
-  font-size: var(--font-size-11);
+  font-size: var(--font-size-12);
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -4164,8 +4187,9 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .apply-target-row {
   display: flex;
   flex-direction: column;
-  padding: 3px 4px;
-  border-bottom: 1px solid var(--color-border-light-tertiary);
+  padding: 1px 4px;
+  border-bottom: 1px solid #8888889c;
+  margin-top: 2px;
 }
 #interface #sidebar .co.chat-card.roll-card.damage-card .apply-target-row:last-child,
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .apply-target-row:last-child {
@@ -4179,18 +4203,20 @@ co-toggle-switch[checked] thumb {
 }
 #interface #sidebar .co.chat-card.roll-card.damage-card .apply-target-row .target-portrait,
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .apply-target-row .target-portrait {
-  width: 28px;
-  height: 28px;
-  flex: 0 0 28px;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
   border-radius: 50%;
   object-fit: cover;
   border: none;
+  position: relative;
+  top: 10px;
 }
 #interface #sidebar .co.chat-card.roll-card.damage-card .apply-target-row .target-name,
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .apply-target-row .target-name {
   flex: 1;
   font-weight: bold;
-  font-size: var(--font-size-13);
+  font-size: var(--font-size-14);
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -4212,6 +4238,7 @@ co-toggle-switch[checked] thumb {
   font-weight: bold;
   white-space: nowrap;
   cursor: pointer;
+  margin-right: 15px;
 }
 #interface #sidebar .co.chat-card.roll-card.damage-card .apply-target-row .target-dr-label input[type="checkbox"],
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .apply-target-row .target-dr-label input[type="checkbox"] {
@@ -4220,7 +4247,7 @@ co-toggle-switch[checked] thumb {
 #interface #sidebar .co.chat-card.roll-card.damage-card .apply-target-row .target-damage,
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .apply-target-row .target-damage {
   font-weight: bold;
-  font-size: var(--font-size-14);
+  font-size: var(--font-size-20);
   min-width: 32px;
   text-align: right;
   color: var(--color-chatDamages);
@@ -4230,27 +4257,31 @@ co-toggle-switch[checked] thumb {
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .apply-target-row .target-controls {
   display: flex;
   align-items: center;
-  margin-top: 2px;
+  margin-top: -8px;
+  padding-bottom: 3px;
 }
 #interface #sidebar .co.chat-card.roll-card.damage-card .damage-multipliers,
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .damage-multipliers {
   display: flex;
   flex: 1;
   gap: 2px;
+  margin-left: 44px;
+  margin-right: 0px;
 }
 #interface #sidebar .co.chat-card.roll-card.damage-card .damage-multipliers .multiplier-btn,
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .damage-multipliers .multiplier-btn {
   flex: 1;
-  height: 22px;
+  --button-size: 1rem;
+  height: 20px;
   padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--font-size-12);
+  font-size: var(--font-size-14);
   font-weight: bold;
   border: 1px solid var(--color-border-light-2);
   border-radius: 3px;
-  background: transparent;
+  background: #88888857;
   color: inherit;
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
@@ -4268,6 +4299,13 @@ co-toggle-switch[checked] thumb {
   border-color: var(--color-chatDamages);
   color: white;
   box-shadow: 0 1px 3px color-mix(in srgb, var(--color-chatDamages) 40%, transparent);
+}
+#interface #sidebar .co.chat-card.roll-card.damage-card .damage-multipliers .btn-heal.active,
+#interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .damage-multipliers .btn-heal.active {
+  background: var(--color-chatHeal);
+  border-color: var(--color-chatHeal);
+  color: white;
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--color-chatHeal) 40%, transparent);
 }
 #interface #sidebar .co.chat-card.roll-card.damage-card .apply-damage-btn,
 #interface #ui-right-column-1 .co.chat-card.roll-card.damage-card .apply-damage-btn {
