@@ -1972,9 +1972,20 @@ export default class COActor extends Actor {
 
     // Enrichissement du tooltip d'attaque avec les modificateurs de combat
     if (this.type === "character") {
-      const attackSkillKey = actionType === SYSTEM.ACTION_TYPES.spell.id || actionType === SYSTEM.ACTION_TYPES.magical.id ? "magic" : actionType
-      const attackSkill = this.system.combat[attackSkillKey]
-      if (attackSkill?.tooltipValue) skillFormulaTooltip = attackSkill.tooltipValue
+      const attackType = Utils.getAttackTypeFromFormula(originalSkillFormula, actionType)
+      if (attackType) {
+        const attackSkillKey = actionType === SYSTEM.ACTION_TYPES.spell.id || actionType === SYSTEM.ACTION_TYPES.magical.id ? "magic" : actionType
+        const attackSkill = this.system.combat[attackSkillKey]
+        if (attackSkill?.tooltipValue) skillFormulaTooltip = attackSkill.tooltipValue
+      } else {
+        let tooltip = ""
+        for (const [key, ability] of Object.entries(this.system.abilities)) {
+          if (originalSkillFormula.includes(`@${key}`)) {
+            tooltip += ability.tooltipValue
+          }
+        }
+        if (tooltip) skillFormulaTooltip = tooltip
+      }
     }
 
     // Gestion des dés bonus et malus
