@@ -214,11 +214,19 @@ export default class ActionMessageData extends BaseMessageData {
               rolls[0].options.targetResults = newTargetResults
             }
 
-            // Gestion du message de dommages combiné après le point de chance
+            // Gestion du message de dommages après le point de chance
             const displayDifficulty = game.settings.get("co2", "displayDifficulty")
             const anyRowSuccess = newTargetResults.some((tr) => tr.isSuccess)
             const shouldTriggerDamage = currentTargetResults.length > 0 ? anyRowSuccess : newResult.isSuccess
-            if (game.settings.get("co2", "useComboRolls") && message.system.linkedRoll && Object.keys(message.system.linkedRoll).length > 0) {
+            const hasLinkedRoll = message.system.linkedRoll && Object.keys(message.system.linkedRoll).length > 0
+
+            if (message.system.linkedDamageMessageId && hasLinkedRoll) {
+              // Message de dommages créé par le système de jets opposés : mise à jour via l'ID stocké
+              await OpposedRollHandler.updateDamageMessageTargets({
+                linkedDamageMessageId: message.system.linkedDamageMessageId,
+                targetResults: newTargetResults,
+              })
+            } else if (game.settings.get("co2", "useComboRolls") && hasLinkedRoll) {
               // Un message de dommages existe déjà si la difficulté est masquée (MJ) ou si le résultat global était un succès
               const damageMessageExists = displayDifficulty === "gm" || this.result?.isSuccess
 
