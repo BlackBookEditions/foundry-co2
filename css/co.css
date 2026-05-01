@@ -170,6 +170,7 @@ co-toggle-switch[checked] thumb {
   margin: 0;
   overflow: hidden;
   padding: 0;
+  white-space: wrap;
 }
 .co fieldset legend {
   font-size: 120%;
