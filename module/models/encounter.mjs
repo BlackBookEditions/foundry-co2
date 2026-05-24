@@ -138,13 +138,14 @@ export default class EncounterData extends ActorData {
         },
       })
 
-      if (game.modules.get("cof2-base")?.active) {
+      /* Les rencontres n'en  ont pas besoin
+     if (game.modules.get("cof2-base")?.active) {
         const items = []
         const item = await fromUuid(game.system.CONST.BASE_ITEM_UUID.hands)
         if (item) items.push(item)
         // The method updateSource will merge the arrays for embedded collections
         updates.items = items.map((i) => game.items.fromCompendium(i, { keepId: true, clearFolder: true }))
-      }
+      }*/
     }
 
     this.parent.updateSource(updates)

@@ -1,3 +1,11 @@
+# 2.1.5
+
+## Corrections
+
+- Retire l'équipement Mains nues aux rencontre car c'est devenu inutile depuis que les rencontre n'ont plus d'inventaires mais un butin.
+
+#
+
 # 2.1.4
 
 ## Améliorations

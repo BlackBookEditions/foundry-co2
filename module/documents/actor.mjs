@@ -2121,8 +2121,7 @@ export default class COActor extends Actor {
     }
 
     if (targetScope && targetScope !== SYSTEM.RESOLVER_SCOPE.all.id && canvas.ready) {
-      const scopeDisposition =
-        targetScope === SYSTEM.RESOLVER_SCOPE.allies.id ? CONST.TOKEN_DISPOSITIONS.FRIENDLY : CONST.TOKEN_DISPOSITIONS.HOSTILE
+      const scopeDisposition = targetScope === SYSTEM.RESOLVER_SCOPE.allies.id ? CONST.TOKEN_DISPOSITIONS.FRIENDLY : CONST.TOKEN_DISPOSITIONS.HOSTILE
       dialogTargets = dialogTargets.map((target) => {
         const d = target.token?.document?.disposition
         const isNeutralOrSecret = d === CONST.TOKEN_DISPOSITIONS.NEUTRAL || d === CONST.TOKEN_DISPOSITIONS.SECRET
@@ -2704,7 +2703,10 @@ export default class COActor extends Actor {
       const disposition = token.document.disposition
       const isNeutralOrSecret = disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL || disposition === CONST.TOKEN_DISPOSITIONS.SECRET
       const isValidTarget =
-        scope === "all" || isNeutralOrSecret || (scope === "allies" && disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) || (scope === "enemies" && disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE)
+        scope === "all" ||
+        isNeutralOrSecret ||
+        (scope === "allies" && disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) ||
+        (scope === "enemies" && disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE)
 
       if (isValidTarget) {
         targets.push(this._getTargetFromToken(token))
