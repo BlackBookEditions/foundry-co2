@@ -71,6 +71,10 @@ export default class COActor extends Actor {
   getRollData() {
     const rollData = { ...this.system }
 
+    if (!["character", "encounter"].includes(this.type)) {
+      return rollData
+    }
+
     rollData.agi = this.system.abilities.agi.value
     rollData.for = this.system.abilities.for.value
     rollData.con = this.system.abilities.con.value
