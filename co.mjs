@@ -30,6 +30,7 @@ Hooks.once("init", async function () {
   CONFIG.Actor.documentClass = documents.COActor
 
   CONFIG.Actor.dataModels = {
+    ...(CONFIG.Actor.dataModels ?? {}),
     character: models.CharacterData,
     encounter: models.EncounterData,
   }
