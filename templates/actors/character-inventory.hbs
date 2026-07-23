@@ -25,7 +25,9 @@
       <h4 class="item-name flexrow">
         <a data-action="toggleSection" data-toggle-type="{{group.category}}">{{localize (concat "CO.ui." group.category "s")}} ({{group.nbItems}})</a>
       </h4>
-      <div class="item-detail">{{localize "CO.ui.usage"}}</div>
+      {{#if group.showUsage}}
+        <div class="item-detail">{{localize "CO.ui.usage"}}</div>
+      {{/if}}
       <div class="item-detail">{{localize "CO.label.short.quantity"}}</div>
         <div class="item-detail">{{localize "CO.ui.actions"}}</div>
         <div class="item-controls-2">
@@ -65,17 +67,19 @@
             </h4>
           </div>
           <!-- Usage -->
-          <div class="item-detail">
-            <a class="item-control inventory-usage">
-              {{#if system.usage.twoHand}}
-                <i class="fas fa-hand-paper"></i><i class="fas fa-hand-paper"></i>
-              {{else}}
-                {{#if system.usage.oneHand}}
-                  <i class="fas fa-hand-paper"></i>
+          {{#if group.showUsage}}
+            <div class="item-detail">
+              <a class="item-control inventory-usage">
+                {{#if system.usage.twoHand}}
+                  <i class="fas fa-hand-paper"></i><i class="fas fa-hand-paper"></i>
+                {{else}}
+                  {{#if system.usage.oneHand}}
+                    <i class="fas fa-hand-paper"></i>
+                  {{/if}}
                 {{/if}}
-              {{/if}}
-            </a>
-          </div>    
+              </a>
+            </div>
+          {{/if}}
           <!-- Quantité -->      
           <div class="item-detail">
             <a class="item-control inventory-qty">

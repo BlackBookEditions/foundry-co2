@@ -208,6 +208,9 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
 
     context.capacitiesOffPathsExpanded = Utils.getExpandedState(`co-${this.document.id}-paths-capacitiesOffPaths`)
     context.features = this.document.features
+    for (const feature of context.features) {
+      feature.enrichedTooltip = await enrichHTML(feature.system.description ?? "")
+    }
     context.actions = this.document.actions
     context.inventory = this.document.inventory
     for (const group of context.inventory) {

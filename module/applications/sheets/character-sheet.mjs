@@ -80,6 +80,9 @@ export default class COCharacterSheet extends COBaseActorSheet {
     const context = await super._prepareContext()
 
     context.profiles = this.document.profiles
+    for (const profile of context.profiles) {
+      profile.enrichedTooltip = await foundry.applications.ux.TextEditor.implementation.enrichHTML(profile.system.description ?? "")
+    }
     context.xpMax = this.document.system.attributes.xp.max
     context.xpSpent = await this.document.system.getSpentXP()
     context.xpLeft = await this.document.system.getAvailableXP()

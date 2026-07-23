@@ -2194,11 +2194,18 @@ co-toggle-switch[checked] thumb {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
 }
+.co.application.sheet.item.equipment .window-content .tab[data-tab="details"] > .half-panel {
+  grid-template-columns: calc(50% + 22.5px) minmax(0, 1fr);
+}
 .co.application.sheet.item.equipment .window-content .panel-left {
   order: 1;
 }
 .co.application.sheet.item.equipment .window-content .panel-right {
   order: 2;
+}
+.co.application.sheet.item.equipment .window-content .panel-right .TypeEquipement .form-group > .form-fields,
+.co.application.sheet.item.equipment .window-content .panel-right .TypeEquipement .form-group > .tags {
+  flex: 0 1 200px;
 }
 .co.application.sheet.item.equipment .window-content .miniField > input {
   flex-grow: 0.5;

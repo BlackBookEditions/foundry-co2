@@ -10,11 +10,26 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
   }
+  // Onglet Détails uniquement : l'onglet Actions utilise aussi .half-panel (shared/actions.hbs)
+  // et doit conserver ses deux moitiés égales.
+  // Base = (100% - gap 15px) / 2 par colonne ; +30px à gauche => 50% + 22.5px, la droite absorbe.
+  .tab[data-tab="details"] > .half-panel {
+    grid-template-columns: calc(50% + 22.5px) minmax(0, 1fr);
+  }
   .panel-left {
     order: 1;
   }
   .panel-right {
     order: 2;
+
+    // Les 4 champs du type d'équipement ne s'étirent plus sur toute la largeur du panneau :
+    // le libellé récupère la place, y compris quand la fiche est agrandie.
+    .TypeEquipement .form-group {
+      > .form-fields,
+      > .tags {
+        flex: 0 1 200px;
+      }
+    }
   }
   .miniField > input {
     flex-grow: 0.5;

@@ -195,11 +195,12 @@ export default class COActor extends Actor {
    * sorted by their sort property. For each category, it also retrieves the expanded state from
    * localStorage to remember the user's UI preferences.
    *
-   * @returns {Array<{category: string, nbItems: number, items: Array, expanded: boolean}>} An array of inventory categories, where each object contains:
+   * @returns {Array<{category: string, nbItems: number, items: Array, expanded: boolean, showUsage: boolean}>} An array of inventory categories, where each object contains:
    *   - category: The equipment subtype identifier
    *   - nbItems: The number of items in this category
    *   - items: Array of equipment items in this category, sorted by their sort value
    *   - expanded: Boolean indicating whether the category should be displayed as expanded in the UI (retrieved from localStorage)
+   *   - showUsage: Boolean indicating whether the usage (hands) column should be displayed for this category
    */
   get inventory() {
     let inventory = []
@@ -226,6 +227,9 @@ export default class COActor extends Actor {
         nbItems: items.length,
         items,
         expanded,
+        // Le nombre de mains n'a pas de sens pour une armure : la fiche d'objet ne propose
+        // pas non plus le champ usage pour ce sous-type (cf. templates/items/equipment.hbs)
+        showUsage: category !== SYSTEM.EQUIPMENT_SUBTYPES.armor.id,
       })
     })
 
