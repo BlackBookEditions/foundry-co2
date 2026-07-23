@@ -562,19 +562,8 @@ export class COAttackRoll extends CORoll {
       // Si l'option Jet combiné est activée, on lance le jet de dommages immédiatement
       // Jet de dommages enregistré si la formule de dommages n'est pas vide ou égale à 0
       let damageFormula
-      if (withDialog) {
-        let formulaToEvaluate
-        if (rollContext.formulaDamage !== "" && rollContext.formulaDamage !== "0") formulaToEvaluate = rollContext.formulaDamage
-        if (rollContext.damageBonus !== "" && rollContext.damageBonus !== "0") formulaToEvaluate += rollContext.formulaDamage
-        if (rollContext.damageMalus !== "" && rollContext.damageMalus !== "0") formulaToEvaluate += rollContext.damageMalus
-        if (formulaToEvaluate) damageFormula = Utils.evaluateFormulaCustomValues(dialogContext.actor, formulaToEvaluate)
-      } else {
-        let formulaToEvaluate
-        if (dialogContext.formulaDamage !== "" && dialogContext.formulaDamage !== "0") formulaToEvaluate = dialogContext.formulaDamage
-        if (dialogContext.damageBonus !== "" && dialogContext.damageBonus !== "0") formulaToEvaluate += dialogContext.formulaDamage
-        if (dialogContext.damageMalus !== "" && dialogContext.damageMalus !== "0") formulaToEvaluate += dialogContext.damageMalus
-        if (formulaToEvaluate) damageFormula = Utils.evaluateFormulaCustomValues(dialogContext.actor, formulaToEvaluate)
-      }
+      const formulaToEvaluate = COAttackRoll._buildDamageFormula(withDialog ? rollContext : dialogContext)
+      if (formulaToEvaluate) damageFormula = Utils.evaluateFormulaCustomValues(dialogContext.actor, formulaToEvaluate)
 
       if (damageFormula && damageFormula !== "" && Roll.validate(damageFormula)) {
         const damageRoll = new this(damageFormula, dialogContext.actor.getRollData())
@@ -597,9 +586,7 @@ export class COAttackRoll extends CORoll {
         rolls.push(damageRoll)
       }
     } else if (dialogContext.type === "damage") {
-      const formula = withDialog
-        ? Utils.evaluateFormulaCustomValues(dialogContext.actor, `${rollContext.formulaDamage}+${rollContext.damageBonus}+${rollContext.damageMalus}`)
-        : Utils.evaluateFormulaCustomValues(dialogContext.actor, `${dialogContext.formulaDamage}+${dialogContext.damageBonus}+${dialogContext.damageMalus}`)
+      const formula = Utils.evaluateFormulaCustomValues(dialogContext.actor, COAttackRoll._buildDamageFormula(withDialog ? rollContext : dialogContext) || "0")
       const roll = new this(formula, dialogContext.actor.getRollData())
       await roll.evaluate()
 
@@ -623,6 +610,29 @@ export class COAttackRoll extends CORoll {
 
     if (CONFIG.debug.co2?.rolls) console.debug(Utils.log(`COAttackRoll - rolls`), rolls)
     return rolls
+  }
+
+  /**
+   * Builds the raw damage formula by appending the dialog bonus and malus to the base damage formula.
+   * The bonus is always a positive number and the malus a negative one : both are appended with an explicit sign
+   * so that the resulting formula stays valid whatever the values.
+   *
+   * @param {Object} context The roll context, either the dialog output or the initial context
+   * @param {string} context.formulaDamage The base damage formula, may contain custom values such as `@for`
+   * @param {string|number} context.damageBonus The damage bonus entered in the dialog
+   * @param {string|number} context.damageMalus The damage malus entered in the dialog
+   * @returns {string} The damage formula, empty string if there is nothing to roll
+   */
+  static _buildDamageFormula({ formulaDamage, damageBonus, damageMalus } = {}) {
+    const base = formulaDamage !== undefined && formulaDamage !== null && String(formulaDamage) !== "" && String(formulaDamage) !== "0" ? String(formulaDamage) : ""
+    const bonus = Number(damageBonus) || 0
+    const malus = Number(damageMalus) || 0
+    if (!base && !bonus && !malus) return ""
+
+    let formula = base || "0"
+    if (bonus) formula += `${bonus > 0 ? " + " : " - "}${Math.abs(bonus)}`
+    if (malus) formula += `${malus > 0 ? " + " : " - "}${Math.abs(malus)}`
+    return formula
   }
 
   /**
