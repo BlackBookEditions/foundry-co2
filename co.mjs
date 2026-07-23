@@ -129,6 +129,15 @@ Hooks.once("init", async function () {
     game.system.CONST.baseItems = []
   }
 
+  // Devises : par défaut fantasy (or/argent/cuivre, hypothèse COF2). Un module d'univers peut remplacer
+  // l'ensemble à son hook init (cf. coc2-base « $ », cth-base) via game.system.CONST.CURRENCY. Le schéma
+  // wealth des acteurs lit cette valeur à la première préparation de document (setup/ready), donc après
+  // tous les init de modules. Toujours défini par config/system.mjs — ce garde-fou ne fait que documenter
+  // le contrat, homogène avec les overlays voisins.
+  if (!game.system.CONST.CURRENCY) {
+    game.system.CONST.CURRENCY = SYSTEM.CURRENCY
+  }
+
   // Règles propres à un univers, activées par un module de contenu (cf. cof2-base). Les mécaniques
   // restent dans le système — relance des jets, application des dommages, récupération — seule leur
   // disponibilité est conditionnée. L'ordre de l'Object.assign préserve les valeurs qu'un module

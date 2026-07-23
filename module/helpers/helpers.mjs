@@ -199,4 +199,9 @@ export function registerHandlebarsHelpers() {
   Handlebars.registerHelper("getAbilityLabel", function (ability) {
     return game.i18n.localize(`CO.abilities.long.${ability}`)
   })
+  // Libellé d'une devise : lit le label de SYSTEM.CURRENCY[id], surchargé par le module d'univers courant, pour que chaque univers nomme ses devises dans son propre namespace i18n.
+  // Repli sur CO.currency.<id> si l'id n'est pas dans la config courante (devise orpheline sur un acteur).
+  Handlebars.registerHelper("getCurrencyLabel", function (id) {
+    return game.i18n.localize(SYSTEM.CURRENCY[id]?.label ?? `CO.currency.${id}`)
+  })
 }

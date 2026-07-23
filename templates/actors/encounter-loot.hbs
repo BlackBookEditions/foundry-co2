@@ -13,7 +13,7 @@
             <div class="flexrow currency-row foldable">
                 {{#each system.wealth as |currency id|}}
                     <div class="flexrow">
-                        <label class="wealth{{#if @root.locked}} draggable{{/if}}">{{localize (concat 'CO.currency.' id)}} : </label>
+                        <label class="wealth{{#if @root.locked}} draggable{{/if}}">{{getCurrencyLabel id}} : </label>
                         <input class="current center" type="number" name="system.wealth.{{id}}.value" value="{{currency.value}}" data-dtype="Number" placeholder="0" data-wealth-type="{{id}}"/>
                     </div>
                 {{/each}}
