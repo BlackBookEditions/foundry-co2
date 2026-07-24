@@ -91,6 +91,10 @@ export default class COActor extends Actor {
     if (this.type === "encounter") {
       rollData.niv = this.system.attributes.nc
       rollData.nc = this.system.attributes.nc
+      // @atc / @atd : score d'attaque au contact / à distance de la créature, comme pour un personnage.
+      // Même source que celle utilisée par rollAttack pour une rencontre (system.combat.melee/ranged.value).
+      rollData.atc = this.system.combat.melee.value
+      rollData.atd = this.system.combat.ranged.value
       rollData.atm = this.system.magic
     }
 
