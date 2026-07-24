@@ -72,7 +72,7 @@
   "secondaryTokenAttribute": "resources.mana",
   "socket": true,
   "initiative": "1d20",
-  "background": "systems/co2/ui/logo_cof.webp",
+  "background": "systems/co2/ui/logo_co.webp",
   "manifest": "#{MANIFEST}#",
   "download": "#{DOWNLOAD}#"
 }
