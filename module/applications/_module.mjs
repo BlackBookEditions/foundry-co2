@@ -11,5 +11,6 @@ export { default as EncounterSheet } from "./sheets/encounter-sheet.mjs"
 
 export { default as COSidebarMenu } from "./sidebar-menu.mjs"
 export { default as COPartySheet } from "./party-sheet.mjs"
+export { default as COReleaseNotes } from "./release-notes.mjs"
 
 export * as hooks from "../hooks/_module.mjs"

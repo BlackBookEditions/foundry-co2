@@ -16,6 +16,12 @@ npm run build      # Same as watch
 
 Build process: `styles/co.less` → `css/co.css`
 
+## Release Notes
+
+`release-notes.md` (system root) feeds the in-game release notes window (`module/applications/release-notes.mjs`), shown to the GM on load after an update. One `# <version>` heading per release, newest first. A blockquote (`> …`) renders as a highlighted "important message" block. Player-facing companion to `CHANGELOG.md`, which stays exhaustive and technical.
+
+Display is driven by the file's own headings, never compared against `game.system.version` — the file ships inside the system package, so it cannot advertise a version the user has not installed. Consequence: do not leave an entry for an unreleased version in the file, it would be shown. New root files must be added to the `zip` list in `.github/workflows/main.yml`, otherwise they are missing from published releases.
+
 ## Code Style
 
 - **No semicolons** - Prettier enforces this

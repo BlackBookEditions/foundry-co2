@@ -71,6 +71,17 @@ export function registerSystemSettings() {
   })
 
   /**
+   * Dernière version dont l'utilisateur a marqué les notes comme lues, via la case à cocher de la
+   * fenêtre des notes de version. Portée utilisateur : chaque MJ décide pour lui-même.
+   */
+  game.settings.register("co2", "lastReleaseNotesSeen", {
+    scope: "user",
+    config: false,
+    type: String,
+    default: "",
+  })
+
+  /**
    * World key used for statistics
    */
   game.settings.register("co2", "worldKey", {

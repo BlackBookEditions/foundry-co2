@@ -1,0 +1,22 @@
+<header class="release-notes-header">
+  <h1>{{localize "CO.releaseNotes.heading"}}</h1>
+  <p class="subtitle">{{localize "CO.releaseNotes.subtitle" version=version}}</p>
+</header>
+
+<section class="release-notes-body">
+  {{#each entries}}
+    <article class="release-note">
+      <h2 class="release-note-version">{{this.version}}</h2>
+      <div class="release-note-content">{{{this.html}}}</div>
+    </article>
+  {{else}}
+    <p class="empty">{{localize "CO.releaseNotes.empty"}}</p>
+  {{/each}}
+</section>
+
+<footer class="release-notes-footer">
+  <label class="dont-show-again" data-tooltip="{{localize 'CO.releaseNotes.dontShowAgainHint'}}">
+    <input type="checkbox" name="dontShowAgain" {{checked dontShowAgain}} />
+    {{localize "CO.releaseNotes.dontShowAgain"}}
+  </label>
+</footer>

@@ -1,3 +1,5 @@
+import COReleaseNotes from "./release-notes.mjs"
+
 const { HandlebarsApplicationMixin } = foundry.applications.api
 const { AbstractSidebarTab } = foundry.applications.sidebar
 
@@ -28,6 +30,11 @@ export default class COSidebarMenu extends HandlebarsApplicationMixin(AbstractSi
       case "party":
         if (!foundry.applications.instances.has("co-party-sheet")) {
           game.system.partySheet.render({ force: true })
+        }
+        break
+      case "release-notes":
+        if (!foundry.applications.instances.has("co-release-notes")) {
+          await COReleaseNotes.displayAll()
         }
         break
     }

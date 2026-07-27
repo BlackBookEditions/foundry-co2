@@ -118,6 +118,7 @@ jobs:
             co.mjs                               \
             README.md                            \
             CHANGELOG.md                         \
+            release-notes.md                     \
             LICENSE                              \
             css/                                 \
             lang/                                \

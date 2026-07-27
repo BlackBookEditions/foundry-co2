@@ -108,40 +108,33 @@ Hooks.once("init", async function () {
   }
 
   // Postures défensives : manœuvre propre à COF2, apportée par un module de contenu (cf. cof2-base).
-  // Chaque entrée décrit le bouton de la barre d'outils des fiches : { id, icon, activateLabel, deactivateLabel },
-  // le statut lui-même étant une entrée ordinaire de CONFIG.statusEffects.
+  // Chaque entrée décrit le bouton de la barre d'outils des fiches : { id, icon, activateLabel, deactivateLabel }, le statut lui-même étant une entrée ordinaire de CONFIG.statusEffects.
   if (!game.system.CONST.defenseStances) {
     game.system.CONST.defenseStances = []
   }
 
   // Actions de repos : les règles de récupération sont propres à chaque univers, les boutons sont donc
-  // apportés par un module de contenu (cf. cof2-base). Chaque entrée décrit le bouton de la barre
-  // d'outils des fiches et l'action à exécuter : { id, icon, label, handler(actor) }.
+  // apportés par un module de contenu (cf. cof2-base). Chaque entrée décrit le bouton de la barre  d'outils des fiches et l'action à exécuter : { id, icon, label, handler(actor) }.
   // La mécanique elle-même (CharacterData#useRecovery) reste dans le système.
   if (!game.system.CONST.restActions) {
     game.system.CONST.restActions = []
   }
 
-  // Objets de départ copiés sur tout nouveau personnage : ils dépendent de l'univers et sont donc
-  // déclarés par un module de contenu (cf. cof2-base, qui y met Mains nues et Support).
+  // Objets de départ copiés sur tout nouveau personnage : ils dépendent de l'univers et sont donc déclarés par un module de contenu (cf. cof2-base, qui y met Mains nues et Support).
   // Chaque entrée est l'UUID d'un objet de compendium.
   if (!game.system.CONST.baseItems) {
     game.system.CONST.baseItems = []
   }
 
   // Devises : par défaut fantasy (or/argent/cuivre, hypothèse COF2). Un module d'univers peut remplacer
-  // l'ensemble à son hook init (cf. coc2-base « $ », cth-base) via game.system.CONST.CURRENCY. Le schéma
-  // wealth des acteurs lit cette valeur à la première préparation de document (setup/ready), donc après
-  // tous les init de modules. Toujours défini par config/system.mjs — ce garde-fou ne fait que documenter
-  // le contrat, homogène avec les overlays voisins.
+  // l'ensemble à son hook init (cf. coc2-base « $ », cth-base) via game.system.CONST.CURRENCY. Le schéma wealth des acteurs lit cette valeur à la première préparation de document (setup/ready), donc après
+  // tous les init de modules. Toujours défini par config/system.mjs — ce garde-fou ne fait que documenter le contrat, homogène avec les overlays voisins.
   if (!game.system.CONST.CURRENCY) {
     game.system.CONST.CURRENCY = SYSTEM.CURRENCY
   }
 
-  // Règles propres à un univers, activées par un module de contenu (cf. cof2-base). Les mécaniques
-  // restent dans le système — relance des jets, application des dommages, récupération — seule leur
-  // disponibilité est conditionnée. L'ordre de l'Object.assign préserve les valeurs qu'un module
-  // chargé avant le système aurait déjà posées.
+  // Règles propres à un univers, activées par un module de contenu (cf. cof2-base). Les mécaniques restent dans le système — relance des jets, application des dommages, récupération — seule leur
+  // disponibilité est conditionnée. L'ordre de l'Object.assign préserve les valeurs qu'un module chargé avant le système aurait déjà posées.
   game.system.CONST.rules = Object.assign({ luckPoints: false, recoveryPoints: false, tempDamage: false }, game.system.CONST.rules)
 
   // Combat tracker
@@ -265,6 +258,9 @@ Hooks.once("ready", async function () {
   if (game.user.isGM) {
     game.system.partySheet.render({ force: true })
   }
+
+  // Notes de version : affichées au MJ après une mise à jour du système
+  await applications.COReleaseNotes.displayIfNeeded()
 
   console.info(helpers.Utils.log(game.i18n.localize("CO.notif.ready")))
 })

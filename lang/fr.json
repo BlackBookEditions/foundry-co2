@@ -1376,7 +1376,17 @@
       "githubTooltip": "Le dépôt GitHub du système Chroniques Oubliées",
       "bugReport": "Signaler un bug",
       "bugReportTooltip": "Signalez un bug ou demandez une nouvelle fonctionnalité",
-      "menu": "Système"
+      "menu": "Système",
+      "releaseNotes": "Notes de version",
+      "releaseNotesTooltip": "Consultez les nouveautés des versions du système"
+    },
+    "releaseNotes": {
+      "title": "Notes de version",
+      "heading": "Quoi de neuf ?",
+      "subtitle": "Chroniques Oubliées 2e édition — version {version}",
+      "empty": "Aucune note de version disponible.",
+      "dontShowAgain": "Ne plus afficher les notes de ces versions",
+      "dontShowAgainHint": "Cette fenêtre ne s'ouvrira plus pour les versions affichées ici. Elle réapparaîtra à la prochaine mise à jour du système, avec les seules nouveautés de celle-ci."
     }
   }
 }

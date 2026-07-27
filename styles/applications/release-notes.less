@@ -1,0 +1,120 @@
+.window-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.release-notes-header {
+  flex: none;
+  text-align: center;
+  border-bottom: 1px solid var(--co-sheet-accent);
+
+  h1 {
+    margin: 0;
+    border: none;
+    color: var(--co-sheet-accent);
+    font-size: var(--font-size-26);
+  }
+
+  .subtitle {
+    margin: 0 0 0.25rem;
+    color: var(--color-text-subtle);
+    font-size: var(--font-size-13);
+  }
+}
+
+.release-notes-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+
+  .release-note + .release-note {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--color-border-light-tertiary);
+  }
+
+  .release-note-version {
+    margin: 0 0 0.25rem;
+    border: none;
+    color: var(--co-sheet-accent-alt);
+    font-size: var(--font-size-20);
+    font-weight: bold;
+  }
+
+  .release-note-content {
+    h2,
+    h3 {
+      margin: 0.75rem 0 0.25rem;
+      border: none;
+      font-size: var(--font-size-16);
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--color-text-emphatic);
+    }
+
+    p {
+      margin: 0.25rem 0;
+    }
+
+    ul {
+      margin: 0.25rem 0;
+      padding-left: 1.25rem;
+      list-style: disc;
+    }
+
+    li {
+      margin: 0.15rem 0;
+    }
+
+    // Encart mis en avant : un blockquote sert de « message important » dans release-notes.md
+    blockquote {
+      margin: 0.5rem 0;
+      padding: 0.5rem 0.75rem;
+      border-left: 4px solid var(--co-sheet-accent);
+      background-color: var(--co-dialog-skill-bg);
+      border-radius: 0 4px 4px 0;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    code {
+      padding: 0 0.2rem;
+      background-color: #00000014;
+      border-radius: 3px;
+
+      .theme-dark & {
+        background-color: #ffffff14;
+      }
+    }
+  }
+
+  .empty {
+    color: var(--color-text-subtle);
+    font-style: italic;
+    text-align: center;
+  }
+}
+
+.release-notes-footer {
+  flex: none;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border-light-tertiary);
+
+  .dont-show-again {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--font-size-13);
+    cursor: pointer;
+
+    input {
+      flex: none;
+      margin: 0;
+    }
+  }
+}
