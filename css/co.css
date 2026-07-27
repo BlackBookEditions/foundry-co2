@@ -12,6 +12,36 @@
  * Pour rhabiller le système, un module redéclare ces mêmes sélecteurs dans sa propre feuille : celle-ci
  * étant chargée après celle du système, ses valeurs l'emportent à spécificité égale.
  */
+/*
+ * Compat Foundry V14 — réalignement du thème des cartes de chat.
+ *
+ * En V14, le journal de chat porte sa PROPRE classe de thème : <ol class="chat-log themed theme-light">,
+ * placée SOUS #interface. Elle re-résout localement les variables de palette (theme-light) alors que le
+ * FOND des messages, lui, suit le thème de l'INTERFACE (body.theme-dark, cf. common.less
+ * .theme-dark #interface … .chat-message) → on obtenait des accents en valeurs « thème clair »
+ * (ex. --co-chat-skill = #084f7b navy) sur un fond sombre = illisibles.
+ *
+ * On force le chat-log à HÉRITER les variables de chat de ses ancêtres (donc du thème d'INTERFACE, le
+ * même que le fond) au lieu de la valeur locale imposée par sa classe theme-*.
+ *
+ * IMPORTANT — `inherit` (et non des valeurs en dur) est volontaire : il préserve le contrat de rhabillage
+ * de la palette. Un module de thème (coc2-base, cth-base…) surcharge --co-chat-* au niveau body via
+ * .theme-light/.theme-dark {} ; ces valeurs sont donc héritées telles quelles par le chat-log. Mettre des
+ * valeurs co2 en dur ici (spécificité 2,x,0) écraserait au contraire ces surcharges.
+ */
+#interface #sidebar .chat-log,
+#interface #ui-right-column-1 .chat-log {
+  --co-chat-skill: inherit;
+  --co-chat-attack: inherit;
+  --co-chat-damages: inherit;
+  --co-chat-heal: inherit;
+  --co-chat-rest: inherit;
+  --co-chat-save: inherit;
+  --co-chat-item: inherit;
+  --co-chat-shadow: inherit;
+  --co-text-light: inherit;
+  --co-surface: inherit;
+}
 .theme-light {
   --co-sheet-accent: #ba9442;
   --co-sheet-accent-alt: #0c4f7b;
@@ -81,7 +111,7 @@
   --co-stat-health: #0c582b;
   --co-stat-damages: #4d004d;
   --co-stat-resource: #1c2f2f;
-  --co-chat-skill: #2a83b9;
+  --co-chat-skill: #3f9fda;
   --co-chat-attack: #db5305;
   --co-chat-damages: #cb0909;
   --co-chat-heal: #3fa13f;
@@ -230,6 +260,18 @@ co-toggle-switch[checked] track {
 }
 co-toggle-switch[checked] thumb {
   margin-left: calc(100% - var(--toggle-switch-thumb-width));
+}
+a.roll-check-enricher {
+  color: var(--co-chat-skill);
+  font-weight: bold;
+  white-space: nowrap;
+  cursor: pointer;
+}
+a.roll-check-enricher i {
+  margin-right: 2px;
+}
+a.roll-check-enricher:hover {
+  text-decoration: underline;
 }
 .co prose-mirror,
 .co .prosemirror {
@@ -4109,7 +4151,7 @@ co-toggle-switch[checked] thumb {
 }
 .theme-dark #interface #sidebar .chat-message .message-content .result-sentence span,
 .theme-dark #interface #ui-right-column-1 .chat-message .message-content .result-sentence span {
-  color: #0b0a13e6;
+  color: var(--co-text-light);
   padding: 0 15px;
   border-radius: 15px;
   font-weight: bold;
@@ -4160,6 +4202,42 @@ co-toggle-switch[checked] thumb {
   margin-left: 5px;
   font-size: var(--font-size-20);
   gap: 5px;
+}
+#interface #sidebar .chat-message .message-content .lp-button-skill,
+#interface #ui-right-column-1 .chat-message .message-content .lp-button-skill,
+#interface #sidebar .chat-message .message-content .lp-button-attack,
+#interface #ui-right-column-1 .chat-message .message-content .lp-button-attack,
+#interface #sidebar .chat-message .message-content .lp-button-oppose,
+#interface #ui-right-column-1 .chat-message .message-content .lp-button-oppose,
+#interface #sidebar .chat-message .message-content .lp-button-oppose-target,
+#interface #ui-right-column-1 .chat-message .message-content .lp-button-oppose-target,
+#interface #sidebar .chat-message .message-content .accept-result-button,
+#interface #ui-right-column-1 .chat-message .message-content .accept-result-button {
+  cursor: pointer;
+}
+.theme-dark #interface #sidebar .chat-message .message-content .lp-button-skill,
+.theme-dark #interface #ui-right-column-1 .chat-message .message-content .lp-button-skill,
+.theme-dark #interface #sidebar .chat-message .message-content .lp-button-attack,
+.theme-dark #interface #ui-right-column-1 .chat-message .message-content .lp-button-attack,
+.theme-dark #interface #sidebar .chat-message .message-content .lp-button-oppose,
+.theme-dark #interface #ui-right-column-1 .chat-message .message-content .lp-button-oppose,
+.theme-dark #interface #sidebar .chat-message .message-content .lp-button-oppose-target,
+.theme-dark #interface #ui-right-column-1 .chat-message .message-content .lp-button-oppose-target,
+.theme-dark #interface #sidebar .chat-message .message-content .accept-result-button,
+.theme-dark #interface #ui-right-column-1 .chat-message .message-content .accept-result-button {
+  color: var(--co-text-light);
+}
+.theme-light #interface #sidebar .chat-message .message-content .lp-button-skill,
+.theme-light #interface #ui-right-column-1 .chat-message .message-content .lp-button-skill,
+.theme-light #interface #sidebar .chat-message .message-content .lp-button-attack,
+.theme-light #interface #ui-right-column-1 .chat-message .message-content .lp-button-attack,
+.theme-light #interface #sidebar .chat-message .message-content .lp-button-oppose,
+.theme-light #interface #ui-right-column-1 .chat-message .message-content .lp-button-oppose,
+.theme-light #interface #sidebar .chat-message .message-content .lp-button-oppose-target,
+.theme-light #interface #ui-right-column-1 .chat-message .message-content .lp-button-oppose-target,
+.theme-light #interface #sidebar .chat-message .message-content .accept-result-button,
+.theme-light #interface #ui-right-column-1 .chat-message .message-content .accept-result-button {
+  color: var(--co-text-dark);
 }
 #interface #sidebar .chat-message .message-content .message-card p,
 #interface #ui-right-column-1 .chat-message .message-content .message-card p {
@@ -4233,13 +4311,6 @@ co-toggle-switch[checked] thumb {
   height: 42px;
   flex: 0 0 42px;
   object-fit: cover;
-  /*padding: 2px;
-    border: 1px solid rgba(94, 70, 42, 0.45);
-    border-radius: 2px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(223, 212, 198, 0.9) 100%);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.85),
-      0 1px 1px rgba(56, 35, 14, 0.08);*/
 }
 #interface #sidebar .co.chat-card.roll-card .card-header .card-item-text,
 #interface #ui-right-column-1 .co.chat-card.roll-card .card-header .card-item-text {
@@ -4912,6 +4983,12 @@ co-toggle-switch[checked] thumb {
   width: fit-content;
   margin: 2px 5px 2px 0;
 }
+.theme-dark #interface #sidebar .co.chat-card.roll-card.item-card .itemTitle label,
+.theme-dark #interface #ui-right-column-1 .co.chat-card.roll-card.item-card .itemTitle label,
+.theme-dark #interface #sidebar .co.chat-card.roll-card.item-card .itemTitle span,
+.theme-dark #interface #ui-right-column-1 .co.chat-card.roll-card.item-card .itemTitle span {
+  color: var(--co-text-light);
+}
 #interface #sidebar .co.chat-card.roll-card.item-card p,
 #interface #ui-right-column-1 .co.chat-card.roll-card.item-card p {
   padding-left: 15px;
@@ -4939,6 +5016,12 @@ co-toggle-switch[checked] thumb {
   box-shadow: 1px 1px 0px 1px var(--co-chat-item);
   padding: 0px 5px;
   margin: 0;
+}
+.theme-dark #interface #sidebar .co.chat-card.roll-card.item-card .button-row button,
+.theme-dark #interface #ui-right-column-1 .co.chat-card.roll-card.item-card .button-row button {
+  color: var(--co-text-light);
+  background: color-mix(in srgb, var(--co-chat-item) 22%, #0b0a13);
+  border-color: var(--co-chat-item);
 }
 #interface #sidebar .co.chat-card.roll-card.save-card .card-header,
 #interface #ui-right-column-1 .co.chat-card.roll-card.save-card .card-header {

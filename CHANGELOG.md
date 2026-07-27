@@ -1,3 +1,8 @@
+# 2.3.1
+
+## Améliorations
+- Lisibilité des couleurs de chat avec le thème sombre de Foundry
+
 # 2.3.0
 
 ## Améliorations

@@ -24,6 +24,13 @@
       width: fit-content;
       margin: 2px 5px 2px 0;
     }
+    
+    .theme-dark & {
+      label,
+      span {
+        color: var(--co-text-light);
+      }
+    }
   }
   p {
     padding-left: 15px;
@@ -48,6 +55,12 @@
       box-shadow: 1px 1px 0px 1px var(--co-chat-item);
       padding: 0px 5px;
       margin: 0;
+
+      .theme-dark & {
+        color: var(--co-text-light);
+        background: color-mix(in srgb, var(--co-chat-item) 22%, #0b0a13);
+        border-color: var(--co-chat-item);
+      }
     }
   }
 }

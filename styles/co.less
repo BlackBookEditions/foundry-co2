@@ -4,6 +4,25 @@
 
 @import "./elements/_index.less";
 
+// Enricher @Test (jet de caractéristique) : lien inline cliquable généré sans style dédié — il tombait
+// sinon sur la couleur de lien par défaut de Foundry (bleu foncé illisible sur le fond de chat sombre).
+// Placé au niveau global car l'enricher apparaît aussi dans les journaux et descriptions d'items.
+// Utilise l'accent skill (thème-aware : #084f7b en clair, #3f9fda en sombre).
+a.roll-check-enricher {
+  color: var(--co-chat-skill);
+  font-weight: bold;
+  white-space: nowrap;
+  cursor: pointer;
+
+  i {
+    margin-right: 2px;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .co {
   @import "./prose-mirror.less";
 

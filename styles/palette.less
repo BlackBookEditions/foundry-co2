@@ -27,6 +27,37 @@
 @stat-damages: #800080;
 @stat-resource: #2f4f4f;
 
+/*
+ * Compat Foundry V14 — réalignement du thème des cartes de chat.
+ *
+ * En V14, le journal de chat porte sa PROPRE classe de thème : <ol class="chat-log themed theme-light">,
+ * placée SOUS #interface. Elle re-résout localement les variables de palette (theme-light) alors que le
+ * FOND des messages, lui, suit le thème de l'INTERFACE (body.theme-dark, cf. common.less
+ * .theme-dark #interface … .chat-message) → on obtenait des accents en valeurs « thème clair »
+ * (ex. --co-chat-skill = #084f7b navy) sur un fond sombre = illisibles.
+ *
+ * On force le chat-log à HÉRITER les variables de chat de ses ancêtres (donc du thème d'INTERFACE, le
+ * même que le fond) au lieu de la valeur locale imposée par sa classe theme-*.
+ *
+ * IMPORTANT — `inherit` (et non des valeurs en dur) est volontaire : il préserve le contrat de rhabillage
+ * de la palette. Un module de thème (coc2-base, cth-base…) surcharge --co-chat-* au niveau body via
+ * .theme-light/.theme-dark {} ; ces valeurs sont donc héritées telles quelles par le chat-log. Mettre des
+ * valeurs co2 en dur ici (spécificité 2,x,0) écraserait au contraire ces surcharges.
+ */
+#interface #sidebar .chat-log,
+#interface #ui-right-column-1 .chat-log {
+  --co-chat-skill: inherit;
+  --co-chat-attack: inherit;
+  --co-chat-damages: inherit;
+  --co-chat-heal: inherit;
+  --co-chat-rest: inherit;
+  --co-chat-save: inherit;
+  --co-chat-item: inherit;
+  --co-chat-shadow: inherit;
+  --co-text-light: inherit;
+  --co-surface: inherit;
+}
+
 .theme-light {
   // Chrome et feuilles
   --co-sheet-accent: @sheet-accent;
@@ -113,7 +144,7 @@
   --co-stat-resource: darken(@stat-resource, 10%);
 
   // Cartes de chat
-  --co-chat-skill: #2a83b9;
+  --co-chat-skill: #3f9fda; // bleu éclairci pour rester lisible sur le fond de chat quasi-noir en mode sombre
   --co-chat-attack: #db5305;
   --co-chat-damages: #cb0909;
   --co-chat-heal: #3fa13f;
