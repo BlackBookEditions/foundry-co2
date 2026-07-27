@@ -2,6 +2,8 @@
 
 ## Améliorations
 - Lisibilité des couleurs de chat avec le thème sombre de Foundry
+- L'usage (nb mains) n'est pas affiché pour les armures
+- Les notes de version sont intégrées au système et affichées aux MJs
 
 # 2.3.0
 
