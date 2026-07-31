@@ -7,6 +7,11 @@
   Ce fichier est destiné aux joueuses et joueurs : il complète le CHANGELOG.md, qui reste le  journal exhaustif et technique.
 -->
 
+# 2.3.2
+
+## Corrections
+- Le modificateur de caractéristiques *Toutes les caractéristiques* est désormais pris en compte sur les acteurs de type Rencontre
+
 # 2.3.1
 
 ## Améliorations

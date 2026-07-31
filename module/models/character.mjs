@@ -256,43 +256,6 @@ export default class CharacterData extends ActorData {
     return profile && profile.system.family === "mage"
   }
 
-  /**
-   * Return the total modifier and the tooltip for the given target and an array of modifiers.
-   * @param {Array} modifiers An array of modifier objects.
-   * @param {SYSTEM.MODIFIERS.MODIFIER_TARGET} target The target for which the modifiers are filtered.
-   * @param {boolean} withDice Raw dice value can't be reduce, use a different methode
-   **/
-  computeTotalModifiersByTarget(modifiers, target, withDice = false) {
-    if (!modifiers) return { total: 0, tooltip: "" }
-    let modifiersByTarget = modifiers.filter((m) => m.target === target)
-
-    // Ajout des modifiers qui affecte toutes les cibles
-    // Attention on utilise "toutes les cibles uniquement sur un jet de competence ou une Caractéristique ! sinon on va le compter aussi pour le combat etc et on va doubler les bonus apres..."
-    const liste = [
-      SYSTEM.MODIFIERS_TARGET.agi.id,
-      SYSTEM.MODIFIERS_TARGET.for.id,
-      SYSTEM.MODIFIERS_TARGET.con.id,
-      SYSTEM.MODIFIERS_TARGET.cha.id,
-      SYSTEM.MODIFIERS_TARGET.int.id,
-      SYSTEM.MODIFIERS_TARGET.vol.id,
-      SYSTEM.MODIFIERS_TARGET.per.id,
-    ]
-    if (liste.includes(target)) modifiersByTarget.push(...modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.all.id && m.subtype !== SYSTEM.MODIFIERS_SUBTYPE.skill.id))
-    let total = 0
-    if (modifiersByTarget && modifiersByTarget.length > 0) {
-      let evaluatedModifiers = modifiersByTarget.map((m) => m.evaluate(this.parent, withDice))
-      total = withDice ? Utils.joinFormulaTerms(evaluatedModifiers) : evaluatedModifiers.reduce((acc, curr) => acc + curr, 0)
-    }
-
-    let tooltip = ""
-    for (const modifier of modifiersByTarget) {
-      let partialTooltip = modifier.getTooltip(this.parent, withDice)
-      if (partialTooltip !== null) tooltip += partialTooltip
-    }
-
-    return { total: total, tooltip: tooltip }
-  }
-
   prepareDerivedData() {
     super.prepareDerivedData()
 

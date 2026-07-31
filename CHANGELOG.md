@@ -1,3 +1,8 @@
+# 2.3.2
+
+## Corrections
+- Le modificateur de caractéristiques *Toutes les caractéristiques* est désormais pris en compte sur les acteurs de type Rencontre (([#426](https://github.com/BlackBookEditions/foundry-co2/issues/426))
+
 # 2.3.1
 
 ## Améliorations

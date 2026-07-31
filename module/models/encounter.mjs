@@ -259,31 +259,6 @@ export default class EncounterData extends ActorData {
     return allActions
   }
 
-  /**
-   * Return the total modifier and the tooltip for the given target and an array of modifiers.
-   * @param {Array} modifiers An array of modifier objects.
-   * @param {SYSTEM.MODIFIERS.MODIFIER_TARGET} target The target for which the modifiers are filtered.
-   **/
-  computeTotalModifiersByTarget(modifiers, target, withDice = false) {
-    if (!modifiers) return { total: 0, tooltip: "" }
-
-    let modifiersByTarget = modifiers.filter((m) => m.target === target)
-
-    let total = 0
-    if (modifiersByTarget && modifiersByTarget.length > 0) {
-      let evaluatedModifiers = modifiersByTarget.map((m) => m.evaluate(this.parent, withDice))
-      total = withDice ? Utils.joinFormulaTerms(evaluatedModifiers) : evaluatedModifiers.reduce((acc, curr) => acc + curr, 0)
-    }
-
-    let tooltip = ""
-    for (const modifier of modifiersByTarget) {
-      let partialTooltip = modifier.getTooltip(this.parent, withDice)
-      if (partialTooltip !== null) tooltip += partialTooltip
-    }
-
-    return { total: total, tooltip: tooltip }
-  }
-
   // #endregion
 
   /**

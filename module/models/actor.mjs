@@ -1,5 +1,6 @@
 import { AbilityValue } from "./schemas/ability-value.mjs"
 import CustomEffectData from "./schemas/custom-effect.mjs"
+import Utils from "../helpers/utils.mjs"
 
 export default class ActorData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
@@ -134,6 +135,38 @@ export default class ActorData extends foundry.abstract.TypeDataModel {
     }
 
     return modifiersArray
+  }
+
+  /**
+   * Return the total modifier and the tooltip for the given target and an array of modifiers.
+   * @param {Array} modifiers An array of modifier objects.
+   * @param {SYSTEM.MODIFIERS.MODIFIER_TARGET} target The target for which the modifiers are filtered.
+   * @param {boolean} withDice Raw dice value can't be reduce, use a different methode
+   **/
+  computeTotalModifiersByTarget(modifiers, target, withDice = false) {
+    if (!modifiers) return { total: 0, tooltip: "" }
+    let modifiersByTarget = modifiers.filter((m) => m.target === target)
+
+    // Ajout des modifiers qui affecte toutes les cibles
+    // Attention on utilise "toutes les cibles uniquement sur un jet de competence ou une Caractéristique ! sinon on va le compter aussi pour le combat etc et on va doubler les bonus apres..."
+    // Les modifiers de sous-type skill sont exclus car ils sont traités par COActor.getSkillBonuses
+    if (Object.keys(SYSTEM.ABILITIES).includes(target)) {
+      modifiersByTarget.push(...modifiers.filter((m) => m.target === SYSTEM.MODIFIERS_TARGET.all.id && m.subtype !== SYSTEM.MODIFIERS_SUBTYPE.skill.id))
+    }
+
+    let total = 0
+    if (modifiersByTarget && modifiersByTarget.length > 0) {
+      let evaluatedModifiers = modifiersByTarget.map((m) => m.evaluate(this.parent, withDice))
+      total = withDice ? Utils.joinFormulaTerms(evaluatedModifiers) : evaluatedModifiers.reduce((acc, curr) => acc + curr, 0)
+    }
+
+    let tooltip = ""
+    for (const modifier of modifiersByTarget) {
+      let partialTooltip = modifier.getTooltip(this.parent, withDice)
+      if (partialTooltip !== null) tooltip += partialTooltip
+    }
+
+    return { total: total, tooltip: tooltip }
   }
 
   /**
