@@ -1,5 +1,4 @@
 import { SYSTEM } from "../config/system.mjs"
-import { Modifier } from "../models/schemas/modifier.mjs"
 import CustomEffectData from "../models/schemas/custom-effect.mjs"
 import { CORoll, COSkillRoll, COAttackRoll, COHealRoll } from "./roll.mjs"
 import { CoFeatureModifierChoiceDialog } from "../dialogs/feature-modifier-choice-dialog.mjs"
@@ -272,11 +271,17 @@ export default class COActor extends Actor {
 
   /**
    * Retourne les capacités qui ne sont pas associées à une voie.
+   * Une capacité dont la voie n'existe plus sur l'acteur est également considérée hors voie : sans cela
+   * elle ne serait affichée nulle part sur la feuille et ne pourrait donc plus être supprimée.
    *
    * @returns {Array<Object>} Un tableau de capacités
    */
   get capacitiesOffPaths() {
-    return this.items.filter((item) => item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.path === null)
+    return this.items.filter((item) => {
+      if (item.type !== SYSTEM.ITEM_TYPE.capacity.id) return false
+      if (!item.system.path) return true
+      return !this.getEmbeddedItemByUuid(item.system.path)
+    })
   }
 
   /**
@@ -637,6 +642,20 @@ export default class COActor extends Actor {
    */
   getEmbeddedItemByKey(key) {
     return this.items.find((item) => item.system.key === key)
+  }
+
+  /**
+   * Retourne l'item embarqué sur l'acteur correspondant à un UUID.
+   * Contrairement à fromUuid, un UUID pointant vers le monde ou un compendium ne renvoie rien : seuls les
+   * items réellement portés par l'acteur peuvent être mis à jour ou supprimés, sans quoi Foundry lève une erreur.
+   *
+   * @param {string} uuid L'UUID de l'item recherché
+   * @returns {COItem|undefined} L'item embarqué, ou undefined si l'UUID ne désigne aucun item de l'acteur
+   */
+  getEmbeddedItemByUuid(uuid) {
+    const id = foundry.utils.parseUuid(uuid)?.id
+    if (!id) return undefined
+    return this.items.get(id)
   }
 
   /**
@@ -1274,15 +1293,18 @@ export default class COActor extends Actor {
     itemData = itemData instanceof Array ? itemData : [itemData]
     const newFeature = await this.createEmbeddedDocuments("Item", itemData)
 
-    // TODO Vérifier s'il y a besoin de créer un Modifier
-    // Update the source of all modifiers with the id of the new embedded feature created
-    let newModifiers = foundry.utils
-      .deepClone(newFeature[0].system.modifiers)
-      .map((m) => new Modifier({ source: newFeature[0].uuid, type: m.type, subtype: m.subtype, target: m.target, value: m.value }))
+    // Update the source of all modifiers with the uuid of the new embedded feature created
+    // Seule la source est réécrite : les autres champs du modifier (apply, additionalInfos, ...) sont conservés
+    if (newFeature[0].system.modifiers.length > 0) {
+      const newModifiers = newFeature[0].system.toObject().modifiers
 
-    const updateModifiers = { _id: newFeature[0].id, "system.modifiers": newModifiers }
+      for (const modifier of newModifiers) {
+        modifier.source = newFeature[0].uuid
+      }
 
-    await this.updateEmbeddedDocuments("Item", [updateModifiers])
+      await newFeature[0].update({ "system.modifiers": newModifiers })
+    }
+
     // Create all Paths
     let updatedPathsUuids = []
     for (const path of feature.system.paths) {
@@ -1291,8 +1313,9 @@ export default class COActor extends Actor {
       // Item is null if the item has been deleted in the compendium or in the world
       // TODO Add a warning message and think about a global rollback
       if (originalPath !== null) {
+        // La méthode addPath peut renvoyer undefined si la voie a été refusée : on ne garde que les voies réellement créées
         const newPathUuid = await this.addPath(originalPath)
-        updatedPathsUuids.push(newPathUuid)
+        if (newPathUuid) updatedPathsUuids.push(newPathUuid)
       }
     }
 
@@ -1309,7 +1332,7 @@ export default class COActor extends Actor {
       // TODO Add a warning message and think about a global rollback
       if (capa !== null) {
         const newCapacityUuid = await this.addCapacity(capa, null)
-        updatedCapacitiesUuids.push(newCapacityUuid)
+        if (newCapacityUuid) updatedCapacitiesUuids.push(newCapacityUuid)
       }
     }
 
@@ -1646,18 +1669,19 @@ export default class COActor extends Actor {
    * @returns {Promise<void>} A promise that resolves when the feature and its linked paths and capacities are deleted.
    */
   async deleteFeature(featureUuId) {
-    // Delete linked paths
-    const feature = await fromUuid(featureUuId)
+    const feature = this.getEmbeddedItemByUuid(featureUuId)
     if (!feature) return
-    const pathsUuids = feature.system.paths
-    for (const pathUuid of pathsUuids) {
-      this.deletePath(pathUuid)
+
+    // Delete linked paths
+    for (const pathUuid of feature.system.paths) {
+      await this.deletePath(pathUuid)
     }
+
     // Delete linked capacities
-    const capacitiesUuids = feature.system.capacities
-    for (const capacityUuid of capacitiesUuids) {
-      this.deleteCapacity(capacityUuid)
+    for (const capacityUuid of feature.system.capacities) {
+      await this.deleteCapacity(capacityUuid)
     }
+
     await this.deleteEmbeddedDocuments("Item", [feature.id])
   }
 
@@ -1667,8 +1691,9 @@ export default class COActor extends Actor {
    * @param {string} profileUuid The ID of the profile to delete.
    */
   async deleteProfile(profileUuid) {
-    const { id } = foundry.utils.parseUuid(profileUuid)
-    const profile = this.items.get(id)
+    const profile = this.getEmbeddedItemByUuid(profileUuid)
+    if (!profile) return
+
     // Delete linked paths
     const pathsUuids = profile.system.paths
     for (const pathUuid of pathsUuids) {
@@ -1676,15 +1701,13 @@ export default class COActor extends Actor {
     }
     // Suppression de l'équipement de départ créé sur le personnage
     for (const equipmentUuid of profile.system.equipment) {
-      const { id: equipmentId } = foundry.utils.parseUuid(equipmentUuid)
-      const equipment = this.items.get(equipmentId)
+      const equipment = this.getEmbeddedItemByUuid(equipmentUuid)
       if (!equipment) continue
       // Un contenant est supprimé avec son contenu
       if (equipment.type === SYSTEM.ITEM_TYPE.container.id) await this.deleteContainer(equipment.uuid)
       else await this.deleteEmbeddedDocuments("Item", [equipment.id])
     }
-    const idProfile = foundry.utils.parseUuid(profileUuid)?.id
-    await this.deleteEmbeddedDocuments("Item", [idProfile])
+    await this.deleteEmbeddedDocuments("Item", [profile.id])
   }
 
   /**
@@ -1694,8 +1717,7 @@ export default class COActor extends Actor {
    * @returns {Promise<void>}  A promise that resolves when the deletion is complete.
    */
   async deletePath(pathUuid) {
-    const { id } = foundry.utils.parseUuid(pathUuid)
-    const path = this.items.get(id)
+    const path = this.getEmbeddedItemByUuid(pathUuid)
     if (!path) return
 
     // Delete linked capacities
@@ -1703,6 +1725,14 @@ export default class COActor extends Actor {
     // Pour chaque uuid, on appelle la méthode deleteCapacity
     for (const capacityUuid of capacitiesUuId) {
       await this.deleteCapacity(capacityUuid)
+    }
+
+    // Filet de sécurité : les capacités qui désignent la voie sans être listées par celle-ci
+    // seraient laissées orphelines, donc invisibles et non supprimables depuis la feuille
+    for (const capacity of this.capacities) {
+      if (capacity.system.path && foundry.utils.parseUuid(capacity.system.path)?.id === path.id) {
+        await this.deleteCapacity(capacity.uuid)
+      }
     }
 
     // Suppression de la voie
@@ -1720,12 +1750,12 @@ export default class COActor extends Actor {
    * @returns {Promise<void>}  Une promesse qui se résout lorsque la capacité est supprimée.
    */
   async deleteCapacity(capacityUuid) {
-    const capacity = await fromUuid(capacityUuid)
+    const capacity = this.getEmbeddedItemByUuid(capacityUuid)
     if (!capacity) return
 
     // Si la capacité a une capacité liée, on la supprime aussi
     if (capacity.system.allowLinkedCapacity && capacity.system.linkedCapacity) {
-      const linkedCapacity = await fromUuid(capacity.system.linkedCapacity)
+      const linkedCapacity = this.getEmbeddedItemByUuid(capacity.system.linkedCapacity)
       if (linkedCapacity) {
         await this.deleteEmbeddedDocuments("Item", [linkedCapacity.id])
       }
@@ -1735,7 +1765,6 @@ export default class COActor extends Actor {
     // Si c'est le cas, on enlève le lien
     for (const c of this.capacities) {
       if (c.system.linkedCapacity === capacityUuid) {
-        c.system.linkedCapacity = null
         await c.update({ "system.linkedCapacity": null })
       }
     }
@@ -1751,14 +1780,12 @@ export default class COActor extends Actor {
    * @returns {Promise<void>} Une promesse qui se résout lorsque le contenant et son contenu sont supprimés.
    */
   async deleteContainer(containerUuid) {
-    const { id } = foundry.utils.parseUuid(containerUuid)
-    const container = this.items.get(id)
+    const container = this.getEmbeddedItemByUuid(containerUuid)
     if (!container) return
 
     // Suppression des objets contenus
     for (const uuid of container.system.contents) {
-      const { id: contentId } = foundry.utils.parseUuid(uuid)
-      const content = this.items.get(contentId)
+      const content = this.getEmbeddedItemByUuid(uuid)
       if (content) await this.deleteEmbeddedDocuments("Item", [content.id])
     }
 
