@@ -11,6 +11,7 @@
 
 ## Corrections
 - Le modificateur de caractéristiques *Toutes les caractéristiques* est désormais pris en compte sur les acteurs de type Rencontre
+- Les voies apportées par un trait restent affichées lorsque la feuille de personnage est verrouillée, dès qu'une capacité de la voie est apprise
 
 # 2.3.1
 

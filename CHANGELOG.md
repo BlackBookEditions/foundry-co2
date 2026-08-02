@@ -2,6 +2,7 @@
 
 ## Corrections
 - Le modificateur de caractéristiques *Toutes les caractéristiques* est désormais pris en compte sur les acteurs de type Rencontre (([#426](https://github.com/BlackBookEditions/foundry-co2/issues/426))
+- Les voies apportées par un trait restent affichées lorsque la feuille de personnage est verrouillée, dès qu'une capacité de la voie est apprise ([#427](https://github.com/BlackBookEditions/foundry-co2/issues/427))
 
 # 2.3.1
 
