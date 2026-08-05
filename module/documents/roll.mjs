@@ -527,6 +527,8 @@ export class COAttackRoll extends CORoll {
         type: "attack",
         itemName: dialogContext.itemName,
         itemImg: dialogContext.itemImg,
+        itemUuid: dialogContext.itemUuid,
+        itemId: dialogContext.itemId,
         actionName: dialogContext.actionName,
         flavor: dialogContext.flavor,
         dice: withDialog ? rollContext.dice : dialogContext.dice,
@@ -569,6 +571,8 @@ export class COAttackRoll extends CORoll {
         const damageRoll = new this(damageFormula, dialogContext.actor.getRollData())
         await damageRoll.evaluate()
         const damageRollTooltip = await damageRoll.getTooltip()
+        // Pas d'itemUuid ni d'itemId ici : la carte d'attaque porte déjà l'identité de l'objet.
+        // Les dupliquer ferait jouer deux fois les animations des modules qui repèrent l'objet dans la carte de chat.
         damageRoll.options = {
           actorId: dialogContext.actor.id,
           rollMode: rolls[0].options.rollMode,
@@ -598,6 +602,8 @@ export class COAttackRoll extends CORoll {
         flavor: dialogContext.flavor,
         itemName: dialogContext.itemName,
         itemImg: dialogContext.itemImg,
+        itemUuid: dialogContext.itemUuid,
+        itemId: dialogContext.itemId,
         actionName: dialogContext.actionName,
         tooltip: tooltip,
         formulaDamage: formula,
@@ -700,6 +706,8 @@ export class COAttackRoll extends CORoll {
       flavor: `${this.options.flavor}`,
       itemName: this.options.itemName || this.options.flavor,
       itemImg: this.options.itemImg || null,
+      itemUuid: this.options.itemUuid || null,
+      itemId: this.options.itemId || null,
       actionName: this.options.actionName || "",
       user: game.user.id,
       tooltip: isPrivate ? "" : this.options.tooltip,
@@ -752,6 +760,8 @@ export class COAttackRoll extends CORoll {
       flavor: `${this.options.flavor}`,
       itemName: this.options.itemName || this.options.flavor,
       itemImg: this.options.itemImg || null,
+      itemUuid: this.options.itemUuid || null,
+      itemId: this.options.itemId || null,
       actionName: this.options.actionName || "",
       user: game.user.id,
       tooltip: isPrivate ? "" : this.options.tooltip,

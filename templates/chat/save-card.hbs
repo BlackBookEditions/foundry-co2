@@ -1,5 +1,5 @@
-{{log "Chroniques Oubliées | save card" this}}
-<div class="co chat-card roll-card save-card" data-actor-id="{{actorId}}" {{#if hasDmg}}data-dmg-total="{{dmgTotal}}"{{/if}}>
+{{!log "Chroniques Oubliées | save card" this}}
+<div class="co chat-card roll-card save-card" data-actor-id="{{actorId}}" {{#if hasDmg}}data-dmg-total="{{dmgTotal}}"{{/if}} {{#if itemUuid}}data-item-uuid="{{itemUuid}}" data-item-id="{{itemId}}"{{/if}}>
   <header class="card-header flexcol">
     <div class="card-item-card">
       {{#if itemImg}}

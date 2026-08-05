@@ -1,5 +1,7 @@
 {{!log 'item-card' this}}
-<div class="co chat-card roll-card item-card" data-actor-id="{{actorId}}" data-item-id="{{id}}" data-item-uuid="{{uuid}}">
+{{! Pas de data-item-uuid ici : ces attributs ne sont lus par personne dans le système, mais les modules d'animation
+    y voient une utilisation d'objet et déclenchent l'animation à la publication de la carte plutôt qu'au jet. }}
+<div class="co chat-card roll-card item-card" data-actor-id="{{actorId}}">
   <!--<div class="item-card" data-actor-id="{{actorId}}" data-item-id="{{id}}" data-item-uuid="{{uuid}}">-->
 
   <div class="itemTitle">

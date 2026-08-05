@@ -1,4 +1,6 @@
-{{log "Chroniques Oubliées | base card" this}}
-<div class="message-card" data-actor-id="{{actorId}}" data-item-id="{{id}}" data-item-uuid="{{uuid}}">
+{{!log "Chroniques Oubliées | base card" this}}
+{{! Ce gabarit ne reçoit qu'un message : data-item-id / data-item-uuid étaient toujours vides et faisaient
+    passer la carte pour une utilisation d'objet auprès des modules d'animation. }}
+<div class="message-card" data-actor-id="{{actorId}}">
   <div><p>{{message}}</p></div>
 </div>
