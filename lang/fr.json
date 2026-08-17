@@ -405,6 +405,7 @@
     "notif": {
       "ready": "Système prêt.",
       "unknownCapacity": "Vous ne connaissez pas cette capacité.",
+      "orphanCapacity": "Cette capacité est rattachée à une capacité parente qui n'existe plus sur cet acteur. Ses modificateurs s'appliquent toujours : supprimez-la si elle fait double emploi.",
       "noCapacitySelected": "Aucune capacité sélectionnée.",
       "inventory.empty": "L'inventaire est vide.",
       "modifiers.empty": "Aucun modificateur.",

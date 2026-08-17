@@ -1,3 +1,8 @@
+# 2.3.5
+
+## Corrections
+- Une capacité liée dont la capacité parente n'existe plus sur l'acteur n'était rendue nulle part sur la feuille — elle n'est affichée qu'à travers le `linkedCapacity` de son hôte — alors que ses modificateurs continuaient de s'appliquer, produisant des écarts de calcul inexplicables. Elle réapparaît désormais dans *Capacités hors voie*, signalée par une icône d'alerte, et peut y être supprimée.
+
 # 2.3.4
 
 ## Améliorations

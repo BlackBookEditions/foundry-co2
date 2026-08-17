@@ -90,6 +90,18 @@ export default class CapacityData extends ItemData {
     return this.parentCapacity !== null
   }
 
+  /**
+   * Une sous-capacité dont la capacité parente n'existe plus sur l'acteur : elle n'est rattachée à
+   * rien de rendu sur la feuille, mais ses modificateurs continuent de s'appliquer.
+   * @returns {boolean}
+   */
+  get hasOrphanParent() {
+    if (!this.hasParent) return false
+    const actor = this.parent?.actor
+    if (!actor) return false
+    return !actor.getEmbeddedItemByUuid(this.parentCapacity)
+  }
+
   get hasFrequency() {
     return this.frequency !== SYSTEM.CAPACITY_FREQUENCY.none.id
   }

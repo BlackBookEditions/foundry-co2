@@ -52,6 +52,7 @@
   --co-text-dark: #222;
   --co-green: #44a12b;
   --co-grey: #c2b9b7;
+  --co-warning: #b3591a;
   --co-stat-attack: #e21e26;
   --co-stat-initiative: #48494f;
   --co-stat-defense: #0e507c;
@@ -105,6 +106,7 @@
   --co-text-dark: #222;
   --co-green: #44a12b;
   --co-grey: #c2b9b7;
+  --co-warning: #e08a4a;
   --co-stat-attack: #720f13;
   --co-stat-initiative: #303034;
   --co-stat-defense: #09324e;
@@ -1459,6 +1461,10 @@ a.roll-check-enricher:hover {
   list-style: none;
   margin: 0;
   padding: 0 5px 0 0;
+}
+.co.application.sheet .items-container .orphan-capacity,
+.co.application.sheet .item-list .orphan-capacity {
+  color: var(--co-warning);
 }
 .co.application.sheet .items-container.foldable .items-container-header h4,
 .co.application.sheet .item-list.foldable .items-container-header h4 {
