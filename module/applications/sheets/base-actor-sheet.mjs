@@ -350,7 +350,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     if (this.document.type === "encounter") {
       // un personnag ene peux pas etre le compagnon d'un autre et c'est le system des encounter qui gerent cet appel
       await this.document.system.toggleCompanion(target.checked)
-      this.render()
+      this.render(true)
     }
   }
 

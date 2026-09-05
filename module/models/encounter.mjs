@@ -45,7 +45,7 @@ export default class EncounterData extends ActorData {
             sheet: new fields.NumberField({ ...requiredInteger, initial: 0 }),
             effects: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           }),
-          formula: new foundry.data.fields.StringField({ required: true, nullable: false, initiale: "0" }), // pour les compagnon, cas de PV = 5 * niv du maitre
+          formula: new foundry.data.fields.StringField({ required: true, nullable: false, initial: "0" }), // pour les compagnon, cas de PV = 5 * niv du maitre
         },
         { label: "CO.label.long.hp", nullable: false },
       ),
@@ -369,7 +369,7 @@ export default class EncounterData extends ActorData {
       // Si on désactive on devrait mettre la variable isCompanion à false ce qui devrait desactiver l'onglet mais on devrait remettre les valeurs de formula à "0" pour ne plus en tenir compte !
       this.companion.isCompanion = false
       await this.parent.update({ "system.companion.isCompanion": this.companion.isCompanion })
-      await deleteMaster()
+      await this.deleteMaster()
     }
   }
 
@@ -379,7 +379,7 @@ export default class EncounterData extends ActorData {
    */
   async deleteMaster() {
     console.log("je passe par deleteMaster")
-    if (this.companion.master === undefined) return
+    if (this.companion.master === null) return
     console.log("je reinitialise le sformula")
     for (const [key, ability] of Object.entries(this.abilities)) {
       this.abilities[key].formula = "0"
