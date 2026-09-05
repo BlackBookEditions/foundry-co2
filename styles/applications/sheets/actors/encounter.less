@@ -39,6 +39,22 @@
   .attack-description {
     margin-bottom: 5px;
   }
+  // Onglet Détails uniquement : l'onglet Actions utilise aussi .half-panel (shared/actions.hbs)
+  // et doit conserver ses deux moitiés égales.
+  // Base = (100% - gap 15px) / 2 par colonne ; +30px à gauche => 50% + 22.5px, la droite absorbe.
+  .half-panel {
+    display: flex; /* Active Flexbox */
+    gap: 16px; /* Espace entre les colonnes */
+    margin: 10px;
+  }
+  .panel-left {
+    flex: 1; /* Chaque colonne prend 50% de l'espace disponible */
+    min-width: 0; /* Évite les problèmes de débordement */
+  }
+  .panel-right {
+    flex: 1; /* Chaque colonne prend 50% de l'espace disponible */
+    min-width: 0; /* Évite les problèmes de débordement */
+  }
 }
 li.item.attack {
   border-bottom: 2px solid var(--co-encounter-accent);

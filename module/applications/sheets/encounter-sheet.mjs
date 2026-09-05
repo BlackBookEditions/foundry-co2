@@ -16,6 +16,7 @@ export default class COEncounterSheet extends COBaseActorSheet {
     actions: {
       deleteItem: COEncounterSheet.#onDeleteItem,
       roll: COEncounterSheet.#onRoll,
+      deleteMaster: COEncounterSheet.#onDeleteMaster,
     },
   }
 
@@ -29,12 +30,13 @@ export default class COEncounterSheet extends COBaseActorSheet {
     paths: { template: "systems/co2/templates/actors/shared/paths.hbs", templates: ["systems/co2/templates/actors/shared/capacities-nopath.hbs"], scrollable: [""] },
     effects: { template: "systems/co2/templates/actors/shared/effects.hbs" },
     notes: { template: "systems/co2/templates/actors/encounter-notes.hbs" },
+    companion: { template: "systems/co2/templates/actors/companion.hbs" },
   }
 
   /** @override */
   static TABS = {
     primary: {
-      tabs: [{ id: "main" }, { id: "loot" }, { id: "paths" }, { id: "effects" }, { id: "notes" }],
+      tabs: [{ id: "main" }, { id: "loot" }, { id: "paths" }, { id: "effects" }, { id: "notes" }, { id: "companion" }],
       initial: "main",
       labelPrefix: "CO.sheet.tabs.encounter",
     },
@@ -55,10 +57,22 @@ export default class COEncounterSheet extends COBaseActorSheet {
   }
 
   /** @override */
+  _configureRenderOptions(options) {
+    super._configureRenderOptions(options)
+    // En mode édition, on garde tous les onglets (pas seulement le mode limitedView)
+    // L'onglet companion doit être visible même en édition
+    if (this.isLimitedView) {
+      delete options.tabs
+    }
+  }
+
+  /** @override */
   _configureRenderParts(options) {
     const parts = super._configureRenderParts(options)
+
     if (!this.isLimitedView) return parts
     const allowedParts = ["header", "sidebar", "notes"]
+
     const finalParts = Object.fromEntries(allowedParts.filter((partName) => parts[partName]).map((partName) => [partName, parts[partName]]))
     return finalParts
   }
@@ -81,6 +95,31 @@ export default class COEncounterSheet extends COBaseActorSheet {
     context.choiceCategories = SYSTEM.ENCOUNTER_CATEGORIES
     context.choiceBossRanks = SYSTEM.ENCOUNTER_BOSS_RANKS
     context.choiceSizes = SYSTEM.SIZES
+
+    //Companion
+    context.hasMaster = false
+
+    if (this.actor.system.companion.isCompanion) {
+      context.masterUuid = this.actor.system.companion.master
+      // Si l'Uuid est définie on récupère les infos
+      if (context.masterUuid) {
+        try {
+          // Utiliser le cache si disponible
+          if (!this._masterCache || this._masterCache.uuid !== context.masterUuid) {
+            this._masterCache = await fromUuid(context.masterUuid)
+          }
+          if (this._masterCache) {
+            context.masterImg = this._masterCache.img
+            context.masterName = this._masterCache.name
+            context.hasMaster = true
+          } else {
+            console.error("Master non trouvé avec l'Uuid :", context.masterUuid)
+          }
+        } catch (error) {
+          console.error("Erreur lors de la récupération du master :", error)
+        }
+      }
+    }
 
     if (CONFIG.debug.co2?.sheets) console.debug(Utils.log(`COEncounterSheet - context`), context)
     return context
@@ -146,6 +185,11 @@ export default class COEncounterSheet extends COBaseActorSheet {
       case "combatcheck":
         break
     }
+  }
+
+  static async #onDeleteMaster(event, target) {
+    event.preventDefault()
+    await this.actor.system.deleteMaster()
   }
 
   /** @override */
@@ -247,7 +291,24 @@ export default class COEncounterSheet extends COBaseActorSheet {
      */
     if (Hooks.call("co.dropEncounterSheetData", actor, this, data) === false) return
 
-    if (data.type !== "Item") return
+    if (data.type !== "Item") {
+      // Si on drop un acteur et que l'on est sur une fiche de rencontre de type compagnon, c'est un master !
+      if (this.actor.system.companion.isCompanion) {
+        console.log("drop d'acteur", data)
+        if (data.uuid === null || data.uuid === undefined) {
+          console.error("L'uuid de l'acteur dropé n'est aps définie, on ne peux pas récupérer le master")
+          return
+        }
+        const dropedMaster = await fromUuid(data.uuid)
+        if (dropedMaster === null || dropedMaster === undefined) {
+          console.error("L'acteur dropé n'est pas définie, on ne peux pas récupérer le master")
+          return
+        }
+        await this.actor.update({ "system.companion.master": data.uuid })
+        await this.render(true)
+        return
+      }
+    }
     // On récupère l'item de type COItem
     let item = await Item.implementation.fromDropData(data)
 

@@ -263,5 +263,32 @@
         </div>
       </div>
     {{/unless}}
+    {{#unless viewLimited}}
+      <!-- MASTER -->
+      <div class="sidebar-section speed-section">
+        <div class="sidebar-section-header">
+          <div class="sidebar-label">
+            <h4>{{localize "CO.label.long.masterAndCompanion"}}</h4>
+          </div>
+        </div>
+        <div class="sidebar-section-content">
+          <ul class="state-modifier">            
+              <li class="state-name">
+                {{!log "state" state}}
+                {{localize "CO.label.long.isCompanion"}}
+                <input
+                  type="checkbox"
+                  class="vision-slider"
+                  data-tooltip="Activer si cette rencontre est un compagnon (ses stats dépendent du maitre)"
+                  data-action="toggleCompanion"
+                  name="companionActivation"
+                  {{checked @root.companionActivation}}
+                />
+              </li>          
+                  
+          </ul>
+        </div>
+      </div>
+    {{/unless}}
   </div>
 </div>

@@ -44,6 +44,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
       toggleAction: COBaseActorSheet._onUseAction,
       toggleEffect: COBaseActorSheet.#onUseEffect,
       toggleDarkVision: COBaseActorSheet.#onToggleDarkVision,
+      toggleCompanion: COBaseActorSheet.#onToggleCompanion,
       sortActionsByDefault: COBaseActorSheet.#onSortActionsByDefault,
       sortActionsByName: COBaseActorSheet.#onSortActionsByName,
       sortActionsByRank: COBaseActorSheet.#onSortActionsByRank,
@@ -150,6 +151,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     context.source = this.document.toObject()
     context.darkVisionActivation = this.document.system.hasDarkVisionActivated
     context.darkVisionShow = this.document.system.hasDarkVisionModifier
+    context.companionActivation = this.document.system.companion?.isCompanion
     context.isCharacter = this.document.type === "character"
 
     context.unlocked = this.isEditMode
@@ -335,6 +337,21 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     event.preventDefault()
     await this.document.system.toggleDarkVision(target.checked)
     this.render()
+  }
+
+  /**
+   * Active desactive la liaison entre une rencontre et son maitre
+   * @param {PointerEvent} event The originating click event
+   * @param {HTMLElement} target The capturing HTML element which defined a [data-action]
+   */
+  static async #onToggleCompanion(event, target) {
+    event.preventDefault()
+    console.log("onToggleCompanion", this.document)
+    if (this.document.type === "encounter") {
+      // un personnag ene peux pas etre le compagnon d'un autre et c'est le system des encounter qui gerent cet appel
+      await this.document.system.toggleCompanion(target.checked)
+      this.render()
+    }
   }
 
   /**
@@ -874,7 +891,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     const modes = this.constructor.SHEET_MODES
     this._sheetMode = this.isEditMode ? modes.PLAY : modes.EDIT
     await this.submit()
-    this.render()
+    this.render(true)
   }
 
   /**

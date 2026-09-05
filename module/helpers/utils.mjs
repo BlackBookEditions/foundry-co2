@@ -526,6 +526,35 @@ export default class Utils {
   }
 
   /**
+   * Evalue la formule donnée pour trouver les valeurs d'un master pour un companion.
+   *
+   * Cette fonction vérifie les formule qui contiennent le mot clef "@master".
+   * Si trouvé, On l'extrait et on cherche le "@master. correspondant".
+   * Si le mot clef n'est pas présent, retourne undefined.
+   *
+   * @param {string} formula La formule à évaluer.
+   * @param {object} actor Le maitre du compagnon
+   * @returns {string|undefined} La valeur extraite de master ou undefined si non trouvé.
+   */
+  static evaluateMasterFormula(formula, actor) {
+    if (!formula.includes("@master")) return undefined
+
+    // Remplacer TOUTES les occurrences de @master.xxx
+    const processedFormula = formula.replace(/@master\.([^\s\+\-\*\/\(\)]+)/g, (match, key) => {
+      const rollData = actor.getRollData()
+      return foundry.utils.hasProperty(rollData, key) ? foundry.utils.getProperty(rollData, key) : 0
+    })
+
+    // Évaluer avec Roll.safeEval
+    try {
+      return Roll.safeEval(processedFormula, {})
+    } catch (e) {
+      console.error(`Erreur dans la formule "${processedFormula}" :`, e)
+      return undefined
+    }
+  }
+
+  /**
    * Calcule un résultat de jet d'attaque par cible.
    *
    * @param {Array} targets Cibles acquises (format { token, actor, uuid, name }).

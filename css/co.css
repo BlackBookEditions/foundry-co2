@@ -3402,6 +3402,10 @@ a.roll-check-enricher:hover {
 .co.application.sheet.actor.encounter .window-content .sheet-sidebar .scrollable .sidebar-section:nth-child(5) .labelled-field i {
   color: var(--co-stat-damages);
 }
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar span.max,
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar span.slash {
+  color: var(--co-sheet-accent-alt);
+}
 .co.application.sheet.actor.encounter .window-content .sheet-sidebar .state-name {
   list-style: "\1F782";
   margin-left: 5px;
@@ -3454,6 +3458,25 @@ a.roll-check-enricher:hover {
 }
 .co.application.sheet.actor.encounter .window-content .attack-description {
   margin-bottom: 5px;
+}
+.co.application.sheet.actor.encounter .window-content .half-panel {
+  display: flex;
+  /* Active Flexbox */
+  gap: 16px;
+  /* Espace entre les colonnes */
+  margin: 10px;
+}
+.co.application.sheet.actor.encounter .window-content .panel-left {
+  flex: 1;
+  /* Chaque colonne prend 50% de l'espace disponible */
+  min-width: 0;
+  /* Évite les problèmes de débordement */
+}
+.co.application.sheet.actor.encounter .window-content .panel-right {
+  flex: 1;
+  /* Chaque colonne prend 50% de l'espace disponible */
+  min-width: 0;
+  /* Évite les problèmes de débordement */
 }
 .co.application.sheet.actor.encounter li.item.attack {
   border-bottom: 2px solid var(--co-encounter-accent);

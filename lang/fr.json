@@ -399,7 +399,7 @@
         "feature": { "description": "Description", "details": "Détails" },
         "attack": { "description": "Description", "details": "Détails", "actions": "Actions/Effets" },
         "character": { "main": "Principal", "inventory": "Inventaire", "paths": "Voies & Capacités", "effects": "Effets", "biography": "Biographie" },
-        "encounter": { "main": "Principal", "loot": "Butin", "paths": "Voies & Capacités", "effects": "Effets", "notes": "Notes" }
+        "encounter": { "main": "Principal", "loot": "Butin", "paths": "Voies & Capacités", "effects": "Effets", "notes": "Notes", "companion": "Compagnon" }
       }
     },
     "notif": {
@@ -555,7 +555,11 @@
         "diceType": "Type de jet",
         "tactical": "Option tactique",
         "special": "Spécial",
-        "heal": "Soins"
+        "heal": "Soins",
+        "master": "Maitre",
+        "masterAndCompanion": "Maitre & Compagnon",
+        "isCompanion": "Est un compagnon",
+        "isCompanionTooltip": "Activer si cette rencontre est un compagnon (ses stats dépendent du maitre)"
       },
       "short": {
         "label": "Label",
@@ -859,7 +863,9 @@
       "sortByRank": "Tri par rang",
       "sortByType": "Tri par type",
       "sortByActionType": "Trier par temps d'action",
-      "save": "Sauvegarde"
+      "save": "Sauvegarde",
+      "companionInfos": "Caractéristiques du compagnion liées à son maitre",
+      "update": "Mettre à jour"
     },
     "properties": {
       "attack": "Attaque",
@@ -916,7 +922,9 @@
         "ranged": "ATD",
         "magic": "ATM",
         "init": "Init.",
-        "def": "DEF"
+        "def": "DEF",
+        "dr": "RD",
+        "crit": "Crit"
       }
     },
     "combatUnit": {
@@ -1001,7 +1009,8 @@
       "effects": "Effets",
       "features": "Features",
       "lock": "Verrouiller",
-      "unlock": "Déverrouiller"
+      "unlock": "Déverrouiller",
+      "companion": "Compagnon"
     },
     "dialogs": {
       "skillCheck": "Test de compétence",

@@ -1,5 +1,6 @@
 import { SYSTEM } from "../config/system.mjs"
 import { BaseValue } from "./schemas/base-value.mjs"
+import { AbilityValue } from "./schemas/ability-value.mjs"
 import ActorData from "./actor.mjs"
 import Utils from "../helpers/utils.mjs"
 import CoChat from "../chat.mjs"
@@ -14,6 +15,13 @@ export default class CharacterData extends ActorData {
     const fields = foundry.data.fields
     const requiredInteger = { required: true, nullable: false, integer: true }
     const schema = {}
+
+    schema.abilities = new fields.SchemaField(
+      Object.values(SYSTEM.ABILITIES).reduce((obj, ability) => {
+        obj[ability.id] = new fields.EmbeddedDataField(AbilityValue, { label: ability.label, nullable: false })
+        return obj
+      }, {}),
+    )
 
     schema.attributes = new fields.SchemaField({
       movement: new fields.EmbeddedDataField(BaseValue, {
