@@ -1,9 +1,9 @@
-{{log "companion" this}}
-<section class="tab standard-form companion" data-group="primary" data-tab="companion">
-    <h5 class="form-header master">
-        <a data-action="toggleSection">{{localize "CO.label.long.master"}}</a>
-    </h5>
-    <div class="form-group">
+{{!log "companion" this}}
+<section class="tab standard-form companion {{#if tabs.companion.active}} active{{/if}}" data-group="primary" data-tab="companion">
+  <h5 class="form-header master">
+    <a data-action="toggleSection">{{localize "CO.label.long.master"}}</a>
+  </h5>
+  <div class="form-group">
        {{#if hasMaster}}
             
             {{#if masterImg}}
@@ -21,9 +21,9 @@
     </div>
   <h5 class="form-header companion">
     <a data-action="toggleSection">{{localize "CO.ui.companionInfos"}}</a>
-  </h5>  
-  <div class="modifiers-container foldable">   
-    <section class="half-panel">
+  </h5>
+  <div class="modifiers-container foldable">
+     <section class="half-panel">
             <section class="panel-left">
                 {{#each system.abilities as |a id|}}
                     <div class="form-group">
@@ -31,7 +31,7 @@
                         <input type="text" name="system.abilities.{{id}}.formula" value="{{a.formula}}" data-dtype="String" {{#unless @root.unlocked}}readonly{{/unless}} />
                     </div>    
                 {{/each}}   
-                <!-- Ajout des HP -->
+               
                 <div class="form-group">
                         <label style="text-align:center;">{{localize "CO.label.long.hp"}}</label>
                         <input type="text" name="system.attributes.hp.formula" value="{{system.attributes.hp.formula}}" data-dtype="String" {{#unless @root.unlocked}}readonly{{/unless}} />
@@ -45,7 +45,7 @@
                 </div>
             {{/each}}
             </section>
-    </section>
-</div>
-    
+    </section> 
+  </div>
+
 </section>

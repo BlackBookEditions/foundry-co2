@@ -46,6 +46,23 @@ export default class COEncounterSheet extends COBaseActorSheet {
   async _onRender(context, options) {
     await super._onRender(context, options)
 
+    // Supprimer l'onglet "companion" si ce n'est pas un companion
+    if (!this.actor.system.companion?.isCompanion) {
+      console.log("je dois supprimer l'onglet")
+      const companionTab = this.element.querySelector('.tab[data-tab="companion"]')
+      const companionTab2 = this.element.querySelector('a[data-tab="companion"]')
+      const companionContent = this.element.querySelector('.tab-content[data-tab="companion"]')
+
+      if (companionTab2) companionTab2.remove()
+
+      if (companionTab) {
+        companionTab.remove() // Supprime l'onglet du menu
+      }
+      if (companionContent) {
+        companionContent.remove() // Supprime le contenu de l'onglet
+      }
+    }
+
     // Affichage selon les permissions
     if (!this.isLimitedView) return
 
@@ -59,6 +76,7 @@ export default class COEncounterSheet extends COBaseActorSheet {
   /** @override */
   _configureRenderOptions(options) {
     super._configureRenderOptions(options)
+
     // En mode édition, on garde tous les onglets (pas seulement le mode limitedView)
     // L'onglet companion doit être visible même en édition
     if (this.isLimitedView) {
@@ -98,8 +116,10 @@ export default class COEncounterSheet extends COBaseActorSheet {
 
     //Companion
     context.hasMaster = false
-
+    context.isCompanion = this.actor.system.companion.isCompanion
     if (this.actor.system.companion.isCompanion) {
+      // Ajouter l'onglet "companion" uniquement si isCompanion est true
+
       context.masterUuid = this.actor.system.companion.master
       // Si l'Uuid est définie on récupère les infos
       if (context.masterUuid) {
