@@ -110,7 +110,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     this._renderModeToggle(this.element)
 
     // Add onChange handler
-    const selectSize = document.querySelector('select[data-action="sizeChange"]')
+    const selectSize = this.element.querySelector('select[data-action="sizeChange"]')
     if (selectSize) {
       selectSize.addEventListener("change", async (event) => {
         await this.constructor._onSizeChange.call(this, event, event.target)

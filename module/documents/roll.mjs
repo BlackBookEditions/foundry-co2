@@ -251,7 +251,8 @@ export class COSkillRoll extends CORoll {
     let item = event.currentTarget.closest(".bonus-item")
     item.classList.toggle("checked")
     let total = this._calculateTotalSkillBonus(event)
-    document.querySelector("#totalSkillBonuses").value = `${total >= 0 ? "+" : ""}${total}`
+    const form = event.currentTarget.closest("form")
+    form.querySelector("#totalSkillBonuses").value = `${total >= 0 ? "+" : ""}${total}`
   }
 
   static _calculateTotalSkillBonus(event) {
@@ -790,7 +791,8 @@ export class COAttackRoll extends CORoll {
     let checked = event.target.checked
     let canBeTempDamage = event.target.dataset.canbetempdamage
     if (checked === true && canBeTempDamage === "false") {
-      let radio = document.getElementById("diceMalus")
+      const form = event.target.closest("form")
+      let radio = form.querySelector("#diceMalus")
       radio.checked = true
       // Créer et déclencher un événement change
       const changeEvent = new Event("change", {

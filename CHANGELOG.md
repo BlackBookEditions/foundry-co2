@@ -16,6 +16,7 @@
 - Fiabilisation de la détection du type de jet (attaque/compétence) pour les modules tiers.
 - Un modificateur ciblant « Soi-même » posé via un effet personnalisé (buff/debuff sur le lanceur) était ignoré à la lecture des statistiques ([#429](https://github.com/BlackBookEditions/foundry-co2/issues/429))
 - Correction du calcul des Dés de récupérations et des points de mana qui utilisent maintenant bien les caractéristiques personnalisées sur la fiche du personnage ([#392](https://github.com/BlackBookEditions/foundry-co2/issues/392)
+- Si plusieurs fenêtres de jet de caractéristique étaient ouvertes, les bonus sélectionnés pouvaient aller dans la mauvaise fenêtre
 
 ## Améliorations
 
