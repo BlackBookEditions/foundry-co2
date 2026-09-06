@@ -48,7 +48,6 @@ export default class COEncounterSheet extends COBaseActorSheet {
 
     // Supprimer l'onglet "companion" si ce n'est pas un companion
     if (!this.actor.system.companion?.isCompanion) {
-      console.log("je dois supprimer l'onglet")
       const companionTab = this.element.querySelector('.tab[data-tab="companion"]')
       const companionTab2 = this.element.querySelector('a[data-tab="companion"]')
       const companionContent = this.element.querySelector('.tab-content[data-tab="companion"]')
@@ -74,20 +73,8 @@ export default class COEncounterSheet extends COBaseActorSheet {
   }
 
   /** @override */
-  _configureRenderOptions(options) {
-    super._configureRenderOptions(options)
-
-    // En mode édition, on garde tous les onglets (pas seulement le mode limitedView)
-    // L'onglet companion doit être visible même en édition
-    if (this.isLimitedView) {
-      delete options.tabs
-    }
-  }
-
-  /** @override */
   _configureRenderParts(options) {
     const parts = super._configureRenderParts(options)
-
     if (!this.isLimitedView) return parts
     const allowedParts = ["header", "sidebar", "notes"]
 
@@ -207,9 +194,15 @@ export default class COEncounterSheet extends COBaseActorSheet {
     }
   }
 
+  /**
+   * Va supprimer un master et toutes ses références du compagnon
+   * @param {PointerEvent} event
+   * @param {HTMLElement target
+   */
   static async #onDeleteMaster(event, target) {
     event.preventDefault()
     await this.actor.system.deleteMaster()
+    Hooks.callAll("updateActor", this.actor, this.actor.system.companion, null, null)
   }
 
   /** @override */
@@ -314,20 +307,17 @@ export default class COEncounterSheet extends COBaseActorSheet {
     if (data.type !== "Item") {
       // Si on drop un acteur et que l'on est sur une fiche de rencontre de type compagnon, c'est un master !
       if (this.actor.system.companion.isCompanion) {
-        console.log("drop d'acteur", data)
         if (data.uuid === null || data.uuid === undefined) {
           console.error("L'uuid de l'acteur dropé n'est aps définie, on ne peux pas récupérer le master")
           return
         }
-        const dropedMaster = await fromUuid(data.uuid)
-        if (dropedMaster === null || dropedMaster === undefined) {
-          console.error("L'acteur dropé n'est pas définie, on ne peux pas récupérer le master")
-          return
-        }
-        await this.actor.update({ "system.companion.master": data.uuid })
-        await this.render(true)
+        const dropped = await fromUuid(data.uuid)
+        const master = dropped instanceof Actor ? dropped : dropped?.actor
+        if (!master || master.type !== "character") return
+        await this.actor.update({ "system.companion.master": master.uuid })
+        await this.render()
         return
-      }
+      } else return
     }
     // On récupère l'item de type COItem
     let item = await Item.implementation.fromDropData(data)

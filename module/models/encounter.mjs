@@ -179,7 +179,7 @@ export default class EncounterData extends ActorData {
       const combatModifiersBonus = this.computeTotalModifiersByTarget(this.combatModifiers, key)
       const companionValue = this._resolveFormula(skill.formula) //0 si il n'est pas un companion
       if (key !== SYSTEM.COMBAT.crit.id) {
-        if (skill.formula !== "0") skill.base = companionValue
+        if (!skill.formula?.trim() || skill.formula !== "0") skill.base = companionValue
         skill.value = skill.base + bonuses + combatModifiersBonus.total
       }
 
@@ -231,7 +231,7 @@ export default class EncounterData extends ActorData {
       }
       ability.modifiers = abilityModifiers.total
       const companionValue = this._resolveFormula(ability.formula) //0 si il n'est pas un companion
-      if (ability.formula !== "0") ability.base = companionValue // la formula contient "0" par defaut si on a autre chose c'est que l'on a configuré la formula.
+      if (!ability.formula?.trim() || ability.formula !== "0") ability.base = companionValue // la formula contient "0" par defaut si on a autre chose c'est que l'on a configuré la formula.
       ability.value = ability.base + bonuses + ability.modifiers
       ability.tooltipValue = Utils.getTooltip(Utils.getAbilityName(key), ability.base).concat(abilityModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
       if (this.companion.isCompanion) ability.tooltipValue = ability.tooltipValue.concat(Utils.getTooltip("Compagnon", companionValue))
@@ -244,7 +244,7 @@ export default class EncounterData extends ActorData {
     const hpMaxBonuses = Object.values(this.attributes.hp.bonuses).reduce((prev, curr) => prev + curr)
     const hpMaxModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "hp")
     const companionValue = this._resolveFormula(this.attributes.hp.formula) //0 si il n'est pas un companion
-    if (this.attributes.hp.formula !== "0") this.attributes.hp.base = companionValue // la formula contient "0" par defaut si on a autre chose c'est que l'on a configuré la formula.
+    if (!this.attributes.hp.formula?.trim() || this.attributes.hp.formula !== "0") this.attributes.hp.base = companionValue // la formula contient "0" par defaut si on a autre chose c'est que l'on a configuré la formula.
     this.attributes.hp.max = this.attributes.hp.base + hpMaxBonuses + hpMaxModifiers.total
     this.attributes.hp.value = Math.min(this.attributes.hp.max, this.attributes.hp.value)
     this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat(Utils.getTooltip("Bonus", hpMaxBonuses))
@@ -359,7 +359,6 @@ export default class EncounterData extends ActorData {
    * @param {boolean} active Active (tue) ou désactive (false) la liaison
    */
   async toggleCompanion(active) {
-    console.log("active", active)
     if (active) {
       // Si on active on met simplement la variable isCompanion à true et on affiche l'onglet supplémentaire dans la fiche de rencontre
 
@@ -379,7 +378,7 @@ export default class EncounterData extends ActorData {
    */
   async deleteMaster() {
     if (this.companion.master === null) return
-    const newAbilities = {}
+    /*const newAbilities = {}
     for (const [key, ability] of Object.entries(this.abilities)) {
       newAbilities[key] = { ...ability, formula: "0" } // Copie l'objet et modifie formula
     }
@@ -395,7 +394,11 @@ export default class EncounterData extends ActorData {
       "system.combat": newCombat,
       "system.attributes.hp.formula": "0",
       "system.companion.master": null,
-    })
+    })*/
+    const update = { "system.attributes.hp.formula": "0", "system.companion.master": null }
+    for (const key of Object.keys(this.abilities)) update[`system.abilities.${key}.formula`] = "0"
+    for (const key of Object.keys(this.combat)) update[`system.combat.${key}.formula`] = "0"
+    await this.parent.update(update)
   }
 
   /**
@@ -409,11 +412,14 @@ export default class EncounterData extends ActorData {
     //Ajout du master
     if (this.companion.isCompanion && this.companion.master) {
       const master = fromUuidSync(this.companion.master)
-      if (master) {
+      if (master && master instanceof Actor) {
         const evaluated = Utils.evaluateMasterFormula(formula, master)
-        if (evaluated) return Number(evaluated)
+        if (evaluated !== undefined) return Number(evaluated)
         else return 0
-      } else return 0
+      } else {
+        ui.notifications.warn(game.i18n.localize("CO.notif.masterNotFound"))
+        return 0
+      }
     } else return 0
   }
 }

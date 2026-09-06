@@ -538,10 +538,9 @@ export default class Utils {
    */
   static evaluateMasterFormula(formula, actor) {
     if (!formula.includes("@master")) return undefined
-
+    const rollData = actor.getRollData()
     // Remplacer TOUTES les occurrences de @master.xxx
     const processedFormula = formula.replace(/@master\.([^\s\+\-\*\/\(\)]+)/g, (match, key) => {
-      const rollData = actor.getRollData()
       return foundry.utils.hasProperty(rollData, key) ? foundry.utils.getProperty(rollData, key) : 0
     })
 

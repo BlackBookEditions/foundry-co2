@@ -444,7 +444,8 @@
       "warningNoValidTarget": "Aucune cible valide pour cette action",
       "warningInvalidScopeTargets": "Certaines cibles sélectionnées ne sont pas valides pour cette action",
       "warningEncounterPathOnly": "Une rencontre ne peut apprendre que des voies de type rencontre.",
-      "applyEffect": "{actorName} : application de {skillName} sur {targetNames}"
+      "applyEffect": "{actorName} : application de {skillName} sur {targetNames}",
+      "masterNotFound": "Le maitre de cette rencontre n'a pas pu être trouvé !"
     },
     "tooltip": {
       "formulaAttack": "Formule d'attaque (sans le dé)",

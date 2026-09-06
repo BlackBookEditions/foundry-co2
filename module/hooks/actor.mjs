@@ -43,4 +43,11 @@ export function updateActor(actor, updateData, options, userId) {
   if (actor.type === "encounter" && updateData?.system?.attributes?.hp?.value === 0 && !actor.statuses.has("dead")) {
     actor.toggleStatusEffect("dead", { active: true })
   }
+
+  // Une rencontre a changé de master
+  if (actor.type === "encounter") {
+    if (actor.system.companion.isCompanion) {
+      actor.system.prepareDerivedData()
+    }
+  }
 }
