@@ -3293,6 +3293,17 @@ a.roll-check-enricher:hover {
 .co.application.sheet.actor.character .window-content .sheet-sidebar input.vision-slider:not(:checked)::before {
   color: var(--co-surface);
 }
+.co.application.sheet.actor.character .window-content .sheet-sidebar .companion-list {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 5px;
+  margin-left: 5px;
+}
+.co.application.sheet.actor.character .window-content .sheet-sidebar .companion-list .companion-icon {
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+}
 .co.application.sheet.actor.character .window-content .dropzone {
   margin-left: 53px;
 }
@@ -3428,6 +3439,17 @@ a.roll-check-enricher:hover {
   margin-left: 5px;
   margin-right: 5px;
 }
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .companion-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 5px;
+}
+.co.application.sheet.actor.encounter .window-content .sheet-sidebar .companion-toggle .companion-icon {
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+}
 .co.application.sheet.actor.encounter .window-content .properties {
   max-height: 90%;
   overflow: hidden;
@@ -3459,7 +3481,7 @@ a.roll-check-enricher:hover {
 .co.application.sheet.actor.encounter .window-content .attack-description {
   margin-bottom: 5px;
 }
-.co.application.sheet.actor.encounter .window-content .half-panel {
+.co.application.sheet.actor.encounter .window-content .tab.companion .half-panel {
   display: flex;
   /* Active Flexbox */
   gap: 16px;

@@ -17,6 +17,8 @@ export default class COEncounterSheet extends COBaseActorSheet {
       deleteItem: COEncounterSheet.#onDeleteItem,
       roll: COEncounterSheet.#onRoll,
       deleteMaster: COEncounterSheet.#onDeleteMaster,
+      toggleCompanion: COEncounterSheet.#onToggleCompanion,
+      openMaster: COEncounterSheet.#onOpenMaster,
     },
   }
 
@@ -36,7 +38,7 @@ export default class COEncounterSheet extends COBaseActorSheet {
   /** @override */
   static TABS = {
     primary: {
-      tabs: [{ id: "main" }, { id: "loot" }, { id: "paths" }, { id: "effects" }, { id: "notes" }, { id: "companion" }],
+      tabs: [{ id: "main" }, { id: "companion" }, { id: "paths" }, { id: "effects" }, { id: "loot" }, { id: "notes" }],
       initial: "main",
       labelPrefix: "CO.sheet.tabs.encounter",
     },
@@ -101,7 +103,7 @@ export default class COEncounterSheet extends COBaseActorSheet {
     context.choiceBossRanks = SYSTEM.ENCOUNTER_BOSS_RANKS
     context.choiceSizes = SYSTEM.SIZES
 
-    //Companion
+    // Companion
     context.hasMaster = false
     context.isCompanion = this.actor.system.companion.isCompanion
     if (this.actor.system.companion.isCompanion) {
@@ -202,7 +204,29 @@ export default class COEncounterSheet extends COBaseActorSheet {
   static async #onDeleteMaster(event, target) {
     event.preventDefault()
     await this.actor.system.deleteMaster()
-    Hooks.callAll("updateActor", this.actor, this.actor.system.companion, null, null)
+  }
+
+  /**
+   * Ouvre la fiche du maitre de ce Compagnon
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #onOpenMaster(event, target) {
+    event.preventDefault()
+    const uuid = this.actor.system.companion.master
+    const master = uuid ? await fromUuid(uuid) : null
+    if (master) master.sheet.render(true)
+  }
+
+  /**
+   * Active ou désactive la liaison entre une rencontre et son maître
+   * @param {PointerEvent} event The originating click event
+   * @param {HTMLElement} target The capturing HTML element which defined a [data-action]
+   */
+  static async #onToggleCompanion(event, target) {
+    event.preventDefault()
+    await this.actor.system.toggleCompanion(target.checked)
+    this.render()
   }
 
   /** @override */
@@ -306,7 +330,8 @@ export default class COEncounterSheet extends COBaseActorSheet {
 
     if (data.type !== "Item") {
       // Si on drop un acteur et que l'on est sur une fiche de rencontre de type compagnon, c'est un master !
-      if (this.actor.system.companion.isCompanion) {
+      // Uniquement possible en mode Édition.
+      if (this.actor.system.companion.isCompanion && this.isEditMode) {
         if (data.uuid === null || data.uuid === undefined) {
           console.error("L'uuid de l'acteur dropé n'est pas définie, on ne peux pas récupérer le master")
           return
@@ -315,6 +340,9 @@ export default class COEncounterSheet extends COBaseActorSheet {
         const master = dropped instanceof Actor ? dropped : dropped?.actor
         if (!master || master.type !== "character") return
         await this.actor.update({ "system.companion.master": master.uuid })
+        if (!master.system.companions.includes(this.actor.uuid)) {
+          await master.update({ "system.companions": [...master.system.companions, this.actor.uuid] })
+        }
         await this.render()
         return
       } else return

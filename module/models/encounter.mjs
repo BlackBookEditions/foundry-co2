@@ -45,7 +45,7 @@ export default class EncounterData extends ActorData {
             sheet: new fields.NumberField({ ...requiredInteger, initial: 0 }),
             effects: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           }),
-          formula: new foundry.data.fields.StringField({ required: true, nullable: false, initial: "0" }), // pour les compagnon, cas de PV = 5 * niv du maitre
+          formula: new foundry.data.fields.StringField({ required: true, nullable: false, initial: "0" }), // pour les compagnon, cas de PV = 5 * niv du maître
         },
         { label: "CO.label.long.hp", nullable: false },
       ),
@@ -186,7 +186,7 @@ export default class EncounterData extends ActorData {
       if (key === SYSTEM.COMBAT.crit.id) {
         this.combat.crit.base = SYSTEM.BASE_CRITICAL
 
-        // Si il s'agit d'un compagnon sa valeude critique peux potentiellement être liée à son maitre
+        // Si il s'agit d'un compagnon sa valeude critique peux potentiellement être liée à son maître
         if (this.companion.isCompanion) {
           const compagnonValue = this._resolveFormula(this.combat.crit.formula)
           this.combat.crit.base = compagnonValue != 0 ? compagnonValue : SYSTEM.BASE_CRITICAL
@@ -355,32 +355,33 @@ export default class EncounterData extends ActorData {
   }
 
   /**
-   * On active ou désactiva la liaison avec un maitre
+   * On active ou désactiva la liaison avec un maître
    * @param {boolean} active Active (tue) ou désactive (false) la liaison
    */
   async toggleCompanion(active) {
-    if (active) {
-      // Si on active on met simplement la variable isCompanion à true et on affiche l'onglet supplémentaire dans la fiche de rencontre
-
-      this.companion.isCompanion = true
-      await this.parent.update({ "system.companion.isCompanion": this.companion.isCompanion })
-    } else {
-      // Si on désactive on devrait mettre la variable isCompanion à false ce qui devrait desactiver l'onglet mais on devrait remettre les valeurs de formula à "0" pour ne plus en tenir compte !
-      this.companion.isCompanion = false
-      await this.parent.update({ "system.companion.isCompanion": this.companion.isCompanion })
-      await this.deleteMaster()
-    }
+    // On (dés)active l'onglet. En désactivant on délie aussi le maître (pas de sens à le garder
+    // sans l'onglet pour le gérer), mais les formules restent en l'état : elles retombent à 0
+    // tant qu'aucun maître n'est défini, et redeviennent actives sans ressaisie si on recoche
+    // la case et redépose un maître.
+    const masterUuid = this.companion.master
+    const update = { "system.companion.isCompanion": active }
+    if (!active) update["system.companion.master"] = null
+    await this.parent.update(update)
+    if (!active && masterUuid) Hooks.callAll("co2.companionMasterDeleted", masterUuid, this.parent.uuid)
   }
 
   /**
-   *Va gérer les actions à faire lors de la suppression du maitre
+   * Délie le maître du compagnon, sans toucher aux formules (elles retombent à 0
+   * tant qu'aucun maître n'est défini, et redeviennent actives dès qu'un nouveau
+   * maître est déposé, sans ressaisie de la part du GM). Notifie l'ancien maître
+   * via le hook `co2.companionMasterDeleted` pour qu'il se retire de son tableau
+   * `system.companions`.
    * @returns ne retourne rien
    */
   async deleteMaster() {
-    const update = { "system.attributes.hp.formula": "0", "system.companion.master": null }
-    for (const key of Object.keys(this.abilities)) update[`system.abilities.${key}.formula`] = "0"
-    for (const key of Object.keys(this.combat)) update[`system.combat.${key}.formula`] = "0"
-    await this.parent.update(update)
+    const masterUuid = this.companion.master
+    await this.parent.update({ "system.companion.master": null })
+    if (masterUuid) Hooks.callAll("co2.companionMasterDeleted", masterUuid, this.parent.uuid)
   }
 
   /**

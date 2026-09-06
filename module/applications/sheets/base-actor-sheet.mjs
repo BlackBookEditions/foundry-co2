@@ -44,7 +44,6 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
       toggleAction: COBaseActorSheet._onUseAction,
       toggleEffect: COBaseActorSheet.#onUseEffect,
       toggleDarkVision: COBaseActorSheet.#onToggleDarkVision,
-      toggleCompanion: COBaseActorSheet.#onToggleCompanion,
       sortActionsByDefault: COBaseActorSheet.#onSortActionsByDefault,
       sortActionsByName: COBaseActorSheet.#onSortActionsByName,
       sortActionsByRank: COBaseActorSheet.#onSortActionsByRank,
@@ -337,20 +336,6 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     event.preventDefault()
     await this.document.system.toggleDarkVision(target.checked)
     this.render()
-  }
-
-  /**
-   * Active desactive la liaison entre une rencontre et son maitre
-   * @param {PointerEvent} event The originating click event
-   * @param {HTMLElement} target The capturing HTML element which defined a [data-action]
-   */
-  static async #onToggleCompanion(event, target) {
-    event.preventDefault()
-    if (this.document.type === "encounter") {
-      // un personnag ene peux pas etre le compagnon d'un autre et c'est le system des encounter qui gerent cet appel
-      await this.document.system.toggleCompanion(target.checked)
-      this.render()
-    }
   }
 
   /**

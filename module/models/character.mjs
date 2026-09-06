@@ -145,6 +145,9 @@ export default class CharacterData extends ActorData {
     // Points de capacités dépensés ailleurs que dans les capacités : pour apprendre une langue, ou éventuel point orphelin
     schema.otherCapacitiesPointsSpent = new fields.NumberField({ required: true, nullable: false, initial: 0, integer: true, min: 0 })
 
+    // UUID des Rencontres-Compagnons dont ce Personnage est le maitre
+    schema.companions = new fields.ArrayField(new fields.DocumentUUIDField({ type: "Actor" }))
+
     return foundry.utils.mergeObject(super.defineSchema(), schema)
   }
 

@@ -28,6 +28,7 @@ export default class COCharacterSheet extends COBaseActorSheet {
       increaseCharge: COCharacterSheet.#onIncrease,
       openMiniSheet: COCharacterSheet.#onOpenMiniSheet,
       rollFortune: COCharacterSheet.#onRollFortune,
+      openCompanion: COCharacterSheet.#onOpenCompanion,
     },
   }
 
@@ -107,6 +108,13 @@ export default class COCharacterSheet extends COBaseActorSheet {
     context.choiceAbilities = SYSTEM.ABILITIES
     context.choiceSize = SYSTEM.SIZES
 
+    // Compagnons : lus directement depuis system.companions (tableau d'UUID de Rencontres)
+    context.companions = this.actor.system.companions
+      .map((uuid) => fromUuidSync(uuid))
+      .filter((actor) => actor)
+      .map((actor) => ({ uuid: actor.uuid, name: actor.name, img: actor.img }))
+    context.hasCompanions = context.companions.length > 0
+
     if (CONFIG.debug.co2?.sheets) console.debug(Utils.log(`COCharacterSheet - context`), context)
 
     return context
@@ -166,6 +174,18 @@ export default class COCharacterSheet extends COBaseActorSheet {
     event.preventDefault()
     const miniSheet = new COMiniCharacterSheet({ document: this.document })
     return miniSheet.render(true)
+  }
+
+  /**
+   * Ouvre la fiche d'un compagnon lié à ce Personnage
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #onOpenCompanion(event, target) {
+    event.preventDefault()
+    const uuid = target.dataset.companionUuid
+    const companion = uuid ? await fromUuid(uuid) : null
+    if (companion) companion.sheet.render(true)
   }
 
   /**

@@ -5,19 +5,21 @@
   </h5>
   <div class="form-group">
        {{#if hasMaster}}
-            
+
             {{#if masterImg}}
             <div class="image-container">
                 <img class="target-portrait" src="{{masterImg}}" data-tooltip="{{masterName}}" height="32" width="32" />
             </div>
            {{/if}}
                 <span class="target-name">{{masterName}}</span>
-                {{#if unlocked}}               
-                <a class="item-control" data-action="deleteMaster" data-tooltip={{localize "CO.ui.remove"}}><i class="fas fa-trash"></i></a> 
-                {{/if}}                               
-           
+                {{#if unlocked}}
+                <a class="item-control" data-action="deleteMaster" data-tooltip={{localize "CO.ui.remove"}}><i class="fas fa-trash"></i></a>
+                {{/if}}
+
+        {{else}}
+                <span class="target-name" data-tooltip="{{localize 'CO.ui.noMasterTooltip'}}">{{localize "CO.label.long.noMaster"}}</span>
         {{/if}}
-            
+
     </div>
   <h5 class="form-header companion">
     <a data-action="toggleSection">{{localize "CO.ui.companionInfos"}}</a>

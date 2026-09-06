@@ -43,11 +43,23 @@ export function updateActor(actor, updateData, options, userId) {
   if (actor.type === "encounter" && updateData?.system?.attributes?.hp?.value === 0 && !actor.statuses.has("dead")) {
     actor.toggleStatusEffect("dead", { active: true })
   }
+}
 
-  // Une rencontre a changé de master
-  if (actor.type === "encounter") {
-    if (actor.system.companion.isCompanion) {
-      actor.system.prepareDerivedData()
-    }
+/**
+ * Hook callback function `co2.companionMasterDeleted`, émis quand un Compagnon
+ * (Rencontre) perd son maitre (`EncounterData.deleteMaster()`/`toggleCompanion(false)`).
+ * Retire le compagnon délié du tableau `system.companions` de son ancien maitre.
+ *
+ * @param {string} masterUuid UUID de l'ancien maitre (Personnage)
+ * @param {string} companionUuid UUID de la Rencontre-Compagnon déliée
+ * @returns {void}
+ */
+export function companionMasterDeleted(masterUuid, companionUuid) {
+  if (!game.user.isActiveGM) return
+  const master = fromUuidSync(masterUuid)
+  if (!master || master.type !== "character") return
+  const companions = master.system.companions.filter((uuid) => uuid !== companionUuid)
+  if (companions.length !== master.system.companions.length) {
+    master.update({ "system.companions": companions })
   }
 }

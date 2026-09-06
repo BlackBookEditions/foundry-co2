@@ -533,7 +533,7 @@ export default class Utils {
    * Si le mot clef n'est pas présent, retourne undefined.
    *
    * @param {string} formula La formule à évaluer.
-   * @param {object} actor Le maitre du compagnon
+   * @param {object} actor Le maître du compagnon
    * @returns {string|undefined} La valeur extraite de master ou undefined si non trouvé.
    */
   static evaluateMasterFormula(formula, actor) {
@@ -541,7 +541,17 @@ export default class Utils {
     const rollData = actor.getRollData()
     // Remplacer TOUTES les occurrences de @master.xxx
     const processedFormula = formula.replace(/@master\.([^\s\+\-\*\/\(\)]+)/g, (match, key) => {
-      return foundry.utils.hasProperty(rollData, key) ? foundry.utils.getProperty(rollData, key) : 0
+      if (foundry.utils.hasProperty(rollData, key)) return foundry.utils.getProperty(rollData, key)
+      // Repli : la clé tapée correspond au nom du champ (ex. "init", "melee", "hp") plutôt qu'au
+      // raccourci interne de getRollData() (ex. "ini", "atc") ou n'a pas de raccourci du tout
+      // (ex. "dr", "crit") — on retente via le chemin complet system.combat.<key>/attributes.<key>.
+      if (!key.includes(".")) {
+        const combatPath = `combat.${key}.value`
+        if (foundry.utils.hasProperty(rollData, combatPath)) return foundry.utils.getProperty(rollData, combatPath)
+        const attributePath = `attributes.${key}.value`
+        if (foundry.utils.hasProperty(rollData, attributePath)) return foundry.utils.getProperty(rollData, attributePath)
+      }
+      return 0
     })
 
     // Évaluer avec Roll.safeEval

@@ -445,7 +445,7 @@
       "warningInvalidScopeTargets": "Certaines cibles sélectionnées ne sont pas valides pour cette action",
       "warningEncounterPathOnly": "Une rencontre ne peut apprendre que des voies de type rencontre.",
       "applyEffect": "{actorName} : application de {skillName} sur {targetNames}",
-      "masterNotFound": "Le maitre de cette rencontre n'a pas pu être trouvé !"
+      "masterNotFound": "Le maître de cette rencontre n'a pas pu être trouvé !"
     },
     "tooltip": {
       "formulaAttack": "Formule d'attaque (sans le dé)",
@@ -557,10 +557,12 @@
         "tactical": "Option tactique",
         "special": "Spécial",
         "heal": "Soins",
-        "master": "Maitre",
-        "masterAndCompanion": "Maitre & Compagnon",
+        "master": "Maître",
+        "masterAndCompanion": "Maître & Compagnon",
+        "noMaster": "Aucun",
+        "hasMaster": "A pour maître : ",
         "isCompanion": "Est un compagnon",
-        "isCompanionTooltip": "Activer si cette rencontre est un compagnon (ses stats dépendent du maitre)"
+        "isCompanionTooltip": "Activer si cette rencontre est un compagnon (ses stats dépendent du maître)"
       },
       "short": {
         "label": "Label",
@@ -865,7 +867,8 @@
       "sortByType": "Tri par type",
       "sortByActionType": "Trier par temps d'action",
       "save": "Sauvegarde",
-      "companionInfos": "Caractéristiques du compagnon liées à son maitre",
+      "companionInfos": "Caractéristiques du compagnon liées à son maître",
+      "noMasterTooltip": "Déposer un personnage pour qu'il devienne le maître",
       "update": "Mettre à jour"
     },
     "properties": {
