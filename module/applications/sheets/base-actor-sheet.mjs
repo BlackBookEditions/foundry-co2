@@ -150,6 +150,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     context.source = this.document.toObject()
     context.darkVisionActivation = this.document.system.hasDarkVisionActivated
     context.darkVisionShow = this.document.system.hasDarkVisionModifier
+    context.companionActivation = this.document.system.companion?.isCompanion
     context.isCharacter = this.document.type === "character"
 
     context.unlocked = this.isEditMode
@@ -874,7 +875,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     const modes = this.constructor.SHEET_MODES
     this._sheetMode = this.isEditMode ? modes.PLAY : modes.EDIT
     await this.submit()
-    this.render()
+    this.render(true)
   }
 
   /**

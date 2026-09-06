@@ -1,5 +1,6 @@
 import { SYSTEM } from "../config/system.mjs"
 import { BaseValue } from "./schemas/base-value.mjs"
+import { AbilityValue } from "./schemas/ability-value.mjs"
 import ActorData from "./actor.mjs"
 import Utils from "../helpers/utils.mjs"
 import CoChat from "../chat.mjs"
@@ -14,6 +15,13 @@ export default class CharacterData extends ActorData {
     const fields = foundry.data.fields
     const requiredInteger = { required: true, nullable: false, integer: true }
     const schema = {}
+
+    schema.abilities = new fields.SchemaField(
+      Object.values(SYSTEM.ABILITIES).reduce((obj, ability) => {
+        obj[ability.id] = new fields.EmbeddedDataField(AbilityValue, { label: ability.label, nullable: false })
+        return obj
+      }, {}),
+    )
 
     schema.attributes = new fields.SchemaField({
       movement: new fields.EmbeddedDataField(BaseValue, {
@@ -136,6 +144,9 @@ export default class CharacterData extends ActorData {
 
     // Points de capacités dépensés ailleurs que dans les capacités : pour apprendre une langue, ou éventuel point orphelin
     schema.otherCapacitiesPointsSpent = new fields.NumberField({ required: true, nullable: false, initial: 0, integer: true, min: 0 })
+
+    // UUID des Rencontres-Compagnons dont ce Personnage est le maitre
+    schema.companions = new fields.ArrayField(new fields.DocumentUUIDField({ type: "Actor" }))
 
     return foundry.utils.mergeObject(super.defineSchema(), schema)
   }

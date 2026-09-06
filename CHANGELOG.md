@@ -21,6 +21,7 @@
 ## Améliorations
 
 - Le malus d'armure peut désormais être modifié par un modificateur (ex. capacité), en plus de la valeur de base de l'armure équipée ([#342](https://github.com/BlackBookEditions/foundry-co2/issues/342))
+- Ajout du système de Compagnon. Les compagnons sont les créatures (rencontre) qui suivent un joueur et dont certaines caractéristiques sont liées à ce joueur. On parle de 'master' et de 'companion'. Cocher la case 'Est un compagnon' sur une fiche de rencontre, fera s'afficher l'onglet 'Compagnon'. Glisser déposer un joueur sur une fiche de rencontre le rendra alors 'master' et vous pourrez remplacer les caractéristiques de base de la créature par une formule comprenant des informations du maitre via le mot clef : @master. Exemple @master.agi correspondra à l'agilité du maitre. chaque valeurs de 'abilities', 'combat' ainsi que .niv (niveau du maitre) sont disponibles.
 
 # 2.3.7
 

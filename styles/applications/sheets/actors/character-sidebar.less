@@ -70,4 +70,17 @@
   input.vision-slider:not(:checked)::before {
     color: var(--co-surface);
   }
+
+  .companion-list {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 5px;
+    margin-left: 5px;
+
+    .companion-icon {
+      border-radius: 50%;
+      cursor: pointer;
+      object-fit: cover;
+    }
+  }
 }
