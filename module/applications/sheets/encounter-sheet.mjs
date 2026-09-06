@@ -308,7 +308,7 @@ export default class COEncounterSheet extends COBaseActorSheet {
       // Si on drop un acteur et que l'on est sur une fiche de rencontre de type compagnon, c'est un master !
       if (this.actor.system.companion.isCompanion) {
         if (data.uuid === null || data.uuid === undefined) {
-          console.error("L'uuid de l'acteur dropé n'est aps définie, on ne peux pas récupérer le master")
+          console.error("L'uuid de l'acteur dropé n'est pas définie, on ne peux pas récupérer le master")
           return
         }
         const dropped = await fromUuid(data.uuid)

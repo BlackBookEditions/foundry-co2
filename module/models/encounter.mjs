@@ -377,24 +377,6 @@ export default class EncounterData extends ActorData {
    * @returns ne retourne rien
    */
   async deleteMaster() {
-    if (this.companion.master === null) return
-    /*const newAbilities = {}
-    for (const [key, ability] of Object.entries(this.abilities)) {
-      newAbilities[key] = { ...ability, formula: "0" } // Copie l'objet et modifie formula
-    }
-    // Créer une NOUVELLE référence pour combat
-    const newCombat = {}
-    for (const [key, skill] of Object.entries(this.combat)) {
-      newCombat[key] = { ...skill, formula: "0" } // Copie l'objet et modifie formula
-    }
-
-    // Mettre à jour TOUTES les propriétés en UNE SEULE requête
-    await this.parent.update({
-      "system.abilities": newAbilities,
-      "system.combat": newCombat,
-      "system.attributes.hp.formula": "0",
-      "system.companion.master": null,
-    })*/
     const update = { "system.attributes.hp.formula": "0", "system.companion.master": null }
     for (const key of Object.keys(this.abilities)) update[`system.abilities.${key}.formula`] = "0"
     for (const key of Object.keys(this.combat)) update[`system.combat.${key}.formula`] = "0"
