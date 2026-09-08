@@ -1,4 +1,3 @@
-import { AbilityValue } from "./schemas/ability-value.mjs"
 import CustomEffectData from "./schemas/custom-effect.mjs"
 import Utils from "../helpers/utils.mjs"
 
@@ -8,12 +7,6 @@ export default class ActorData extends foundry.abstract.TypeDataModel {
 
     const schema = {}
 
-    schema.abilities = new fields.SchemaField(
-      Object.values(SYSTEM.ABILITIES).reduce((obj, ability) => {
-        obj[ability.id] = new fields.EmbeddedDataField(AbilityValue, { label: ability.label, nullable: false })
-        return obj
-      }, {}),
-    )
     schema.currentEffects = new fields.ArrayField(new fields.EmbeddedDataField(CustomEffectData))
     return schema
   }

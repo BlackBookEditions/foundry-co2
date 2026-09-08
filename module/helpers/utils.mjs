@@ -526,6 +526,44 @@ export default class Utils {
   }
 
   /**
+   * Evalue la formule donnée pour trouver les valeurs d'un master pour un companion.
+   *
+   * Cette fonction vérifie les formule qui contiennent le mot clef "@master".
+   * Si trouvé, On l'extrait et on cherche le "@master. correspondant".
+   * Si le mot clef n'est pas présent, retourne undefined.
+   *
+   * @param {string} formula La formule à évaluer.
+   * @param {object} actor Le maître du compagnon
+   * @returns {string|undefined} La valeur extraite de master ou undefined si non trouvé.
+   */
+  static evaluateMasterFormula(formula, actor) {
+    if (!formula.includes("@master")) return undefined
+    const rollData = actor.getRollData()
+    // Remplacer TOUTES les occurrences de @master.xxx
+    const processedFormula = formula.replace(/@master\.([^\s\+\-\*\/\(\)]+)/g, (match, key) => {
+      if (foundry.utils.hasProperty(rollData, key)) return foundry.utils.getProperty(rollData, key)
+      // Repli : la clé tapée correspond au nom du champ (ex. "init", "melee", "hp") plutôt qu'au
+      // raccourci interne de getRollData() (ex. "ini", "atc") ou n'a pas de raccourci du tout
+      // (ex. "dr", "crit") — on retente via le chemin complet system.combat.<key>/attributes.<key>.
+      if (!key.includes(".")) {
+        const combatPath = `combat.${key}.value`
+        if (foundry.utils.hasProperty(rollData, combatPath)) return foundry.utils.getProperty(rollData, combatPath)
+        const attributePath = `attributes.${key}.value`
+        if (foundry.utils.hasProperty(rollData, attributePath)) return foundry.utils.getProperty(rollData, attributePath)
+      }
+      return 0
+    })
+
+    // Évaluer avec Roll.safeEval
+    try {
+      return Roll.safeEval(processedFormula, {})
+    } catch (e) {
+      console.error(`Erreur dans la formule "${processedFormula}" :`, e)
+      return undefined
+    }
+  }
+
+  /**
    * Calcule un résultat de jet d'attaque par cible.
    *
    * @param {Array} targets Cibles acquises (format { token, actor, uuid, name }).

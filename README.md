@@ -2,10 +2,10 @@
 
 ![Cover](./ui/logo_cof.webp)
 
-<p align="center">Ce système vous permet de jouer au jeu de rôle "<em>Chroniques Oubliées</em>" sur la plateforme de jeu Foundry Virtual Tabletop.</p>
+<p align="center">Ce système vous permet de jouer au jeu de rôle "<em>Chroniques Oubliées 2e édition</em>" sur la plateforme de jeu Foundry Virtual Tabletop.</p>
 
 <p align="center">
-    <img alt="Foundry Version 13 support" src="https://img.shields.io/badge/Foundry-v13-informational">
+    <img alt="Foundry Version 14 support" src="https://img.shields.io/badge/Foundry-v14-informational">
     <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/BlackBookEditions/foundry-co2"> 
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/BlackBookEditions/foundry-co2">
     <img alt="GitHub Release Date" src="https://img.shields.io/github/release-date/BlackBookEditions/foundry-co2?label=latest%20release" /> 

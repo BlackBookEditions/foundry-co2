@@ -263,5 +263,39 @@
         </div>
       </div>
     {{/unless}}
+    {{#unless viewLimited}}
+      {{#if (or unlocked companionActivation)}}
+        <!-- MASTER -->
+        <div class="sidebar-section speed-section">
+          <div class="sidebar-section-header">
+            <div class="sidebar-label">
+              <h4>{{localize "CO.label.long.masterAndCompanion"}}</h4>
+            </div>
+          </div>
+          <div class="sidebar-section-content">
+            <div class="companion-toggle">
+              {{#if unlocked}}
+                <input
+                  type="checkbox"
+                  data-tooltip="{{localize 'CO.label.long.isCompanionTooltip'}}"
+                  data-action="toggleCompanion"
+                  name="companionActivation"
+                  {{checked companionActivation}}
+                />
+              {{/if}}
+              {{localize "CO.label.long.isCompanion"}}
+            </div>
+            {{#if hasMaster}}
+              <div class="companion-toggle">
+                {{localize "CO.label.long.hasMaster"}}
+                <a data-action="openMaster" data-tooltip="{{masterName}}">
+                  <img class="companion-icon" src="{{masterImg}}" height="32" width="32" />
+                </a>
+              </div>
+            {{/if}}
+          </div>
+        </div>
+      {{/if}}
+    {{/unless}}
   </div>
 </div>

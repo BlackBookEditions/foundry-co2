@@ -612,5 +612,26 @@
       </div>
     </div>
     {{/unless}}
+    {{#unless viewLimited}}
+      {{#if hasCompanions}}
+        <!-- MASTER AND COMPANIONS -->
+        <div class="sidebar-section speed-section">
+          <div class="sidebar-section-header">
+            <div class="sidebar-label">
+              <h4>{{localize "CO.label.long.masterAndCompanion"}}</h4>
+            </div>
+          </div>
+          <div class="sidebar-section-content">
+            <div class="companion-list">
+              {{#each companions as |companion|}}
+                <a data-action="openCompanion" data-companion-uuid="{{companion.uuid}}" data-tooltip="{{companion.name}}">
+                  <img class="companion-icon" src="{{companion.img}}" height="32" width="32" />
+                </a>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+      {{/if}}
+    {{/unless}}
   </div>
 </div>

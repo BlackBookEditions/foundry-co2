@@ -92,7 +92,6 @@ export default class COActor extends Actor {
       rollData.atd = this.system.combat.ranged.value
       rollData.atm = this.system.combat.magic.value
     }
-
     if (this.type === "encounter") {
       rollData.niv = this.system.attributes.nc
       rollData.nc = this.system.attributes.nc
