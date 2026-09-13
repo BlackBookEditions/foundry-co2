@@ -17,9 +17,13 @@ export class CORoll extends Roll {
     const isSkillRoll = roll instanceof COSkillRoll
     const isRoll = roll instanceof Roll
 
-    if (isAttackRoll || isSkillRoll || isRoll) {
+    // terms[0] n'est un dé (avec "results") que pour un jet de d20 direct : un jet de dommages/soins
+    // peut commencer par un ParentheticalTerm (formule entre parenthèses, ex: options tactiques), qui n'en a pas
+    const diceTerm = roll.terms[0]
+
+    if ((isAttackRoll || isSkillRoll || isRoll) && diceTerm?.results) {
       // On récupère le résultat du dé conservé
-      const diceResult = roll.terms[0].results.find((r) => r.active).result
+      const diceResult = diceTerm.results.find((r) => r.active).result
       const total = Math.ceil(roll.total)
       const isCritical = diceResult >= roll.options.critical
       const luckyPointUsed = roll.options?.luckyPointUsed || false

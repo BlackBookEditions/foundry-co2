@@ -7,6 +7,12 @@
   Ce fichier est destiné aux joueuses et joueurs : il complète le CHANGELOG.md, qui reste le  journal exhaustif et technique.
 -->
 
+# 2.3.10
+
+## Corrections
+
+- Correction du bug des options tactiques qui ne généraient aucun jet de dés
+
 # 2.3.9
 
 ## Améliorations
