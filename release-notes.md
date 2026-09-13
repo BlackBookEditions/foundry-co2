@@ -7,6 +7,12 @@
   Ce fichier est destiné aux joueuses et joueurs : il complète le CHANGELOG.md, qui reste le  journal exhaustif et technique.
 -->
 
+# 2.3.9
+
+## Améliorations
+
+- Ajout de la notion de compagnon
+
 # 2.3.8
 
 ## Corrections
