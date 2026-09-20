@@ -3,6 +3,7 @@ import { BaseValue } from "./schemas/base-value.mjs"
 import { AbilityValue } from "./schemas/ability-value.mjs"
 import ActorData from "./actor.mjs"
 import Utils from "../helpers/utils.mjs"
+import { computeProfileHp } from "../helpers/hp-rules.mjs"
 import CoChat from "../chat.mjs"
 
 import DefaultConfiguration from "../config/configuration.mjs"
@@ -394,22 +395,27 @@ export default class CharacterData extends ActorData {
       // Calcul de la base de PV sans le bonus de constitution
       // Au niveau 1 : 2 * PV de la famille
       // Pour chaque niveau supplémentaire : + PV de la famille
-      // Point d'extension : un module (ex. cof2-compagnon / profil Psionique) peut surcharger les PV/niveau du profil
       const pvData = { profile: this.profile, value: SYSTEM.FAMILIES[this.profile?.system.family]?.hp ?? 0 }
-      Hooks.callAll("co2.computeProfileHpPerLevel", this.parent, pvData)
-      const pvFromFamily = pvData.value
-      this.attributes.hp.base = 2 * pvFromFamily + (this.attributes.level - 1) * pvFromFamily
 
-      // Si une voie de prestige offre des PV/rang appris il faut les ajouter ici
-      let currentprestige = this.parent.paths.find((item) => item.system.subtype === SYSTEM.PATH_TYPES.prestige.id)
-      let currentprestigePV = 0
-      if (currentprestige && currentprestige.system.pvByLevel > 0) {
-        let nombreAppris = currentprestige.system.numberLearnedCapacities
-        currentprestigePV = currentprestige.system.pvByLevel * nombreAppris
-      }
+      // Point d'extension : un module (ex. cof2-compagnon / profil Psionique) peut surcharger les PV/niveau du profil
+      Hooks.callAll("co2.computeProfileHpPerLevel", this.parent, pvData)
+
+      const pvFromFamily = pvData.value
+
+      // Une voie de prestige octroie sa propre vigueur, qui remplace celle du profil au niveau où l'on choisit une de ses capacités
+      const currentprestige = this.parent.paths.find((item) => item.system.subtype === SYSTEM.PATH_TYPES.prestige.id)
+      const pvPrestige = currentprestige?.system.pvByLevel ?? 0
+      const { base, prestige: currentprestigePV } = computeProfileHp({
+        level: this.attributes.level,
+        pvFromFamily,
+        pvPrestige,
+        learnedPrestige: pvPrestige > 0 ? currentprestige.system.numberLearnedCapacities : 0,
+      })
+      this.attributes.hp.base = base
 
       this.attributes.hp.max = this.attributes.hp.base + constitutionBonus + hpMaxBonuses + hpMaxModifiers.total + currentprestigePV
       this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat(
+        Utils.getTooltip(currentprestige?.name ?? "", currentprestigePV),
         Utils.getTooltip(Utils.getAbilityName("con"), constitutionBonus),
         hpMaxModifiers.tooltip,
         Utils.getTooltip("Bonus", hpMaxBonuses),
@@ -417,6 +423,7 @@ export default class CharacterData extends ActorData {
     }
     // Profil hybride
     else if (nbProfiles > 1) {
+      // La base est saisie à la main : la vigueur d'une éventuelle voie de prestige n'est volontairement pas calculée ici, elle se saisit dans la base
       const tooltipBase = Utils.getTooltip("Base", this.attributes.hp.base)
 
       this.attributes.hp.max = this.attributes.hp.base + constitutionBonus + hpMaxBonuses + hpMaxModifiers.total

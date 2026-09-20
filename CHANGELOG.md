@@ -1,3 +1,9 @@
+# 2.3.11
+
+## Corrections
+
+- La vigueur d'une voie de prestige (lycanthrope, sang-dragon, guerrier-mage, familier fantastique) remplace désormais celle du profil au niveau où l'on choisit une de ses capacités, au lieu de s'y ajouter. Elle figure aussi dans l'infobulle des PV max, dont le détail ne correspondait pas au total affiché.
+
 # 2.3.10
 
 ## Corrections
