@@ -1,3 +1,12 @@
+# 2.3.12
+
+## Corrections et améliorations
+
+- Les attaques de rencontre affichent leur score effectif sur la fiche et dans la formule du dialogue. Les contributions automatiques ne remplissent plus les champs de bonus et malus ponctuels.
+- Une attaque utilisant `@atc`, `@atd` ou le chemin complet du score ne reçoit plus une seconde fois le même score. Les attaques à score fixe conservent leurs ajustements automatiques, y compris ceux des compagnons.
+- Le fonctionnement magique des rencontres est conservé : `@atm` représente toujours VOL + NC (sans contribution du NC lorsqu'il vaut 0,5), auquel s'ajoute l'ajustement magique de la rencontre.
+- Les formules de compagnon vides, invalides ou dépendantes d'un maître introuvable conservent la base saisie. Désactiver le compagnon restaure ses bases. Un champ vide conserve la base saisie ; un `0` permet une base réellement nulle.
+
 # 2.3.11
 
 ## Corrections

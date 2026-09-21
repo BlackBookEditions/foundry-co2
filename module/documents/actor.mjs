@@ -2111,6 +2111,7 @@ export default class COActor extends Actor {
       showDifficulty = undefined,
       withDialog = true,
       skillFormula = undefined,
+      skillFormulaSource = undefined,
       skillFormulaTooltip = "",
       damageFormula = undefined,
       damageFormulaTooltip = "",
@@ -2145,6 +2146,7 @@ export default class COActor extends Actor {
       showDifficulty,
       withDialog,
       skillFormula,
+      skillFormulaSource,
       skillFormulaTooltip,
       damageFormula,
       damageFormulaTooltip,
@@ -2347,20 +2349,16 @@ export default class COActor extends Actor {
     // Construction du message de chat
     if (chatFlavor === "") chatFlavor = `${item.name} ${actionName}`
 
-    // Si l'actor est un encounter je dois prendre en comtpe en skillBonus ou skillMalus les modifiers qui lui sont apportés
-    if (this.type === "encounter") {
-      if (item.type === "attack") {
-        if (item.system.isContact) {
-          if (this.system.combat.melee.value > 0) skillBonus += this.system.combat.melee.value
-          else if (this.system.combat.melee.value < 0) skillMalus += this.system.combat.melee.value
-        } else if (item.system.isRanged) {
-          if (this.system.combat.ranged.value > 0) skillBonus += this.system.combat.ranged.value
-          else if (this.system.combat.ranged.value < 0) skillMalus += this.system.combat.ranged.value
-        } else if (item.system.isMagic) {
-          if (this.system.combat.magic.value > 0) skillBonus += this.system.combat.magic.value
-          else if (this.system.combat.magic.value < 0) skillMalus += this.system.combat.magic.value
-        }
-      }
+    // Intégrer le score automatique à la formule, une seule fois. Les champs
+    // bonus/malus restent disponibles pour les ajustements ponctuels du jet.
+    if (this.type === "encounter" && item.type === "attack") {
+      const attack = Utils.prepareEncounterAttack(this, item, {
+        formula: originalSkillFormula || skillFormula || "0",
+        expandedFormula: skillFormulaSource,
+        resolvedFormula: skillFormula,
+      })
+      skillFormula = attack.formula
+      skillFormulaTooltip = attack.tooltip
     }
 
     let opposeResult = ""

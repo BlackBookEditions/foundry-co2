@@ -3,6 +3,7 @@ import { CompanionCombatValue, CompanionAbilityValue } from "./schemas/companion
 import { BaseValue } from "./schemas/base-value.mjs"
 import ActorData from "./actor.mjs"
 import Utils from "../helpers/utils.mjs"
+import { resolveCompanionFormula } from "../helpers/companion-formula.mjs"
 
 export default class EncounterData extends ActorData {
   static defineSchema() {
@@ -45,7 +46,7 @@ export default class EncounterData extends ActorData {
             sheet: new fields.NumberField({ ...requiredInteger, initial: 0 }),
             effects: new fields.NumberField({ ...requiredInteger, initial: 0 }),
           }),
-          formula: new foundry.data.fields.StringField({ required: true, nullable: false, initial: "0" }), // pour les compagnon, cas de PV = 5 * niv du maître
+          formula: new foundry.data.fields.StringField({ required: true, nullable: false, initial: "" }),
         },
         { label: "CO.label.long.hp", nullable: false },
       ),
@@ -110,6 +111,7 @@ export default class EncounterData extends ActorData {
     schema.companion = new fields.SchemaField({
       isCompanion: new fields.BooleanField({ initial: false }),
       master: new fields.DocumentUUIDField({ type: "Actor" }),
+      rank: new fields.NumberField({ required: true, nullable: false, initial: 0, integer: true, min: 0 }),
     })
 
     return foundry.utils.mergeObject(super.defineSchema(), schema)
@@ -162,6 +164,7 @@ export default class EncounterData extends ActorData {
 
   prepareDerivedData() {
     super.prepareDerivedData()
+    this.companionFormulaErrors = []
 
     this._prepareAbilities()
 
@@ -177,29 +180,24 @@ export default class EncounterData extends ActorData {
       // Somme du bonus de la feuille et du bonus des effets
       const bonuses = Object.values(skill.bonuses).reduce((prev, curr) => prev + curr)
       const combatModifiersBonus = this.computeTotalModifiersByTarget(this.combatModifiers, key)
-      const companionValue = this._resolveFormula(skill.formula) //0 si il n'est pas un companion
+      const companionValue = this._resolveFormula(skill.formula)
       if (key !== SYSTEM.COMBAT.crit.id) {
-        if (!skill.formula?.trim() || skill.formula !== "0") skill.base = companionValue
-        skill.value = skill.base + bonuses + combatModifiersBonus.total
+        const base = companionValue ?? skill.base
+        skill.value = base + bonuses + combatModifiersBonus.total
+        skill.tooltipValue = Utils.getTooltip(companionValue === undefined ? "Base" : "Compagnon", base).concat(Utils.getTooltip("Bonus", bonuses), combatModifiersBonus.tooltip)
       }
 
       if (key === SYSTEM.COMBAT.crit.id) {
-        this.combat.crit.base = SYSTEM.BASE_CRITICAL
-
-        // Si il s'agit d'un compagnon sa valeude critique peux potentiellement être liée à son maître
-        if (this.companion.isCompanion) {
-          const compagnonValue = this._resolveFormula(this.combat.crit.formula)
-          this.combat.crit.base = compagnonValue != 0 ? compagnonValue : SYSTEM.BASE_CRITICAL
-        }
+        const base = companionValue ?? SYSTEM.BASE_CRITICAL
 
         // Somme des bonus des modifiers
         const critModifiers = this.computeTotalModifiersByTarget(this.combatModifiers, SYSTEM.COMBAT.crit.id)
 
         if (critModifiers.total > 0) {
-          this.combat.crit.value = Math.max(16, this.combat.crit.base - critModifiers.total)
+          this.combat.crit.value = Math.max(16, base - critModifiers.total)
           this.combat.crit.tooltipValue = Utils.getTooltip("Bonus", critModifiers.total)
         } else {
-          this.combat.crit.value = this.combat.crit.base
+          this.combat.crit.value = base
         }
       }
     }
@@ -230,11 +228,13 @@ export default class EncounterData extends ActorData {
         }
       }
       ability.modifiers = abilityModifiers.total
-      const companionValue = this._resolveFormula(ability.formula) //0 si il n'est pas un companion
-      if (!ability.formula?.trim() || ability.formula !== "0") ability.base = companionValue // la formula contient "0" par defaut si on a autre chose c'est que l'on a configuré la formula.
-      ability.value = ability.base + bonuses + ability.modifiers
-      ability.tooltipValue = Utils.getTooltip(Utils.getAbilityName(key), ability.base).concat(abilityModifiers.tooltip, Utils.getTooltip("Bonus", bonuses))
-      if (this.companion.isCompanion) ability.tooltipValue = ability.tooltipValue.concat(Utils.getTooltip("Compagnon", companionValue))
+      const companionValue = this._resolveFormula(ability.formula)
+      const base = companionValue ?? ability.base
+      ability.value = base + bonuses + ability.modifiers
+      ability.tooltipValue = Utils.getTooltip(companionValue === undefined ? Utils.getAbilityName(key) : "Compagnon", base).concat(
+        abilityModifiers.tooltip,
+        Utils.getTooltip("Bonus", bonuses),
+      )
     }
 
     this.magic = this.abilities.vol.value + (this.attributes.nc === 0.5 ? 0 : this.attributes.nc)
@@ -243,12 +243,11 @@ export default class EncounterData extends ActorData {
   _prepareHPMax() {
     const hpMaxBonuses = Object.values(this.attributes.hp.bonuses).reduce((prev, curr) => prev + curr)
     const hpMaxModifiers = this.computeTotalModifiersByTarget(this.attributeModifiers, "hp")
-    const companionValue = this._resolveFormula(this.attributes.hp.formula) //0 si il n'est pas un companion
-    if (!this.attributes.hp.formula?.trim() || this.attributes.hp.formula !== "0") this.attributes.hp.base = companionValue // la formula contient "0" par defaut si on a autre chose c'est que l'on a configuré la formula.
-    this.attributes.hp.max = this.attributes.hp.base + hpMaxBonuses + hpMaxModifiers.total
+    const companionValue = this._resolveFormula(this.attributes.hp.formula)
+    const base = companionValue ?? this.attributes.hp.base
+    this.attributes.hp.max = base + hpMaxBonuses + hpMaxModifiers.total
     this.attributes.hp.value = Math.min(this.attributes.hp.max, this.attributes.hp.value)
-    this.attributes.hp.tooltip = Utils.getTooltip("Base ", this.attributes.hp.base).concat(Utils.getTooltip("Bonus", hpMaxBonuses))
-    if (this.companion.isCompanion) this.attributes.hp.tooltip = this.attributes.hp.tooltip.concat(Utils.getTooltip("Compagnon", companionValue))
+    this.attributes.hp.tooltip = Utils.getTooltip(companionValue === undefined ? "Base" : "Compagnon", base).concat(Utils.getTooltip("Bonus", hpMaxBonuses), hpMaxModifiers.tooltip)
   }
 
   // #region accesseurs
@@ -360,8 +359,8 @@ export default class EncounterData extends ActorData {
    */
   async toggleCompanion(active) {
     // On (dés)active l'onglet. En désactivant on délie aussi le maître (pas de sens à le garder
-    // sans l'onglet pour le gérer), mais les formules restent en l'état : elles retombent à 0
-    // tant qu'aucun maître n'est défini, et redeviennent actives sans ressaisie si on recoche
+    // sans l'onglet pour le gérer), mais les formules restent en l'état : les bases saisies
+    // sont restaurées, et les formules redeviennent actives sans ressaisie si on recoche
     // la case et redépose un maître.
     const masterUuid = this.companion.master
     const update = { "system.companion.isCompanion": active }
@@ -371,8 +370,8 @@ export default class EncounterData extends ActorData {
   }
 
   /**
-   * Délie le maître du compagnon, sans toucher aux formules (elles retombent à 0
-   * tant qu'aucun maître n'est défini, et redeviennent actives dès qu'un nouveau
+   * Délie le maître du compagnon, sans toucher aux formules (celles qui en dépendent
+   * laissent place aux bases saisies, et redeviennent actives dès qu'un nouveau
    * maître est déposé, sans ressaisie de la part du GM). Notifie l'ancien maître
    * via le hook `co2.companionMasterDeleted` pour qu'il se retire de son tableau
    * `system.companions`.
@@ -387,22 +386,23 @@ export default class EncounterData extends ActorData {
   /**
    * Permet de remplacer des variables d'une formule de compagnon par leur valeur
    * @param {String} formula
-   * @returns {Number} la valeur calculée
+   * @returns {Number|undefined} La valeur calculée, ou aucune substitution.
    */
   _resolveFormula(formula) {
-    const numeric = Number(formula)
-    if (!Number.isNaN(numeric)) return numeric // Si on a "0" ou une valeur sans formule on retourne directement la valeur
-    //Ajout du master
-    if (this.companion.isCompanion && this.companion.master) {
-      const master = fromUuidSync(this.companion.master)
-      if (master && master instanceof Actor) {
-        const evaluated = Utils.evaluateMasterFormula(formula, master)
-        if (evaluated !== undefined) return Number(evaluated)
-        else return 0
-      } else {
-        ui.notifications.warn(game.i18n.localize("CO.notif.masterNotFound"))
-        return 0
-      }
-    } else return 0
+    if (!this.companion.isCompanion || !formula?.trim()) return undefined
+    try {
+      const master = formula.includes("@master.") && this.companion.master ? fromUuidSync(this.companion.master) : null
+      return resolveCompanionFormula({
+        formula,
+        active: true,
+        masterData: master instanceof Actor ? master.getRollData() : undefined,
+        companionData: { rank: this.companion.rank },
+        evaluate: (expression) => Roll.safeEval(expression),
+      })
+    } catch {
+      const message = game.i18n.format("CO.ui.companionFormulaError", { formula })
+      if (!this.companionFormulaErrors.includes(message)) this.companionFormulaErrors.push(message)
+      return undefined
+    }
   }
 }

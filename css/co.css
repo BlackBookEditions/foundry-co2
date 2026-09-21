@@ -275,6 +275,10 @@ a.roll-check-enricher i {
 a.roll-check-enricher:hover {
   text-decoration: underline;
 }
+#tooltip.co2-encounter-attack-tooltip,
+.locked-tooltip.co2-encounter-attack-tooltip {
+  max-width: 480px;
+}
 .co prose-mirror,
 .co .prosemirror {
   flex: 1;
@@ -1198,6 +1202,9 @@ a.roll-check-enricher:hover {
 .co.application.dialog.attack-roll .window-content .form-group.rollMode .form-fields,
 .co.application.dialog.attack-roll .window-content .form-group.rollMode select {
   width: 100%;
+}
+.co.application.dialog.attack-roll .window-content .form-group.rollMode select {
+  min-width: 280px;
 }
 .co.application.dialog.attack-roll .window-content .form-fields-radio {
   display: flex;
@@ -3487,6 +3494,19 @@ a.roll-check-enricher:hover {
   gap: 16px;
   /* Espace entre les colonnes */
   margin: 10px;
+}
+.co.application.sheet.actor.encounter .window-content .tab.companion input.companion-rank {
+  flex: 0 0 50px;
+  width: 50px;
+}
+.co.application.sheet.actor.encounter .window-content .tab.companion .companion-rank-group {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  width: fit-content;
+}
+.co.application.sheet.actor.encounter .window-content .tab.companion .companion-rank-group label {
+  flex: 0 0 auto;
 }
 .co.application.sheet.actor.encounter .window-content .panel-left {
   flex: 1;

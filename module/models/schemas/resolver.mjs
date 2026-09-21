@@ -81,10 +81,7 @@ export class Resolver extends foundry.abstract.DataModel {
   }
 
   hasOptionalTargets() {
-    return (
-      this.target.type === SYSTEM.RESOLVER_TARGET.none.id ||
-      (this.target.type === SYSTEM.RESOLVER_TARGET.single.id && (!this.target.number || this.target.number === "0"))
-    )
+    return this.target.type === SYSTEM.RESOLVER_TARGET.none.id || (this.target.type === SYSTEM.RESOLVER_TARGET.single.id && (!this.target.number || this.target.number === "0"))
   }
 
   getOptionalTargetCount() {
@@ -188,6 +185,7 @@ export class Resolver extends foundry.abstract.DataModel {
       actionType: action.type,
       chatFlavor: action.chatFlavor,
       skillFormula: skillFormulaEvaluated,
+      skillFormulaSource: skillFormula,
       damageFormula: damageFormulaEvaluated,
       skillFormulaTooltip,
       damageFormulaTooltip,

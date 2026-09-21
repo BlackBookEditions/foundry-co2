@@ -20,11 +20,18 @@
                 <span class="target-name" data-tooltip="{{localize 'CO.ui.noMasterTooltip'}}">{{localize "CO.label.long.noMaster"}}</span>
         {{/if}}
 
-    </div>
+  </div>
   <h5 class="form-header companion">
-    <a data-action="toggleSection">{{localize "CO.ui.companionInfos"}}</a>
+    <a data-action="toggleSection" data-tooltip="{{localize 'CO.ui.companionFormulaHint'}}">{{localize "CO.ui.companionInfos"}}</a>
   </h5>
   <div class="modifiers-container foldable">
+     <div class="form-group companion-rank-group">
+       <label>{{localize "CO.ui.companionRank"}}</label>
+       <input class="companion-rank" type="number" name="system.companion.rank" value="{{system.companion.rank}}" min="0" step="1" data-dtype="Number" {{#unless unlocked}}readonly{{/unless}} />
+     </div>
+     {{#each system.companionFormulaErrors}}
+       <p class="notification warning">{{this}}</p>
+     {{/each}}
      <section class="half-panel">
             <section class="panel-left">
                 {{#each system.abilities as |a id|}}

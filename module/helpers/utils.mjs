@@ -1,7 +1,38 @@
 import { SYSTEM } from "../config/system.mjs"
 import { findAutomaticCriticalStatus } from "./status-rules.mjs"
+import { prepareEncounterAttack } from "./encounter-attack.mjs"
 
 export default class Utils {
+  /** Score effectif commun à l'aperçu de la rencontre et au dialogue de jet. */
+  static prepareEncounterAttack(actor, item, { formula = "0", expandedFormula, resolvedFormula } = {}) {
+    const expanded = expandedFormula ?? this.evaluateFormulaCustomValues(actor, formula, item.uuid)
+    const resolved = resolvedFormula ?? Roll.replaceFormulaData(expanded, actor.getRollData())
+    const combatKey = item.system.isContact ? "melee" : item.system.isRanged ? "ranged" : item.system.isMagic ? "magic" : undefined
+    const result = prepareEncounterAttack({
+      formula: expanded,
+      resolvedFormula: resolved,
+      combatKey,
+      combatValue: actor.system.combat[combatKey]?.value ?? 0,
+      evaluate: (expression) => {
+        try {
+          const roll = new Roll(expression)
+          return roll.isDeterministic ? roll.evaluateSync().total : undefined
+        } catch {
+          return undefined
+        }
+      },
+    })
+    // Les formules sont du texte utilisateur, même dans une infobulle HTML.
+    const escape = (value) => foundry.utils.escapeHTML(String(value))
+    const originalFormula = String(formula).trim() || "0"
+    result.tooltip =
+      originalFormula === result.resolvedFormula
+        ? `${game.i18n.localize("CO.ui.encounterAttackBase")} : ${escape(result.resolvedFormula)}`
+        : `${game.i18n.localize("CO.ui.encounterAttackFormula")} : ${escape(originalFormula)} → ${escape(result.resolvedFormula)}`
+    if (result.adjustment !== 0) result.tooltip += `<br>${game.i18n.localize("CO.ui.encounterAttackAdjustment")} : ${result.adjustment > 0 ? "+" : ""}${result.adjustment}`
+    return result
+  }
+
   /**
    * Generates a tooltip string based on the provided name and value.
    *

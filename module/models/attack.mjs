@@ -1,6 +1,7 @@
 import ItemData from "./item.mjs"
 import { BaseValue } from "./schemas/base-value.mjs"
 import { Action } from "./schemas/action.mjs"
+import Utils from "../helpers/utils.mjs"
 export default class AttackData extends ItemData {
   static defineSchema() {
     const fields = foundry.data.fields
@@ -77,6 +78,7 @@ export default class AttackData extends ItemData {
     let attack = ""
     let damage = ""
     let source = ""
+    let attackTooltip = ""
     let actions = this.actions
     if (actions.length > 0) {
       let action = actions[0]
@@ -84,9 +86,14 @@ export default class AttackData extends ItemData {
         let resolver = action.resolvers[0]
         attack = `${resolver?.skill?.formula}`
         damage = `${resolver?.dmg?.formula}`
+        if (this.parent.actor?.type === "encounter" && resolver?.skill) {
+          const prepared = Utils.prepareEncounterAttack(this.parent.actor, this.parent, { formula: resolver.skill.formula })
+          attack = prepared.display
+          attackTooltip = prepared.tooltip
+        }
       }
       source = action.source
     }
-    return { attack, damage, source }
+    return { attack, damage, source, attackTooltip }
   }
 }

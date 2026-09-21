@@ -36,7 +36,7 @@
                                 </span>
                                 {{#if (and attack.system.isReloadable attack.system.hasCharges)}}<span data-tooltip="{{localize "CO.ui.remainingQuantity"}}" data-tooltip-direction="UP">({{attack.system.charges.current}})</span>{{/if}}
                                 {{#if attack.system.hasRange}} ({{attack.system.range.value}} {{attack.system.range.unit}}){{/if}}
-                                {{attack.system.displayValues.attack}} <strong>  DM </strong>{{attack.system.displayValues.damage}}
+                                <span data-tooltip="{{attack.system.displayValues.attackTooltip}}" data-tooltip-class="co2-encounter-attack-tooltip">{{attack.system.displayValues.attack}}</span> <strong>  DM </strong>{{attack.system.displayValues.damage}}
                             </h4>
                             <div class="attack-controls controls">
                                 <a class="chat" data-action="sendToChat" data-chat-type="item" data-tooltip="{{localize 'CO.label.long.sendToChat'}}"
@@ -52,7 +52,7 @@
                                 <div class="attacks sub-section">
                                     <button type="button" class="btn attack-button toggle-action"
                                         data-action="toggleAction" data-action-type="activate" data-type="attack" data-source="{{attack.uuid}}"
-                                        data-indice="0">{{localize "CO.label.long.attack"}}
+                                        data-indice="0" data-tooltip="{{attack.system.displayValues.attackTooltip}}" data-tooltip-class="co2-encounter-attack-tooltip">{{localize "CO.label.long.attack"}}
                                         {{attack.system.displayValues.attack}}</button>
                                 </div>
                                 <div class="damage sub-section">

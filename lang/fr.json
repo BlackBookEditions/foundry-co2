@@ -868,6 +868,12 @@
       "sortByActionType": "Trier par temps d'action",
       "save": "Sauvegarde",
       "companionInfos": "Caractéristiques du compagnon liées à son maître",
+      "companionFormulaHint": "Une formule remplace la base saisie : @master.niv, @master.atm, @companion.rank, 13 + @companion.rank… Laisser vide pour conserver la base ; saisir 0 pour une base nulle. Les formules sont ignorées lorsque le compagnon est désactivé.",
+      "companionRank": "Rang de voie",
+      "companionFormulaError": "Formule « {formula} » invalide ou donnée du maître indisponible : la base saisie est conservée.",
+      "encounterAttackAdjustment": "Ajustement de la rencontre (compagnon, bonus et modificateurs)",
+      "encounterAttackBase": "Attaque de base",
+      "encounterAttackFormula": "Formule d'attaque",
       "noMasterTooltip": "Déposer un personnage pour qu'il devienne le maître",
       "update": "Mettre à jour"
     },

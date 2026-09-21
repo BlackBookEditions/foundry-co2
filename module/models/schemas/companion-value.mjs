@@ -4,7 +4,7 @@ import { BaseValue } from "./base-value.mjs"
 export class CompanionAbilityValue extends AbilityValue {
   static defineSchema() {
     const schema = super.defineSchema()
-    schema.formula = new foundry.data.fields.StringField({ required: true, nullable: false, initial: "0" })
+    schema.formula = new foundry.data.fields.StringField({ required: true, nullable: false, initial: "" })
     return schema
   }
 }
@@ -12,7 +12,7 @@ export class CompanionAbilityValue extends AbilityValue {
 export class CompanionCombatValue extends BaseValue {
   static defineSchema() {
     const schema = super.defineSchema()
-    schema.formula = new foundry.data.fields.StringField({ required: true, nullable: false, initial: "0" })
+    schema.formula = new foundry.data.fields.StringField({ required: true, nullable: false, initial: "" })
     return schema
   }
 }
