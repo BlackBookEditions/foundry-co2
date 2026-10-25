@@ -146,25 +146,14 @@ export default class CoChat {
       dataMessage.flags = this.flags
     }
 
-    // If the whisper has not been defined, set the whisper and blind parameters according to the player roll mode settings
-    if (this.whisper === null) {
-      switch (game.settings.get("core", "messageMode") ) {
-        case "gmroll":
-          dataMessage.whisper = ChatMessage.getWhisperRecipients("GM").map((u) => u.id)
-          break
-        case "blindroll":
-          dataMessage.whisper = ChatMessage.getWhisperRecipients("GM").map((u) => u.id)
-          dataMessage.blind = true
-          break
-        case "selfroll":
-          dataMessage.whisper = [game.user.id]
-          break
-      }
-    } else dataMessage.whisper = this.whisper
+    // If the whisper has not been defined, let the core apply the player's message visibility mode (whisper and blind)
+    const createOptions = {}
+    if (this.whisper === null) createOptions.messageMode = game.settings.get("core", "messageMode")
+    else dataMessage.whisper = this.whisper
 
     // Create the chat
     const cls = getDocumentClass("ChatMessage")
-    this.chat = await cls.create(dataMessage)
+    this.chat = await cls.create(dataMessage, createOptions)
     return this
   }
 

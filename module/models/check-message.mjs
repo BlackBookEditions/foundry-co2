@@ -61,7 +61,7 @@ export default class CheckMessageData extends BaseMessageData {
         options.skills = skills
       }
       if (isSecret) {
-        options.rollMode = "gmroll"
+        options.rollMode = "gm"
       }
 
       // If there are damage formulas or statuses, we need to get the roll result
