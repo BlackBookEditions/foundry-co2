@@ -23,6 +23,32 @@
 
   .sheet-tabs {
     margin-top: 8px;
+
+    // Tri de l'inventaire : le bouton suit son onglet dans la navigation et se pose sur sa case, à droite du nom
+    [data-tab]:has(+ .inventory-sort) {
+      padding-right: 28px;
+    }
+
+    .inventory-sort {
+      align-self: center;
+      cursor: pointer;
+      flex: none;
+      line-height: 1;
+      margin: 0 8px 0 -22px;
+      opacity: 0.6;
+      text-align: center;
+      width: 14px;
+      z-index: 1;
+
+      &:hover,
+      &.active {
+        opacity: 1;
+      }
+    }
+
+    [data-tab].active + .inventory-sort {
+      color: var(--co-surface);
+    }
   }
 
   .tab.active {

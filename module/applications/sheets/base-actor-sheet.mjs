@@ -4,6 +4,7 @@ const { DragDrop } = foundry.applications.ux
 
 import { SYSTEM } from "../../config/system.mjs"
 import Utils from "../../helpers/utils.mjs"
+import { INVENTORY_SORTINGS, getInventorySorting, nextInventorySorting, applyInventorySorting } from "../../helpers/inventory-sorting.mjs"
 import slideToggle from "../../elements/slide-toggle.mjs"
 
 export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.ActorSheetV2) {
@@ -49,6 +50,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
       sortActionsByRank: COBaseActorSheet.#onSortActionsByRank,
       sortActionsByType: COBaseActorSheet.#onSortActionsByType,
       sortActionsByActionType: COBaseActorSheet.#onSortActionsByActionType,
+      sortInventory: COBaseActorSheet.#onSortInventory,
       shareImage: COBaseActorSheet.#onShareImage,
     },
   }
@@ -61,6 +63,15 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
 
   // The selected sorting of actions : byName, byType, byActionType
   actionsSorting = "default"
+
+  /**
+   * Tri d'affichage de l'inventaire : ordre manuel, de A à Z ou de Z à A.
+   * Il est mémorisé par acteur dans le navigateur, comme l'état déplié des sections.
+   * @type {{id: string, icon: string, tooltip: string}}
+   */
+  get inventorySorting() {
+    return getInventorySorting(Utils.getInventorySortingState(`co-${this.document.id}-inventory-sorting`))
+  }
 
   /**
    * Is the sheet currently in 'Play' mode?
@@ -108,6 +119,9 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
 
     // Set toggle state and add status class to frame
     this._renderModeToggle(this.element)
+
+    // Bouton de tri de l'inventaire, sur son onglet
+    this._renderInventorySort(this.element)
 
     // Add onChange handler
     const selectSize = this.element.querySelector('select[data-action="sizeChange"]')
@@ -231,6 +245,9 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
       container.expanded = Utils.getExpandedState(`co-${this.document.id}-container-${container.id}`, false)
     }
     context.containersExpanded = Utils.getExpandedState(`co-${this.document.id}-containers`)
+
+    // Tri d'affichage de l'inventaire et des contenants : l'ordre manuel (champ sort des objets) n'est pas modifié
+    applyInventorySorting(context, this.inventorySorting.id, game.i18n.lang)
 
     context.currenciesExpanded = Utils.getExpandedState(`co-${this.document.id}-currencies`)
 
@@ -564,6 +581,17 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
   }
 
   /**
+   * Réordonne par glisser-déposer un objet de l'acteur parmi ses voisins.
+   * Tant que l'inventaire est affiché trié par nom, l'ordre manuel des équipements et des contenants n'est pas visible : le dépôt ne le modifie pas.
+   * @override
+   */
+  _onSortItem(event, item) {
+    const isInventoryItem = [SYSTEM.ITEM_TYPE.equipment.id, SYSTEM.ITEM_TYPE.container.id].includes(item.type)
+    if (isInventoryItem && this.inventorySorting !== INVENTORY_SORTINGS.default) return
+    return super._onSortItem(event, item)
+  }
+
+  /**
    * Si l'événement de drop cible la ligne (ou la sous-liste) d'un contenant, retourne son UUID.
    * @param {DragEvent} event
    * @returns {string|null}
@@ -853,6 +881,19 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
   }
 
   /**
+   * Passe au tri suivant de l'inventaire (ordre manuel, de A à Z, de Z à A) et le mémorise pour cet acteur.
+   * Le bouton étant posé sur l'onglet de l'inventaire, le clic affiche aussi cet onglet.
+   * @param {PointerEvent} event The originating click event
+   * @param {HTMLElement} target The capturing HTML element which defined a [data-action]
+   */
+  static #onSortInventory(event, target) {
+    event.preventDefault()
+    Utils.setInventorySortingState(`co-${this.document.id}-inventory-sorting`, nextInventorySorting(this.inventorySorting.id))
+    this.changeTab(target.dataset.inventoryTab, "primary")
+    this.render()
+  }
+
+  /**
    * Affiche l'image de l'acteur dans un popout partagé.
    * @param {PointerEvent} event The originating click event
    * @param {HTMLElement} target The capturing HTML element which defined a [data-action]
@@ -901,6 +942,32 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     } else if (!this.isEditable && toggle) {
       toggle.remove()
     }
+  }
+
+  /**
+   * Pose le bouton de tri de l'inventaire sur son onglet, à droite du nom : onglet Inventaire d'un personnage, onglet Butin d'une rencontre.
+   * Le bouton est un voisin de l'onglet et non un de ses enfants : un clic sur le bouton n'est pas un clic sur l'onglet.
+   * @param {HTMLElement} element
+   * @protected
+   */
+  _renderInventorySort(element) {
+    element.querySelector(".sheet-tabs .inventory-sort")?.remove()
+    const tab = element.querySelector('.sheet-tabs [data-group="primary"]:is([data-tab="inventory"], [data-tab="loot"])')
+    if (!tab) return
+    const sorting = this.inventorySorting
+    const button = document.createElement("span")
+    button.classList.add("inventory-sort")
+    button.classList.toggle("active", sorting !== INVENTORY_SORTINGS.default)
+    button.setAttribute("role", "button")
+    button.setAttribute("aria-label", game.i18n.localize(sorting.tooltip))
+    button.dataset.action = "sortInventory"
+    button.dataset.inventoryTab = tab.dataset.tab
+    button.dataset.tooltip = sorting.tooltip
+    button.dataset.tooltipDirection = "UP"
+    const icon = document.createElement("i")
+    icon.classList.add("fa-solid", sorting.icon)
+    button.append(icon)
+    tab.after(button)
   }
 
   // #endregion

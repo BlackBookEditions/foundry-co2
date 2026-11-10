@@ -2908,6 +2908,27 @@ a.roll-check-enricher:hover {
 .co.application.sheet.actor .window-content .sheet-tabs {
   margin-top: 8px;
 }
+.co.application.sheet.actor .window-content .sheet-tabs [data-tab]:has(+ .inventory-sort) {
+  padding-right: 28px;
+}
+.co.application.sheet.actor .window-content .sheet-tabs .inventory-sort {
+  align-self: center;
+  cursor: pointer;
+  flex: none;
+  line-height: 1;
+  margin: 0 8px 0 -22px;
+  opacity: 0.6;
+  text-align: center;
+  width: 14px;
+  z-index: 1;
+}
+.co.application.sheet.actor .window-content .sheet-tabs .inventory-sort:hover,
+.co.application.sheet.actor .window-content .sheet-tabs .inventory-sort.active {
+  opacity: 1;
+}
+.co.application.sheet.actor .window-content .sheet-tabs [data-tab].active + .inventory-sort {
+  color: var(--co-surface);
+}
 .co.application.sheet.actor .window-content .tab.active {
   grid-area: content;
 }

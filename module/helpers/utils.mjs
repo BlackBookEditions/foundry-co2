@@ -150,6 +150,42 @@ export default class Utils {
   }
 
   /**
+   * Retrieves the inventory sorting of an actor from localStorage.
+   *
+   * @param {string} key The localStorage key (e.g. `co-${actorId}-inventory-sorting`).
+   * @param {string} [defaultValue="default"] The default value if the key is not found or an error occurs.
+   * @returns {string} The identifier of the inventory sorting.
+   */
+  static getInventorySortingState(key, defaultValue = "default") {
+    try {
+      const stored = localStorage.getItem(key)
+      if (stored !== null) {
+        const parsedData = JSON.parse(stored)
+        if (typeof parsedData.sorting === "string") return parsedData.sorting
+      }
+    } catch (e) {
+      // Ignore localStorage errors
+    }
+    return defaultValue
+  }
+
+  /**
+   * Stores the inventory sorting of an actor in localStorage. The default sorting is not stored : its entry is removed.
+   *
+   * @param {string} key The localStorage key.
+   * @param {string} sorting The identifier of the inventory sorting.
+   * @param {string} [defaultValue="default"] The identifier of the default sorting.
+   */
+  static setInventorySortingState(key, sorting, defaultValue = "default") {
+    try {
+      if (sorting === defaultValue) localStorage.removeItem(key)
+      else localStorage.setItem(key, JSON.stringify({ sorting }))
+    } catch (e) {
+      console.error(Utils.log(`Error updating localStorage for key ${key}`), e)
+    }
+  }
+
+  /**
    * Résout une référence de cible de chat vers les objets Foundry utiles.
    *
    * Priorité de résolution : Token de scène exact, puis acteur, puis token actif de l'acteur.
