@@ -9,6 +9,7 @@
                 <h4 class="item-name flexrow">
                     <a data-action="toggleSection" data-toggle-type="currencies">{{localize "CO.ui.richness"}}</a>
                 </h4>
+                {{> "systems/co2/templates/actors/shared/inventory-sorting.hbs" this}}
             </li>
             <div class="flexrow currency-row foldable">
                 {{#each system.wealth as |currency id|}}
@@ -19,6 +20,9 @@
                 {{/each}}
             </div>
         </ol>    
+    {{else}}
+        {{!-- Sans section Richesse, le sélecteur de tri se pose seul, à droite --}}
+        <div class="inventory-sorting-bar">{{> "systems/co2/templates/actors/shared/inventory-sorting.hbs" this}}</div>
     {{/if}}
 
     {{#each inventory as |group|}}

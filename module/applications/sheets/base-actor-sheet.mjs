@@ -4,6 +4,7 @@ const { DragDrop } = foundry.applications.ux
 
 import { SYSTEM } from "../../config/system.mjs"
 import Utils from "../../helpers/utils.mjs"
+import { INVENTORY_SORTINGS, getInventorySorting, applyInventorySorting } from "../../helpers/inventory-sorting.mjs"
 import slideToggle from "../../elements/slide-toggle.mjs"
 
 export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.ActorSheetV2) {
@@ -49,6 +50,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
       sortActionsByRank: COBaseActorSheet.#onSortActionsByRank,
       sortActionsByType: COBaseActorSheet.#onSortActionsByType,
       sortActionsByActionType: COBaseActorSheet.#onSortActionsByActionType,
+      sortInventory: COBaseActorSheet.#onSortInventory,
       shareImage: COBaseActorSheet.#onShareImage,
     },
   }
@@ -61,6 +63,15 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
 
   // The selected sorting of actions : byName, byType, byActionType
   actionsSorting = "default"
+
+  /**
+   * Tri d'affichage de l'inventaire : ordre manuel, de A à Z ou de Z à A.
+   * Il est mémorisé par acteur dans le navigateur, comme l'état déplié des sections.
+   * @type {{id: string, icon: string, tooltip: string}}
+   */
+  get inventorySorting() {
+    return getInventorySorting(Utils.getStoredState(`co-${this.document.id}-inventory-sorting`, "sorting", INVENTORY_SORTINGS.default.id))
+  }
 
   /**
    * Is the sheet currently in 'Play' mode?
@@ -231,6 +242,10 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
       container.expanded = Utils.getExpandedState(`co-${this.document.id}-container-${container.id}`, false)
     }
     context.containersExpanded = Utils.getExpandedState(`co-${this.document.id}-containers`)
+
+    // Tri d'affichage de l'inventaire et des contenants : l'ordre manuel (champ sort des objets) n'est pas modifié
+    applyInventorySorting(context, this.inventorySorting.id, game.i18n.lang)
+    context.inventorySortings = Object.values(INVENTORY_SORTINGS).map((sorting) => ({ ...sorting, active: sorting === this.inventorySorting }))
 
     context.currenciesExpanded = Utils.getExpandedState(`co-${this.document.id}-currencies`)
 
@@ -519,7 +534,7 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     }
     if (foldable) {
       const { id } = foundry.utils.parseUuid(containerUuid)
-      Utils.toggleExpandedState(`co-${this.document.id}-container-${id}`)
+      Utils.toggleExpandedState(`co-${this.document.id}-container-${id}`, false)
       slideToggle(foldable)
       // Bascule immédiate du chevron : vertical si déplié, horizontal si replié
       const icon = target.querySelector("i.fa-caret-down, i.fa-caret-right")
@@ -561,6 +576,20 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
     if (container) await container.removeContent(contentUuid)
     const { id } = foundry.utils.parseUuid(contentUuid)
     if (id) await this.actor.deleteEmbeddedDocuments("Item", [id])
+  }
+
+  /**
+   * Réordonne par glisser-déposer un objet de l'acteur parmi ses voisins.
+   * Tant que l'inventaire est affiché trié par nom, l'ordre manuel des équipements et des contenants n'est pas visible : le dépôt ne le modifie pas, et une notification l'explique.
+   * @override
+   */
+  _onSortItem(event, item) {
+    const isInventoryItem = [SYSTEM.ITEM_TYPE.equipment.id, SYSTEM.ITEM_TYPE.container.id].includes(item.type)
+    if (isInventoryItem && this.inventorySorting !== INVENTORY_SORTINGS.default) {
+      ui.notifications.info(game.i18n.localize("CO.notif.inventorySortedByName"))
+      return
+    }
+    return super._onSortItem(event, item)
   }
 
   /**
@@ -849,6 +878,17 @@ export default class COBaseActorSheet extends HandlebarsApplicationMixin(sheets.
   static #onSortActionsByActionType(event) {
     event.preventDefault()
     this.actionsSorting = "byActionType"
+    this.render()
+  }
+
+  /**
+   * Applique le tri de l'inventaire choisi dans le sélecteur de tri (ordre manuel, de A à Z, de Z à A) et le mémorise pour cet acteur.
+   * @param {PointerEvent} event The originating click event
+   * @param {HTMLElement} target The capturing HTML element which defined a [data-action]
+   */
+  static #onSortInventory(event, target) {
+    event.preventDefault()
+    Utils.setStoredState(`co-${this.document.id}-inventory-sorting`, "sorting", getInventorySorting(target.dataset.sorting).id, INVENTORY_SORTINGS.default.id)
     this.render()
   }
 

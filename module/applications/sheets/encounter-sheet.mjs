@@ -28,7 +28,7 @@ export default class COEncounterSheet extends COBaseActorSheet {
     sidebar: { template: "systems/co2/templates/actors/encounter-sidebar.hbs" },
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     main: { template: "systems/co2/templates/actors/encounter-main.hbs", templates: ["systems/co2/templates/actors/shared/actions.hbs"] },
-    loot: { template: "systems/co2/templates/actors/encounter-loot.hbs" },
+    loot: { template: "systems/co2/templates/actors/encounter-loot.hbs", templates: ["systems/co2/templates/actors/shared/inventory-sorting.hbs"] },
     paths: { template: "systems/co2/templates/actors/shared/paths.hbs", templates: ["systems/co2/templates/actors/shared/capacities-nopath.hbs"], scrollable: [""] },
     effects: { template: "systems/co2/templates/actors/shared/effects.hbs" },
     notes: { template: "systems/co2/templates/actors/encounter-notes.hbs" },

@@ -97,18 +97,19 @@ export default class Utils {
   }
 
   /**
-   * Retrieves the expanded state of a section from localStorage.
+   * Lit un champ d'un état d'interface mémorisé dans le localStorage du navigateur, sous la forme d'un objet JSON (ex. `{ "expanded": false }`).
    *
-   * @param {string} key The localStorage key (e.g. `co-${actorId}-paths-${slug}`).
-   * @param {boolean} [defaultValue=true] The default value if the key is not found or an error occurs.
-   * @returns {boolean} The expanded state.
+   * @param {string} key La clé localStorage (ex. `co-${actorId}-currencies`).
+   * @param {string} field Le champ de l'objet mémorisé (ex. `expanded`).
+   * @param {*} defaultValue La valeur par défaut, retournée si la clé ou le champ est absent, si sa valeur n'est pas du même type, ou en cas d'erreur.
+   * @returns {*} La valeur mémorisée ou la valeur par défaut.
    */
-  static getExpandedState(key, defaultValue = true) {
+  static getStoredState(key, field, defaultValue) {
     try {
       const stored = localStorage.getItem(key)
       if (stored !== null) {
-        const parsedData = JSON.parse(stored)
-        return parsedData.expanded === true
+        const value = JSON.parse(stored)?.[field]
+        if (typeof value === typeof defaultValue) return value
       }
     } catch (e) {
       // Ignore localStorage errors
@@ -117,23 +118,48 @@ export default class Utils {
   }
 
   /**
-   * Toggles the expanded state of a section in localStorage.
+   * Mémorise un champ d'un état d'interface dans le localStorage du navigateur, en conservant les autres champs de l'objet.
+   * Si une valeur par défaut est fournie et que la valeur lui est égale, l'entrée est supprimée : seul un état différent du défaut est stocké.
    *
-   * @param {string} key The localStorage key.
+   * @param {string} key La clé localStorage.
+   * @param {string} field Le champ de l'objet mémorisé.
+   * @param {*} value La valeur à mémoriser.
+   * @param {*} [defaultValue] La valeur par défaut, qui n'est pas stockée.
    */
-  static toggleExpandedState(key) {
+  static setStoredState(key, field, value, defaultValue) {
     try {
-      const stored = localStorage.getItem(key)
-      if (stored !== null) {
-        const value = JSON.parse(stored)
-        value.expanded = !value.expanded
-        localStorage.setItem(key, JSON.stringify(value))
-      } else {
-        localStorage.setItem(key, JSON.stringify({ expanded: false }))
+      if (defaultValue !== undefined && value === defaultValue) {
+        localStorage.removeItem(key)
+        return
       }
+      const stored = localStorage.getItem(key)
+      const state = stored !== null ? JSON.parse(stored) : {}
+      state[field] = value
+      localStorage.setItem(key, JSON.stringify(state))
     } catch (e) {
       console.error(Utils.log(`Error updating localStorage for key ${key}`), e)
     }
+  }
+
+  /**
+   * Retrieves the expanded state of a section from localStorage.
+   *
+   * @param {string} key The localStorage key (e.g. `co-${actorId}-paths-${slug}`).
+   * @param {boolean} [defaultValue=true] The default value if the key is not found or an error occurs.
+   * @returns {boolean} The expanded state.
+   */
+  static getExpandedState(key, defaultValue = true) {
+    return Utils.getStoredState(key, "expanded", defaultValue)
+  }
+
+  /**
+   * Toggles the expanded state of a section in localStorage.
+   *
+   * @param {string} key The localStorage key.
+   * @param {boolean} [defaultValue=true] The state of a section without stored state : must match the default value given to getExpandedState for the same key.
+   */
+  static toggleExpandedState(key, defaultValue = true) {
+    Utils.setStoredState(key, "expanded", !Utils.getExpandedState(key, defaultValue))
   }
 
   /**

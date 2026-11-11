@@ -1,0 +1,6 @@
+{{!-- Sélecteur de tri de l'inventaire : ordre manuel, de A à Z, de Z à A. Seul l'affichage change, l'ordre manuel des objets est conservé --}}
+<div class="inventory-sorting" role="group" aria-label="{{localize 'CO.ui.sortInventory'}}">
+  {{#each inventorySortings as |sorting|}}
+    <button type="button" class="{{#if sorting.active}}active{{/if}}" data-action="sortInventory" data-sorting="{{sorting.id}}" data-tooltip="{{localize sorting.tooltip}}" data-tooltip-direction="UP" aria-label="{{localize sorting.tooltip}}" aria-pressed="{{#if sorting.active}}true{{else}}false{{/if}}"><i class="fa-solid {{sorting.icon}}"></i></button>
+  {{/each}}
+</div>

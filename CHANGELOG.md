@@ -1,3 +1,14 @@
+# 2.3.13
+
+## Améliorations
+
+- Inventaire des personnages et butin des rencontres : un sélecteur à droite de l'en-tête Richesse trie l'affichage par nom, de A à Z ou de Z à A, ou revient à l'ordre de l'inventaire. Les accents et la casse sont ignorés, et les nombres sont rangés dans l'ordre numérique (Potion 2 avant Potion 10). Le tri porte aussi sur les contenants et leur contenu, et il est mémorisé par acteur. L'ordre manuel n'est pas modifié : on y revient à tout moment pour réordonner les objets par glisser-déposer.
+
+## Corrections
+
+- Les messages du système qui ne sont pas des jets (actions, cartes d'acteur…) respectent désormais le mode de visibilité choisi dans le tchat (MJ, aveugle, soi-même) au lieu d'être toujours publics. Les tests secrets sont de nouveau envoyés aux seuls MJ, quel que soit ce mode.
+- Un contenant déplié dans l'inventaire ne se referme plus au rendu suivant de la fiche.
+
 # 2.3.12
 
 ## Corrections et améliorations
