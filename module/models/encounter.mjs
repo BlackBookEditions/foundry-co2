@@ -158,6 +158,17 @@ export default class EncounterData extends ActorData {
     this.parent.updateSource(updates)
   }
 
+  /** @inheritDoc */
+  async _preUpdate(changes, options, user) {
+    const allowed = await super._preUpdate(changes, options, user)
+    if (allowed === false) return false
+
+    // Lire les PV demandés : l'effet Mort force encore la valeur calculée à 0.
+    if (changes.system?.attributes?.hp?.value > 0 && this.parent.statuses.has("dead")) {
+      await this.parent.toggleStatusEffect("dead", { active: false })
+    }
+  }
+
   get currentLevel() {
     return this.attributes.nc
   }

@@ -7,6 +7,12 @@
   Ce fichier est destiné aux joueuses et joueurs : il complète le CHANGELOG.md, qui reste le  journal exhaustif et technique.
 -->
 
+# 2.3.14
+
+## Corrections
+
+- Remettre au moins 1 point de vigueur à un adversaire, par saisie ou par soin, retire automatiquement le statut « Mort », avec ou sans token.
+
 # 2.3.10
 
 ## Corrections

@@ -1,3 +1,9 @@
+# 2.3.14
+
+## Corrections
+
+- Le statut « Mort » des rencontres est désormais retiré automatiquement lorsque leur vigueur est remise à une valeur positive, par saisie ou par soin, avec ou sans token. L'effet ne maintient donc plus la vigueur calculée à 0 après cette récupération, y compris si le statut avait été appliqué manuellement.
+
 # 2.3.13
 
 ## Améliorations
