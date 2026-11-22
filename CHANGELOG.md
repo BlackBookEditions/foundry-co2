@@ -1,5 +1,9 @@
 # 2.3.15
 
+## Améliorations
+
+- API : `actor.addProfile(profile, { notify: false })` ajoute le profil sans afficher la notification « Le profil a été créé. ». Le glisser-déposer sur la fiche garde la notification ; l'option sert aux assistants qui enchaînent plusieurs ajouts, comme l'assistant de création de cof2-base.
+
 ## Corrections
 
 - Équiper ou apprendre un objet ne rend plus visibles ses actions activables soumises à des conditions (par exemple « équipé ») : seules les actions sans condition suivent l'état de l'objet, comme prévu. L'affichage ne change pas, la visibilité de ces actions étant déjà déterminée par leurs conditions.

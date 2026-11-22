@@ -1369,9 +1369,11 @@ export default class COActor extends Actor {
    * Check the profile does not already exist
    * Allow only two profiles : main and secondary
    * @param {COItem} profile
+   * @param {Object} [options]
+   * @param {boolean} [options.notify=true] Affiche la notification « Le profil a été créé. ». Un assistant qui enchaîne plusieurs ajouts passe false et prévient lui-même à la fin.
    * @returns {Promise<string>} A promise that resolves to the UUID of the newly created profile.
    */
-  async addProfile(profile) {
+  async addProfile(profile, { notify = true } = {}) {
     if (this.profiles.length > 0) {
       // On ne peut pas avoir deux fois le même profil
       const existingProfile = this.profiles.find((p) => p.system.slug === profile.system.slug)
@@ -1448,7 +1450,7 @@ export default class COActor extends Actor {
     // Update the equipment of the profile with the uuids of the created inventory items (for cascade delete)
     await newProfile[0].update({ "system.equipment": updatedEquipmentUuids })
 
-    ui.notifications.warn(game.i18n.localize("CO.notif.warningProfileCreated"))
+    if (notify) ui.notifications.warn(game.i18n.localize("CO.notif.warningProfileCreated"))
     return newProfile[0].uuid
   }
 
