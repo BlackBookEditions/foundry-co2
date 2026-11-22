@@ -6,6 +6,7 @@ import CoChat from "../chat.mjs"
 import Utils from "../helpers/utils.mjs"
 import { resolveStatusId } from "../helpers/status-rules.mjs"
 import { summarizeSelectedSkillBonuses } from "../helpers/skill-bonuses.mjs"
+import { cleanFormulaSigns } from "../helpers/formula-signs.mjs"
 
 /**
  * @class COActor
@@ -2441,9 +2442,9 @@ export default class COActor extends Actor {
       showDifficulty,
       oppositeRoll,
       initialSkillFormula: skillFormula,
-      formulaAttack: `${formula} + ${skillFormula}`,
+      formulaAttack: cleanFormulaSigns(`${formula} + ${skillFormula}`),
       formulaAttackTooltip: skillFormulaTooltip,
-      formulaDamage: damageFormula,
+      formulaDamage: cleanFormulaSigns(damageFormula),
       formulaDamageTooltip: damageFormulaTooltip,
       targets: dialogTargets,
       hasTargets: dialogTargets?.length > 0,

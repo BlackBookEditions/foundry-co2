@@ -4,6 +4,7 @@ import COActor from "../../documents/actor.mjs"
 import CustomEffectData from "./custom-effect.mjs"
 import { CORoll } from "../../documents/roll.mjs"
 import CoChat from "../../chat.mjs"
+import { cleanFormulaSigns } from "../../helpers/formula-signs.mjs"
 
 /**
  * Resolver
@@ -139,12 +140,12 @@ export class Resolver extends foundry.abstract.DataModel {
 
     let skillFormula = this.skill.formula
     skillFormula = Utils.evaluateFormulaCustomValues(actor, skillFormula, item.uuid)
-    let skillFormulaEvaluated = Roll.replaceFormulaData(skillFormula, actor.getRollData())
+    let skillFormulaEvaluated = cleanFormulaSigns(Roll.replaceFormulaData(skillFormula, actor.getRollData()))
     const skillFormulaTooltip = this.skill.formula
 
     let damageFormula = this.dmg.formula
     damageFormula = Utils.evaluateFormulaCustomValues(actor, damageFormula, item.uuid)
-    let damageFormulaEvaluated = Roll.replaceFormulaData(damageFormula, actor.getRollData())
+    let damageFormulaEvaluated = cleanFormulaSigns(Roll.replaceFormulaData(damageFormula, actor.getRollData()))
     const damageFormulaTooltip = this.dmg.formula
 
     // Création de l'éventuel custom effect
@@ -254,7 +255,7 @@ export class Resolver extends foundry.abstract.DataModel {
 
     let damageFormula = this.dmg.formula
     damageFormula = Utils.evaluateFormulaCustomValues(actor, damageFormula, item.uuid)
-    let damageFormulaEvaluated = Roll.replaceFormulaData(damageFormula, actor.getRollData())
+    let damageFormulaEvaluated = cleanFormulaSigns(Roll.replaceFormulaData(damageFormula, actor.getRollData()))
     const damageFormulaTooltip = this.dmg.formula
 
     // Gestion des dommages automatiques uniquement si la formule est définie
@@ -306,7 +307,7 @@ export class Resolver extends foundry.abstract.DataModel {
 
     let healFormula = this.skill.formula
     healFormula = Utils.evaluateFormulaCustomValues(actor, healFormula, item.uuid)
-    let healFormulaEvaluated = Roll.replaceFormulaData(healFormula, actor.getRollData())
+    let healFormulaEvaluated = cleanFormulaSigns(Roll.replaceFormulaData(healFormula, actor.getRollData()))
 
     // Gestion des cibles
     const targets = this.getResolverTargets(actor, action.actionName, { item })
@@ -371,7 +372,7 @@ export class Resolver extends foundry.abstract.DataModel {
     if (hasDmgFormula) {
       let damageFormula = this.dmg.formula
       damageFormula = Utils.evaluateFormulaCustomValues(actor, damageFormula, item.uuid)
-      damageFormula = Roll.replaceFormulaData(damageFormula, actor.getRollData())
+      damageFormula = cleanFormulaSigns(Roll.replaceFormulaData(damageFormula, actor.getRollData()))
       dmgRoll = await new CORoll(damageFormula).evaluate()
       dmgTotal = dmgRoll.total
       dmgFormula = damageFormula

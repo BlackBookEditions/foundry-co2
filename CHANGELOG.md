@@ -15,6 +15,7 @@
 - Les cartes d'objet envoyées dans le tchat ne proposent plus que les actions visibles. Auparavant, toutes les actions activables avaient leurs boutons, même celles dont les conditions n'étaient pas remplies (une arme non équipée, par exemple).
 - Envoyer dans le tchat un contenant, ou un autre objet sans actions (profil, voie, peuple) depuis une macro, provoquait une erreur et n'envoyait rien. Une carte avec le nom, l'image et la description est désormais envoyée.
 - Notes de version en thème sombre : le titre « Quoi de neuf ? » et les numéros de version, foncés sur fond noir, étaient illisibles. Ils sont désormais éclaircis.
+- Une caractéristique ou un bonus négatif s'affichait « 1d12 + -1 » dans les fenêtres d'attaque et de dégâts et dans le tchat. Les formules affichent désormais « 1d12 - 1 ». Le résultat des jets ne change pas.
 
 # 2.3.14
 
