@@ -146,16 +146,17 @@ export default class COItem extends Item {
 
   /**
    * Retrieves chat data for the specified item and actor based on the chat type and optional index.
+   * Items without actions (container, feature, profile, path) get a card without action buttons.
    *
    * @param {Object} item The item for which chat data is being retrieved.
    * @param {Object} actor The actor associated with the item.
    * @param {string} chatType The type of chat data to retrieve ("item" or "action").
    * @param {number|null} [indice=null] The optional index of the action to retrieve chat data for.
-   * @returns {Promise<Object|null>} An object containing the item's id, name, image, description, and actions.
+   * @returns {Promise<Object>} An object containing the item's id, name, image, description, and actions.
    */
   async getChatData(item, actor, chatType, indice = null) {
+    const actions = []
     if (this.type === SYSTEM.ITEM_TYPE.capacity.id || this.type === SYSTEM.ITEM_TYPE.equipment.id || this.type === SYSTEM.ITEM_TYPE.attack.id) {
-      let actions = []
       // All actions
       if (chatType === "item" && indice === null) {
         for (const action of this.actions) {
@@ -163,18 +164,17 @@ export default class COItem extends Item {
         }
       } else if (chatType === "action") {
         const action = this.actions.find((a) => a.indice === parseInt(indice))
-        actions.push(...(await action.getChatData(item, actor)))
-      }
-      return {
-        id: this.id,
-        uuid: this.uuid,
-        name: this.name,
-        img: this.img,
-        description: this.system.description,
-        actions: actions,
+        if (action) actions.push(...(await action.getChatData(item, actor)))
       }
     }
-    return null
+    return {
+      id: this.id,
+      uuid: this.uuid,
+      name: this.name,
+      img: this.img,
+      description: this.system.description,
+      actions: actions,
+    }
   }
 
   get isUnlocked() {
