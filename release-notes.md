@@ -7,11 +7,54 @@
   Ce fichier est destiné aux joueuses et joueurs : il complète le CHANGELOG.md, qui reste le  journal exhaustif et technique.
 -->
 
+# 2.4.0
+
+> Si vous utilisez le module COF2 Livre des règles, mettez d'abord à jour le système en 2.4.0, puis le module en 2.4.0.
+
+## Améliorations
+
+- **Armes polyvalentes** : une arme utilisable à une ou deux mains (Épée bâtarde, Épieu, Lance…) est tenue à deux mains quand l'autre main est libre, et à une main dès qu'un bouclier, une seconde arme ou un objet tenu en main est équipé. Seule l'attaque correspondante est proposée, sur la fiche, dans Token Action HUD et dans les cartes du tchat.
+  - Dans l'inventaire, la seconde main apparaît en creux quand l'arme est tenue à une main. Un clic sur les mains permet de la garder à une main même quand l'autre main est libre.
+  - Avec la vérification des mains libres, une arme polyvalente ne compte que pour une main : elle peut enfin être équipée avec un bouclier.
+  - Pour vos armes personnalisées, deux nouvelles conditions d'action : « est tenu à une main » et « est tenu à deux mains ».
+
+## Corrections
+
+- Les formules affichent « 1d12 - 1 » au lieu de « 1d12 + -1 » quand une caractéristique ou un bonus est négatif.
+- Les cartes d'objet envoyées dans le tchat ne proposent plus les actions indisponibles, par exemple celles d'une arme non équipée.
+- Envoyer un contenant dans le tchat ne provoque plus d'erreur.
+- Les notes de version sont lisibles en thème sombre.
+
 # 2.3.14
 
 ## Corrections
 
 - Remettre au moins 1 point de vigueur à un adversaire, par saisie ou par soin, retire automatiquement le statut « Mort », avec ou sans token.
+
+# 2.3.13
+
+## Améliorations
+
+- Inventaire des personnages et butin des rencontres : un sélecteur à droite de l'en-tête Richesse trie l'affichage par nom, de A à Z ou de Z à A. L'ordre de l'inventaire n'est pas modifié : on y revient à tout moment pour réordonner les objets par glisser-déposer.
+
+## Corrections
+
+- Les messages du système (actions, cartes d'acteur…) respectent le mode de visibilité choisi dans le tchat au lieu d'être toujours publics, et les tests secrets sont de nouveau envoyés aux seuls MJ.
+- Un contenant déplié dans l'inventaire ne se referme plus tout seul.
+
+# 2.3.12
+
+## Corrections et améliorations
+
+- Les attaques de rencontre affichent leur score effectif sur la fiche et dans la fenêtre de jet, sans remplir les champs de bonus et malus ponctuels.
+- Une attaque de rencontre utilisant `@atc`, `@atd` ou `@atm` ne reçoit plus deux fois le même score.
+- Les formules de compagnon vides ou invalides conservent la base saisie, et désactiver un compagnon restaure ses bases.
+
+# 2.3.11
+
+## Corrections
+
+- La vigueur d'une voie de prestige (lycanthrope, sang-dragon, guerrier-mage, familier fantastique) remplace celle du profil au lieu de s'y ajouter, et l'infobulle des PV max correspond au total affiché.
 
 # 2.3.10
 
