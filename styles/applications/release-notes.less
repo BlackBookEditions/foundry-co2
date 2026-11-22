@@ -118,3 +118,24 @@
     }
   }
 }
+
+// Thème sombre : les accents de la palette y sont assombris pour servir de fonds de bandeaux sur les fiches,
+// et deviennent illisibles en couleur de texte sur le fond de la fenêtre. Titre et numéros de version
+// reprennent donc les accents éclaircis.
+.theme-dark & {
+  .release-notes-header {
+    border-bottom-color: lighten(@sheet-accent, 10%);
+
+    h1 {
+      color: lighten(@sheet-accent, 10%);
+    }
+  }
+
+  .release-notes-body .release-note-version {
+    color: lighten(@sheet-accent-alt, 40%);
+  }
+
+  .release-notes-body .release-note-content blockquote {
+    border-left-color: lighten(@sheet-accent, 10%);
+  }
+}

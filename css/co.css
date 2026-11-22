@@ -4005,6 +4005,18 @@ a.roll-check-enricher:hover {
   flex: none;
   margin: 0;
 }
+.theme-dark .co.release-notes .release-notes-header {
+  border-bottom-color: #c9aa66;
+}
+.theme-dark .co.release-notes .release-notes-header h1 {
+  color: #c9aa66;
+}
+.theme-dark .co.release-notes .release-notes-body .release-note-version {
+  color: #63b8f0;
+}
+.theme-dark .co.release-notes .release-notes-body .release-note-content blockquote {
+  border-left-color: #c9aa66;
+}
 .co select.disabled,
 .co input[type="checkbox"].disabled,
 .co label:has(input[type="checkbox"].disabled) {
