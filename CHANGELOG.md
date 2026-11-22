@@ -3,6 +3,7 @@
 ## Corrections
 
 - Équiper ou apprendre un objet ne rend plus visibles ses actions activables soumises à des conditions (par exemple « équipé ») : seules les actions sans condition suivent l'état de l'objet, comme prévu. L'affichage ne change pas, la visibilité de ces actions étant déjà déterminée par leurs conditions.
+- Les cartes d'objet envoyées dans le tchat ne proposent plus que les actions visibles. Auparavant, toutes les actions activables avaient leurs boutons, même celles dont les conditions n'étaient pas remplies (une arme non équipée, par exemple).
 
 # 2.3.14
 

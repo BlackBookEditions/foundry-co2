@@ -378,14 +378,14 @@ export class Action extends foundry.abstract.DataModel {
    *
    * @param {Object} item The item to check visibility and properties.
    * @param {Object} actor The actor to check visibility and properties.
-   * @returns {Array<Object>} An array of chat data objects. Each object contains:
+   * @returns {Promise<Array<Object>>} An array of chat data objects. Each object contains:
    *   {string} label The label for the chat action.
    *   {string} action The action to be performed.
    *   {string} [type] The type of action (e.g., "attack", "damage") if applicable.
    *   {number} indice The index or identifier for the action.
    */
-  getChatData(item, actor) {
-    if (this.isVisible(item, actor) && this.properties.activable) {
+  async getChatData(item, actor) {
+    if (this.properties.activable && (await this.isVisible(item, actor))) {
       if (this.properties.temporary) {
         if (this.properties.enabled) return [{ label: `${game.i18n.localize("CO.ui.deactivate")} ${this.label}`, action: "unactivate", indice: this.indice }]
         else return [{ label: `${game.i18n.localize("CO.ui.activate")} ${this.label}`, action: "activate", indice: this.indice }]

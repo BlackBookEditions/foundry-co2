@@ -3136,7 +3136,7 @@ export default class COActor extends Actor {
     const item = this.items.get(itemId)
     if (!item) return
 
-    let itemChatData = item.getChatData(item, this, chatType, indice)
+    const itemChatData = await item.getChatData(item, this, chatType, indice)
     const chat = new CoChat(this)
       .withTemplate("systems/co2/templates/chat/item-card.hbs")
       .withData({
