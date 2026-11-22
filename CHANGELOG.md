@@ -1,3 +1,9 @@
+# 2.3.15
+
+## Corrections
+
+- Équiper ou apprendre un objet ne rend plus visibles ses actions activables soumises à des conditions (par exemple « équipé ») : seules les actions sans condition suivent l'état de l'objet, comme prévu. L'affichage ne change pas, la visibilité de ces actions étant déjà déterminée par leurs conditions.
+
 # 2.3.14
 
 ## Corrections

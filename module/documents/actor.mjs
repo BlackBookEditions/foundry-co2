@@ -1182,7 +1182,8 @@ export default class COActor extends Actor {
           action.properties.enabled = state
         } else {
           // Si c'est une action activable mais sans conditions, la rendre visible
-          if (!action.hasConditions) {
+          // hasConditions est un getter de l'Action : on le lit sur l'instance, la copie toObject() ne l'a pas
+          if (!item.actions[index].hasConditions) {
             action.properties.visible = state
           }
         }
