@@ -2,6 +2,7 @@ import ItemData from "./item.mjs"
 import { SYSTEM } from "../config/system.mjs"
 import { BaseValue } from "./schemas/base-value.mjs"
 import { Action } from "./schemas/action.mjs"
+import { computeGrip, handsNeeded, isVersatile, matchesGrip, versatileState } from "../helpers/weapon-grip.mjs"
 
 /**
  * @class EquipmentData
@@ -64,6 +65,8 @@ export default class EquipmentData extends ItemData {
       usage: new fields.SchemaField({
         oneHand: new fields.BooleanField(),
         twoHand: new fields.BooleanField(),
+        // Arme polyvalente : la tenir à une main même quand l'autre main est libre
+        preferOneHand: new fields.BooleanField(),
       }),
       range: new fields.EmbeddedDataField(BaseValue, { label: "CO.ui.range", nullable: true }),
       actions: new fields.ArrayField(new fields.EmbeddedDataField(Action)),
@@ -92,6 +95,75 @@ export default class EquipmentData extends ItemData {
   get useHands() {
     if (this.usage.oneHand || this.usage.twoHand) return true
     return false
+  }
+
+  /**
+   * L'objet occupe-t-il une main une fois équipé ? Seuls les armes, boucliers et objets divers comptent,
+   * comme pour le contrôle des mains libres.
+   * @returns {boolean}
+   */
+  get holdsInHands() {
+    return (this.isWeapon || this.isShield || this.isMisc) && this.useHands
+  }
+
+  /**
+   * Arme polyvalente : utilisable à une ou deux mains (les deux cases d'usage sont cochées).
+   * @returns {boolean}
+   */
+  get isVersatile() {
+    return isVersatile(this.usage)
+  }
+
+  /**
+   * Nombre minimal de mains occupées une fois équipé : une arme polyvalente n'en exige qu'une.
+   * @returns {number} 0, 1 ou 2.
+   */
+  get handsNeeded() {
+    return handsNeeded(this.usage)
+  }
+
+  /**
+   * Un autre objet tenu en main est-il équipé par le porteur ?
+   * @returns {boolean}
+   */
+  get isOtherHandBusy() {
+    const item = this.parent
+    const actor = item?.actor
+    if (!actor) return false
+    return actor.items.some((other) => other.id !== item.id && other.type === SYSTEM.ITEM_TYPE.equipment.id && other.system.equipped && other.system.holdsInHands)
+  }
+
+  /**
+   * Prise en main actuelle, déduite de ce que porte le personnage et jamais enregistrée.
+   * Pour un objet non équipé, c'est la prise en main qu'il aurait s'il était équipé maintenant.
+   * @returns {string|null} "oneHand", "twoHands", ou null si l'objet ne se tient pas en main.
+   */
+  get grip() {
+    return computeGrip(this.usage, this.isVersatile && this.isOtherHandBusy)
+  }
+
+  /**
+   * État d'une arme polyvalente, qui explique sa prise en main.
+   * @returns {string|null} "twoHands", "oneHandPreferred", "oneHandBusy", ou null si l'objet n'est pas polyvalent.
+   */
+  get versatileState() {
+    if (!this.isVersatile) return null
+    return versatileState(this.usage, this.isOtherHandBusy)
+  }
+
+  /**
+   * Action de référence d'une arme pour @arme.dmg et @arme.skill : la première action, ou pour une arme polyvalente
+   * la première action dont les conditions de prise en main correspondent à la prise en main actuelle.
+   * @returns {Action|undefined}
+   */
+  get weaponReferenceAction() {
+    if (!this.isWeapon || this.actions.length === 0) return undefined
+    if (this.isVersatile) {
+      const grip = this.grip
+      const action = this.actions.find((a) => a.resolvers.length > 0 && matchesGrip(a.conditions, grip))
+      if (action) return action
+    }
+    return this.actions[0]
   }
 
   get isConsumable() {
@@ -142,28 +214,26 @@ export default class EquipmentData extends ItemData {
   }
 
   /**
-   * Remonte les dommages de référence si c'est une arme, c'est-à-dire les dommages de la formule du premier resolver de la première action.
+   * Remonte les dommages de référence si c'est une arme, c'est-à-dire les dommages du premier resolver de l'action de référence (cf. weaponReferenceAction).
    *
    * @returns {string|undefined} La formule des dommages si l'équipement est une arme et possède des actions avec des résolveurs de dommages.
    *                             Retourne undefined sinon.
    */
   get damage() {
-    if (this.isWeapon && this.actions.length > 0 && this.actions[0].resolvers.length > 0) {
-      return this.actions[0].resolvers[0].dmg.formula
-    }
+    const action = this.weaponReferenceAction
+    if (action?.resolvers.length > 0) return action.resolvers[0].dmg.formula
     return undefined
   }
 
   /**
-   * Remonter la formule d'attaque de référence si c'est une arme, c'est-à-dire la formule du premier resolver de la première action.
+   * Remonte la formule d'attaque de référence si c'est une arme, c'est-à-dire la formule du premier resolver de l'action de référence (cf. weaponReferenceAction).
    *
    * @returns {string|undefined} La formule d'attaque si l'équipement est une arme et possède des actions avec des résolveurs de dommages.
    *                             Retourne undefined sinon.
    */
   get skill() {
-    if (this.isWeapon && this.actions.length > 0 && this.actions[0].resolvers.length > 0) {
-      return this.actions[0].resolvers[0].skill.formula
-    }
+    const action = this.weaponReferenceAction
+    if (action?.resolvers.length > 0) return action.resolvers[0].skill.formula
     return undefined
   }
 }

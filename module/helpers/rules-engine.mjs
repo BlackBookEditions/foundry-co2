@@ -1,10 +1,13 @@
 import { SYSTEM } from "../config/system.mjs"
+import { GRIPS } from "./weapon-grip.mjs"
 
 /* Vérifie les règles
   - isEquipped : type Equipement et équipé
   - isLearned : type Capacité et appris
   - isOwned : type Equipement ou Capacité et possédé par l'acteur
   - isLinkedActionActivated : action liée activée, utilise l'indice de l'action
+  - isWieldedOneHand / isWieldedTwoHands : objet tenu à une main / à deux mains (prise en main déduite, cf. weapon-grip.mjs).
+    À combiner avec isEquipped : la prise en main d'un objet non équipé est celle qu'il aurait s'il était équipé.
   - TO DO - isTagged : item tagué avec un tag spécifique
 */
 
@@ -49,6 +52,16 @@ export default class RulesEngine {
         if (item.system.actions[object]) return item.system.actions[object].properties.enabled
         else return false
       },
+    },
+    {
+      name: "isWieldedOneHand",
+      parameters: ["item"],
+      expression: (object, item) => item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.grip === GRIPS.oneHand,
+    },
+    {
+      name: "isWieldedTwoHands",
+      parameters: ["item"],
+      expression: (object, item) => item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.grip === GRIPS.twoHands,
     },
     /* {
       name: "isTagged",

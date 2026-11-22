@@ -137,6 +137,10 @@
           },
           "twoHand": {
             "label": "Deux mains"
+          },
+          "preferOneHand": {
+            "label": "Tenir à une main",
+            "hint": "Arme polyvalente : la tenir à une main même quand l'autre main est libre."
           }
         },
         "range": {
@@ -707,6 +711,11 @@
       "consumable": "Consommables",
       "rarity": "Rareté",
       "usage": "Usage",
+      "versatileGrip": {
+        "twoHands": "Arme polyvalente tenue à deux mains. Cliquer pour la tenir à une main.",
+        "oneHandPreferred": "Arme polyvalente tenue à une main par choix. Cliquer pour la tenir à deux mains quand l'autre main est libre.",
+        "oneHandBusy": "Arme polyvalente tenue à une main : l'autre main est occupée."
+      },
       "1h": "Une main",
       "2h": "Deux mains",
       "type": "Type",
@@ -1117,6 +1126,8 @@
         "isLearned": "est appris",
         "isOwned": "est possédé",
         "isLinkedActionActivated": "l'action liée est activée",
+        "isWieldedOneHand": "est tenu à une main",
+        "isWieldedTwoHands": "est tenu à deux mains",
         "isTagged": "a le tag"
       },
       "targets": {

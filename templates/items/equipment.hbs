@@ -177,6 +177,12 @@
                             <input type="checkbox" name="system.usage.twoHand" {{checked systemSource.usage.twoHand}} {{#if @root.locked}}class="disabled"{{/if}}/>
                             {{systemFields.usage.fields.twoHand.label}}
                         </label>
+                        {{#if (and systemSource.usage.oneHand systemSource.usage.twoHand)}}
+                        <label data-tooltip="{{systemFields.usage.fields.preferOneHand.hint}}">
+                            <input type="checkbox" name="system.usage.preferOneHand" {{checked systemSource.usage.preferOneHand}} {{#if @root.locked}}class="disabled"{{/if}}/>
+                            {{systemFields.usage.fields.preferOneHand.label}}
+                        </label>
+                        {{/if}}
                     </div>
                 </fieldSet>
             {{/if}}

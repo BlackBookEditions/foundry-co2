@@ -22,6 +22,7 @@ export default class COCharacterSheet extends COBaseActorSheet {
       attack: COCharacterSheet._onUseAction,
       damage: COCharacterSheet._onUseAction,
       inventoryEquip: COCharacterSheet.#onEquippedToggle,
+      toggleVersatileGrip: COCharacterSheet.#onToggleVersatileGrip,
       decreaseItem: COCharacterSheet.#onDecrease,
       decreaseCharge: COCharacterSheet.#onDecrease,
       increaseItem: COCharacterSheet.#onIncrease,
@@ -208,6 +209,21 @@ export default class COCharacterSheet extends COBaseActorSheet {
     } else if (action === "unactivate") {
       activation = await this.document.activateCOStatusEffect({ state: false, effectid })
     }
+  }
+
+  /**
+   * Arme polyvalente : bascule entre la tenir à une main par choix et la laisser s'adapter (deux mains si l'autre main est libre).
+   * Seule la préférence est enregistrée, la prise en main reste déduite de ce que porte le personnage.
+   * @param {PointerEvent} event The originating click event
+   * @param {HTMLElement} target The capturing HTML element which defined a [data-action]
+   */
+  static async #onToggleVersatileGrip(event, target) {
+    if (!this.isEditable) return
+    event.preventDefault()
+    const item = this.document.items.get(target.closest(".item")?.dataset.itemId)
+    // L'autre main occupée impose la prise à une main : rien à basculer
+    if (!item?.system.isVersatile || item.system.versatileState === "oneHandBusy") return
+    await item.update({ "system.usage.preferOneHand": !item.system.usage.preferOneHand })
   }
 
   /**

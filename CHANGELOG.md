@@ -2,6 +2,11 @@
 
 ## Améliorations
 
+- Armes polyvalentes : une arme dont les cases « Une main » et « Deux mains » sont cochées (Épée bâtarde, Épieu, Lance…) est tenue à deux mains quand l'autre main est libre, et à une main dès qu'un bouclier, une seconde arme ou un objet tenu en main est équipé. Cette prise en main est déduite de l'équipement porté, rien n'est modifié dans les données de l'arme.
+  - La vérification des mains libres compte une arme polyvalente pour une seule main : elle peut être équipée avec un bouclier ou une seconde arme.
+  - Deux nouvelles conditions d'action, « est tenu à une main » et « est tenu à deux mains », n'affichent que l'attaque correspondant à la prise en main actuelle, sur la fiche comme dans Token Action HUD et les cartes de tchat. Une arme sans ces conditions continue de proposer toutes ses attaques.
+  - Dans l'inventaire, la seconde main apparaît en creux quand l'arme est tenue à une main ; un clic sur les mains permet de la tenir à une main même quand l'autre main est libre (option « Tenir à une main » sur la fiche de l'arme).
+  - `@arme.dmg` et `@arme.skill` reprennent les dommages et l'attaque correspondant à la prise en main actuelle.
 - API : `actor.addProfile(profile, { notify: false })` ajoute le profil sans afficher la notification « Le profil a été créé. ». Le glisser-déposer sur la fiche garde la notification ; l'option sert aux assistants qui enchaînent plusieurs ajouts, comme l'assistant de création de cof2-base.
 
 ## Corrections

@@ -1228,19 +1228,12 @@ export default class COActor extends Actor {
     // Si l'objet est équipé, on tente de le déséquiper donc on ne fait pas de contrôle et on renvoi Vrai
     if (item.system.equipped) return true
 
-    // Nombre de mains nécessaire pour l'objet que l'on veux équipper
-    let neededHands = item.system.usage.twoHand ? 2 : 1
+    // Nombre de mains nécessaire pour l'objet que l'on veut équiper : une arme polyvalente n'en exige qu'une, elle s'adapte
+    const neededHands = Math.max(1, item.system.handsNeeded)
 
     // Calcul du nombre de mains déjà utilisées : on récupère les armes, les boucliers et les objets divers qui utilisent des mains et sont équipés
-    let itemsInHands = this.items.filter(
-      (item) =>
-        (item.system.subtype === SYSTEM.EQUIPMENT_SUBTYPES.weapon.id ||
-          item.system.subtype === SYSTEM.EQUIPMENT_SUBTYPES.shield.id ||
-          item.system.subtype === SYSTEM.EQUIPMENT_SUBTYPES.misc.id) &&
-        item.system.useHands &&
-        item.system.equipped,
-    )
-    let usedHands = itemsInHands.reduce((total, item) => total + (item.system.usage.twoHand ? 2 : 1), 0)
+    const itemsInHands = this.items.filter((other) => other.type === SYSTEM.ITEM_TYPE.equipment.id && other.system.holdsInHands && other.system.equipped)
+    const usedHands = itemsInHands.reduce((total, other) => total + other.system.handsNeeded, 0)
 
     return usedHands + neededHands <= 2
   }

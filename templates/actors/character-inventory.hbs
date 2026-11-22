@@ -70,15 +70,22 @@
           <!-- Usage -->
           {{#if group.showUsage}}
             <div class="item-detail">
-              <a class="item-control inventory-usage">
-                {{#if system.usage.twoHand}}
-                  <i class="fas fa-hand-paper"></i><i class="fas fa-hand-paper"></i>
-                {{else}}
-                  {{#if system.usage.oneHand}}
-                    <i class="fas fa-hand-paper"></i>
+              {{#if system.isVersatile}}
+                {{!-- Arme polyvalente : la seconde main, en creux quand elle est libre, montre la prise en main actuelle --}}
+                <a class="item-control inventory-usage versatile" data-action="toggleVersatileGrip" data-tooltip="{{localize (concat 'CO.ui.versatileGrip.' system.versatileState)}}" data-tooltip-direction="UP">
+                  <i class="fas fa-hand-paper"></i><i class="{{#if (eq system.grip 'twoHands')}}fas{{else}}far{{/if}} fa-hand-paper"></i>
+                </a>
+              {{else}}
+                <a class="item-control inventory-usage">
+                  {{#if system.usage.twoHand}}
+                    <i class="fas fa-hand-paper"></i><i class="fas fa-hand-paper"></i>
+                  {{else}}
+                    {{#if system.usage.oneHand}}
+                      <i class="fas fa-hand-paper"></i>
+                    {{/if}}
                   {{/if}}
-                {{/if}}
-              </a>
+                </a>
+              {{/if}}
             </div>
           {{/if}}
           <!-- Quantité -->      

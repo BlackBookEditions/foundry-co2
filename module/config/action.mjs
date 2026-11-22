@@ -89,6 +89,14 @@ export const CONDITION_PREDICATES = Object.freeze({
     id: "isLinkedActionActivated",
     label: "CO.condition.predicates.isLinkedActionActivated",
   },
+  isWieldedOneHand: {
+    id: "isWieldedOneHand",
+    label: "CO.condition.predicates.isWieldedOneHand",
+  },
+  isWieldedTwoHands: {
+    id: "isWieldedTwoHands",
+    label: "CO.condition.predicates.isWieldedTwoHands",
+  },
   /* IsTagged: {
     id: "isTagged",
     label: "CO.condition.predicates.isTagged",
