@@ -1,3 +1,9 @@
+# 2.5.0
+
+## Corrections
+
+- Fin d'un combat : les effets temporaires des combattants étaient supprimés deux fois en parallèle, ce qui provoquait des erreurs « ActiveEffect … does not exist! » dans la console. Ils ne sont plus supprimés qu'une fois, par le MJ actif, acteur par acteur.
+
 # 2.4.0
 
 ## Améliorations

@@ -56,9 +56,11 @@ export default class CombatCO extends Combat {
   /** @override */
   async _onDelete(options, userId) {
     await super._onDelete(options, userId)
-    if (game.user.isActiveGM) {
-      for (const combatant of this.combatants) combatant.actor?.deleteEffects()
-    }
+    if (!game.user.isActiveGM) return
+    // Fin du combat : les effets temporaires prennent fin. Un acteur lié peut avoir plusieurs combattants, on ne le
+    // traite qu'une fois, et un acteur après l'autre : deux suppressions simultanées des mêmes icônes d'état échouent.
+    const actors = new Set(this.combatants.map((c) => c.actor).filter((a) => a))
+    for (const actor of actors) await actor.deleteEffects()
   }
 
   /**

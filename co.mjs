@@ -182,7 +182,6 @@ Hooks.once("i18nInit", function () {
 Hooks.on("renderChatMessageHTML", applications.hooks.renderChatMessageHTML)
 Hooks.on("createActor", applications.hooks.createActor)
 Hooks.on("updateActor", applications.hooks.updateActor)
-Hooks.on("deleteCombat", applications.hooks.deleteCombat)
 Hooks.on("hotbarDrop", applications.hooks.hotbarDrop)
 Hooks.on("co2.companionMasterDeleted", applications.hooks.companionMasterDeleted)
 
