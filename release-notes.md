@@ -7,6 +7,24 @@
   Ce fichier est destiné aux joueuses et joueurs : il complète le CHANGELOG.md, qui reste le  journal exhaustif et technique.
 -->
 
+# 2.5.0
+
+> Si vous utilisez le module COF2 Livre des règles, mettez à jour le système en 2.5.0 puis le module en 2.5.0 : son guide décrit ces nouveautés.
+
+## Améliorations
+
+- **Automated Animations** : si ce module est actif, le système lui transmet directement vos actions. Il n'y a plus besoin de régler un délai d'animation global.
+  - Les attaques animent chaque cible une seule fois, et l'animation passe à côté des cibles ratées.
+  - Les actions sans jet (bénédictions, protections, malédictions, transformations…) sont animées dès leur activation, sur les cibles ou sur le personnage. Une capacité sans action envoyée publiquement dans le tchat est animée elle aussi.
+  - Une animation persistante (Aura, ou On Token avec Persistent coché) reste sur le jeton tant que dure l'effet du sort, et disparaît quand il expire, est supprimé, prend fin avec le combat ou quand l'action est désactivée.
+  - Si l'objet n'a pas d'animation à son nom, Automated Animations essaie le libellé de l'action, puis son type (melee, ranged, magical, spell) : une entrée « melee » anime toutes les attaques au contact.
+  - Nouvelle option du système « Animations avec Automated Animations », activée par défaut.
+- **Équipements rechargeables** : activer une action sans jet d'attaque (la protection d'un Bouclier d'énergie, par exemple) consomme maintenant une charge. La case « Ne consomme pas de charges » fonctionne aussi sur les équipements. Les armes consomment toujours une munition par tir, jamais deux.
+
+## Corrections
+
+- La fin d'un combat ne provoque plus d'erreurs « ActiveEffect … does not exist! » dans la console quand des effets temporaires étaient en cours.
+
 # 2.4.0
 
 > Si vous utilisez le module COF2 Livre des règles, mettez d'abord à jour le système en 2.4.0, puis le module en 2.4.0.

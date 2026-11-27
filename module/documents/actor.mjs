@@ -837,9 +837,12 @@ export default class COActor extends Actor {
 
     if (CONFIG.debug.co2?.actions) console.debug(Utils.log(`COActor - activateAction`), state, source, indice, type, item)
 
-    // Si l'arme a la propriété "reloadable", on vérifie si l'arme a encore des munitions
+    // Équipement Rechargeable sans charge : une attaque n'a plus de munitions, une autre action n'a plus d'utilisations,
+    // sauf si elle ne consomme pas de charges
     if (state && item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.properties.reloadable && !item.system.hasCharges) {
-      return ui.notifications.warn(game.i18n.localize("CO.notif.warningNoAmmo"))
+      const actionToActivate = item.system.actions[indice]
+      if (actionToActivate?.hasAttackResolver) return ui.notifications.warn(game.i18n.localize("CO.notif.warningNoAmmo"))
+      if (!actionToActivate?.properties?.noChargesUsed) return ui.notifications.warn(game.i18n.localize("CO.notif.warningNoCharge"))
     }
 
     // Si la capacité a une fréquence d'utilisation, on vérifie si la capacité a encore des charges
@@ -925,6 +928,11 @@ export default class COActor extends Actor {
       if (action.chargesUsed > 0 && state && item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.hasFrequency && item.system.hasCharges) {
         item.system.charges.current = Math.max(item.system.charges.current - action.chargesUsed, 0)
         await item.update({ "system.charges.current": item.system.charges.current })
+      }
+      // Équipement Rechargeable : une action sans jet d'attaque consomme ses charges à l'activation (une attaque consomme
+      // sa munition pendant le jet)
+      if (action.chargesUsed > 0 && state && item.type === SYSTEM.ITEM_TYPE.equipment.id && item.system.properties.reloadable) {
+        await item.update({ "system.charges.current": Math.max(item.system.charges.current - action.chargesUsed, 0) })
       }
       // Si c'est une capacité qui est un sort avec un coût en mana et qu'on l'active, il faut consommer les Points de Mana
       if (state && item.type === SYSTEM.ITEM_TYPE.capacity.id && item.system.isSpell && !item.system.actions[indice].properties.noManaCost) {

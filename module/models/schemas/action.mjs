@@ -222,9 +222,19 @@ export class Action extends foundry.abstract.DataModel {
     return undefined
   }
 
+  /**
+   * Nombre de charges consommées par une activation réussie de l'action.
+   * - Capacité : 1.
+   * - Équipement Rechargeable : 1 si l'action ne passe pas par un jet d'attaque ou de dommages, car ce jet consomme
+   *   déjà sa munition (COActor#consumeAmmunition) et l'action en consommerait deux.
+   * « Ne consomme pas de charges » l'emporte dans tous les cas.
+   * @returns {number}
+   */
   get chargesUsed() {
     if (this.properties.noChargesUsed) return 0
-    if (this.parent?.parent.type === SYSTEM.ITEM_TYPE.capacity.id) return 1
+    const itemType = this.parent?.parent?.type
+    if (itemType === SYSTEM.ITEM_TYPE.capacity.id) return 1
+    if (itemType === SYSTEM.ITEM_TYPE.equipment.id && this.parent.properties?.reloadable && !this.hasAttackResolver) return 1
     return 0
   }
 
@@ -322,6 +332,15 @@ export class Action extends foundry.abstract.DataModel {
 
   get hasResolvers() {
     return !foundry.utils.isEmpty(this.resolvers)
+  }
+
+  /**
+   * Vrai si l'action a un résolveur qui lance un jet d'attaque ou de dommages (attaque, automatique) : c'est ce jet qui
+   * consomme la munition d'un équipement Rechargeable.
+   * @returns {boolean}
+   */
+  get hasAttackResolver() {
+    return this.hasResolvers && this.resolvers.some((r) => [SYSTEM.RESOLVER_TYPE.attack.id, SYSTEM.RESOLVER_TYPE.auto.id].includes(r.type))
   }
 
   /**
