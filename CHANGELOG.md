@@ -1,5 +1,13 @@
 # 2.5.0
 
+## Améliorations
+
+- Automated Animations : le système transmet lui-même ses actions au module, au lieu de laisser son gestionnaire générique lire les cartes de tchat. Nouveau réglage de monde « Animations avec Automated Animations », activé par défaut, sans effet si le module n'est pas actif. Si un module d'animation qui transmet déjà les actions à Automated Animations est actif, le système s'efface : ces modules sont listés dans `SYSTEM.ANIMATION_MODULES`, où un module peut s'ajouter lui-même avant le hook `ready`.
+  - Les attaques transmettent le touché et le raté de chaque cible : l'animation passe à côté des cibles ratées. Chaque action reste animée une seule fois, depuis sa carte d'attaque, de dommages seuls, de soin ou de sauvegarde.
+  - Les actions sans jet (buffs, débuffs, protections, transformations, capacités utilitaires) déclenchent leur animation à l'activation, sur les cibles ou sur le lanceur. Une capacité sans action envoyée publiquement dans le tchat est animée de la même façon.
+  - Reconnaissance automatique : si le nom de l'objet n'a pas d'entrée, Automated Animations essaie ensuite le libellé de l'action, puis son type (`melee`, `ranged`, `magical`, `spell`), puis les étiquettes de l'objet. Une capacité à plusieurs actions peut ainsi avoir une animation par action, et une entrée `melee` sert de filet pour toutes les attaques au contact.
+  - Une animation persistante d'Automated Animations (entrée « Aura », ou « On Token » persistante) dure autant que l'effet du sort : elle disparaît quand l'effet temporaire de la cible expire, est supprimé ou prend fin avec le combat, quand l'action à durée est désactivée, et quand l'objet est supprimé.
+
 ## Corrections
 
 - Fin d'un combat : les effets temporaires des combattants étaient supprimés deux fois en parallèle, ce qui provoquait des erreurs « ActiveEffect … does not exist! » dans la console. Ils ne sont plus supprimés qu'une fois, par le MJ actif, acteur par acteur.

@@ -86,6 +86,13 @@ export const STATUS_RULES = {
  * Include all constant definitions within the SYSTEM global export
  * @type {Object}
  */
+/**
+ * Modules d'animation qui transmettent déjà les actions co2 à Automated Animations. Si l'un d'eux est actif, le système
+ * n'active pas sa propre intégration, pour qu'aucune animation ne parte deux fois. Un module peut s'y ajouter lui-même
+ * avant le hook ready : `SYSTEM.ANIMATION_MODULES.push("mon-module")`.
+ */
+export const ANIMATION_MODULES = ["cof2-animations"]
+
 export const SYSTEM = {
   ID: SYSTEM_ID,
   SYSTEM_DESCRIPTION,
@@ -93,6 +100,7 @@ export const SYSTEM = {
   ABILITIES: CHARACTER.ABILITIES,
   ACTION_TYPES: ACTION.ACTION_TYPES,
   ACTOR_ICONS: ACTOR.ACTOR_ICONS,
+  ANIMATION_MODULES,
   ATTACK_TYPE: CHARACTER.ATTACK_TYPE,
   BASE_INITIATIVE: CHARACTER.BASE_INITIATIVE,
   BASE_DEFENSE: CHARACTER.BASE_DEFENSE,

@@ -71,6 +71,20 @@ export function registerSystemSettings() {
   })
 
   /**
+   * Intégration d'Automated Animations : le système lui transmet ses actions (touché et raté par cible, actions sans
+   * jet) et arrête ses animations persistantes à la fin des effets. Sans effet si le module n'est pas actif.
+   */
+  game.settings.register("co2", "automatedAnimations", {
+    name: "CO.settings.automatedAnimations.name",
+    hint: "CO.settings.automatedAnimations.hint",
+    scope: "world",
+    config: true,
+    default: true,
+    type: Boolean,
+    requiresReload: true,
+  })
+
+  /**
    * Dernière version dont l'utilisateur a marqué les notes comme lues, via la case à cocher de la
    * fenêtre des notes de version. Portée utilisateur : chaque MJ décide pour lui-même.
    */

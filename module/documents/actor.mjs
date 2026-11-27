@@ -7,6 +7,7 @@ import Utils from "../helpers/utils.mjs"
 import { resolveStatusId } from "../helpers/status-rules.mjs"
 import { summarizeSelectedSkillBonuses } from "../helpers/skill-bonuses.mjs"
 import { cleanFormulaSigns } from "../helpers/formula-signs.mjs"
+import { playItemCardAnimation } from "../helpers/automated-animations.mjs"
 
 /**
  * @class COActor
@@ -2428,6 +2429,7 @@ export default class COActor extends Actor {
       itemUuid: item.uuid,
       itemId: item.id,
       actionName: actionName,
+      actionType,
       title: `${item.name} ${actionName}`,
       flavor: chatFlavor,
       skillBonus,
@@ -3153,6 +3155,10 @@ export default class COActor extends Actor {
     }
 
     chat.create()
+
+    // Une capacité sans action publiée dans le tchat est « utilisée » : Automated Animations l'anime. Pas en mode privé,
+    // l'animation serait visible de tous.
+    if (isPublic) playItemCardAnimation(this, item)
   }
 
   // #endregion

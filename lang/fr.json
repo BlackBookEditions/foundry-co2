@@ -1383,6 +1383,10 @@
         "all": "Pour tout le monde",
         "gm": "Uniquement au MJ"
       },
+      "automatedAnimations": {
+        "name": "Animations avec Automated Animations",
+        "hint": "Si le module Automated Animations est actif, le système lui transmet chaque action (touché et raté par cible, actions sans jet comme les buffs ou les protections) et arrête ses animations persistantes quand l'effet du sort prend fin. Sans effet si un module d'animation qui fait déjà ce lien est actif."
+      },
       "useComboRolls": {
         "name": "Activer les jets combinés attaque et dommages",
         "hint": "Permet de lancer les jets d'attaque et de dommages simultanément."

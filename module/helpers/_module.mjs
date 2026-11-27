@@ -1,5 +1,6 @@
 export * from "./helpers.mjs"
 export * from "./settings.mjs"
+export * from "./automated-animations.mjs"
 export { default as HitPoints } from "./hitpoints.mjs"
 export { default as OpposedRollHandler } from "./opposed-roll.mjs"
 export { default as SaveRollHandler } from "./save-roll.mjs"

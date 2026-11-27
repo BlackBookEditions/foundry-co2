@@ -251,6 +251,9 @@ Hooks.once("ready", async function () {
   // Si plus aucun module ne les déclare, on retire les effets restés sur les acteurs.
   if (game.user.isGM) await helpers.Utils.removeOrphanDefenseStances()
 
+  // Automated Animations
+  helpers.registerAutomatedAnimations()
+
   // Statistics
   registerWorldCount("co2")
 
